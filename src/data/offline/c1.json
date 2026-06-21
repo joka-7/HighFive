@@ -1,0 +1,62 @@
+{
+  "vocabulary": [
+    {
+      "words": [
+        {"word":"mitigate","partOfSpeech":"verb","definition":"להפחית עצמת סיכון, נזק, או בעיה; לצמצם השפעה שלילית","example":"The company took measures to mitigate the financial risks.","translation":"להפחית/לצמצם (נזק/סיכון)"},
+        {"word":"pragmatic","partOfSpeech":"adjective","definition":"פרגמטי – מעשי, מתמקד בפתרונות ריאליסטיים ולא אידיאליסטיים","example":"She took a pragmatic approach and solved the problem step by step.","translation":"פרגמטי/מעשי"},
+        {"word":"resilience","partOfSpeech":"noun","definition":"חוסן – יכולת להתאושש מקשיים ומשברים","example":"Mental resilience is key to success in challenging environments.","translation":"חוסן/עמידות"},
+        {"word":"scrutinize","partOfSpeech":"verb","definition":"לבחון בדקדקנות רבה, לחקור לעומק כל פרט","example":"The auditors will scrutinize every transaction in the report.","translation":"לבחון בדקדקנות/לחקור לעומק"},
+        {"word":"nuance","partOfSpeech":"noun","definition":"ניואנס – הבדל עדין ועדיין משמעותי במשמעות, גוון, או הבנה","example":"The translator captured every nuance of the original text.","translation":"ניואנס/גוון עדין"}
+      ]
+    },
+    {
+      "words": [
+        {"word":"ambiguous","partOfSpeech":"adjective","definition":"דו-משמעי – ניתן לפרשנות ביותר מדרך אחת, לא ברור","example":"The contract contained several ambiguous clauses that caused disputes.","translation":"דו-משמעי/מעורפל"},
+        {"word":"catalyst","partOfSpeech":"noun","definition":"זרז – גורם שמעורר שינוי או פעולה, בלי שהוא עצמו משתנה","example":"The new CEO acted as a catalyst for change in the company.","translation":"זרז (לשינוי)"},
+        {"word":"eloquent","partOfSpeech":"adjective","definition":"אנשי לשון שוטף ומשכנע, ביטוי ברור ומרשים","example":"Her eloquent speech moved the entire audience.","translation":"נואם שוטף/מבטא בצורה משכנעת"},
+        {"word":"facilitate","partOfSpeech":"verb","definition":"להקל, לסייע שתהליך יתקיים בצורה חלקה יותר","example":"The new software facilitates communication between departments.","translation":"להקל/לאפשר"},
+        {"word":"convoluted","partOfSpeech":"adjective","definition":"מסובך ומסורבל יתר על המידה, קשה להבנה","example":"His explanation was so convoluted that no one understood it.","translation":"מסורבל/מסובך שלא לצורך"}
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "title": "Inversion for Emphasis (היפוך לצורך הדגשה)",
+      "explanation": "היפוך (Inversion) הוא שינוי סדר המילים להדגשה – עיקרי בכתיבה פורמלית ובדיבור רשמי.\n\nסוגי היפוך עיקריים:\n\n1. אחרי ביטויים שליליים:\n• Never have I seen such courage. (מעולם לא ראיתי אומץ כזה)\n• Rarely does she make mistakes. (לעיתים נדירות היא עושה טעויות)\n• Not only did he lie, but he also cheated.\n\n2. אחרי only:\n• Only then did I understand the truth. (רק אז הבנתי את האמת)\n• Only after the meeting did she realize.\n\n3. So/Such for emphasis:\n• So difficult was the exam that half the class failed.\n• Such was his confidence that everyone believed him.\n\nהמבנה: ביטוי שלילי/מגביל + auxiliary verb + subject + main verb",
+      "questions": [
+        {"question":"Which sentence uses inversion correctly?","options":["Never I have seen this before","Never have I seen this before","I have never seen this before","Never seen have I this"],"correctIndex":1,"explanation":"אחרי 'Never' (ביטוי שלילי) בא היפוך: auxiliary (have) + subject (I) + main verb (seen). 'Never have I seen' הוא הנכון."},
+        {"question":"Rewrite with inversion: 'She rarely complains about anything.'","options":["Rarely she complains about anything","Rarely does she complain about anything","Rarely has she complained about anything","Rarely complains she about anything"],"correctIndex":1,"explanation":"אחרי 'Rarely' בא היפוך עם do-support: Rarely + does + she + complain. 'does' כי זה הווה פשוט."},
+        {"question":"'___ had I left the office when my phone rang.'","options":["Hardly","Never","Only","Rarely"],"correctIndex":0,"explanation":"'Hardly had I...' = כמעט ולא הספקתי... זהו ביטוי קלאסי להיפוך המביע פעולה שכמעט לא הספיקה להתרחש לפני אחרת."}
+      ]
+    },
+    {
+      "title": "Mixed Conditionals (תנאים מעורבים)",
+      "explanation": "תנאים מעורבים משלבים בין זמנים שונים – תנאי שמתייחס לעבר עם תוצאה שמתייחסת להווה, או להיפך.\n\nסוג 1 – תנאי עבר, תוצאה בהווה:\nIf + past perfect, would + infinitive\n• If I had studied medicine, I would be a doctor now.\n  (אם הייתי לומד רפואה [בעבר], הייתי רופא עכשיו)\n\nסוג 2 – תנאי הווה/עתיד, תוצאה בעבר:\nIf + past simple, would have + past participle\n• If she were more organized, she would have finished on time.\n  (אם הייתה מסודרת יותר [בכלל], הייתה מסיימת בזמן [בעבר])\n\nאלה שימושיים להבעת חרטה על העבר בהשוואה למצב ההווה.",
+      "questions": [
+        {"question":"'If he ___ the contract, he would be in prison now.'","options":["signs","signed","had signed","would sign"],"correctIndex":2,"explanation":"תנאי מעורב: תנאי עבר (had signed) + תוצאה הווה (would be now). If he had signed = אם היה חותם אז."},
+        {"question":"Which mixed conditional is correct?","options":["If I studied harder, I would have passed","If I had studied harder, I would have passed","If I had studied harder, I would pass now","If I study harder, I would pass now"],"correctIndex":2,"explanation":"'If I had studied harder' (תנאי עבר) + 'I would pass now' (תוצאה הווה) = תנאי מעורב אמיתי. האפשרות B היא תנאי שלישי רגיל (עבר-עבר)."},
+        {"question":"'If she ___ braver, she would have spoken at the conference.'","options":["is","was","were","had been"],"correctIndex":2,"explanation":"כשהתנאי מתייחס לתכונה בהווה (היא לא אמיצה בכלל), משתמשים ב-'were' (תנאי שני). If she were braver (בכלל), she would have spoken (אז)."}
+      ]
+    }
+  ],
+  "quizzes": [
+    {
+      "questions": [
+        {"question":"What does 'mitigate' mean?","options":["להחמיר","להפחית/לצמצם","לגרום","להאיץ"],"correctIndex":1,"explanation":"'mitigate' = להפחית, לצמצם השפעה שלילית. Aggravate = להחמיר, Cause = לגרום, Accelerate = להאיץ."},
+        {"question":"'___ did she realize the truth.' – Which inversion fits?","options":["Only then","Rarely","Hardly","Never"],"correctIndex":0,"explanation":"'Only then did she realize' = רק אז הבינה. זהו שימוש נכון של היפוך אחרי 'Only then'."},
+        {"question":"Which word means 'open to multiple interpretations'?","options":["Eloquent","Pragmatic","Ambiguous","Resilient"],"correctIndex":2,"explanation":"'Ambiguous' = דו-משמעי, ניתן לפרשנות שונה. Eloquent = שוטף בדיבור, Pragmatic = מעשי, Resilient = בעל חוסן."},
+        {"question":"'If I ___ the opportunity, I would be fluent in French now.'","options":["take","took","had taken","have taken"],"correctIndex":2,"explanation":"תנאי מעורב: עבר (had taken) + הווה (would be now). If I had taken the opportunity = אם הייתי מנצל את ההזדמנות אז."},
+        {"question":"What is a 'catalyst' in figurative language?","options":["מכשול","זרז לשינוי","תוצאה","תהליך"],"correctIndex":1,"explanation":"'catalyst' (מושאל) = זרז – מישהו או משהו שגורם לשינוי להתרחש. Acting as a catalyst for change."}
+      ]
+    },
+    {
+      "questions": [
+        {"question":"'Not only ___ he late, but he also forgot his presentation.'","options":["was","is","were","had"],"correctIndex":0,"explanation":"'Not only was he late' – היפוך אחרי 'Not only' בעבר: was + he. המבנה: Not only + aux + subject."},
+        {"question":"Which collocates best with 'resilience'?","options":["Make resilience","Build resilience","Do resilience","Take resilience"],"correctIndex":1,"explanation":"הצירוף הנכון הוא 'build resilience' (לבנות חוסן). Build collocates with abstract qualities: build confidence, build trust."},
+        {"question":"'The nuance ___ his argument was lost on most readers.'","options":["in","at","on","from"],"correctIndex":0,"explanation":"'the nuance in' – ה-preposition הנכון אחרי nuance לציון מיקום בתוך דבר. The nuance in his argument = הניואנס שבתוך טיעונו."},
+        {"question":"'Such ___ his eloquence that the jury was convinced.'","options":["is","was","were","had"],"correctIndex":1,"explanation":"'Such was his eloquence' – היפוך עם 'such' לתיאור תכונה בעבר: Such + was + subject + that."},
+        {"question":"What does 'facilitate' mean?","options":["להסביר","לאסור","להקל/לאפשר","להתנגד"],"correctIndex":2,"explanation":"'facilitate' = להקל על תהליך, לאפשר שיתקיים בצורה חלקה. Explain = להסביר, Forbid = לאסור, Oppose = להתנגד."}
+      ]
+    }
+  ]
+}

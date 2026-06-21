@@ -1,0 +1,62 @@
+{
+  "vocabulary": [
+    {
+      "words": [
+        {"word":"ephemeral","partOfSpeech":"adjective","definition":"חולף ובר-חלוף, קיים לזמן קצר מאוד ואז נעלם","example":"Social media fame is often ephemeral, fading within weeks.","translation":"חולף/זמני/בר-חלוף"},
+        {"word":"perspicacious","partOfSpeech":"adjective","definition":"חד-תפיסה, בעל יכולת בינה גבוהה לראות ולהבין את הנסתר","example":"The perspicacious analyst predicted the market crash six months in advance.","translation":"חד-תפיסה/ממולח ובעל תובנה"},
+        {"word":"equivocate","partOfSpeech":"verb","definition":"להתחמק ממתן תשובה ישירה בשימוש בלשון כפולה ומטושטשת","example":"The politician equivocated when asked about the scandal.","translation":"להתחמק/לדבר בלשון מעורפלת"},
+        {"word":"recondite","partOfSpeech":"adjective","definition":"נסתר ומיועד לבודדים, ידע עמוק שאינו נגיש לציבור הרחב","example":"The professor's lecture was filled with recondite references that few understood.","translation":"נסתר/ידע עמוק שיש מעטים שמכירים"},
+        {"word":"ineffable","partOfSpeech":"adjective","definition":"שאין מילים לתארו, נשגב מהבעה מילולית","example":"The beauty of the sunrise was ineffable — no photograph could capture it.","translation":"שאין מילים לתארו/נשגב"}
+      ]
+    },
+    {
+      "words": [
+        {"word":"loquacious","partOfSpeech":"adjective","definition":"פטפטן, נוטה לדבר הרבה ובאריכות רבה","example":"Her loquacious dinner companion made it impossible to get a word in.","translation":"פטפטן/דברן"},
+        {"word":"obfuscate","partOfSpeech":"verb","definition":"להסתיר, לערפל, לגרום לדבר להיות פחות ברור ומובן","example":"The report was designed to obfuscate rather than clarify the situation.","translation":"לערפל/להסתיר/לבלבל"},
+        {"word":"sycophant","partOfSpeech":"noun","definition":"חנפן, מי שמחמיא לאחרים בצורה מוגזמת לשם קידום אישי","example":"Surrounded by sycophants, the CEO lost touch with reality.","translation":"חנפן/מחניף"},
+        {"word":"confound","partOfSpeech":"verb","definition":"לבלבל לחלוטין, להשאיר בתמהון; גם להפריך ציפיות","example":"The unexpected results confounded the scientists' predictions.","translation":"לבלבל לחלוטין/להפריך"},
+        {"word":"arcane","partOfSpeech":"adjective","definition":"נסתר וסתום, מובן רק לבעלי ידע מיוחד ומסורת עמוקה","example":"The contract was filled with arcane legal terminology.","translation":"סתום/נסתר/מובן רק לבקיאים"}
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "title": "Subtle Uses of Modal Verbs (שימושים עדינים בפעלי מודאל)",
+      "explanation": "ברמה C2 פעלי מודאל מביעים הרבה יותר ממה שנראה לעין. אותו מודאל יכול לבטא משמעויות שונות לחלוטין:\n\n'Would':\n• עבר רגיל: He would walk to school. (היה רגיל ללכת)\n• עדינות: Would you mind closing the door? (הנמכת בקשה)\n• הסתייגות: I would argue that... (דעה עם ריכוך)\n\n'Must':\n• חובה: You must wear a seatbelt.\n• הסקה לוגית: She must be exhausted after that journey. (בטח עייפה)\n\n'Should':\n• ציפייה: The results should be ready by now. (אמורים להיות מוכנים)\n• ביקורת עדינה: You should have told me earlier.\n\n'May':\n• רשמי יותר מ-might: This may take longer than expected.\n• ויתור: Be that as it may... (יהא אשר יהא)\n\nהמיומנות המתקדמת: לזהות מה מבטא המודאל מהקשר ולהשתמש בו בדייקנות.",
+      "questions": [
+        {"question":"'She must be the director — everyone seems to defer to her.' What does 'must' express here?","options":["Obligation","Logical deduction","Permission","Habit"],"correctIndex":1,"explanation":"'must' כאן מביע הסקה לוגית (logical deduction) – מסיקים מהראיות. לא מדובר בחובה אלא בהסקה: היא בטח המנהלת."},
+        {"question":"'I would argue that the policy needs revision.' What nuance does 'would' add?","options":["Future possibility","Willingness","Politeness/Hedging","Past habit"],"correctIndex":2,"explanation":"'would argue' מרכך ומסייג את הדעה – hedging. במקום 'I argue' (ישיר), 'I would argue' מביע ענווה אקדמית והסתייגות עדינה."},
+        {"question":"'Be that as it may, we must proceed with the plan.' What does this phrase signal?","options":["A contradiction","Acknowledging a point but moving forward","Expressing doubt","Requesting permission"],"correctIndex":1,"explanation":"'Be that as it may' = יהא אשר יהא – מכיר בנקודה שהועלתה אך ממשיך בכל זאת. ביטוי C2 המסמן ויתור על ויכוח והמשכה."}
+      ]
+    },
+    {
+      "title": "Cleft Sentences (משפטים מבוקעים להדגשה)",
+      "explanation": "Cleft sentences מדגישות חלק ספציפי של המשפט בצורה אלגנטית ורטורית.\n\n1. It-clefts:\nIt + be + emphasized element + that/who-clause\n• It was John who found the solution. (דווקא ג'ון מצא)\n• It was in Paris that they first met. (דווקא בפריז)\n• It is the deadline that concerns me most. (דווקא המועד הוא שמטריד)\n\n2. Wh-clefts (Pseudo-clefts):\nWhat + clause + be + emphasis\n• What I need is more time. (מה שאני צריך הוא יותר זמן)\n• What surprised me was her reaction.\n• What he did was completely unacceptable.\n\n3. All-clefts:\n• All I want is a quiet evening.\n• All that matters is your happiness.\n\nשימוש: נפוץ בנאומים, בכתיבה רטורית, ובדיאלוג לשם הדגשה טבעית.",
+      "questions": [
+        {"question":"Emphasize 'the manager' in: 'The manager approved the budget.' Using a cleft:","options":["The manager, who approved the budget","It was the manager who approved the budget","What the manager did approved the budget","It is the budget that was approved"],"correctIndex":1,"explanation":"It-cleft להדגשת הנושא: It was + [the manager] + who + [approved the budget]. זה מדגיש שדווקא המנהל (ולא אחר) אישר."},
+        {"question":"'___ I find most challenging is public speaking.' – Complete the cleft.","options":["That","It","What","Which"],"correctIndex":2,"explanation":"Wh-cleft / Pseudo-cleft מתחיל ב-'What': What I find most challenging is... המבנה: What + subject + verb + be + emphasis."},
+        {"question":"Which sentence uses a cleft for natural emphasis in formal writing?","options":["John solved the problem, not Mary","It was John who solved the problem, not Mary","John, he solved the problem","The problem was solved by John not Mary"],"correctIndex":1,"explanation":"'It was John who solved the problem' הוא it-cleft אלגנטי המדגיש שדווקא ג'ון פתר את הבעיה – נפוץ בכתיבה פורמלית ובנאומים."}
+      ]
+    }
+  ],
+  "quizzes": [
+    {
+      "questions": [
+        {"question":"What does 'ephemeral' mean?","options":["נצחי","חולף/זמני","עמוק","נסתר"],"correctIndex":1,"explanation":"'ephemeral' = חולף, קיים לזמן קצר. Eternal = נצחי, Profound = עמוק, Obscure = נסתר/מעורפל."},
+        {"question":"'The committee ___ have anticipated the backlash.' (They didn't.) – Which modal fits?","options":["must","should","would","may"],"correctIndex":1,"explanation":"ביקורת על העבר: should have + V3 = היו צריכים ל... (אך לא עשו). 'should have anticipated' = היו צריכים לצפות."},
+        {"question":"'___ struck me most was the speaker's composure under fire.'","options":["It","What","That","Which"],"correctIndex":1,"explanation":"Wh-cleft להדגשה: What struck me most was... = מה שהכי הכה בי היה... המבנה: What + verb phrase + was + emphasis."},
+        {"question":"What is a 'sycophant'?","options":["מבקר חריף","חנפן/מחניף","אדם ישיר","מנהיג כריזמטי"],"correctIndex":1,"explanation":"'sycophant' = חנפן – מי שמחמיא לאחרים באופן מוגזם למטרות אישיות. Sharp critic = מבקר חריף, Straightforward = ישיר."},
+        {"question":"'The minister equivocated when pressed for details.' What did the minister do?","options":["ענה בישירות","התפטר","התחמק ממתן תשובה ברורה","הוסיף פרטים"],"correctIndex":2,"explanation":"'equivocate' = להתחמק ממתן תשובה ישירה בשימוש בשפה מעורפלת. נפוץ בפוליטיקה ובמצבים שבהם מעדיפים לא להתחייב."}
+      ]
+    },
+    {
+      "questions": [
+        {"question":"'It ___ her resilience that saw the company through the crisis.'","options":["is","was","were","has been"],"correctIndex":1,"explanation":"It-cleft בעבר: It was + [emphasized element] + that. 'It was her resilience that saw...' מדגיש שדווקא החוסן שלה הציל את החברה."},
+        {"question":"Which word best describes speech that deliberately obscures meaning?","options":["Eloquent","Loquacious","Obfuscatory","Perspicacious"],"correctIndex":2,"explanation":"'Obfuscatory' (מ-obfuscate) = מערפל, מסתיר כוונה. Eloquent = שוטף ומשכנע, Loquacious = דברן, Perspicacious = חד-תפיסה."},
+        {"question":"'All ___ is your commitment to the process.'","options":["what matters","that matters","matters","which matters"],"correctIndex":1,"explanation":"All-cleft: All that matters is... = כל שחשוב הוא... 'that' אחרי 'all' יוצר relative clause. 'What matters' גם נכון אך לא עם 'all'."},
+        {"question":"'The concept is too ___ for a general audience.' – Choose the most precise word.","options":["difficult","recondite","ambiguous","convoluted"],"correctIndex":1,"explanation":"'recondite' = ידע נסתר שמיועד לבקיאים בלבד, לא מובן לציבור הרחב. 'difficult' כללי מדי, 'convoluted' = מסורבל בלשון, 'ambiguous' = דו-משמעי."},
+        {"question":"'She ___ have realized the implications — the evidence was overwhelming.'","options":["should","must","would","might"],"correctIndex":1,"explanation":"'must have realized' = בטח הבינה (הסקה לוגית על העבר). הראיות הכריעו, לכן הסקנו שהיא הבינה. 'should have' = היה צריך (ביקורת), לא הסקה."}
+      ]
+    }
+  ]
+}

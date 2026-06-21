@@ -1,0 +1,62 @@
+{
+  "vocabulary": [
+    {
+      "words": [
+        {"word":"achieve","partOfSpeech":"verb","definition":"להשיג מטרה לאחר מאמץ ועבודה קשה","example":"She worked hard to achieve her goals.","translation":"להשיג/להגיע ל"},
+        {"word":"challenge","partOfSpeech":"noun","definition":"אתגר – משימה קשה שדורשת מאמץ ויכולת","example":"Learning a new language is a real challenge.","translation":"אתגר"},
+        {"word":"recommend","partOfSpeech":"verb","definition":"להמליץ – לייעץ לאחד לעשות או לנסות משהו","example":"Can you recommend a good restaurant nearby?","translation":"להמליץ"},
+        {"word":"however","partOfSpeech":"adverb","definition":"עם זאת, אולם – מילת ניגוד המחברת בין שתי מחשבות הפוכות","example":"The film was long; however, it was very interesting.","translation":"עם זאת/אולם"},
+        {"word":"experience","partOfSpeech":"noun","definition":"ניסיון – ידע שנרכש ממצבים שחווית בחיים","example":"She has five years of experience in marketing.","translation":"ניסיון/חוויה"}
+      ]
+    },
+    {
+      "words": [
+        {"word":"suggest","partOfSpeech":"verb","definition":"להציע רעיון או פעולה לאדם אחר לשקול","example":"I suggest we leave early to avoid the traffic.","translation":"להציע"},
+        {"word":"improve","partOfSpeech":"verb","definition":"לשפר – לגרום למשהו להיות טוב יותר ממה שהיה","example":"Reading every day will improve your vocabulary.","translation":"לשפר"},
+        {"word":"although","partOfSpeech":"conjunction","definition":"למרות ש, אף על פי ש – מציין ניגוד בין שני משפטים","example":"Although it was raining, we went for a walk.","translation":"למרות ש/אף על פי ש"},
+        {"word":"develop","partOfSpeech":"verb","definition":"לפתח – לגרום לצמיחה, שיפור או הרחבה","example":"The company plans to develop a new product.","translation":"לפתח"},
+        {"word":"purpose","partOfSpeech":"noun","definition":"מטרה – הסיבה שבגינה עושים משהו","example":"The purpose of this lesson is to improve your grammar.","translation":"מטרה/תכלית"}
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "title": "Present Perfect (הווה מושלם)",
+      "explanation": "הווה מושלם (Present Perfect) מתאר פעולות שהתרחשו בעבר בלתי מוגדר, עם קשר לרגע הנוכחי.\n\nמבנה: have/has + past participle (V3)\n• I have visited London. (ביקרתי בלונדון – לא אומרים מתי)\n• She has never eaten sushi. (היא מעולם לא אכלה סושי)\n\nמילים מנחות:\n• already (כבר): I have already finished.\n• yet (עדיין): Have you finished yet? / I haven't finished yet.\n• ever (אי פעם): Have you ever been to Paris?\n• never (מעולם): She has never tried skiing.\n• just (זה עתה): He has just arrived.\n\nהבדל מהעבר הפשוט:\n• I saw that film. (עבר פשוט – מתי ספציפי, גמור)\n• I have seen that film. (הווה מושלם – בשלב כלשהו בחיים)",
+      "questions": [
+        {"question":"'She ___ never been to Japan.' – Fill in.","options":["have","has","had","is"],"correctIndex":1,"explanation":"עם she (גוף שלישי יחיד) משתמשים ב-'has'. המבנה: She has never been to Japan."},
+        {"question":"Which sentence uses Present Perfect correctly?","options":["I have went to the shop","She has eat breakfast","They have finished the project","He have seen the movie"],"correctIndex":2,"explanation":"'They have finished' נכון – past participle של finish הוא finished. 'went' צריך להיות 'gone', 'eat' צריך 'eaten', ו-'he have' צריך 'he has'."},
+        {"question":"'___ you ever tried Indian food?' – Which word fits?","options":["Did","Do","Have","Has"],"correctIndex":2,"explanation":"שאלה עם 'ever' בהווה מושלם מתחילה ב-Have/Has. עם 'you' משתמשים ב-'Have': Have you ever tried...?"}
+      ]
+    },
+    {
+      "title": "First Conditional (תנאי ראשון – עתיד אפשרי)",
+      "explanation": "משפט תנאי ראשון מתאר מצב אפשרי בעתיד ותוצאתו.\n\nמבנה: If + present simple, will + infinitive\n• If it rains, I will stay at home. (אם ירד גשם, אשאר בבית)\n• If you study hard, you will pass the exam. (אם תלמד קשה, תעבור את הבחינה)\n\nחשוב:\n• בחלק ה-'if' – הווה פשוט (לא will!)\n• בחלק התוצאה – will + infinitive\n• אפשר גם להפוך: I will stay home if it rains. (ללא פסיק)\n\nשימושים נוספים:\n• unless = if not: Unless you hurry, you will miss the bus.\n• might/can במקום will: If you're tired, you can rest.",
+      "questions": [
+        {"question":"'If she ___ hard, she will pass.' – Fill in.","options":["studies","will study","studied","is studying"],"correctIndex":0,"explanation":"בחלק ה-'if' של תנאי ראשון משתמשים בהווה פשוט (studies), לא ב-will. התוצאה מקבלת את ה-will."},
+        {"question":"Which sentence is a correct First Conditional?","options":["If it will rain, I stay home","If it rains, I will stay home","If it rained, I will stay home","If it rains, I stayed home"],"correctIndex":1,"explanation":"המבנה הנכון: If + present simple, will + infinitive. 'If it rains, I will stay home' הוא המבנה הנכון."},
+        {"question":"'Unless you ___, you will be late.' – Choose correctly.","options":["hurry","will hurry","hurried","are hurrying"],"correctIndex":0,"explanation":"'Unless' = if not. אחרי 'unless' משתמשים בהווה פשוט, כמו אחרי 'if'. לכן: Unless you hurry."}
+      ]
+    }
+  ],
+  "quizzes": [
+    {
+      "questions": [
+        {"question":"What does 'however' mean?","options":["לכן","למרות זאת/אולם","בנוסף","לדוגמה"],"correctIndex":1,"explanation":"'however' = עם זאת, אולם – מביע ניגוד. Therefore = לכן, In addition = בנוסף, For example = לדוגמה."},
+        {"question":"'I have ___ seen this film before.' – Fill in.","options":["yet","already","since","for"],"correctIndex":1,"explanation":"'already' (כבר) משמש במשפטים חיוביים בהווה מושלם. 'yet' משמש בשאלות ובשלילות: Have you finished yet? / I haven't finished yet."},
+        {"question":"Which word best connects two contrasting ideas?","options":["Because","Although","Therefore","Moreover"],"correctIndex":1,"explanation":"'Although' (למרות ש) מחבר בין שתי מחשבות הפוכות. Because = כי, Therefore = לכן, Moreover = יתר על כן."},
+        {"question":"'If I ___ more money, I will travel the world.'","options":["will save","saved","save","saving"],"correctIndex":2,"explanation":"בתנאי ראשון, בחלק ה-if משתמשים בהווה פשוט: If I save (לא will save)."},
+        {"question":"What is the past participle of 'write'?","options":["Writed","Wrote","Written","Writing"],"correctIndex":2,"explanation":"'write' הוא פועל לא סדיר: write → wrote (עבר) → written (past participle). ב-present perfect: I have written."}
+      ]
+    },
+    {
+      "questions": [
+        {"question":"Which sentence is grammatically correct?","options":["She suggested to go earlier","She suggested going earlier","She suggested go earlier","She suggested that go earlier"],"correctIndex":1,"explanation":"אחרי 'suggest' משתמשים ב-gerund (verb+ing): suggest going. לא משתמשים ב-to-infinitive אחרי suggest."},
+        {"question":"'The new employee has ___ experience.' – What fits best?","options":["many","much","a few","a lot many"],"correctIndex":1,"explanation":"'experience' הוא שם עצם לא סביר (uncountable), לכן משתמשים ב-'much' (לא 'many'). 'a lot of experience' גם נכון."},
+        {"question":"'___ studying, she went to sleep.' – Choose the connector.","options":["Although","After","However","Despite"],"correctIndex":1,"explanation":"'After' (אחרי) מביע רצף זמני: After studying, she went to sleep. 'Although' ו-'Despite' מביעים ניגוד."},
+        {"question":"What does 'achieve' mean?","options":["לנסות","להציע","להשיג","לשנות"],"correctIndex":2,"explanation":"'achieve' = להשיג מטרה. Try = לנסות, Suggest = להציע, Change = לשנות."},
+        {"question":"'Have you finished ___ ?'","options":["already","yet","just","never"],"correctIndex":1,"explanation":"'yet' משמש בשאלות ובשלילות: Have you finished yet? / I haven't finished yet. 'already' משמש בחיוביים."}
+      ]
+    }
+  ]
+}

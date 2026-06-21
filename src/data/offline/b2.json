@@ -1,0 +1,62 @@
+{
+  "vocabulary": [
+    {
+      "words": [
+        {"word":"assess","partOfSpeech":"verb","definition":"להעריך ולבחון משהו בצורה שיטתית ומעמיקה","example":"We need to assess the risks before making a decision.","translation":"להעריך/לאמוד"},
+        {"word":"contribute","partOfSpeech":"verb","definition":"לתרום – לתת משהו כדי לסייע למטרה משותפת","example":"Everyone should contribute to protecting the environment.","translation":"לתרום"},
+        {"word":"despite","partOfSpeech":"preposition","definition":"למרות – אחריו שם עצם (לא משפט): despite the rain","example":"Despite the heavy traffic, she arrived on time.","translation":"למרות"},
+        {"word":"efficient","partOfSpeech":"adjective","definition":"יעיל – עושה את העבודה בפחות משאבים וזמן","example":"The new system is much more efficient than the old one.","translation":"יעיל/אפקטיבי"},
+        {"word":"fundamental","partOfSpeech":"adjective","definition":"בסיסי ומהותי, חיוני לפעולה תקינה","example":"Trust is fundamental to any good relationship.","translation":"בסיסי/מהותי"}
+      ]
+    },
+    {
+      "words": [
+        {"word":"negotiate","partOfSpeech":"verb","definition":"לנהל משא ומתן – לדון ולהגיע להסכמה","example":"The two companies negotiated a new deal.","translation":"לנהל משא ומתן"},
+        {"word":"perspective","partOfSpeech":"noun","definition":"נקודת מבט – האופן שבו אדם רואה ומפרש מצב","example":"From a different perspective, the problem looks simpler.","translation":"נקודת מבט"},
+        {"word":"significant","partOfSpeech":"adjective","definition":"משמעותי – חשוב ובעל השפעה ניכרת","example":"There has been a significant improvement in her grades.","translation":"משמעותי"},
+        {"word":"whereas","partOfSpeech":"conjunction","definition":"בעוד ש, לעומת זאת – מציין הפרש בין שני דברים","example":"She likes classical music, whereas her brother prefers rock.","translation":"בעוד ש/לעומת זאת"},
+        {"word":"elaborate","partOfSpeech":"verb","definition":"לפרט ולהרחיב, לספק מידע נוסף על נושא","example":"Could you elaborate on your idea? I'd like to understand more.","translation":"לפרט/להרחיב"}
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "title": "Passive Voice (גוף סביל)",
+      "explanation": "גוף סביל (Passive Voice) מדגיש את מושא הפעולה, לא את מבצעה.\n\nמבנה: to be + past participle (V3)\n\nדוגמאות לפי זמנים:\n• Present: The report is written by the manager. (הדו\"ח נכתב על ידי המנהל)\n• Past: The book was published in 2010. (הספר פורסם ב-2010)\n• Present Perfect: The project has been completed. (הפרויקט הושלם)\n• Future: The results will be announced tomorrow. (התוצאות יוכרזו מחר)\n\nמתי להשתמש:\n• כשלא יודעים מי עשה את הפעולה\n• כשהפעולה חשובה יותר מהמבצע\n• בטקסטים פורמליים ומדעיים\n\nby + מבצע הפעולה (agent) – נוסיף רק כשחשוב לציין מי עשה.",
+      "questions": [
+        {"question":"Change to passive: 'The chef cooked the meal.'","options":["The meal cooked by the chef","The meal was cooked by the chef","The meal is cooked the chef","The meal were cooked by the chef"],"correctIndex":1,"explanation":"המבנה הנכון לעבר פשוט סביל: subject + was/were + past participle. 'The meal' יחיד, לכן 'was'. + 'by the chef'."},
+        {"question":"'The new bridge ___ next year.' – Future passive.","options":["is built","was built","will be built","builds"],"correctIndex":2,"explanation":"עתיד סביל: will be + past participle. 'will be built' = יבנה. 'is built' = הווה סביל, 'was built' = עבר סביל."},
+        {"question":"Which sentence is in the passive voice?","options":["Scientists discovered a new planet","A new planet was discovered by scientists","Scientists have discovered a new planet","Scientists are discovering a new planet"],"correctIndex":1,"explanation":"'A new planet was discovered by scientists' – הנושא (the planet) מקבל את הפעולה. זהו גוף סביל. שאר המשפטים הם גוף פעיל."}
+      ]
+    },
+    {
+      "title": "Reported Speech (דיבור עקיף)",
+      "explanation": "דיבור עקיף (Reported Speech) משמש כשאנחנו מעבירים מה שאמר מישהו אחר.\n\nשינויים עיקריים:\n• הפועל 'לאמור' + that: She said that...\n• זמנים נדחים אחורה:\n  - is → was\n  - am working → was working\n  - will → would\n  - can → could\n  - has done → had done\n\nדוגמאות:\n• Direct: 'I am tired.' → Reported: She said (that) she was tired.\n• Direct: 'I will call you.' → Reported: He said he would call me.\n• Direct: 'I can swim.' → Reported: She said she could swim.\n\nכינויים גם משתנים:\n• 'I love you.' → He said he loved her.\n• 'We are ready.' → They said they were ready.",
+      "questions": [
+        {"question":"Direct: 'I work in a bank.' – What is the reported speech?","options":["He said he works in a bank","He said he worked in a bank","He said I worked in a bank","He says he worked in a bank"],"correctIndex":1,"explanation":"בדיבור עקיף, works (הווה) נדחה ל-worked (עבר). גם 'I' הופך ל-'he'. המשפט הנכון: He said he worked in a bank."},
+        {"question":"Direct: 'She will help you.' → Reported: He said...","options":["she will help you","she would help me","she helps you","she helped you"],"correctIndex":1,"explanation":"'will' הופך ל-'would' בדיבור עקיף. גם 'you' הופך ל-'me'. He said she would help me."},
+        {"question":"Which reported speech is correct for: 'I can't come today.'","options":["She said she can't come today","She said she couldn't come that day","She said I can't come today","She said she won't come today"],"correctIndex":1,"explanation":"'can't' הופך ל-'couldn't'. 'today' הופך ל-'that day' (שינוי ביטוי זמן). She said she couldn't come that day."}
+      ]
+    }
+  ],
+  "quizzes": [
+    {
+      "questions": [
+        {"question":"'The documents ___ by the lawyer yesterday.'","options":["signed","were signed","has been signed","are signing"],"correctIndex":1,"explanation":"'yesterday' מציין עבר, ולכן עבר סביל: were signed. 'were' כי 'documents' הם רבים."},
+        {"question":"What does 'whereas' express?","options":["סיבה","ניגוד בין שניים","תוצאה","תנאי"],"correctIndex":1,"explanation":"'whereas' מביע ניגוד/הבדל: She is outgoing, whereas he is shy. Because = סיבה, Therefore = תוצאה, If = תנאי."},
+        {"question":"Direct: 'I have finished.' → Reported: She said...","options":["she has finished","she had finished","she finished","she will finish"],"correctIndex":1,"explanation":"'has finished' (הווה מושלם) הופך ל-'had finished' (עבר מושלם) בדיבור עקיף."},
+        {"question":"'Despite ___ hard, he failed the exam.'","options":["studied","studying","to study","he studied"],"correctIndex":1,"explanation":"אחרי 'despite' משתמשים ב-gerund (verb+ing): despite studying. אחרי 'although' משתמשים במשפט מלא."},
+        {"question":"What does 'elaborate' mean in context?","options":["לסיים","לשנות","לפרט ולהרחיב","להתנגד"],"correctIndex":2,"explanation":"'elaborate' = לפרט, לספק פרטים נוספים. Could you elaborate on that? = האם תוכל לפרט יותר?"}
+      ]
+    },
+    {
+      "questions": [
+        {"question":"Which is the most formal way to express contrast?","options":["But","However","Although","Even though"],"correctIndex":1,"explanation":"'However' הוא הפורמלי ביותר מבין האפשרויות, נפוץ בכתיבה אקדמית ועסקית. 'But' הוא הכי יומיומי."},
+        {"question":"'She ___ to negotiate a better salary.' – Choose correctly.","options":["managed","succeeded","could","was able"],"correctIndex":0,"explanation":"'managed to' = הצליח ל- (עבר). 'managed to negotiate' נכון. 'succeeded' דורש 'succeeded in negotiating'."},
+        {"question":"'The project is ___ to be completed by Friday.'","options":["expected","expecting","expect","being expect"],"correctIndex":0,"explanation":"המבנה הוא: is expected to + infinitive. 'The project is expected to be completed' – גוף סביל עם ציפייה."},
+        {"question":"What does 'significant' mean?","options":["קטן","משמעותי","זמני","מסובך"],"correctIndex":1,"explanation":"'significant' = משמעותי, חשוב. Small = קטן, Temporary = זמני, Complex = מסובך."},
+        {"question":"Choose the correct sentence about contribution:","options":["She contributes to the project since last year","She has been contributing to the project since last year","She is contributed to the project","She contributes the project"],"correctIndex":1,"explanation":"'since last year' מצריך Present Perfect Continuous: has been contributing. 'contribute to' = לתרום ל (דורש to)."}
+      ]
+    }
+  ]
+}
