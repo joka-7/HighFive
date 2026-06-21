@@ -1,0 +1,107 @@
+import { useState } from "react";
+import { useLingo } from "../store/useLingo";
+import { LEVELS, type Level } from "../types";
+import { PLACEMENT_QUESTIONS, levelFromScore } from "../data/placement";
+import QuizRunner from "../components/QuizRunner";
+
+const NATIVE_LANGUAGES = ["עברית", "العربية", "Русский", "English", "אחר"];
+
+type Step = "welcome" | "choose" | "test" | "manual";
+
+export default function Onboarding() {
+  const { registerUser } = useLingo();
+  const [step, setStep] = useState<Step>("welcome");
+  const [name, setName] = useState("");
+  const [nativeLanguage, setNativeLanguage] = useState(NATIVE_LANGUAGES[0]);
+
+  function finish(level: Level) {
+    registerUser(name, nativeLanguage, level);
+  }
+
+  return (
+    <div className="screen">
+      {step === "welcome" && (
+        <>
+          <div className="celebrate">
+            <div className="big">✋</div>
+            <h1 style={{ margin: "4px 0" }}>High5</h1>
+            <p className="muted">לומדים אנגלית בכיף — שיעורים, אוצר מילים ושיחות עם AI</p>
+          </div>
+
+          <div className="card">
+            <label className="field">
+              <span>איך קוראים לך?</span>
+              <input
+                className="input"
+                value={name}
+                placeholder="השם שלך"
+                onChange={(e) => setName(e.target.value)}
+              />
+            </label>
+
+            <label className="field">
+              <span>שפת האם שלך</span>
+              <select
+                className="input"
+                value={nativeLanguage}
+                onChange={(e) => setNativeLanguage(e.target.value)}
+              >
+                {NATIVE_LANGUAGES.map((l) => (
+                  <option key={l} value={l}>
+                    {l}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <button
+              className="btn"
+              disabled={!name.trim()}
+              onClick={() => setStep("choose")}
+            >
+              בואו נתחיל ←
+            </button>
+          </div>
+        </>
+      )}
+
+      {step === "choose" && (
+        <div className="card">
+          <h2>מה הרמה שלך באנגלית?</h2>
+          <p className="muted">אפשר לעשות מבחן מיון קצר, או לבחור רמה בעצמך.</p>
+          <button className="btn accent" onClick={() => setStep("test")}>
+            🎯 מבחן מיון (3 שאלות)
+          </button>
+          <div style={{ height: 10 }} />
+          <button className="btn secondary" onClick={() => setStep("manual")}>
+            ✍️ אבחר רמה בעצמי
+          </button>
+        </div>
+      )}
+
+      {step === "test" && (
+        <>
+          <h2 className="center">מבחן מיון 🎯</h2>
+          <QuizRunner
+            questions={PLACEMENT_QUESTIONS}
+            onFinish={(score) => finish(levelFromScore(score))}
+          />
+        </>
+      )}
+
+      {step === "manual" && (
+        <div className="card">
+          <h2>בחר/י רמה (CEFR)</h2>
+          <p className="muted">A1 = מתחיל · C2 = מתקדם מאוד</p>
+          <div className="level-row">
+            {LEVELS.map((lvl) => (
+              <button key={lvl} className="level-pill" onClick={() => finish(lvl)}>
+                {lvl}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

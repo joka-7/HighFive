@@ -1,0 +1,62 @@
+{
+  "vocabulary": [
+    {
+      "words": [
+        {"word":"weather","partOfSpeech":"noun","definition":"מצב האוויר בחוץ – חם, קר, גשום, שמשי וכו'","example":"The weather today is cold and windy.","translation":"מזג אוויר"},
+        {"word":"arrive","partOfSpeech":"verb","definition":"להגיע ליעד אחרי נסיעה או הליכה","example":"We will arrive at the hotel at six o'clock.","translation":"להגיע"},
+        {"word":"always","partOfSpeech":"adverb","definition":"תמיד – בכל פעם, ללא יוצא מן הכלל","example":"She always drinks coffee in the morning.","translation":"תמיד"},
+        {"word":"ticket","partOfSpeech":"noun","definition":"כרטיס לנסיעה, להצגה, או לאירוע","example":"I bought two tickets for the train.","translation":"כרטיס"},
+        {"word":"describe","partOfSpeech":"verb","definition":"לתאר – לספר בפירוט על אדם, מקום, או דבר","example":"Can you describe the man you saw?","translation":"לתאר"}
+      ]
+    },
+    {
+      "words": [
+        {"word":"usually","partOfSpeech":"adverb","definition":"בדרך כלל – ברוב המקרים, אך לא תמיד","example":"I usually wake up at seven.","translation":"בדרך כלל"},
+        {"word":"neighbor","partOfSpeech":"noun","definition":"שכן – אדם שגר קרוב אליך, בבית סמוך","example":"My neighbor is a very friendly person.","translation":"שכן/שכנה"},
+        {"word":"journey","partOfSpeech":"noun","definition":"מסע – נסיעה ארוכה ממקום למקום","example":"The journey from Tel Aviv to Eilat takes about four hours.","translation":"מסע/נסיעה"},
+        {"word":"shopping","partOfSpeech":"noun","definition":"קנייה – פעולה של רכישת מוצרים בחנויות","example":"I go shopping every Saturday morning.","translation":"קניות"},
+        {"word":"remember","partOfSpeech":"verb","definition":"לזכור – לשמור מידע בזיכרון ולהיזכר בו מאוחר יותר","example":"Do you remember the name of the restaurant?","translation":"לזכור"}
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "title": "Past Simple – Regular Verbs (עבר פשוט – פעלים סדירים)",
+      "explanation": "זמן העבר הפשוט (Past Simple) משמש לתאר פעולות שהתרחשו והסתיימו בעבר.\n\nחוק יצירת זמן עבר לפעלים סדירים:\n• מוסיפים -ed לסוף הפועל: walk → walked, talk → talked\n• אם הפועל מסתיים ב-e: like → liked, live → lived\n• שאלה ושלילה: Did + infinitive: Did you eat? / I didn't sleep.\n\nדוגמאות:\n• I walked to school yesterday. (הלכתי לבית הספר אתמול)\n• She watched a movie last night. (היא צפתה בסרט אמש)\n• They didn't play football. (הם לא שיחקו כדורגל)",
+      "questions": [
+        {"question":"What is the past tense of 'visit'?","options":["Visited","Visit","Visiting","Visitted"],"correctIndex":0,"explanation":"פעלים סדירים שמסתיימים בעיצור רגיל מקבלים -ed: visit → visited. 'Visitted' שגוי (כפל t מיותר)."},
+        {"question":"'She ___ her keys yesterday.' – Choose the correct form.","options":["lose","losted","lost","losing"],"correctIndex":2,"explanation":"'lose' הוא פועל לא סדיר: lose → lost. לא מוסיפים -ed לפעלים לא סדירים."},
+        {"question":"Which sentence is in the past tense?","options":["I am walking","I walk every day","I walked home","I will walk"],"correctIndex":2,"explanation":"'I walked home' הוא זמן עבר פשוט. walked = עבר של walk. האחרות הן הווה, עתיד, או הווה מתמשך."}
+      ]
+    },
+    {
+      "title": "Present Continuous (הווה מתמשך)",
+      "explanation": "הווה מתמשך (Present Continuous) מתאר פעולה שמתרחשת ממש עכשיו, ברגע הדיבור.\n\nמבנה: am/is/are + פועל + ing\n• I am reading. (אני קורא עכשיו)\n• She is cooking. (היא מבשלת עכשיו)\n• They are playing. (הם משחקים עכשיו)\n\nהבדל חשוב:\n• I eat apples. (הווה פשוט – בדרך כלל, תמיד)\n• I am eating an apple. (הווה מתמשך – עכשיו, ברגע זה)\n\nטיפ על איות: פועל שמסתיים ב-consonant + vowel + consonant – מכפילים את האות האחרונה: run → running, sit → sitting",
+      "questions": [
+        {"question":"'Look! The children ___ in the park.' – Choose the correct form.","options":["play","played","are playing","is playing"],"correctIndex":2,"explanation":"'Look!' מראה שמדובר בפעולה שקורה עכשיו. עם 'children' (רבים) משתמשים ב-'are playing'."},
+        {"question":"What is the -ing form of 'swim'?","options":["Swiming","Swimming","Swimmed","Swimeing"],"correctIndex":1,"explanation":"הפועל swim מסתיים ב-m, לפניה תנועה i, לפניה עיצור w – כלל הכפלה: swim → swimming."},
+        {"question":"Which sentence uses Present Continuous correctly?","options":["She is cook dinner","He is watching TV now","I am go to sleep","They is running"],"correctIndex":1,"explanation":"'He is watching TV now' הוא שימוש נכון. 'cook' צריך להיות 'cooking', 'go' צריך 'going', ועם 'they' משתמשים ב-'are' ולא 'is'."}
+      ]
+    }
+  ],
+  "quizzes": [
+    {
+      "questions": [
+        {"question":"How do you say 'מזג אוויר' in English?","options":["Season","Climate","Weather","Wind"],"correctIndex":2,"explanation":"'מזג אוויר' הוא Weather. Season = עונה, Climate = אקלים (מונח מדעי), Wind = רוח."},
+        {"question":"'Yesterday, I ___ to the gym.' – Fill in.","options":["go","goes","went","going"],"correctIndex":2,"explanation":"'go' הוא פועל לא סדיר: go → went בעבר. Yesterday מציין עבר, לכן חייב להיות went."},
+        {"question":"Which word means 'בדרך כלל'?","options":["Always","Never","Usually","Sometimes"],"correctIndex":2,"explanation":"'בדרך כלל' הוא Usually. Always = תמיד, Never = אף פעם לא, Sometimes = לפעמים."},
+        {"question":"'She is ___ her homework right now.'","options":["do","did","does","doing"],"correctIndex":3,"explanation":"'right now' מציין פעולה שמתרחשת ברגע זה – הווה מתמשך. המבנה: is + verb-ing = is doing."},
+        {"question":"What is the past tense of 'buy'?","options":["Buyed","Buied","Bought","Buys"],"correctIndex":2,"explanation":"'buy' הוא פועל לא סדיר: buy → bought. לא מוסיפים -ed לפעלים לא סדירים."}
+      ]
+    },
+    {
+      "questions": [
+        {"question":"'___ you like pizza?' – Which auxiliary verb fits?","options":["Is","Are","Do","Does"],"correctIndex":2,"explanation":"בשאלות עם 'you' בהווה פשוט משתמשים ב-'Do'. 'Does' שמור ל-he/she/it."},
+        {"question":"Which sentence is correct?","options":["He don't like coffee","He doesn't likes coffee","He doesn't like coffee","He isn't like coffee"],"correctIndex":2,"explanation":"עם he/she/it בשלילה: doesn't + infinitive (ללא s). לכן: He doesn't like coffee."},
+        {"question":"What does 'arrive' mean?","options":["לעזוב","להגיע","להמתין","לנסוע"],"correctIndex":1,"explanation":"'arrive' = להגיע (ליעד). Leave/depart = לעזוב, Wait = להמתין, Travel = לנסוע."},
+        {"question":"'There ___ two apples on the table.'","options":["is","am","are","be"],"correctIndex":2,"explanation":"'There are' משמש עם רבים (two apples). 'There is' משמש עם יחיד (one apple)."},
+        {"question":"How do you ask someone's age politely?","options":["What is your age?","How old are you?","What age do you have?","Tell me your years."],"correctIndex":1,"explanation":"השאלה הנכונה והמקובלת היא 'How old are you?' – זוהי הצורה הטבעית באנגלית לשאלה על גיל."}
+      ]
+    }
+  ]
+}

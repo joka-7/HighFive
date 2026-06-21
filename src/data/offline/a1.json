@@ -1,0 +1,62 @@
+{
+  "vocabulary": [
+    {
+      "words": [
+        {"word":"hello","partOfSpeech":"interjection","definition":"ברכה לפגישה עם אנשים או לפתיחת שיחה","example":"Hello! My name is Sara.","translation":"שלום"},
+        {"word":"book","partOfSpeech":"noun","definition":"חפץ עם דפים מודפסים שקוראים בו סיפורים או מידע","example":"I have a book on the table.","translation":"ספר"},
+        {"word":"eat","partOfSpeech":"verb","definition":"לאכול – פעולה של הכנסת מזון לפה ובליעתו","example":"I eat breakfast every morning.","translation":"לאכול"},
+        {"word":"happy","partOfSpeech":"adjective","definition":"מרגיש שמחה ועונג, הכל בסדר","example":"She is very happy today.","translation":"שמח/שמחה"},
+        {"word":"water","partOfSpeech":"noun","definition":"נוזל שקוף שאנחנו שותים, חיוני לחיים","example":"Please give me a glass of water.","translation":"מים"}
+      ]
+    },
+    {
+      "words": [
+        {"word":"house","partOfSpeech":"noun","definition":"בניין שבו אנשים גרים","example":"My house has two bedrooms.","translation":"בית"},
+        {"word":"big","partOfSpeech":"adjective","definition":"גדול – משהו בעל גודל רב","example":"An elephant is a big animal.","translation":"גדול/גדולה"},
+        {"word":"friend","partOfSpeech":"noun","definition":"אדם שאתה מכיר טוב ואוהב לבלות איתו","example":"My best friend lives near me.","translation":"חבר/חברה"},
+        {"word":"go","partOfSpeech":"verb","definition":"ללכת או לנסוע ממקום למקום","example":"I go to school every day.","translation":"ללכת/לנסוע"},
+        {"word":"dog","partOfSpeech":"noun","definition":"חיית מחמד נפוצה שנובחת ונאמנה לבעליה","example":"The dog is playing in the garden.","translation":"כלב"}
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "title": "To Be – Present Simple (הפועל 'להיות' בהווה)",
+      "explanation": "הפועל 'להיות' באנגלית הוא am / is / are. אנחנו משתמשים בו כדי לתאר מי אנחנו, איך אנחנו מרגישים, ומה דברים הם.\n\nהחוק הבסיסי:\n• I am (אני) – לדוגמה: I am happy. (אני שמח)\n• He/She/It is – לדוגמה: She is a teacher. (היא מורה)\n• We/You/They are – לדוגמה: They are friends. (הם חברים)\n\nטיפ: בשלילה מוסיפים 'not': I am not tired. (אני לא עייף)",
+      "questions": [
+        {"question":"Which is correct: 'She ___ a doctor.'","options":["am","is","are","be"],"correctIndex":1,"explanation":"עם גוף שלישי יחיד (he/she/it) תמיד משתמשים ב-'is'. לכן: She is a doctor."},
+        {"question":"Fill in: 'We ___ students.'","options":["am","is","are","be"],"correctIndex":2,"explanation":"עם רבים (we/they/you) משתמשים ב-'are'. לכן: We are students."},
+        {"question":"Which sentence is correct?","options":["I is happy","He am tall","They are brothers","She are nice"],"correctIndex":2,"explanation":"'They are brothers' נכון כי עם 'they' משתמשים ב-'are'. כל שאר האפשרויות משתמשות בצורה שגויה של הפועל."}
+      ]
+    },
+    {
+      "title": "Articles: A, An, The (כתיבת a, an, the)",
+      "explanation": "באנגלית יש שלושה articles (מילות הגדרה):\n\n• a – לפני מילה שמתחילה בעיצור: a book, a cat, a dog\n• an – לפני מילה שמתחילה בתנועה (a, e, i, o, u): an apple, an orange\n• the – כאשר מדברים על משהו ספציפי שכבר ידוע: the book on the table (הספר על השולחן)\n\nדוגמאות:\n• I have a dog. (יש לי כלב – כלב כלשהו)\n• The dog is black. (הכלב הוא שחור – הכלב הספציפי שלי)",
+      "questions": [
+        {"question":"Choose the correct article: '___ apple a day keeps the doctor away.'","options":["A","An","The","No article"],"correctIndex":1,"explanation":"'apple' מתחיל בתנועה (a), לכן משתמשים ב-'an'. הביטוי הנכון: An apple a day."},
+        {"question":"'I see ___ cat in the garden. ___ cat is orange.'","options":["a / The","an / A","the / A","a / A"],"correctIndex":0,"explanation":"בפעם הראשונה שמוזכרת החתולה משתמשים ב-'a' (כלשהי). בפעם השנייה היא כבר ידועה, לכן 'The cat'."},
+        {"question":"Which is correct?","options":["I have an umbrella","I have a umbrella","I have the umbrella","I have umbrellas a"],"correctIndex":0,"explanation":"'umbrella' מתחיל בתנועה (u), לכן משתמשים ב-'an'. התשובה הנכונה: I have an umbrella."}
+      ]
+    }
+  ],
+  "quizzes": [
+    {
+      "questions": [
+        {"question":"What is the English word for 'ספר'?","options":["Pen","Book","Table","Chair"],"correctIndex":1,"explanation":"'ספר' באנגלית הוא Book. Pen = עט, Table = שולחן, Chair = כיסא."},
+        {"question":"Which word means 'גדול'?","options":["Small","Happy","Big","Fast"],"correctIndex":2,"explanation":"'גדול' באנגלית הוא Big. Small = קטן, Happy = שמח, Fast = מהיר."},
+        {"question":"'I ___ hungry.' – Fill in the blank.","options":["is","are","am","be"],"correctIndex":2,"explanation":"עם 'I' (אני) תמיד משתמשים ב-'am'. לכן: I am hungry."},
+        {"question":"What is the plural of 'cat'?","options":["Cats","Cates","Cat","Catz"],"correctIndex":0,"explanation":"ברבים באנגלית מוסיפים 's' לרוב השמות. Cat ← Cats."},
+        {"question":"Which sentence is correct?","options":["She have a dog","She has a dog","She haves a dog","She having a dog"],"correctIndex":1,"explanation":"עם גוף שלישי יחיד (he/she/it) מוסיפים 's' לפועל: has (ולא have). לכן: She has a dog."}
+      ]
+    },
+    {
+      "questions": [
+        {"question":"What color is the sun?","options":["Blue","Green","Yellow","Red"],"correctIndex":2,"explanation":"השמש צהובה – Yellow. Blue = כחול, Green = ירוק, Red = אדום."},
+        {"question":"How do you say 'שלום' in English?","options":["Goodbye","Hello","Please","Thank you"],"correctIndex":1,"explanation":"'שלום' כברכה לפגישה הוא Hello. Goodbye = להתראות, Please = בבקשה, Thank you = תודה."},
+        {"question":"'___ name is David.' – Which word fits?","options":["He","His","Him","Himself"],"correctIndex":1,"explanation":"לפני שם עצם (name) משתמשים בכינוי קניין: His name is David. He = הוא (נושא), Him = אותו (מושא)."},
+        {"question":"What number comes after 'nine'?","options":["Eight","Eleven","Ten","Twenty"],"correctIndex":2,"explanation":"אחרי nine (9) בא ten (10). Eight = 8, Eleven = 11, Twenty = 20."},
+        {"question":"Which word is a verb?","options":["Table","Blue","Run","Happy"],"correctIndex":2,"explanation":"Run (לרוץ) הוא פועל – מתאר פעולה. Table = שם עצם, Blue = שם תואר, Happy = שם תואר."}
+      ]
+    }
+  ]
+}
