@@ -48,6 +48,41 @@ in your browser (`localStorage`).
 Without a key, lessons, vocabulary, and quizzes use the bundled offline content —
 only the Dialogue Coach needs a provider.
 
+## Cloud sync with Google (optional)
+
+By default your progress is saved **locally** in the browser. You can optionally
+enable **Account mode** — sign in with Google and your data syncs to the cloud
+(Firebase/Firestore) so it follows you across devices, exactly like
+JobFlowTracker.
+
+To turn it on, create a free Firebase project and add its config:
+
+1. Go to <https://console.firebase.google.com> → **Add project**.
+2. **Build → Authentication → Get started → Sign-in method → enable Google.**
+3. **Build → Firestore Database → Create database** (production mode).
+4. Paste the contents of [`firestore.rules`](./firestore.rules) into the
+   **Rules** tab and **Publish** (so each user only accesses their own data).
+5. **Project settings → Your apps → Web app (`</>`)** → copy the config values.
+6. Put them in a `.env` file (see [`.env.example`](./.env.example)):
+
+   ```
+   VITE_FIREBASE_API_KEY=...
+   VITE_FIREBASE_AUTH_DOMAIN=...
+   VITE_FIREBASE_PROJECT_ID=...
+   VITE_FIREBASE_STORAGE_BUCKET=...
+   VITE_FIREBASE_MESSAGING_SENDER_ID=...
+   VITE_FIREBASE_APP_ID=...
+   ```
+
+   For the deployed app, add the same variables in **Vercel → Project →
+   Settings → Environment Variables**, then redeploy.
+7. Under **Authentication → Settings → Authorized domains**, add your Vercel
+   domain so Google sign-in works in production.
+
+Without these variables the app simply stays in Local mode. The Firebase web
+config is safe to expose in the client — access is enforced by the Firestore
+rules.
+
 ## Testing
 
 ```bash
