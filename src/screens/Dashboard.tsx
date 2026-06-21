@@ -1,5 +1,5 @@
 import { useLingo } from "../store/useLingo";
-import { hasApiKey } from "../services/apiKey";
+import { isAIReady } from "../services/ai";
 import type { Screen } from "../types";
 
 const TILES: { screen: Screen; emoji: string; title: string; sub: string }[] = [
@@ -24,9 +24,9 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
         </p>
       </div>
 
-      {!hasApiKey() && (
+      {!isAIReady() && (
         <div className="banner">
-          💡 ללא מפתח Gemini האפליקציה עובדת עם תוכן מובנה (לא מקוון). להוספת שיעורים
+          💡 ללא ספק AI האפליקציה עובדת עם תוכן מובנה (לא מקוון). להוספת שיעורים
           ושיחות AI חיים, הוסף מפתח ב{" "}
           <button
             className="btn ghost small"

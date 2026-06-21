@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { useLingo } from "../store/useLingo";
-import { generateDialogueReply } from "../services/gemini";
-import { hasApiKey } from "../services/apiKey";
+import { generateDialogueReply } from "../services/content";
+import { isAIReady } from "../services/ai";
 import { DIALOGUE_SCENARIOS } from "../data/topics";
 import { speak } from "../services/tts";
 import type { Screen } from "../types";
@@ -23,16 +23,16 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
     [chatMessages, scenarioId, level],
   );
 
-  if (!hasApiKey()) {
+  if (!isAIReady()) {
     return (
       <div className="card">
         <h2>💬 מאמן שיחה</h2>
         <p className="muted">
-          מאמן השיחה משתמש ב-AI חי ולכן דורש מפתח Gemini. הוסף מפתח כדי לתרגל דיבור
-          עם תיקונים בזמן אמת.
+          מאמן השיחה משתמש ב-AI חי ולכן דורש ספק AI מוגדר. הוסף מפתח בהגדרות כדי
+          לתרגל דיבור עם תיקונים בזמן אמת.
         </p>
         <button className="btn" onClick={() => go("settings")}>
-          להגדרת מפתח →
+          להגדרת AI →
         </button>
       </div>
     );

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLingo } from "../store/useLingo";
-import { generateLevelAdaptiveWords } from "../services/gemini";
+import { generateLevelAdaptiveWords } from "../services/content";
 import type { GemWord } from "../types";
 import WordCard from "../components/WordCard";
 import Spinner from "../components/Spinner";

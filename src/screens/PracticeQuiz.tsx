@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLingo } from "../store/useLingo";
-import { generatePracticeQuiz } from "../services/gemini";
+import { generatePracticeQuiz } from "../services/content";
 import { topicForToday, QUIZ_TOPICS } from "../data/topics";
 import type { GemQuiz } from "../types";
 import QuizRunner from "../components/QuizRunner";
