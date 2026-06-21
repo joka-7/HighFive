@@ -6,6 +6,11 @@ dist/
 dist-ssr/
 *.tsbuildinfo
 
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+
 # Local env files (never commit real API keys)
 .env
 .env.local

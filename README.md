@@ -34,7 +34,7 @@ offline content library (CEFR levels A1–C2) so it works even without an API ke
 | `LingoRepository` prompts        | Ported **verbatim** into `content.ts`         |
 | `assets/offline/*.json`          | `src/data/offline/*.json` (identical content) |
 | Android `TextToSpeech`           | Web Speech API (`src/services/tts.ts`)        |
-| `ApiKeyStore` (DataStore)        | `src/services/apiKey.ts`                       |
+| `ApiKeyStore` (DataStore)        | `src/services/ai.ts` (multi-provider config)  |
 
 The original Gemini prompts, system instructions, JSON schemas, and the
 points/scoring rules (save word +10, dialogue +15, lesson 50 base + 20/correct,
@@ -88,6 +88,24 @@ npm run preview  # preview the production build
 ```
 
 Then open the local URL Vite prints.
+
+## Testing & CI
+
+```bash
+npm test         # unit + integration tests (Vitest + React Testing Library)
+npm run test:e2e # end-to-end tests (Playwright, requires a production build)
+npm run lint
+npm run typecheck
+```
+
+CI (`.github/workflows/ci.yml`) runs on every push/PR: a security audit of
+production dependencies, lint, type-check, unit/integration tests, and the
+build — followed by a separate end-to-end job against the built app.
+
+## Design docs
+
+- [`docs/HLD.md`](./docs/HLD.md) — architecture, components, data flow.
+- [`docs/LLD.md`](./docs/LLD.md) — module-level design detail.
 
 ## Security
 
