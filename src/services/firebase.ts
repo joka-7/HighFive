@@ -20,13 +20,25 @@ import type {
   UserProgress,
 } from "../types";
 
+// Firebase web config is a public client identifier (safe to ship in the
+// client); access is controlled by Firestore security rules + Authentication
+// authorized domains. Env vars override these defaults when provided.
 const config = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey:
+    import.meta.env.VITE_FIREBASE_API_KEY ??
+    "AIzaSyC2QFzkRvddsWSpizDXJpHdwcegs7Ze63c",
+  authDomain:
+    import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ??
+    "high-five-86991.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ?? "high-five-86991",
+  storageBucket:
+    import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ??
+    "high-five-86991.firebasestorage.app",
+  messagingSenderId:
+    import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID ?? "885173121360",
+  appId:
+    import.meta.env.VITE_FIREBASE_APP_ID ??
+    "1:885173121360:web:dca31d6f26f3433b66fc55",
 };
 
 /** True only when the minimum Firebase config is present. */
