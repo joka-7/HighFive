@@ -12,7 +12,31 @@ import { useLingo } from "../store/useLingo";
 // API key / provider settings — mirrors JobFlowTracker's APIKeySettings:
 // pick a provider, paste a key (or Ollama URL), optional model override, save.
 export default function Settings() {
-  const { resetAll } = useLingo();
+  const { resetAll, cloudConfigured, user, authReady, signIn, signOut } = useLingo();
+  const [authBusy, setAuthBusy] = useState(false);
+  const [authError, setAuthError] = useState("");
+
+  async function handleSignIn() {
+    setAuthError("");
+    setAuthBusy(true);
+    try {
+      await signIn();
+    } catch {
+      setAuthError("ההתחברות נכשלה. נסה שוב.");
+    } finally {
+      setAuthBusy(false);
+    }
+  }
+
+  async function handleSignOut() {
+    setAuthBusy(true);
+    try {
+      await signOut();
+    } finally {
+      setAuthBusy(false);
+    }
+  }
+
   const initial = loadAIConfig();
   const [provider, setProvider] = useState<ProviderId>(initial.provider);
   const [apiKey, setApiKeyState] = useState(initial.apiKey);
@@ -141,6 +165,42 @@ export default function Settings() {
         <button className="btn ghost" onClick={clearAll}>
           מחיקת הגדרות AI
         </button>
+      </div>
+
+      <div className="card">
+        <h3>☁️ חשבון וסנכרון</h3>
+        {!cloudConfigured ? (
+          <p className="muted">
+            הנתונים נשמרים במכשיר הזה בלבד. כדי לסנכרן בין מכשירים עם חשבון Google,
+            יש להגדיר Firebase (ראה הוראות ב-README).
+          </p>
+        ) : !authReady ? (
+          <p className="muted">טוען…</p>
+        ) : user ? (
+          <>
+            <p className="muted">
+              מחובר כ-<strong>{user.email ?? user.displayName ?? "משתמש Google"}</strong>.
+              ההתקדמות מסונכרנת בין המכשירים שלך.
+            </p>
+            <button className="btn ghost" disabled={authBusy} onClick={handleSignOut}>
+              התנתקות
+            </button>
+          </>
+        ) : (
+          <>
+            <p className="muted">
+              שמירה מקומית פעילה. התחבר עם Google כדי לסנכרן את ההתקדמות בין מכשירים.
+            </p>
+            <button className="btn" disabled={authBusy} onClick={handleSignIn}>
+              {authBusy ? "מתחבר…" : "התחברות עם Google"}
+            </button>
+            {authError && (
+              <p className="muted" style={{ color: "var(--danger)" }}>
+                {authError}
+              </p>
+            )}
+          </>
+        )}
       </div>
 
       <div className="card">
