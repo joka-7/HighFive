@@ -102,7 +102,6 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       const streak = last === yesterday ? prev.streak + 1 : 1;
       return { ...prev, streak, lastActiveTimestamp: now };
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const registerUser = useCallback(
