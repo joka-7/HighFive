@@ -14,19 +14,7 @@ import type {
 } from "../types";
 import { complete, isAIReady } from "./ai";
 import { loadOfflineContent, pickRandom } from "../data/offline";
-
-// Mirrors LingoRepository.cleanJson — strips ```json fences if present.
-function cleanJson(raw: string): string {
-  let cleaned = raw.trim();
-  if (cleaned.startsWith("```json")) cleaned = cleaned.slice("```json".length);
-  else if (cleaned.startsWith("```")) cleaned = cleaned.slice("```".length);
-  if (cleaned.endsWith("```")) cleaned = cleaned.slice(0, -3);
-  return cleaned.trim();
-}
-
-function parseJson<T>(raw: string): T {
-  return JSON.parse(cleanJson(raw)) as T;
-}
+import { parseJson } from "../utils/json";
 
 // --- Vocabulary ---
 export async function generateLevelAdaptiveWords(level: Level): Promise<GemWordList> {
