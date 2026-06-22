@@ -12,6 +12,7 @@ import Progress from "./screens/Progress";
 import Settings from "./screens/Settings";
 import Review from "./screens/Review";
 import Reading from "./screens/Reading";
+import Listening from "./screens/Listening";
 
 const TITLES: Record<Screen, string> = {
   onboarding: "ברוכים הבאים",
@@ -73,6 +74,8 @@ export default function App() {
         return <Review />;
       case "reading":
         return <Reading />;
+      case "listening":
+        return <Listening />;
       default:
         return <Dashboard go={go} />;
     }

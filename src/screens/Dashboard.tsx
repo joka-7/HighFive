@@ -9,6 +9,7 @@ const TILES: { screen: Screen; emoji: string; title: string; sub: string }[] = [
   { screen: "quiz", emoji: "🧠", title: "חידון", sub: "בחן את עצמך" },
   { screen: "review", emoji: "🔁", title: "חזרה יומית", sub: "זיכרון מרווח" },
   { screen: "reading", emoji: "📖", title: "קריאה", sub: "טקסטים אמיתיים" },
+  { screen: "listening", emoji: "🎧", title: "האזנה", sub: "הבנת הנשמע" },
   { screen: "saved", emoji: "⭐", title: "מילים שמורות", sub: "לחזרה" },
   { screen: "progress", emoji: "📈", title: "ההתקדמות שלי", sub: "נקודות ורצף" },
 ];
