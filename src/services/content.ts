@@ -22,7 +22,7 @@ import { parseJson } from "../utils/json";
 
 // --- Vocabulary ---
 export async function generateLevelAdaptiveWords(level: Level): Promise<GemWordList> {
-  if (!isAIReady()) return pickRandom(loadOfflineContent(level).vocabulary);
+  if (!isAIReady()) return pickRandom((await loadOfflineContent(level)).vocabulary);
 
   const prompt = `Generate 5 highly useful, practical English vocabulary words specifically suited for CEFR level ${level}.
 For each word, provide:
@@ -51,13 +51,13 @@ Return as a single JSON object:
   try {
     return parseJson<GemWordList>(await complete(prompt, systemInstruction));
   } catch {
-    return pickRandom(loadOfflineContent(level).vocabulary);
+    return pickRandom((await loadOfflineContent(level)).vocabulary);
   }
 }
 
 // --- Daily Lesson ---
 export async function generateDailyLesson(level: Level, topic: string): Promise<GemLesson> {
-  if (!isAIReady()) return pickRandom(loadOfflineContent(level).lessons);
+  if (!isAIReady()) return pickRandom((await loadOfflineContent(level)).lessons);
 
   const prompt = `Create an interactive daily English lesson matching CEFR level ${level} on: "${topic}".
 All explanations MUST be written in HEBREW.
@@ -87,7 +87,7 @@ Return as JSON:
   try {
     return parseJson<GemLesson>(await complete(prompt, systemInstruction));
   } catch {
-    return pickRandom(loadOfflineContent(level).lessons);
+    return pickRandom((await loadOfflineContent(level)).lessons);
   }
 }
 
@@ -126,7 +126,7 @@ Return as JSON:
 
 // --- Practice Quiz ---
 export async function generatePracticeQuiz(level: Level, topic: string): Promise<GemQuiz> {
-  if (!isAIReady()) return pickRandom(loadOfflineContent(level).quizzes);
+  if (!isAIReady()) return pickRandom((await loadOfflineContent(level)).quizzes);
 
   const prompt = `Generate 5 multiple choice questions for CEFR level ${level} on "${topic}".
 Questions and options in English; explanations in HEBREW.
@@ -150,7 +150,7 @@ Return as JSON:
   try {
     return parseJson<GemQuiz>(await complete(prompt, systemInstruction));
   } catch {
-    return pickRandom(loadOfflineContent(level).quizzes);
+    return pickRandom((await loadOfflineContent(level)).quizzes);
   }
 }
 
