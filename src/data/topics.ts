@@ -23,6 +23,36 @@ export const QUIZ_TOPICS = [
   "Everyday expressions",
 ];
 
+// Topics for AI-generated reading passages, listening clips and speaking drills.
+export const READING_TOPICS = [
+  "A short personal story",
+  "Everyday life and routines",
+  "Travel and places",
+  "Food and cooking",
+  "Technology and the internet",
+  "Health and well-being",
+  "Work and careers",
+  "The environment",
+];
+
+export const LISTENING_TOPICS = [
+  "A short self-introduction",
+  "A phone message",
+  "Directions to a place",
+  "An announcement",
+  "A casual conversation",
+  "Ordering food",
+];
+
+export const SPEAKING_TOPICS = [
+  "Greetings and small talk",
+  "Asking for help",
+  "Daily routines",
+  "Opinions and preferences",
+  "Travel situations",
+  "At a restaurant",
+];
+
 // Roleplay scenarios for the Dialogue Coach.
 export const DIALOGUE_SCENARIOS = [
   { id: "cafe", label: "☕ בבית קפה", en: "Ordering at a cafe" },

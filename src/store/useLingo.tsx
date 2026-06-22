@@ -15,6 +15,7 @@ import type {
   SavedWord,
   UserProgress,
 } from "../types";
+import { isDue, isSrsMastered, scheduleNext } from "../utils/srs";
 import {
   isCloudConfigured,
   loadCloud,
@@ -35,6 +36,9 @@ const KEYS = {
   savedWords: "high5.saved_words",
   chat: "high5.chat_messages",
   quizHistory: "high5.quiz_history",
+  // Remembers that the user opted into cloud sync, so we only eagerly load the
+  // (heavy) Firebase SDK on startup for returning signed-in users.
+  cloudSession: "high5.cloud_session",
 } as const;
 
 function load<T>(key: string, fallback: T): T {
@@ -71,6 +75,8 @@ interface LingoContextValue {
   isWordSaved: (word: string) => boolean;
   toggleSaveWord: (word: Omit<SavedWord, "id" | "savedAt" | "isMastered">) => void;
   toggleMastered: (id: string) => void;
+  dueWords: () => SavedWord[];
+  reviewWord: (id: string, remembered: boolean) => void;
   completeLesson: (correctCount: number) => void;
   completeQuiz: (level: Level, topic: string, score: number, total: number) => void;
   addChatMessage: (msg: Omit<ChatMessage, "id" | "timestamp">) => void;
@@ -95,7 +101,12 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   );
 
   const [user, setUser] = useState<CloudUser | null>(null);
-  const [authReady, setAuthReady] = useState(!isCloudConfigured());
+  // We only wait on auth (and load Firebase) at startup if the user previously
+  // signed in. Local-mode users resolve immediately and never fetch the SDK.
+  const willRestoreSession =
+    isCloudConfigured() && load<boolean>(KEYS.cloudSession, false);
+  const [authReady, setAuthReady] = useState(!willRestoreSession);
+  const authUnsubRef = useRef<(() => void) | null>(null);
 
   // Always mirror state to localStorage (local mode + offline cache).
   useEffect(() => {
@@ -138,13 +149,21 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  // Watch Google sign-in state. On sign-in, pull the user's cloud data if it
-  // exists; otherwise seed the cloud from whatever is currently local.
-  useEffect(() => {
-    return watchAuth(async (u) => {
+  // Begin watching Google sign-in state. This is what pulls in the Firebase
+  // SDK, so it stays deferred until a sign-in is actually needed. Idempotent —
+  // safe to call from both startup (session restore) and the signIn flow.
+  // On sign-in, pull the user's cloud data if it exists; otherwise seed the
+  // cloud from whatever is currently local.
+  const startAuthWatch = useCallback(() => {
+    if (authUnsubRef.current) return;
+    authUnsubRef.current = watchAuth(async (u) => {
       setUser(u);
       setAuthReady(true);
-      if (!u) return;
+      if (!u) {
+        localStorage.removeItem(KEYS.cloudSession);
+        return;
+      }
+      localStorage.setItem(KEYS.cloudSession, JSON.stringify(true));
       try {
         const cloud = await loadCloud(u.uid);
         if (cloud) {
@@ -161,6 +180,17 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  // Only restore a session (and load Firebase) on startup for users who were
+  // signed in last time. Everyone else stays in Local mode with no SDK fetch.
+  useEffect(() => {
+    if (willRestoreSession) startAuthWatch();
+    return () => {
+      authUnsubRef.current?.();
+      authUnsubRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // While signed in, debounce-sync changes up to Firestore.
   useEffect(() => {
     if (!user) return;
@@ -173,8 +203,11 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   }, [user, progress, savedWords, chatMessages, quizHistory]);
 
   const signIn = useCallback(async () => {
+    // Start listening first so onAuthStateChanged catches this sign-in; this is
+    // also the point where the Firebase SDK is finally fetched.
+    startAuthWatch();
     await signInWithGoogle();
-  }, []);
+  }, [startAuthWatch]);
 
   const signOut = useCallback(async () => {
     await cloudSignOut();
@@ -219,8 +252,17 @@ export function LingoProvider({ children }: { children: ReactNode }) {
         }
         // Saving a new word awards +10 points (LingoViewModel.toggleSaveWord).
         setProgress((p) => (p ? { ...p, points: p.points + 10 } : p));
+        // New words enter the spaced-repetition queue immediately due (box 0).
         return [
-          { ...word, id: uid(), isMastered: false, savedAt: Date.now() },
+          {
+            ...word,
+            id: uid(),
+            isMastered: false,
+            savedAt: Date.now(),
+            srsLevel: 0,
+            nextReviewAt: Date.now(),
+            reviewCount: 0,
+          },
           ...prev,
         ];
       });
@@ -232,6 +274,33 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     setSavedWords((prev) =>
       prev.map((w) => (w.id === id ? { ...w, isMastered: !w.isMastered } : w)),
     );
+  }, []);
+
+  // Words whose next review time has arrived (or that have never been reviewed).
+  const dueWords = useCallback<LingoContextValue["dueWords"]>(
+    () => savedWords.filter((w) => !w.isMastered && isDue(w.nextReviewAt)),
+    [savedWords],
+  );
+
+  // Grade a review: advance/reset the Leitner box, schedule the next review,
+  // auto-master at the top box, and award points for a correct recall (+5).
+  const reviewWord = useCallback<LingoContextValue["reviewWord"]>((id, remembered) => {
+    setSavedWords((prev) =>
+      prev.map((w) => {
+        if (w.id !== id) return w;
+        const next = scheduleNext(w.srsLevel ?? 0, remembered);
+        return {
+          ...w,
+          srsLevel: next.srsLevel,
+          nextReviewAt: next.nextReviewAt,
+          reviewCount: (w.reviewCount ?? 0) + 1,
+          isMastered: isSrsMastered(next.srsLevel),
+        };
+      }),
+    );
+    if (remembered) {
+      setProgress((p) => (p ? { ...p, points: p.points + 5 } : p));
+    }
   }, []);
 
   const completeLesson = useCallback((correctCount: number) => {
@@ -299,6 +368,8 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       isWordSaved,
       toggleSaveWord,
       toggleMastered,
+      dueWords,
+      reviewWord,
       completeLesson,
       completeQuiz,
       addChatMessage,
@@ -320,6 +391,8 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       isWordSaved,
       toggleSaveWord,
       toggleMastered,
+      dueWords,
+      reviewWord,
       completeLesson,
       completeQuiz,
       addChatMessage,

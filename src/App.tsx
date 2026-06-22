@@ -10,6 +10,10 @@ import PracticeQuiz from "./screens/PracticeQuiz";
 import SavedWords from "./screens/SavedWords";
 import Progress from "./screens/Progress";
 import Settings from "./screens/Settings";
+import Review from "./screens/Review";
+import Reading from "./screens/Reading";
+import Listening from "./screens/Listening";
+import Speaking from "./screens/Speaking";
 
 const TITLES: Record<Screen, string> = {
   onboarding: "ברוכים הבאים",
@@ -21,6 +25,10 @@ const TITLES: Record<Screen, string> = {
   saved: "מילים שמורות",
   progress: "ההתקדמות שלי",
   settings: "הגדרות",
+  review: "חזרה יומית",
+  reading: "קריאה",
+  listening: "האזנה",
+  speaking: "דיבור",
 };
 
 const NAV: { screen: Screen; ico: string; label: string }[] = [
@@ -63,6 +71,14 @@ export default function App() {
         return <Progress />;
       case "settings":
         return <Settings />;
+      case "review":
+        return <Review />;
+      case "reading":
+        return <Reading />;
+      case "listening":
+        return <Listening />;
+      case "speaking":
+        return <Speaking />;
       default:
         return <Dashboard go={go} />;
     }
