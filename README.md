@@ -13,12 +13,26 @@ key.
 - **Daily lesson** — a Hebrew explanation plus a 3-question practice quiz.
 - **Vocabulary flashcards** — level-adaptive words with Hebrew definitions,
   examples, and text-to-speech pronunciation.
+- **Spaced-repetition review** — saved words enter a Leitner review queue so
+  they actually stick; self-grade each card and the app schedules the next review.
+- **Reading Lab** — short, level-adapted passages ("live texts") with a
+  tap-to-translate glossary (save words straight into review) and comprehension
+  questions.
+- **Listening practice** — hear a natural spoken clip (with a slow-replay
+  option), answer comprehension questions, then reveal the transcript.
+- **Speaking practice** — read sentences aloud and get a pronunciation accuracy
+  score via the browser's speech recognition.
 - **Dialogue Coach** — roleplay scenarios where the AI replies in English and
   corrects your mistakes in Hebrew. *(Requires an AI key.)*
 - **Practice quiz** — 5 multiple-choice questions with Hebrew explanations.
 - **Saved words** — bookmark words, mark them mastered, review later.
 - **Progress** — points, daily streaks, and a placement test.
 - **Hebrew RTL, mobile-first UI.**
+
+> The Reading, Listening and Speaking pillars were added to move beyond
+> tap-the-answer drills toward *real language use* — reading, listening to
+> natural speech, and actually speaking. They work offline with bundled content
+> and use live AI generation when a provider key is set.
 
 ## Getting started
 
