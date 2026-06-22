@@ -41,6 +41,28 @@ export interface GemQuiz {
   questions: GemQuestion[];
 }
 
+// Reading Lab — a short level-adapted passage with a key-word glossary and
+// comprehension questions. Addresses "reading live texts".
+export interface GemReading {
+  title: string; // English + (Hebrew)
+  text: string; // the passage, in English
+  glossary: GemWord[]; // key words with Hebrew (reuses GemWord)
+  questions: GemQuestion[]; // comprehension MCQs (reuses GemQuestion)
+}
+
+// Listening practice — a spoken sentence/short dialogue (played via TTS) with
+// comprehension questions. Addresses "understanding natural speech".
+export interface GemListening {
+  transcript: string; // sentence / short dialogue, in English
+  questions: GemQuestion[];
+}
+
+// Speaking practice — sentences the learner reads aloud, scored against speech
+// recognition. Addresses "actually speaking the language".
+export interface GemSpeaking {
+  prompts: { text: string; translation: string }[];
+}
+
 export interface OfflineLevelContent {
   vocabulary: GemWordList[];
   lessons: GemLesson[];
@@ -69,6 +91,11 @@ export interface SavedWord {
   level: Level;
   isMastered: boolean;
   savedAt: number;
+  // --- Spaced-repetition (Leitner) fields. Optional so words saved before this
+  // feature still load; they are backfilled on first review. ---
+  srsLevel?: number; // 0..INTERVALS.length-1 box
+  nextReviewAt?: number; // ms timestamp — due when <= now
+  reviewCount?: number;
 }
 
 export interface ChatMessage {
@@ -99,4 +126,8 @@ export type Screen =
   | "quiz"
   | "saved"
   | "progress"
-  | "settings";
+  | "settings"
+  | "review"
+  | "reading"
+  | "listening"
+  | "speaking";

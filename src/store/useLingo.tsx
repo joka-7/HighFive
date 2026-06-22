@@ -14,6 +14,7 @@ import type {
   SavedWord,
   UserProgress,
 } from "../types";
+import { isDue, isSrsMastered, scheduleNext } from "../utils/srs";
 
 // Persistence layer — replaces High5's Room database (LingoDatabase.kt) with
 // localStorage. Each entity table becomes a namespaced key.
@@ -53,6 +54,8 @@ interface LingoContextValue {
   isWordSaved: (word: string) => boolean;
   toggleSaveWord: (word: Omit<SavedWord, "id" | "savedAt" | "isMastered">) => void;
   toggleMastered: (id: string) => void;
+  dueWords: () => SavedWord[];
+  reviewWord: (id: string, remembered: boolean) => void;
   completeLesson: (correctCount: number) => void;
   completeQuiz: (level: Level, topic: string, score: number, total: number) => void;
   addChatMessage: (msg: Omit<ChatMessage, "id" | "timestamp">) => void;
@@ -142,8 +145,17 @@ export function LingoProvider({ children }: { children: ReactNode }) {
         }
         // Saving a new word awards +10 points (LingoViewModel.toggleSaveWord).
         setProgress((p) => (p ? { ...p, points: p.points + 10 } : p));
+        // New words enter the spaced-repetition queue immediately due (box 0).
         return [
-          { ...word, id: uid(), isMastered: false, savedAt: Date.now() },
+          {
+            ...word,
+            id: uid(),
+            isMastered: false,
+            savedAt: Date.now(),
+            srsLevel: 0,
+            nextReviewAt: Date.now(),
+            reviewCount: 0,
+          },
           ...prev,
         ];
       });
@@ -155,6 +167,33 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     setSavedWords((prev) =>
       prev.map((w) => (w.id === id ? { ...w, isMastered: !w.isMastered } : w)),
     );
+  }, []);
+
+  // Words whose next review time has arrived (or that have never been reviewed).
+  const dueWords = useCallback<LingoContextValue["dueWords"]>(
+    () => savedWords.filter((w) => !w.isMastered && isDue(w.nextReviewAt)),
+    [savedWords],
+  );
+
+  // Grade a review: advance/reset the Leitner box, schedule the next review,
+  // auto-master at the top box, and award points for a correct recall (+5).
+  const reviewWord = useCallback<LingoContextValue["reviewWord"]>((id, remembered) => {
+    setSavedWords((prev) =>
+      prev.map((w) => {
+        if (w.id !== id) return w;
+        const next = scheduleNext(w.srsLevel ?? 0, remembered);
+        return {
+          ...w,
+          srsLevel: next.srsLevel,
+          nextReviewAt: next.nextReviewAt,
+          reviewCount: (w.reviewCount ?? 0) + 1,
+          isMastered: isSrsMastered(next.srsLevel),
+        };
+      }),
+    );
+    if (remembered) {
+      setProgress((p) => (p ? { ...p, points: p.points + 5 } : p));
+    }
   }, []);
 
   const completeLesson = useCallback((correctCount: number) => {
@@ -217,6 +256,8 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       isWordSaved,
       toggleSaveWord,
       toggleMastered,
+      dueWords,
+      reviewWord,
       completeLesson,
       completeQuiz,
       addChatMessage,
@@ -234,6 +275,8 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       isWordSaved,
       toggleSaveWord,
       toggleMastered,
+      dueWords,
+      reviewWord,
       completeLesson,
       completeQuiz,
       addChatMessage,

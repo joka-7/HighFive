@@ -7,13 +7,15 @@ const TILES: { screen: Screen; emoji: string; title: string; sub: string }[] = [
   { screen: "vocabulary", emoji: "🃏", title: "אוצר מילים", sub: "כרטיסיות" },
   { screen: "dialogue", emoji: "💬", title: "מאמן שיחה", sub: "תרגול דיבור" },
   { screen: "quiz", emoji: "🧠", title: "חידון", sub: "בחן את עצמך" },
+  { screen: "review", emoji: "🔁", title: "חזרה יומית", sub: "זיכרון מרווח" },
   { screen: "saved", emoji: "⭐", title: "מילים שמורות", sub: "לחזרה" },
   { screen: "progress", emoji: "📈", title: "ההתקדמות שלי", sub: "נקודות ורצף" },
 ];
 
 export default function Dashboard({ go }: { go: (s: Screen) => void }) {
-  const { progress } = useLingo();
+  const { progress, dueWords } = useLingo();
   if (!progress) return null;
+  const due = dueWords().length;
 
   return (
     <div>
@@ -41,7 +43,34 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
 
       <div className="menu-grid">
         {TILES.map((t) => (
-          <button key={t.screen} className="menu-tile" onClick={() => go(t.screen)}>
+          <button
+            key={t.screen}
+            className="menu-tile"
+            onClick={() => go(t.screen)}
+            style={{ position: "relative" }}
+          >
+            {t.screen === "review" && due > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: 8,
+                  insetInlineEnd: 8,
+                  background: "var(--danger)",
+                  color: "#fff",
+                  borderRadius: 999,
+                  fontSize: 12,
+                  fontWeight: 800,
+                  minWidth: 22,
+                  height: 22,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 6px",
+                }}
+              >
+                {due}
+              </span>
+            )}
             <span className="emoji">{t.emoji}</span>
             <span className="title">{t.title}</span>
             <span className="sub">{t.sub}</span>
