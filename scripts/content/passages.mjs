@@ -1,279 +1,221 @@
 // Base passage banks for Reading, Listening and Speaking, per CEFR level.
-//
-// Each level has a pool of hand-written items. The generator rotates through
-// them across the year and, for speaking, recombines sentences into fresh sets,
-// so a learner gets variety without fabricated filler. Comprehension questions
-// are written to be answerable purely from the text/transcript.
+// Hand-written. The app picks randomly, so pool size = variety. Comprehension
+// questions are answerable purely from the text/transcript.
 
-// --- READING: title (En + He), text (En), glossary (3), questions (2) ---
+const R = (title, text, glossary, questions) => ({ title, text, glossary, questions });
+const g = (word, partOfSpeech, definition, example, translation) => ({ word, partOfSpeech, definition, example, translation });
+const q = (question, options, correctIndex, explanation) => ({ question, options, correctIndex, explanation });
+const L = (transcript, questions) => ({ transcript, questions });
+
+// --- READING ---------------------------------------------------------------
 export const READINGS = {
   A1: [
-    {
-      title: "My Morning (הבוקר שלי)",
-      text: "I wake up at seven. I drink water and eat bread with cheese. Then I go to work by bus. The bus is often full, but I like to look out the window.",
-      glossary: [
-        { word: "wake up", partOfSpeech: "verb", definition: "להתעורר משינה", example: "I wake up early.", translation: "להתעורר" },
-        { word: "bus", partOfSpeech: "noun", definition: "כלי תחבורה ציבורי גדול", example: "The bus is full.", translation: "אוטובוס" },
-        { word: "full", partOfSpeech: "adjective", definition: "מלא, אין מקום פנוי", example: "The cup is full.", translation: "מלא" },
-      ],
-      questions: [
-        { question: "When does the writer wake up?", options: ["At six", "At seven", "At eight", "At nine"], correctIndex: 1, explanation: "כתוב 'I wake up at seven'." },
-        { question: "How does the writer go to work?", options: ["By car", "By bike", "By bus", "On foot"], correctIndex: 2, explanation: "כתוב 'I go to work by bus'." },
-      ],
-    },
-    {
-      title: "My Friend Lia (החברה שלי ליה)",
-      text: "Lia is my friend. She lives near my house. We go to school together every day. After school we play in the park and then we do our homework.",
-      glossary: [
-        { word: "near", partOfSpeech: "preposition", definition: "קרוב ל-", example: "I live near the sea.", translation: "ליד/קרוב" },
-        { word: "together", partOfSpeech: "adverb", definition: "ביחד, עם מישהו", example: "We work together.", translation: "ביחד" },
-        { word: "homework", partOfSpeech: "noun", definition: "עבודה שעושים בבית אחרי בית הספר", example: "I do my homework.", translation: "שיעורי בית" },
-      ],
-      questions: [
-        { question: "Where does Lia live?", options: ["Far away", "Near the writer's house", "In another city", "At school"], correctIndex: 1, explanation: "כתוב 'She lives near my house'." },
-        { question: "What do they do after school?", options: ["Sleep", "Play in the park", "Go to work", "Watch TV"], correctIndex: 1, explanation: "כתוב 'we play in the park'." },
-      ],
-    },
+    R("My Morning (הבוקר שלי)",
+      "I wake up at seven. I drink water and eat bread with cheese. Then I go to work by bus. The bus is often full, but I like to look out the window.",
+      [g("wake up", "verb", "להתעורר משינה", "I wake up early.", "להתעורר"), g("bus", "noun", "כלי תחבורה ציבורי גדול", "The bus is full.", "אוטובוס"), g("full", "adjective", "מלא, אין מקום פנוי", "The cup is full.", "מלא")],
+      [q("When does the writer wake up?", ["At six", "At seven", "At eight", "At nine"], 1, "כתוב 'I wake up at seven'."), q("How does the writer go to work?", ["By car", "By bike", "By bus", "On foot"], 2, "כתוב 'I go to work by bus'.")]),
+    R("My Friend Lia (החברה שלי ליה)",
+      "Lia is my friend. She lives near my house. We go to school together every day. After school we play in the park and then we do our homework.",
+      [g("near", "preposition", "קרוב ל-", "I live near the sea.", "ליד/קרוב"), g("together", "adverb", "ביחד, עם מישהו", "We work together.", "ביחד"), g("homework", "noun", "עבודה שעושים בבית אחרי בית הספר", "I do my homework.", "שיעורי בית")],
+      [q("Where does Lia live?", ["Far away", "Near the writer's house", "In another city", "At school"], 1, "כתוב 'She lives near my house'."), q("What do they do after school?", ["Sleep", "Play in the park", "Go to work", "Watch TV"], 1, "כתוב 'we play in the park'.")]),
+    R("The Cat (החתול)",
+      "I have a small cat. Her name is Mimi. She is black and white. Mimi sleeps all day and plays at night. I give her food in the morning and in the evening.",
+      [g("small", "adjective", "קטן בגודלו", "A small cat.", "קטן"), g("sleep", "verb", "לנוח עם עיניים עצומות", "I sleep at night.", "לישון"), g("evening", "noun", "החלק האחרון של היום", "Good evening.", "ערב")],
+      [q("What colour is Mimi?", ["All black", "Black and white", "Brown", "Grey"], 1, "כתוב 'She is black and white'."), q("When does Mimi play?", ["In the morning", "At noon", "At night", "Never"], 2, "כתוב 'plays at night'.")]),
+    R("At the Shop (בחנות)",
+      "On Sunday I go to the shop. I buy milk, eggs and apples. The shop is near my house. The woman at the shop is very nice and she always says hello.",
+      [g("buy", "verb", "לתת כסף ולקבל מוצר", "I buy bread.", "לקנות"), g("shop", "noun", "מקום שבו קונים דברים", "The shop is open.", "חנות"), g("nice", "adjective", "נחמד, טוב", "She is nice.", "נחמד")],
+      [q("What does the writer buy?", ["Milk, eggs and apples", "Bread and cheese", "Only milk", "Fish"], 0, "כתוב 'milk, eggs and apples'."), q("How is the woman at the shop?", ["Tired", "Angry", "Nice", "Busy"], 2, "כתוב 'is very nice'.")]),
+    R("My Day Off (יום החופש שלי)",
+      "Today I do not work. I stay at home. In the morning I read a book. In the afternoon my brother comes and we cook lunch. It is a good day.",
+      [g("stay", "verb", "להישאר במקום", "I stay at home.", "להישאר"), g("cook", "verb", "להכין אוכל", "We cook dinner.", "לבשל"), g("brother", "noun", "אח", "My brother is tall.", "אח")],
+      [q("Where is the writer today?", ["At work", "At home", "At school", "At the park"], 1, "כתוב 'I stay at home'."), q("Who comes in the afternoon?", ["A friend", "The teacher", "The brother", "Nobody"], 2, "כתוב 'my brother comes'.")]),
   ],
   A2: [
-    {
-      title: "A Day at the Market (יום בשוק)",
-      text: "On Fridays my mother and I go to the market. We buy fresh vegetables, fruit and bread. The market is busy and noisy, but the food is cheaper than in the shop. We always stop for a coffee before we go home.",
-      glossary: [
-        { word: "fresh", partOfSpeech: "adjective", definition: "טרי, חדש ולא מקולקל", example: "I like fresh bread.", translation: "טרי" },
-        { word: "busy", partOfSpeech: "adjective", definition: "עם הרבה אנשים ופעילות", example: "The street is busy.", translation: "עמוס/הומה" },
-        { word: "cheaper", partOfSpeech: "adjective", definition: "עולה פחות כסף", example: "This shop is cheaper.", translation: "זול יותר" },
-      ],
-      questions: [
-        { question: "When do they go to the market?", options: ["On Mondays", "On Fridays", "Every day", "On Sundays"], correctIndex: 1, explanation: "כתוב 'On Fridays'." },
-        { question: "Why do they like the market?", options: ["It is quiet", "The food is cheaper", "It is far", "It is small"], correctIndex: 1, explanation: "כתוב 'the food is cheaper than in the shop'." },
-      ],
-    },
-    {
-      title: "Learning to Swim (ללמוד לשחות)",
-      text: "When I was young, I was afraid of water. Last summer I decided to take swimming lessons. At first it was hard and I felt nervous, but my teacher was patient. Now I can swim well and I love going to the pool.",
-      glossary: [
-        { word: "afraid", partOfSpeech: "adjective", definition: "מפחד ממשהו", example: "She is afraid of dogs.", translation: "מפחד" },
-        { word: "nervous", partOfSpeech: "adjective", definition: "מתוח, חושש", example: "I feel nervous before a test.", translation: "לחוץ/עצבני" },
-        { word: "patient", partOfSpeech: "adjective", definition: "סבלני, לא ממהר", example: "A good teacher is patient.", translation: "סבלני" },
-      ],
-      questions: [
-        { question: "What was the writer afraid of?", options: ["Dogs", "Water", "The dark", "Heights"], correctIndex: 1, explanation: "כתוב 'I was afraid of water'." },
-        { question: "How is the writer's teacher described?", options: ["Strict", "Patient", "Angry", "Lazy"], correctIndex: 1, explanation: "כתוב 'my teacher was patient'." },
-      ],
-    },
+    R("A Day at the Market (יום בשוק)",
+      "On Fridays my mother and I go to the market. We buy fresh vegetables, fruit and bread. The market is busy and noisy, but the food is cheaper than in the shop. We always stop for a coffee before we go home.",
+      [g("fresh", "adjective", "טרי, חדש ולא מקולקל", "I like fresh bread.", "טרי"), g("busy", "adjective", "עם הרבה אנשים ופעילות", "The street is busy.", "עמוס/הומה"), g("cheaper", "adjective", "עולה פחות כסף", "This shop is cheaper.", "זול יותר")],
+      [q("When do they go to the market?", ["On Mondays", "On Fridays", "Every day", "On Sundays"], 1, "כתוב 'On Fridays'."), q("Why do they like the market?", ["It is quiet", "The food is cheaper", "It is far", "It is small"], 1, "כתוב 'the food is cheaper'.")]),
+    R("Learning to Swim (ללמוד לשחות)",
+      "When I was young, I was afraid of water. Last summer I decided to take swimming lessons. At first it was hard and I felt nervous, but my teacher was patient. Now I can swim well and I love going to the pool.",
+      [g("afraid", "adjective", "מפחד ממשהו", "She is afraid of dogs.", "מפחד"), g("nervous", "adjective", "מתוח, חושש", "I feel nervous.", "לחוץ"), g("patient", "adjective", "סבלני, לא ממהר", "A patient teacher.", "סבלני")],
+      [q("What was the writer afraid of?", ["Dogs", "Water", "The dark", "Heights"], 1, "כתוב 'afraid of water'."), q("How was the teacher?", ["Strict", "Patient", "Angry", "Lazy"], 1, "כתוב 'my teacher was patient'.")]),
+    R("A New Phone (טלפון חדש)",
+      "Last week I bought a new phone. My old phone was slow and the battery was bad. The new one is faster and takes great photos. It was expensive, but I think it was a good choice.",
+      [g("slow", "adjective", "לא מהיר", "A slow computer.", "איטי"), g("battery", "noun", "מה שנותן חשמל למכשיר", "The battery is low.", "סוללה"), g("choice", "noun", "החלטה בין אפשרויות", "A hard choice.", "בחירה")],
+      [q("Why did the writer buy a new phone?", ["It was cheap", "The old one was slow", "A gift", "To sell it"], 1, "'my old phone was slow'."), q("What does the new phone do well?", ["Plays music", "Takes great photos", "Nothing", "Makes calls only"], 1, "'takes great photos'.")]),
+    R("Weekend Plans (תוכניות לסוף השבוע)",
+      "This weekend my friends and I are going to the beach. We will bring food and play music. If the weather is good, we will stay until the evening. I really hope it does not rain.",
+      [g("weekend", "noun", "שבת וראשון, ימי המנוחה", "Have a nice weekend.", "סוף שבוע"), g("bring", "verb", "להביא משהו איתך", "Bring a towel.", "להביא"), g("hope", "verb", "לרצות שמשהו טוב יקרה", "I hope so.", "לקוות")],
+      [q("Where are they going?", ["To the mountains", "To the beach", "To a museum", "To work"], 1, "'going to the beach'."), q("What might stop their plans?", ["Traffic", "Rain", "No food", "No music"], 1, "'hope it does not rain'.")]),
+    R("My Grandmother's Recipe (המתכון של סבתא)",
+      "My grandmother makes the best soup. She learned the recipe from her mother. Every winter she invites the whole family for dinner. She says the secret is to cook it slowly and add a lot of love.",
+      [g("recipe", "noun", "הוראות להכנת מאכל", "A soup recipe.", "מתכון"), g("invite", "verb", "להזמין מישהו לבוא", "We invite friends.", "להזמין"), g("secret", "noun", "דבר שלא מספרים לאחרים", "Keep it a secret.", "סוד")],
+      [q("Who did the grandmother learn the recipe from?", ["A book", "Her mother", "A chef", "The internet"], 1, "'from her mother'."), q("What is the 'secret' of the soup?", ["Expensive food", "Cooking it slowly", "Salt", "A machine"], 1, "'cook it slowly'.")]),
   ],
   B1: [
-    {
-      title: "A Small Change (שינוי קטן)",
-      text: "Last year I decided to read one short article in English every day. At first it was difficult, and I had to look up many words. After a few months, something surprising happened: I started to understand the news without translating it in my head. The secret was not talent — it was doing a little, every single day.",
-      glossary: [
-        { word: "decided", partOfSpeech: "verb", definition: "החליט, קיבל החלטה", example: "She decided to study.", translation: "החליט" },
-        { word: "look up", partOfSpeech: "phrasal verb", definition: "לחפש מידע (למשל מילה במילון)", example: "Look up the word.", translation: "לחפש (במילון)" },
-        { word: "surprising", partOfSpeech: "adjective", definition: "מפתיע, לא צפוי", example: "It was a surprising result.", translation: "מפתיע" },
-      ],
-      questions: [
-        { question: "What did the writer do every day?", options: ["Watch a film", "Read a short article", "Write a letter", "Take a class"], correctIndex: 1, explanation: "'read one short article in English every day'." },
-        { question: "What was the 'secret' of the progress?", options: ["Natural talent", "Living abroad", "A little practice every day", "An expensive course"], correctIndex: 2, explanation: "'doing a little, every single day'." },
-      ],
-    },
-    {
-      title: "The New Neighbor (השכן החדש)",
-      text: "A new family moved into the flat next door last month. At first we only said hello in the hall. Then one evening their power went out, so we invited them for dinner. Now we are good friends, and our children play together every weekend. Sometimes the best friendships start by accident.",
-      glossary: [
-        { word: "moved", partOfSpeech: "verb", definition: "עבר לגור במקום חדש", example: "They moved to a new city.", translation: "עבר דירה" },
-        { word: "invited", partOfSpeech: "verb", definition: "הזמין מישהו לבוא", example: "We invited them for dinner.", translation: "הזמין" },
-        { word: "by accident", partOfSpeech: "phrase", definition: "במקרה, לא בכוונה", example: "We met by accident.", translation: "במקרה" },
-      ],
-      questions: [
-        { question: "Why did they invite the neighbors for dinner?", options: ["It was a holiday", "Their power went out", "It was a birthday", "They were bored"], correctIndex: 1, explanation: "'their power went out, so we invited them'." },
-        { question: "What is the main message of the text?", options: ["Neighbors are annoying", "Good friendships can start by accident", "Dinner is important", "Always lock your door"], correctIndex: 1, explanation: "המשפט האחרון מסכם זאת." },
-      ],
-    },
+    R("A Small Change (שינוי קטן)",
+      "Last year I decided to read one short article in English every day. At first it was difficult, and I had to look up many words. After a few months, something surprising happened: I started to understand the news without translating it in my head. The secret was not talent — it was doing a little, every single day.",
+      [g("decided", "verb", "החליט, קיבל החלטה", "She decided to study.", "החליט"), g("look up", "phrasal verb", "לחפש מידע (למשל מילה במילון)", "Look up the word.", "לחפש (במילון)"), g("surprising", "adjective", "מפתיע, לא צפוי", "A surprising result.", "מפתיע")],
+      [q("What did the writer do every day?", ["Watch a film", "Read a short article", "Write a letter", "Take a class"], 1, "'read one short article every day'."), q("What was the 'secret'?", ["Talent", "Living abroad", "A little practice every day", "A course"], 2, "'doing a little, every single day'.")]),
+    R("The New Neighbor (השכן החדש)",
+      "A new family moved into the flat next door last month. At first we only said hello in the hall. Then one evening their power went out, so we invited them for dinner. Now we are good friends, and our children play together every weekend. Sometimes the best friendships start by accident.",
+      [g("moved", "verb", "עבר לגור במקום חדש", "They moved to a new city.", "עבר דירה"), g("invited", "verb", "הזמין מישהו לבוא", "We invited them.", "הזמין"), g("by accident", "phrase", "במקרה, לא בכוונה", "We met by accident.", "במקרה")],
+      [q("Why did they invite the neighbors?", ["A holiday", "Their power went out", "A birthday", "Boredom"], 1, "'their power went out'."), q("What is the main message?", ["Neighbors are annoying", "Friendships can start by accident", "Dinner is important", "Lock your door"], 1, "המשפט האחרון.")]),
+    R("Working With Music (לעבוד עם מוזיקה)",
+      "Many people say they work better with music, but the truth is more complicated. Calm music without words can help us focus on simple tasks. However, when the work is difficult and needs deep thinking, silence is often better. The best choice depends on the task and on the person.",
+      [g("complicated", "adjective", "מורכב, לא פשוט", "A complicated story.", "מורכב"), g("focus", "verb", "לרכז את תשומת הלב", "I can't focus.", "להתרכז"), g("silence", "noun", "שקט מוחלט", "I need silence.", "שקט")],
+      [q("When can music help, according to the text?", ["Always", "For simple tasks", "For hard thinking", "Never"], 1, "'help us focus on simple tasks'."), q("What is better for difficult work?", ["Loud music", "Silence", "Songs with words", "Television"], 1, "'silence is often better'.")]),
+    R("The Lost Wallet (הארנק האבוד)",
+      "Yesterday I lost my wallet on the train. I felt terrible because it had my money and my cards. But that evening, a stranger called me. He had found the wallet and wanted to return it. Nothing was missing. It reminded me that most people are honest and kind.",
+      [g("wallet", "noun", "ארנק לכסף ולכרטיסים", "My wallet is empty.", "ארנק"), g("stranger", "noun", "אדם שאינך מכיר", "A kind stranger.", "זר"), g("honest", "adjective", "אומר אמת; ישר", "An honest man.", "ישר/כן")],
+      [q("Where did the writer lose the wallet?", ["At home", "On the train", "At work", "In a shop"], 1, "'lost my wallet on the train'."), q("What did the writer learn?", ["Trust no one", "Most people are honest", "Trains are bad", "Money matters most"], 1, "'most people are honest and kind'.")]),
+    R("Starting a Garden (להקים גינה)",
+      "When I moved to a house with a small yard, I knew nothing about plants. I started with tomatoes because everyone said they were easy. My first attempt failed completely. But I read, asked questions, and tried again. This summer, for the first time, I ate a salad from my own garden.",
+      [g("yard", "noun", "שטח פתוח ליד הבית", "A small yard.", "חצר"), g("attempt", "noun", "ניסיון לעשות משהו", "My first attempt.", "ניסיון"), g("failed", "verb", "לא הצליח", "The plan failed.", "נכשל")],
+      [q("Why did the writer start with tomatoes?", ["They are cheap", "People said they were easy", "They taste good", "They grow fast"], 1, "'everyone said they were easy'."), q("What happened on the first attempt?", ["Great success", "It failed completely", "A small harvest", "Nothing grew yet"], 1, "'My first attempt failed completely'.")]),
   ],
   B2: [
-    {
-      title: "Working From Home (עבודה מהבית)",
-      text: "When remote work became common, many people expected it to be a temporary arrangement. Instead, it reshaped how companies think about offices altogether. Employees gained flexibility and saved hours of commuting, yet some struggled to separate their work from their personal lives. The challenge now is not whether to work remotely, but how to do it well.",
-      glossary: [
-        { word: "temporary", partOfSpeech: "adjective", definition: "זמני, לא קבוע", example: "It was a temporary job.", translation: "זמני" },
-        { word: "flexibility", partOfSpeech: "noun", definition: "גמישות — חופש לבחור מתי ואיך לפעול", example: "Remote work offers flexibility.", translation: "גמישות" },
-        { word: "struggled", partOfSpeech: "verb", definition: "התקשה, נאבק בקושי", example: "He struggled to focus.", translation: "התקשה/נאבק" },
-      ],
-      questions: [
-        { question: "What did people first expect about remote work?", options: ["It would be permanent", "It would be temporary", "It would fail", "It would be illegal"], correctIndex: 1, explanation: "'expected it to be a temporary arrangement'." },
-        { question: "According to the text, what is the challenge now?", options: ["Whether to work remotely", "How to do it well", "How to ban it", "Where to buy a desk"], correctIndex: 1, explanation: "'not whether... but how to do it well'." },
-      ],
-    },
-    {
-      title: "The Price of Convenience (מחיר הנוחות)",
-      text: "Same-day delivery feels almost magical: you order something in the morning and it arrives by evening. But that speed comes at a cost. Behind it lies a network of warehouses, drivers under pressure, and packaging that often ends up as waste. Convenience is rarely free — someone, somewhere, pays for it.",
-      glossary: [
-        { word: "delivery", partOfSpeech: "noun", definition: "הבאת חבילה או מוצר ליעד", example: "The delivery arrived late.", translation: "משלוח" },
-        { word: "pressure", partOfSpeech: "noun", definition: "לחץ — דרישה כבדה או מתח", example: "He works under pressure.", translation: "לחץ" },
-        { word: "waste", partOfSpeech: "noun", definition: "פסולת — דבר שנזרק ולא בשימוש", example: "We must reduce waste.", translation: "פסולת" },
-      ],
-      questions: [
-        { question: "What is the main idea of the text?", options: ["Delivery is magical", "Convenience has hidden costs", "Shopping is fun", "Warehouses are large"], correctIndex: 1, explanation: "'Convenience is rarely free'." },
-        { question: "What is mentioned as a hidden cost?", options: ["Higher prices only", "Packaging waste", "Slower service", "Fewer choices"], correctIndex: 1, explanation: "'packaging that often ends up as waste'." },
-      ],
-    },
+    R("Working From Home (עבודה מהבית)",
+      "When remote work became common, many people expected it to be a temporary arrangement. Instead, it reshaped how companies think about offices altogether. Employees gained flexibility and saved hours of commuting, yet some struggled to separate their work from their personal lives. The challenge now is not whether to work remotely, but how to do it well.",
+      [g("temporary", "adjective", "זמני, לא קבוע", "A temporary job.", "זמני"), g("flexibility", "noun", "גמישות — חופש לבחור מתי ואיך", "Work offers flexibility.", "גמישות"), g("struggled", "verb", "התקשה, נאבק בקושי", "He struggled to focus.", "התקשה")],
+      [q("What did people first expect about remote work?", ["Permanent", "Temporary", "A failure", "Illegal"], 1, "'a temporary arrangement'."), q("What is the challenge now?", ["Whether to work remotely", "How to do it well", "How to ban it", "Where to buy a desk"], 1, "'not whether... but how to do it well'.")]),
+    R("The Price of Convenience (מחיר הנוחות)",
+      "Same-day delivery feels almost magical: you order something in the morning and it arrives by evening. But that speed comes at a cost. Behind it lies a network of warehouses, drivers under pressure, and packaging that often ends up as waste. Convenience is rarely free — someone, somewhere, pays for it.",
+      [g("delivery", "noun", "הבאת מוצר ליעד", "The delivery was late.", "משלוח"), g("pressure", "noun", "לחץ — דרישה כבדה או מתח", "He works under pressure.", "לחץ"), g("waste", "noun", "פסולת — דבר שנזרק", "Reduce waste.", "פסולת")],
+      [q("What is the main idea?", ["Delivery is magical", "Convenience has hidden costs", "Shopping is fun", "Warehouses are big"], 1, "'Convenience is rarely free'."), q("What is a hidden cost mentioned?", ["Higher prices", "Packaging waste", "Slower service", "Fewer choices"], 1, "'packaging that ends up as waste'.")]),
+    R("The Return of Vinyl (שובם של התקליטים)",
+      "In an age of instant streaming, the comeback of vinyl records seems strange. Yet sales have grown for over a decade. For many listeners, the appeal is not sound quality but ritual: choosing a record, placing the needle, and listening to a whole album without skipping. In a world of endless choice, limits can feel like a relief.",
+      [g("comeback", "noun", "חזרה לפופולריות", "A surprising comeback.", "קאמבק/חזרה"), g("appeal", "noun", "מה שמושך אנשים", "The appeal of travel.", "משיכה/קסם"), g("ritual", "noun", "פעולה קבועה בעלת משמעות", "A morning ritual.", "טקס/מנהג")],
+      [q("What is surprising about vinyl?", ["It sounds bad", "Its comeback in a streaming age", "It is cheap", "It is new"], 1, "'the comeback... seems strange'."), q("What is the main appeal, per the text?", ["Sound quality", "The ritual", "Low price", "Portability"], 1, "'the appeal is not sound quality but ritual'.")]),
+    R("Why We Procrastinate (למה אנחנו דוחים)",
+      "Procrastination is often blamed on laziness, but psychologists see it differently. Putting off a task is usually a way to avoid an uncomfortable feeling — boredom, anxiety, or fear of failure. Understanding this changes the solution: instead of forcing more discipline, we can make the first step smaller and less frightening.",
+      [g("procrastination", "noun", "דחיינות — דחיית משימות", "Beat procrastination.", "דחיינות"), g("avoid", "verb", "להתרחק או להימנע", "Avoid mistakes.", "להימנע"), g("discipline", "noun", "משמעת עצמית", "It takes discipline.", "משמעת")],
+      [q("How do psychologists explain procrastination?", ["Laziness", "Avoiding an uncomfortable feeling", "Lack of time", "Bad habits only"], 1, "'a way to avoid an uncomfortable feeling'."), q("What solution does the text suggest?", ["More discipline", "Making the first step smaller", "Working at night", "Ignoring the task"], 1, "'make the first step smaller'.")]),
+    R("The Language of Silence (שפת השתיקה)",
+      "We tend to think communication is about words, but silence carries meaning too. A pause before answering can signal thought, doubt, or respect, depending on the culture. In some societies, silence in conversation is comfortable and normal; in others, it creates anxiety and people rush to fill it. Misreading these signals is a common source of misunderstanding.",
+      [g("pause", "noun", "הפסקה קצרה", "A short pause.", "השהיה/הפסקה"), g("signal", "verb", "לרמוז או להעביר מסר", "It signals danger.", "לאותת/לרמוז"), g("misunderstanding", "noun", "אי-הבנה", "A small misunderstanding.", "אי-הבנה")],
+      [q("What can a pause signal, per the text?", ["Only boredom", "Thought, doubt or respect", "Anger always", "Nothing"], 1, "'signal thought, doubt, or respect'."), q("Why can silence cause problems?", ["It is rude everywhere", "Signals are misread across cultures", "It is too long", "It is loud"], 1, "'Misreading these signals'.")]),
   ],
   C1: [
-    {
-      title: "The Illusion of Progress (אשליית ההתקדמות)",
-      text: "Language apps are remarkably good at making us feel productive. We collect streaks, badges and points, and the little rush of completing a lesson convinces us we are mastering the language. Yet fluency is built elsewhere — in messy conversations, in texts we only half understand, in the discomfort of speaking before we feel ready. The game is a doorway, not the room itself.",
-      glossary: [
-        { word: "remarkably", partOfSpeech: "adverb", definition: "באופן יוצא דופן, בצורה בולטת", example: "She is remarkably calm.", translation: "באופן יוצא דופן" },
-        { word: "fluency", partOfSpeech: "noun", definition: "שטף — היכולת לדבר בקלות וברציפות", example: "He speaks with fluency.", translation: "שטף (בשפה)" },
-        { word: "discomfort", partOfSpeech: "noun", definition: "אי-נוחות, תחושה לא נעימה", example: "A little discomfort helps you grow.", translation: "אי-נוחות" },
-      ],
-      questions: [
-        { question: "What does the writer say apps are good at?", options: ["Teaching grammar perfectly", "Making us feel productive", "Replacing teachers", "Translating texts"], correctIndex: 1, explanation: "'good at making us feel productive'." },
-        { question: "According to the text, fluency is built mainly through…", options: ["Streaks and badges", "Real, messy use of the language", "Completing more lessons", "Collecting points"], correctIndex: 1, explanation: "השטף נבנה בשימוש אמיתי בשפה." },
-      ],
-    },
-    {
-      title: "Attention as Currency (תשומת לב כמטבע)",
-      text: "We often say that the best things in life are free, but our attention has quietly become one of the most valuable resources of the age. Platforms compete not for our money but for our minutes, designing every notification to pull us back. To reclaim our focus is, in a sense, to decide what kind of life we want to lead.",
-      glossary: [
-        { word: "valuable", partOfSpeech: "adjective", definition: "בעל ערך רב", example: "Time is valuable.", translation: "בעל ערך" },
-        { word: "compete", partOfSpeech: "verb", definition: "להתחרות — להיאבק כדי לזכות במשהו", example: "Companies compete for customers.", translation: "להתחרות" },
-        { word: "reclaim", partOfSpeech: "verb", definition: "להחזיר לעצמך משהו שאבד", example: "He tried to reclaim his time.", translation: "להשיב/לתבוע בחזרה" },
-      ],
-      questions: [
-        { question: "What do platforms mainly compete for, according to the text?", options: ["Our money", "Our minutes/attention", "Our friends", "Our data only"], correctIndex: 1, explanation: "'compete not for our money but for our minutes'." },
-        { question: "What does reclaiming focus mean here?", options: ["Earning more money", "Deciding what life to lead", "Buying new apps", "Working longer hours"], correctIndex: 1, explanation: "'to decide what kind of life we want to lead'." },
-      ],
-    },
+    R("The Illusion of Progress (אשליית ההתקדמות)",
+      "Language apps are remarkably good at making us feel productive. We collect streaks, badges and points, and the little rush of completing a lesson convinces us we are mastering the language. Yet fluency is built elsewhere — in messy conversations, in texts we only half understand, in the discomfort of speaking before we feel ready. The game is a doorway, not the room itself.",
+      [g("remarkably", "adverb", "באופן יוצא דופן", "Remarkably calm.", "באופן יוצא דופן"), g("fluency", "noun", "שטף — דיבור בקלות וברציפות", "Speaks with fluency.", "שטף"), g("discomfort", "noun", "אי-נוחות", "A little discomfort.", "אי-נוחות")],
+      [q("What are apps good at?", ["Teaching grammar perfectly", "Making us feel productive", "Replacing teachers", "Translating"], 1, "'making us feel productive'."), q("Fluency is built mainly through…", ["Streaks and badges", "Real, messy use of the language", "More lessons", "Points"], 1, "בשימוש אמיתי בשפה.")]),
+    R("Attention as Currency (תשומת לב כמטבע)",
+      "We often say the best things in life are free, but our attention has quietly become one of the most valuable resources of the age. Platforms compete not for our money but for our minutes, designing every notification to pull us back. To reclaim our focus is, in a sense, to decide what kind of life we want to lead.",
+      [g("valuable", "adjective", "בעל ערך רב", "Time is valuable.", "בעל ערך"), g("compete", "verb", "להתחרות", "Firms compete.", "להתחרות"), g("reclaim", "verb", "להחזיר לעצמך משהו שאבד", "Reclaim your time.", "להשיב")],
+      [q("What do platforms compete for?", ["Our money", "Our attention", "Our friends", "Our data only"], 1, "'compete... for our minutes'."), q("What does reclaiming focus mean here?", ["Earning money", "Deciding what life to lead", "Buying apps", "Working more"], 1, "'decide what kind of life we want to lead'.")]),
+    R("The Myth of the Lone Genius (מיתוס הגאון הבודד)",
+      "Popular history loves the image of the solitary genius struck by sudden inspiration. The reality is almost always less romantic and more collective. Behind nearly every breakthrough lies a web of collaborators, earlier failures, and ideas borrowed and reshaped. Celebrating only the individual flatters our love of heroes but distorts how progress actually happens.",
+      [g("solitary", "adjective", "בודד, לבדו", "A solitary walk.", "בודד"), g("breakthrough", "noun", "פריצת דרך", "A medical breakthrough.", "פריצת דרך"), g("distorts", "verb", "מעוות, מציג לא נכון", "It distorts the truth.", "מעוות")],
+      [q("What image does the text question?", ["The teamwork of science", "The solitary genius", "The cost of research", "Slow progress"], 1, "'the solitary genius'."), q("What lies behind most breakthroughs?", ["One mind", "A web of collaborators and earlier work", "Luck only", "Money"], 1, "'a web of collaborators... and ideas'.")]),
+    R("The Comfort of Routine (נחמת השגרה)",
+      "Routine has a poor reputation, often equated with dullness and lack of ambition. Yet there is a quiet power in it. By automating small decisions — what to eat, when to write — we free our limited willpower for the choices that truly matter. Far from limiting creativity, a steady structure can be the very thing that makes it possible.",
+      [g("reputation", "noun", "מוניטין — איך תופסים מישהו", "A good reputation.", "מוניטין"), g("equated", "verb", "הושווה, נחשב כזהה", "Equated with failure.", "הושווה ל־"), g("willpower", "noun", "כוח רצון", "Strong willpower.", "כוח רצון")],
+      [q("How is routine usually seen?", ["As powerful", "As dull and unambitious", "As creative", "As rare"], 1, "'equated with dullness'."), q("What is the benefit of routine, per the text?", ["More decisions", "Freeing willpower for what matters", "Less sleep", "More rules"], 1, "'free our limited willpower'.")]),
+    R("When Maps Mislead (כשמפות מטעות)",
+      "Every map is a kind of lie, and a useful one. To be readable, it must leave things out, flatten a round world, and exaggerate the roads we care about. The danger comes when we forget this and mistake the map for the territory. The same is true of the simple stories we tell to explain a complicated world.",
+      [g("flatten", "verb", "להפוך לשטוח", "Flatten the map.", "לשטח"), g("exaggerate", "verb", "להגזים, להציג כגדול מהמציאות", "Don't exaggerate.", "להגזים"), g("territory", "noun", "השטח האמיתי עצמו", "Unknown territory.", "טריטוריה/שטח")],
+      [q("Why does the writer call a map 'a useful lie'?", ["It is wrong", "It must leave things out to be readable", "It is old", "It is expensive"], 1, "'it must leave things out'."), q("What is the broader point?", ["Maps are bad", "Simple stories can mislead about a complex world", "Travel is hard", "Roads matter most"], 1, "'the simple stories we tell'.")]),
   ],
   C2: [
-    {
-      title: "The Tyranny of Metrics (עריצות המדדים)",
-      text: "There is a seductive comfort in numbers. A metric promises objectivity, a clean verdict untouched by human bias. Yet what we choose to measure inevitably shapes what we come to value, and the unmeasurable — kindness, originality, depth — quietly slips from view. The danger is not measurement itself, but our willingness to mistake the measurable for the meaningful.",
-      glossary: [
-        { word: "seductive", partOfSpeech: "adjective", definition: "מפתה — מושך באופן שקשה לעמוד בפניו", example: "It is a seductive idea.", translation: "מפתה" },
-        { word: "objectivity", partOfSpeech: "noun", definition: "אובייקטיביות — חוסר משוא פנים", example: "Science values objectivity.", translation: "אובייקטיביות" },
-        { word: "inevitably", partOfSpeech: "adverb", definition: "באופן בלתי-נמנע", example: "Change inevitably brings risk.", translation: "באופן בלתי-נמנע" },
-      ],
-      questions: [
-        { question: "What does the writer warn against?", options: ["Using any numbers", "Mistaking the measurable for the meaningful", "Trusting science", "Avoiding all bias"], correctIndex: 1, explanation: "המשפט האחרון מנסח את האזהרה." },
-        { question: "What 'slips from view' according to the text?", options: ["Profits", "The unmeasurable, like kindness", "Deadlines", "Numbers"], correctIndex: 1, explanation: "'the unmeasurable — kindness, originality, depth'." },
-      ],
-    },
-    {
-      title: "On Boredom (על השעמום)",
-      text: "We have grown so adept at banishing boredom that we have forgotten what it was for. Those empty, restless moments once nudged the mind toward daydream and invention; now they are filled instantly with a glowing screen. Perhaps creativity was never the enemy of idleness but its quiet offspring, and in eliminating one we have unwittingly starved the other.",
-      glossary: [
-        { word: "adept", partOfSpeech: "adjective", definition: "מיומן מאוד במשהו", example: "She is adept at solving puzzles.", translation: "מיומן" },
-        { word: "idleness", partOfSpeech: "noun", definition: "בטלה — מצב של חוסר מעש", example: "He enjoys moments of idleness.", translation: "בטלה/חוסר מעש" },
-        { word: "unwittingly", partOfSpeech: "adverb", definition: "מבלי משים, ללא כוונה", example: "He unwittingly caused harm.", translation: "מבלי משים" },
-      ],
-      questions: [
-        { question: "What does the writer suggest boredom once did?", options: ["Wasted time", "Nudged the mind toward invention", "Caused illness", "Made people lazy forever"], correctIndex: 1, explanation: "'nudged the mind toward daydream and invention'." },
-        { question: "What is creativity called in relation to idleness?", options: ["Its enemy", "Its quiet offspring", "Its replacement", "Its opposite"], correctIndex: 1, explanation: "'creativity... its quiet offspring'." },
-      ],
-    },
+    R("The Tyranny of Metrics (עריצות המדדים)",
+      "There is a seductive comfort in numbers. A metric promises objectivity, a clean verdict untouched by human bias. Yet what we choose to measure inevitably shapes what we come to value, and the unmeasurable — kindness, originality, depth — quietly slips from view. The danger is not measurement itself, but our willingness to mistake the measurable for the meaningful.",
+      [g("seductive", "adjective", "מפתה — מושך באופן שקשה לעמוד בפניו", "A seductive idea.", "מפתה"), g("objectivity", "noun", "אובייקטיביות — חוסר משוא פנים", "Values objectivity.", "אובייקטיביות"), g("inevitably", "adverb", "באופן בלתי-נמנע", "Inevitably brings risk.", "באופן בלתי-נמנע")],
+      [q("What does the writer warn against?", ["Using any numbers", "Mistaking the measurable for the meaningful", "Trusting science", "Avoiding bias"], 1, "המשפט האחרון."), q("What 'slips from view'?", ["Profits", "The unmeasurable, like kindness", "Deadlines", "Numbers"], 1, "'the unmeasurable — kindness...'.")]),
+    R("On Boredom (על השעמום)",
+      "We have grown so adept at banishing boredom that we have forgotten what it was for. Those empty, restless moments once nudged the mind toward daydream and invention; now they are filled instantly with a glowing screen. Perhaps creativity was never the enemy of idleness but its quiet offspring, and in eliminating one we have unwittingly starved the other.",
+      [g("adept", "adjective", "מיומן מאוד", "Adept at puzzles.", "מיומן"), g("idleness", "noun", "בטלה — חוסר מעש", "Moments of idleness.", "בטלה"), g("unwittingly", "adverb", "מבלי משים, ללא כוונה", "Unwittingly caused harm.", "מבלי משים")],
+      [q("What did boredom once do?", ["Waste time", "Nudge the mind toward invention", "Cause illness", "Make people lazy"], 1, "'nudged the mind toward... invention'."), q("Creativity is called…", ["The enemy of idleness", "Its quiet offspring", "Its replacement", "Its opposite"], 1, "'its quiet offspring'.")]),
+    R("The Paradox of Choice (פרדוקס הבחירה)",
+      "We assume that more options make us freer and happier, yet beyond a point the opposite holds. Faced with dozens of nearly identical choices, we grow anxious, postpone deciding, and feel less satisfied with whatever we finally pick. Abundance, it turns out, can be its own kind of burden, and the freedom to choose can quietly curdle into the fear of choosing wrongly.",
+      [g("postpone", "verb", "לדחות לזמן מאוחר יותר", "Postpone the meeting.", "לדחות"), g("abundance", "noun", "שפע — כמות גדולה מאוד", "An abundance of food.", "שפע"), g("curdle", "verb", "להידרדר/להתקלקל (כאן: מטאפורי)", "Joy curdled into fear.", "להידרדר/להחמיץ")],
+      [q("What is the paradox described?", ["Fewer options are worse", "More options can make us less happy", "Choice is impossible", "People love deciding"], 1, "'beyond a point the opposite holds'."), q("What can abundance become?", ["A joy", "Its own kind of burden", "A right", "A skill"], 1, "'its own kind of burden'.")]),
+    R("The Ship of Theseus (ספינת תזאוס)",
+      "If every plank of a ship is gradually replaced, is it still the same ship? The ancient puzzle endures because it quietly applies to us. Our cells, opinions and memories are continually swapped out, and yet we cling to a sense of a single, continuous self. Identity, perhaps, is less a fixed object than a story we keep telling about change.",
+      [g("plank", "noun", "קרש עץ", "A wooden plank.", "קרש"), g("endures", "verb", "ממשיך להתקיים לאורך זמן", "The myth endures.", "שורד/מתקיים"), g("cling", "verb", "להיאחז בחוזקה", "Cling to hope.", "להיאחז")],
+      [q("What does the puzzle ultimately apply to, per the text?", ["Only ships", "Ourselves and identity", "Carpentry", "History"], 1, "'it quietly applies to us'."), q("How does the writer redefine identity?", ["A fixed object", "A story we tell about change", "An illusion", "A memory"], 1, "'a story we keep telling about change'.")]),
+    R("Against Nostalgia (נגד הנוסטלגיה)",
+      "Nostalgia flatters the past by editing it. It keeps the warm afternoons and discards the boredom, the injustice, the fear. This selective memory is harmless as private comfort but dangerous as politics, for a longing to return to a golden age that never quite existed has fueled some of history's worst decisions. The cure is not to forget the past, but to remember it whole.",
+      [g("flatters", "verb", "מציג באור חיובי מדי", "It flatters him.", "מחמיא/מייפה"), g("discards", "verb", "זורק, משליך", "Discards the rest.", "משליך"), g("longing", "noun", "כמיהה, געגוע עז", "A longing for home.", "כמיהה")],
+      [q("How does nostalgia treat the past?", ["Remembers it whole", "Edits it, keeping only the good", "Forgets it", "Hates it"], 1, "'editing it... discards the... fear'."), q("Why is it dangerous as politics?", ["It is private", "It longs for a golden age that never existed", "It is boring", "It forgets nothing"], 1, "'a golden age that never quite existed'.")]),
   ],
 };
 
-// --- LISTENING: transcript (En) + questions (2) ---
+// --- LISTENING --------------------------------------------------------------
 export const LISTENINGS = {
   A1: [
-    {
-      transcript: "Hi, I'm Dan. I have a sister and a dog. We live in a small house near the park.",
-      questions: [
-        { question: "What is the speaker's name?", options: ["Sam", "Dan", "Tom", "Ben"], correctIndex: 1, explanation: "'I'm Dan'." },
-        { question: "Where do they live?", options: ["Near the sea", "Near the park", "In the city center", "On a farm"], correctIndex: 1, explanation: "'a small house near the park'." },
-      ],
-    },
-    {
-      transcript: "Good morning. The shop opens at nine and closes at six. We are closed on Sunday.",
-      questions: [
-        { question: "What time does the shop open?", options: ["At eight", "At nine", "At six", "At ten"], correctIndex: 1, explanation: "'opens at nine'." },
-        { question: "When is the shop closed?", options: ["On Sunday", "On Monday", "On Friday", "Never"], correctIndex: 0, explanation: "'closed on Sunday'." },
-      ],
-    },
+    L("Hi, I'm Dan. I have a sister and a dog. We live in a small house near the park.",
+      [q("What is the speaker's name?", ["Sam", "Dan", "Tom", "Ben"], 1, "'I'm Dan'."), q("Where do they live?", ["Near the sea", "Near the park", "In the centre", "On a farm"], 1, "'near the park'.")]),
+    L("Good morning. The shop opens at nine and closes at six. We are closed on Sunday.",
+      [q("What time does the shop open?", ["At eight", "At nine", "At six", "At ten"], 1, "'opens at nine'."), q("When is the shop closed?", ["On Sunday", "On Monday", "On Friday", "Never"], 0, "'closed on Sunday'.")]),
+    L("Hello! My name is Sara. I am eight years old. I like cats and I do not like rain.",
+      [q("How old is Sara?", ["Six", "Seven", "Eight", "Nine"], 2, "'I am eight years old'."), q("What does Sara not like?", ["Cats", "Rain", "Dogs", "Sun"], 1, "'I do not like rain'.")]),
+    L("The bus to the city centre leaves at ten. Please have your ticket ready. Thank you.",
+      [q("When does the bus leave?", ["At nine", "At ten", "At eleven", "At noon"], 1, "'leaves at ten'."), q("What should you have ready?", ["Money", "Your ticket", "A bag", "A phone"], 1, "'have your ticket ready'.")]),
+    L("It is cold today. Take your coat. We will eat lunch at one o'clock at home.",
+      [q("What is the weather like?", ["Hot", "Cold", "Rainy", "Windy"], 1, "'It is cold today'."), q("When will they eat lunch?", ["At twelve", "At one", "At two", "At three"], 1, "'at one o'clock'.")]),
   ],
   A2: [
-    {
-      transcript: "Hello, this is the dentist's office. Your appointment is on Tuesday at half past three. Please call us if you cannot come.",
-      questions: [
-        { question: "What day is the appointment?", options: ["Monday", "Tuesday", "Wednesday", "Thursday"], correctIndex: 1, explanation: "'on Tuesday'." },
-        { question: "What time is the appointment?", options: ["3:00", "3:15", "3:30", "3:45"], correctIndex: 2, explanation: "'half past three' = 3:30." },
-      ],
-    },
-    {
-      transcript: "Attention passengers. The train to Haifa will leave from platform two, not platform four. We are sorry for the change.",
-      questions: [
-        { question: "Where is the train to Haifa now leaving from?", options: ["Platform two", "Platform four", "Platform one", "Platform three"], correctIndex: 0, explanation: "'from platform two'." },
-        { question: "Why is there an announcement?", options: ["The train is late", "The platform changed", "The train is cancelled", "Tickets are sold out"], correctIndex: 1, explanation: "'not platform four' — שינוי רציף." },
-      ],
-    },
+    L("Hello, this is the dentist's office. Your appointment is on Tuesday at half past three. Please call us if you cannot come.",
+      [q("What day is the appointment?", ["Monday", "Tuesday", "Wednesday", "Thursday"], 1, "'on Tuesday'."), q("What time is the appointment?", ["3:00", "3:15", "3:30", "3:45"], 2, "'half past three' = 3:30.")]),
+    L("Attention passengers. The train to Haifa will leave from platform two, not platform four. We are sorry for the change.",
+      [q("Where is the Haifa train leaving from now?", ["Platform two", "Platform four", "Platform one", "Platform three"], 0, "'from platform two'."), q("Why the announcement?", ["The train is late", "The platform changed", "It is cancelled", "Sold out"], 1, "'not platform four'.")]),
+    L("Hi, it's Tom. I'm calling about the dinner on Saturday. Can you bring a salad? I'll make the main dish. See you at seven.",
+      [q("What does Tom ask the listener to bring?", ["A cake", "A salad", "Drinks", "Bread"], 1, "'bring a salad'."), q("What time is the dinner?", ["Six", "Seven", "Eight", "Nine"], 1, "'See you at seven'.")]),
+    L("Welcome to the museum. Photos are allowed, but please do not touch the paintings. The café is on the second floor.",
+      [q("What is NOT allowed?", ["Taking photos", "Touching the paintings", "Visiting the café", "Walking"], 1, "'do not touch the paintings'."), q("Where is the café?", ["First floor", "Second floor", "Outside", "Basement"], 1, "'on the second floor'.")]),
+    L("This is a reminder that the library closes early today, at four o'clock. Please return your books before you leave.",
+      [q("What time does the library close today?", ["Three", "Four", "Five", "Six"], 1, "'at four o'clock'."), q("What should visitors do before leaving?", ["Pay a fee", "Return their books", "Sign a form", "Buy a card"], 1, "'return your books'.")]),
   ],
   B1: [
-    {
-      transcript: "Thanks for calling the clinic. We're open from nine to five, Monday to Friday. If you'd like to book an appointment, please press one and leave your name.",
-      questions: [
-        { question: "What kind of place is this?", options: ["A shop", "A clinic", "A school", "A bank"], correctIndex: 1, explanation: "'calling the clinic'." },
-        { question: "What should you press to book an appointment?", options: ["One", "Two", "Three", "The star key"], correctIndex: 0, explanation: "'press one'." },
-      ],
-    },
-    {
-      transcript: "Hi, it's Maya. I'm running about ten minutes late because of traffic. Could you order me a coffee? I'll be there soon.",
-      questions: [
-        { question: "Why is Maya late?", options: ["She is sick", "Because of traffic", "She forgot", "She is at work"], correctIndex: 1, explanation: "'because of traffic'." },
-        { question: "What does Maya ask for?", options: ["A coffee", "A taxi", "A menu", "Help with work"], correctIndex: 0, explanation: "'order me a coffee'." },
-      ],
-    },
+    L("Thanks for calling the clinic. We're open from nine to five, Monday to Friday. If you'd like to book an appointment, please press one and leave your name.",
+      [q("What kind of place is this?", ["A shop", "A clinic", "A school", "A bank"], 1, "'calling the clinic'."), q("What should you press to book?", ["One", "Two", "Three", "Star"], 0, "'press one'.")]),
+    L("Hi, it's Maya. I'm running about ten minutes late because of traffic. Could you order me a coffee? I'll be there soon.",
+      [q("Why is Maya late?", ["She is sick", "Because of traffic", "She forgot", "She is at work"], 1, "'because of traffic'."), q("What does Maya ask for?", ["A coffee", "A taxi", "A menu", "Help"], 0, "'order me a coffee'.")]),
+    L("Good afternoon. This is a message from your landlord. The plumber will come on Thursday between nine and eleven to fix the kitchen tap. Someone should be home.",
+      [q("Why is the plumber coming?", ["To paint", "To fix the kitchen tap", "To clean", "To inspect"], 1, "'to fix the kitchen tap'."), q("When will the plumber arrive?", ["Wednesday morning", "Thursday between 9 and 11", "Friday afternoon", "Thursday evening"], 1, "'Thursday between nine and eleven'.")]),
+    L("Welcome to the city tour. The bus will stop at four places. You have twenty minutes at each stop, so please come back to the bus on time.",
+      [q("How many stops are there?", ["Two", "Three", "Four", "Five"], 2, "'stop at four places'."), q("How long at each stop?", ["Ten minutes", "Fifteen minutes", "Twenty minutes", "An hour"], 2, "'twenty minutes at each stop'.")]),
+    L("Hello, this is the shoe shop. The boots you ordered have arrived. You can collect them any day this week. We close at eight in the evening.",
+      [q("Why is the shop calling?", ["A sale", "The ordered boots arrived", "A complaint", "To deliver"], 1, "'The boots you ordered have arrived'."), q("When does the shop close?", ["Six", "Seven", "Eight", "Nine"], 2, "'close at eight'.")]),
   ],
   B2: [
-    {
-      transcript: "Welcome aboard. Before takeoff, please make sure your seatbelt is fastened and your tray table is closed. Wifi will be available once we reach cruising altitude.",
-      questions: [
-        { question: "When will wifi be available?", options: ["Before takeoff", "At cruising altitude", "Never", "During landing"], correctIndex: 1, explanation: "'once we reach cruising altitude'." },
-        { question: "What are passengers asked to do?", options: ["Stand up", "Fasten seatbelts", "Open windows", "Leave the plane"], correctIndex: 1, explanation: "'seatbelt is fastened'." },
-      ],
-    },
-    {
-      transcript: "In today's meeting we'll review last quarter's results, discuss the marketing budget, and finally decide on the launch date. Let's try to keep each item under fifteen minutes.",
-      questions: [
-        { question: "What will be decided in the meeting?", options: ["The launch date", "New hires", "Office location", "Holiday dates"], correctIndex: 0, explanation: "'decide on the launch date'." },
-        { question: "How long should each item take?", options: ["Five minutes", "Ten minutes", "Under fifteen minutes", "An hour"], correctIndex: 2, explanation: "'under fifteen minutes'." },
-      ],
-    },
+    L("Welcome aboard. Before takeoff, please make sure your seatbelt is fastened and your tray table is closed. Wifi will be available once we reach cruising altitude.",
+      [q("When will wifi be available?", ["Before takeoff", "At cruising altitude", "Never", "During landing"], 1, "'once we reach cruising altitude'."), q("What are passengers asked to do?", ["Stand up", "Fasten seatbelts", "Open windows", "Leave"], 1, "'seatbelt is fastened'.")]),
+    L("In today's meeting we'll review last quarter's results, discuss the marketing budget, and finally decide on the launch date. Let's try to keep each item under fifteen minutes.",
+      [q("What will be decided?", ["The launch date", "New hires", "Office location", "Holidays"], 0, "'decide on the launch date'."), q("How long per item?", ["Five minutes", "Ten minutes", "Under fifteen minutes", "An hour"], 2, "'under fifteen minutes'.")]),
+    L("Thank you for shopping with us. Please note that the return policy has changed: items can now be returned within fourteen days, not thirty, and you must keep the receipt.",
+      [q("What has changed?", ["Prices", "The return period", "Opening hours", "The address"], 1, "'the return policy has changed'."), q("How long do you now have to return items?", ["Seven days", "Fourteen days", "Thirty days", "No limit"], 1, "'within fourteen days'.")]),
+    L("This is your captain. Due to weather, we expect some turbulence in about twenty minutes. It should be brief. For now, feel free to move around the cabin, but keep your seatbelt loosely fastened when seated.",
+      [q("What is expected in twenty minutes?", ["Landing", "Turbulence", "A meal", "A film"], 1, "'expect some turbulence'."), q("What advice is given for seated passengers?", ["Stand up", "Keep seatbelts loosely fastened", "Open the window", "Sleep"], 1, "'keep your seatbelt loosely fastened'.")]),
+    L("Hi, this is the recruitment team. We were impressed by your interview and would like to invite you to a second round next week. Could you reply with your availability on Monday or Wednesday?",
+      [q("Why are they calling?", ["To reject the candidate", "To invite a second interview", "To offer a job", "To reschedule"], 1, "'invite you to a second round'."), q("Which days are offered?", ["Tuesday or Thursday", "Monday or Wednesday", "Friday", "The weekend"], 1, "'Monday or Wednesday'.")]),
   ],
   C1: [
-    {
-      transcript: "While the committee broadly welcomed the proposal, several members raised concerns about the timeline, arguing that a phased rollout would be far less disruptive than the sweeping changes originally suggested.",
-      questions: [
-        { question: "What was the committee's overall reaction?", options: ["They rejected it", "They broadly welcomed it", "They ignored it", "They postponed it"], correctIndex: 1, explanation: "'broadly welcomed the proposal'." },
-        { question: "What did some members prefer?", options: ["Sweeping changes", "Cancelling the project", "A phased rollout", "A larger budget"], correctIndex: 2, explanation: "'a phased rollout would be far less disruptive'." },
-      ],
-    },
-    {
-      transcript: "The findings, though preliminary, suggest a correlation between sleep quality and memory. The researchers stress, however, that correlation should not be mistaken for causation, and that further studies are needed.",
-      questions: [
-        { question: "What do the findings suggest?", options: ["A cure for insomnia", "A link between sleep and memory", "That sleep is unimportant", "Nothing at all"], correctIndex: 1, explanation: "'a correlation between sleep quality and memory'." },
-        { question: "What do the researchers warn?", options: ["Sleep more", "Correlation is not causation", "The study is final", "Memory cannot improve"], correctIndex: 1, explanation: "'correlation should not be mistaken for causation'." },
-      ],
-    },
+    L("While the committee broadly welcomed the proposal, several members raised concerns about the timeline, arguing that a phased rollout would be far less disruptive than the sweeping changes originally suggested.",
+      [q("What was the committee's overall reaction?", ["Rejected it", "Broadly welcomed it", "Ignored it", "Postponed it"], 1, "'broadly welcomed the proposal'."), q("What did some members prefer?", ["Sweeping changes", "Cancelling it", "A phased rollout", "A bigger budget"], 2, "'a phased rollout'.")]),
+    L("The findings, though preliminary, suggest a correlation between sleep quality and memory. The researchers stress, however, that correlation should not be mistaken for causation, and that further studies are needed.",
+      [q("What do the findings suggest?", ["A cure", "A link between sleep and memory", "Sleep is useless", "Nothing"], 1, "'a correlation between sleep quality and memory'."), q("What do the researchers warn?", ["Sleep more", "Correlation is not causation", "It's final", "Memory can't improve"], 1, "'should not be mistaken for causation'.")]),
+    L("I won't sugar-coat it: this quarter was challenging. Revenue dipped, and a key partnership fell through. That said, our core users grew, and the new product line is showing genuine promise heading into next year.",
+      [q("How does the speaker describe the quarter?", ["Excellent", "Challenging", "Average", "Unclear"], 1, "'this quarter was challenging'."), q("What is described as promising?", ["The old products", "The new product line", "The partnership", "Costs"], 1, "'the new product line is showing genuine promise'.")]),
+    L("Before we open the floor to questions, let me preempt the obvious one. Yes, prices will rise, but only modestly, and not before the autumn. We felt it was better to be transparent now than to surprise you later.",
+      [q("What does the speaker confirm?", ["Prices will fall", "Prices will rise modestly", "No change", "A free trial"], 1, "'prices will rise, but only modestly'."), q("When will the change happen?", ["Immediately", "Not before the autumn", "Next week", "Never"], 1, "'not before the autumn'.")]),
+    L("The exhibition is deliberately disorienting. Rather than guiding you along a fixed path, it invites you to wander, to double back, to lose your bearings — in the hope that confusion itself becomes part of the experience.",
+      [q("How is the exhibition designed?", ["A fixed path", "To be deliberately disorienting", "For speed", "For children"], 1, "'deliberately disorienting'."), q("What role does confusion play?", ["A mistake", "Part of the experience", "A warning", "None"], 1, "'confusion itself becomes part of the experience'.")]),
   ],
   C2: [
-    {
-      transcript: "Notwithstanding the optimism in the press release, the underlying figures paint a more sober picture: growth has stalled, margins are thinning, and the much-touted expansion has yet to materialize.",
-      questions: [
-        { question: "How do the underlying figures compare to the press release?", options: ["More optimistic", "More sober/negative", "Identical", "Irrelevant"], correctIndex: 1, explanation: "'a more sober picture'." },
-        { question: "What is said about the expansion?", options: ["It succeeded", "It has yet to materialize", "It was cancelled", "It doubled profits"], correctIndex: 1, explanation: "'has yet to materialize'." },
-      ],
-    },
-    {
-      transcript: "The lecturer argued, somewhat provocatively, that our obsession with productivity has hollowed out leisure itself, transforming even rest into another task to be optimized and measured.",
-      questions: [
-        { question: "What is the lecturer's main claim?", options: ["Productivity is always good", "Obsession with productivity has spoiled leisure", "Rest is impossible", "Measurement is useless"], correctIndex: 1, explanation: "'hollowed out leisure itself'." },
-        { question: "What has rest been transformed into?", options: ["A holiday", "Another task to be optimized", "A reward", "A memory"], correctIndex: 1, explanation: "'another task to be optimized and measured'." },
-      ],
-    },
+    L("Notwithstanding the optimism in the press release, the underlying figures paint a more sober picture: growth has stalled, margins are thinning, and the much-touted expansion has yet to materialize.",
+      [q("How do the figures compare to the press release?", ["More optimistic", "More sober/negative", "Identical", "Irrelevant"], 1, "'a more sober picture'."), q("What is said about the expansion?", ["It succeeded", "It has yet to materialize", "It was cancelled", "It doubled profits"], 1, "'has yet to materialize'.")]),
+    L("The lecturer argued, somewhat provocatively, that our obsession with productivity has hollowed out leisure itself, transforming even rest into another task to be optimized and measured.",
+      [q("What is the lecturer's main claim?", ["Productivity is good", "Obsession with productivity has spoiled leisure", "Rest is impossible", "Measurement is useless"], 1, "'hollowed out leisure'."), q("What has rest become?", ["A holiday", "Another task to be optimized", "A reward", "A memory"], 1, "'another task to be optimized'.")]),
+    L("Let me be candid: the report's methodology is sound, but its conclusions overreach. The data support a cautious correlation at best, yet the authors leap to sweeping policy recommendations the evidence simply cannot bear.",
+      [q("What does the speaker think of the methodology?", ["Flawed", "Sound", "Unclear", "Outdated"], 1, "'the methodology is sound'."), q("What is the criticism of the conclusions?", ["Too cautious", "They overreach beyond the evidence", "Too short", "Well supported"], 1, "'its conclusions overreach'.")]),
+    L("There is an irony here that should not escape us. In striving to make our communication ever faster and more frictionless, we may have made it correspondingly thinner — abundant in quantity, impoverished in depth.",
+      [q("What irony does the speaker note?", ["Slower is worse", "Faster communication may have become thinner", "Depth is easy", "Quantity fell"], 1, "'faster... thinner'."), q("How is modern communication characterized?", ["Rich in depth", "Abundant but impoverished in depth", "Rare", "Silent"], 1, "'abundant in quantity, impoverished in depth'.")]),
+    L("The novel resists easy summary, and perhaps that is the point. Each time you think you have grasped its argument, it slips sideways, undercutting the very certainty it seemed, a page earlier, to offer.",
+      [q("What is said about summarizing the novel?", ["It is simple", "It resists easy summary", "It is short", "It is boring"], 1, "'resists easy summary'."), q("What does the novel do to certainty?", ["Confirms it", "Undercuts it", "Ignores it", "Explains it"], 1, "'undercutting the very certainty'.")]),
   ],
 };
 
@@ -289,6 +231,9 @@ export const SPEAKING_SENTENCES = {
     { text: "What time is it now?", translation: "מה השעה עכשיו?" },
     { text: "I go to school every day.", translation: "אני הולך לבית הספר כל יום." },
     { text: "The weather is nice today.", translation: "מזג האוויר נעים היום." },
+    { text: "How much is this, please?", translation: "כמה זה עולה, בבקשה?" },
+    { text: "I have a small dog at home.", translation: "יש לי כלב קטן בבית." },
+    { text: "Thank you very much. Goodbye!", translation: "תודה רבה. להתראות!" },
   ],
   A2: [
     { text: "Could you help me find this address?", translation: "תוכל לעזור לי למצוא את הכתובת הזו?" },
@@ -300,6 +245,9 @@ export const SPEAKING_SENTENCES = {
     { text: "We are planning a trip to Greece.", translation: "אנחנו מתכננים טיול ליוון." },
     { text: "Excuse me, is this seat free?", translation: "סליחה, המקום הזה פנוי?" },
     { text: "I'd like to book a table for two.", translation: "אשמח להזמין שולחן לשניים." },
+    { text: "What time does the next bus leave?", translation: "באיזו שעה יוצא האוטובוס הבא?" },
+    { text: "I'm looking for a smaller size.", translation: "אני מחפש מידה קטנה יותר." },
+    { text: "It was a really good film.", translation: "זה היה סרט ממש טוב." },
   ],
   B1: [
     { text: "I've been learning English for about two years.", translation: "אני לומד אנגלית כבר בערך שנתיים." },
@@ -311,6 +259,9 @@ export const SPEAKING_SENTENCES = {
     { text: "I've already finished the report.", translation: "כבר סיימתי את הדוח." },
     { text: "Let me know if you need anything.", translation: "תעדכן אותי אם אתה צריך משהו." },
     { text: "I was going to leave, but it started to rain.", translation: "התכוונתי לצאת, אבל התחיל לרדת גשם." },
+    { text: "Do you think we should wait a little longer?", translation: "אתה חושב שכדאי לנו לחכות עוד קצת?" },
+    { text: "I'd rather meet in the afternoon if that's okay.", translation: "אני מעדיף להיפגש אחר הצהריים, אם זה בסדר." },
+    { text: "Sorry, could you repeat that more slowly?", translation: "סליחה, תוכל לחזור על זה לאט יותר?" },
   ],
   B2: [
     { text: "I'd appreciate it if you could send me the details.", translation: "אודה לך אם תוכל לשלוח לי את הפרטים." },
@@ -322,6 +273,9 @@ export const SPEAKING_SENTENCES = {
     { text: "I'd rather discuss this in person.", translation: "אני מעדיף לדון בזה פנים אל פנים." },
     { text: "Could you clarify what you mean by that?", translation: "תוכל להבהיר למה אתה מתכוון?" },
     { text: "On the whole, the project went well.", translation: "באופן כללי, הפרויקט הלך טוב." },
+    { text: "I'm afraid I have to disagree on that point.", translation: "אני חושש שעליי לא להסכים בנקודה הזו." },
+    { text: "Let's focus on what we can actually control.", translation: "בוא נתמקד במה שבאמת בשליטתנו." },
+    { text: "That's exactly the issue I wanted to raise.", translation: "זו בדיוק הסוגיה שרציתי להעלות." },
   ],
   C1: [
     { text: "Despite the challenges, I'm confident we can meet the deadline.", translation: "למרות האתגרים, אני בטוח שנוכל לעמוד בלוח הזמנים." },
@@ -333,6 +287,9 @@ export const SPEAKING_SENTENCES = {
     { text: "To put it bluntly, the strategy isn't working.", translation: "אם לומר זאת בכנות, האסטרטגיה לא עובדת." },
     { text: "Bear in mind that circumstances may change.", translation: "קח בחשבון שהנסיבות עשויות להשתנות." },
     { text: "I'd be hesitant to commit without more information.", translation: "הייתי מהסס להתחייב ללא מידע נוסף." },
+    { text: "If anything, this only strengthens our case.", translation: "אם כבר, זה רק מחזק את הטיעון שלנו." },
+    { text: "Let's give credit where it's due.", translation: "בוא ניתן קרדיט למי שמגיע לו." },
+    { text: "I take your point, though I'd add one caveat.", translation: "אני מקבל את דבריך, אם כי אוסיף הסתייגות אחת." },
   ],
   C2: [
     { text: "I'm not entirely convinced that the premise holds up.", translation: "אני לא משוכנע לחלוטין שההנחה מחזיקה מים." },
@@ -344,5 +301,8 @@ export const SPEAKING_SENTENCES = {
     { text: "That nuance tends to get lost in the headlines.", translation: "הניואנס הזה נוטה ללכת לאיבוד בכותרות." },
     { text: "We mustn't lose sight of the broader context.", translation: "אסור לנו לאבד את ההקשר הרחב יותר." },
     { text: "It's a compelling case, albeit not a watertight one.", translation: "זה טיעון משכנע, גם אם לא חסין לחלוטין." },
+    { text: "I'd be the first to concede the point if proven wrong.", translation: "אהיה הראשון להודות בכך אם יוכח שטעיתי." },
+    { text: "The argument, for all its elegance, rests on a shaky premise.", translation: "הטיעון, על אף יופיו, נשען על הנחה רעועה." },
+    { text: "Let's not mistake confidence for competence.", translation: "בוא לא נטעה בין ביטחון עצמי ליכולת." },
   ],
 };

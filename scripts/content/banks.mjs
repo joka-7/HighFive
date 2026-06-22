@@ -1,18 +1,16 @@
 // Curated base content banks for the offline generator.
 //
-// Everything here is hand-verified source material. The generator
-// (scripts/generate-content.mjs) expands these banks into a full year (365
-// daily instances) per CEFR level using deterministic rotation, so the data is
-// correct-by-construction and fully reproducible — re-running the generator
-// yields byte-identical output.
+// Source material is hand-verified. The generator (scripts/generate-content.mjs)
+// expands these banks into a full year per CEFR level via deterministic
+// rotation, so output is correct-by-construction and reproducible.
 //
-// Hebrew (definitions, translations, explanations) is written for native
-// Hebrew speakers learning English, matching the app's existing tone.
+// Vocabulary leveling follows the CEFR bands of the Oxford 3000/5000 and the
+// English Vocabulary Profile (applied from reference knowledge, not a fetched
+// copy). Hebrew is written for native Hebrew speakers.
 
 // ---------------------------------------------------------------------------
 // Verb table — base / 3rd-person-singular / past / past-participle / -ing.
-// Hand-checked, including irregulars. Tagged with the lowest CEFR level the
-// verb is appropriate for, so each level draws from its own band and below.
+// `lvl` is the level INDEX (A1=0 … C2=5): the lowest level the verb suits.
 // ---------------------------------------------------------------------------
 export const VERBS = [
   { base: "go", third: "goes", past: "went", pp: "gone", ing: "going", he: "ללכת", lvl: 0 },
@@ -27,6 +25,9 @@ export const VERBS = [
   { base: "watch", third: "watches", past: "watched", pp: "watched", ing: "watching", he: "לצפות", lvl: 0 },
   { base: "play", third: "plays", past: "played", pp: "played", ing: "playing", he: "לשחק/לנגן", lvl: 0 },
   { base: "work", third: "works", past: "worked", pp: "worked", ing: "working", he: "לעבוד", lvl: 0 },
+  { base: "run", third: "runs", past: "ran", pp: "run", ing: "running", he: "לרוץ", lvl: 0 },
+  { base: "sleep", third: "sleeps", past: "slept", pp: "slept", ing: "sleeping", he: "לישון", lvl: 0 },
+  { base: "open", third: "opens", past: "opened", pp: "opened", ing: "opening", he: "לפתוח", lvl: 0 },
   { base: "write", third: "writes", past: "wrote", pp: "written", ing: "writing", he: "לכתוב", lvl: 1 },
   { base: "read", third: "reads", past: "read", pp: "read", ing: "reading", he: "לקרוא", lvl: 1 },
   { base: "buy", third: "buys", past: "bought", pp: "bought", ing: "buying", he: "לקנות", lvl: 1 },
@@ -34,6 +35,8 @@ export const VERBS = [
   { base: "think", third: "thinks", past: "thought", pp: "thought", ing: "thinking", he: "לחשוב", lvl: 1 },
   { base: "find", third: "finds", past: "found", pp: "found", ing: "finding", he: "למצוא", lvl: 1 },
   { base: "speak", third: "speaks", past: "spoke", pp: "spoken", ing: "speaking", he: "לדבר", lvl: 1 },
+  { base: "feel", third: "feels", past: "felt", pp: "felt", ing: "feeling", he: "להרגיש", lvl: 1 },
+  { base: "tell", third: "tells", past: "told", pp: "told", ing: "telling", he: "לספר/לומר", lvl: 1 },
   { base: "leave", third: "leaves", past: "left", pp: "left", ing: "leaving", he: "לעזוב", lvl: 2 },
   { base: "meet", third: "meets", past: "met", pp: "met", ing: "meeting", he: "לפגוש", lvl: 2 },
   { base: "pay", third: "pays", past: "paid", pp: "paid", ing: "paying", he: "לשלם", lvl: 2 },
@@ -41,12 +44,18 @@ export const VERBS = [
   { base: "choose", third: "chooses", past: "chose", pp: "chosen", ing: "choosing", he: "לבחור", lvl: 2 },
   { base: "win", third: "wins", past: "won", pp: "won", ing: "winning", he: "לנצח", lvl: 2 },
   { base: "teach", third: "teaches", past: "taught", pp: "taught", ing: "teaching", he: "ללמד", lvl: 2 },
+  { base: "send", third: "sends", past: "sent", pp: "sent", ing: "sending", he: "לשלוח", lvl: 2 },
+  { base: "spend", third: "spends", past: "spent", pp: "spent", ing: "spending", he: "להוציא/לבלות", lvl: 2 },
   { base: "understand", third: "understands", past: "understood", pp: "understood", ing: "understanding", he: "להבין", lvl: 3 },
   { base: "achieve", third: "achieves", past: "achieved", pp: "achieved", ing: "achieving", he: "להשיג", lvl: 3 },
   { base: "rise", third: "rises", past: "rose", pp: "risen", ing: "rising", he: "לעלות/לזרוח", lvl: 3 },
+  { base: "deal", third: "deals", past: "dealt", pp: "dealt", ing: "dealing", he: "להתמודד", lvl: 3 },
+  { base: "draw", third: "draws", past: "drew", pp: "drawn", ing: "drawing", he: "לצייר/למשוך", lvl: 3 },
   { base: "seek", third: "seeks", past: "sought", pp: "sought", ing: "seeking", he: "לחפש/לבקש", lvl: 4 },
   { base: "arise", third: "arises", past: "arose", pp: "arisen", ing: "arising", he: "להתעורר/לצוץ", lvl: 4 },
+  { base: "bear", third: "bears", past: "bore", pp: "borne", ing: "bearing", he: "לשאת/לסבול", lvl: 4 },
   { base: "undertake", third: "undertakes", past: "undertook", pp: "undertaken", ing: "undertaking", he: "לקחת על עצמו", lvl: 5 },
+  { base: "forgo", third: "forgoes", past: "forwent", pp: "forgone", ing: "forgoing", he: "לוותר על", lvl: 5 },
 ];
 
 // ---------------------------------------------------------------------------
@@ -56,15 +65,23 @@ export const ADJECTIVES = [
   { adj: "big", comp: "bigger", sup: "biggest", he: "גדול", lvl: 0 },
   { adj: "small", comp: "smaller", sup: "smallest", he: "קטן", lvl: 0 },
   { adj: "fast", comp: "faster", sup: "fastest", he: "מהיר", lvl: 0 },
+  { adj: "slow", comp: "slower", sup: "slowest", he: "איטי", lvl: 0 },
   { adj: "happy", comp: "happier", sup: "happiest", he: "שמח", lvl: 0 },
   { adj: "easy", comp: "easier", sup: "easiest", he: "קל", lvl: 0 },
+  { adj: "hot", comp: "hotter", sup: "hottest", he: "חם", lvl: 0 },
+  { adj: "cold", comp: "colder", sup: "coldest", he: "קר", lvl: 0 },
   { adj: "good", comp: "better", sup: "best", he: "טוב", lvl: 0 },
   { adj: "bad", comp: "worse", sup: "worst", he: "רע", lvl: 1 },
+  { adj: "early", comp: "earlier", sup: "earliest", he: "מוקדם", lvl: 1 },
   { adj: "expensive", comp: "more expensive", sup: "most expensive", he: "יקר", lvl: 1 },
+  { adj: "famous", comp: "more famous", sup: "most famous", he: "מפורסם", lvl: 1 },
   { adj: "important", comp: "more important", sup: "most important", he: "חשוב", lvl: 2 },
   { adj: "interesting", comp: "more interesting", sup: "most interesting", he: "מעניין", lvl: 2 },
   { adj: "difficult", comp: "more difficult", sup: "most difficult", he: "קשה", lvl: 2 },
+  { adj: "popular", comp: "more popular", sup: "most popular", he: "פופולרי", lvl: 2 },
   { adj: "comfortable", comp: "more comfortable", sup: "most comfortable", he: "נוח", lvl: 3 },
+  { adj: "successful", comp: "more successful", sup: "most successful", he: "מצליח", lvl: 3 },
+  { adj: "significant", comp: "more significant", sup: "most significant", he: "משמעותי", lvl: 4 },
 ];
 
 // Nouns tagged with their correct indefinite article (a/an), for article drills.
@@ -75,16 +92,20 @@ export const ARTICLE_NOUNS = [
   { noun: "umbrella", art: "an", he: "מטרייה" },
   { noun: "egg", art: "an", he: "ביצה" },
   { noun: "idea", art: "an", he: "רעיון" },
+  { noun: "island", art: "an", he: "אי" },
+  { noun: "answer", art: "an", he: "תשובה" },
   { noun: "book", art: "a", he: "ספר" },
   { noun: "car", art: "a", he: "מכונית" },
   { noun: "house", art: "a", he: "בית" },
   { noun: "university", art: "a", he: "אוניברסיטה" },
   { noun: "dog", art: "a", he: "כלב" },
   { noun: "table", art: "a", he: "שולחן" },
+  { noun: "European", art: "a", he: "אירופי" },
+  { noun: "uniform", art: "a", he: "מדים" },
 ];
 
 // Preposition items: a sentence with a blank, the correct preposition, and
-// distractors. Hand-written so each is unambiguous.
+// three distractors. Hand-written so each is unambiguous.
 export const PREP_ITEMS = [
   { before: "The keys are ", after: " the table.", correct: "on", wrong: ["in", "at", "to"], he: "'on' = על (משטח)." },
   { before: "She lives ", after: " London.", correct: "in", wrong: ["on", "at", "to"], he: "'in' לערים ומדינות." },
@@ -94,11 +115,57 @@ export const PREP_ITEMS = [
   { before: "They went ", after: " the beach.", correct: "to", wrong: ["at", "in", "on"], he: "'to' לכיוון/יעד." },
   { before: "The picture is ", after: " the wall.", correct: "on", wrong: ["in", "at", "by"], he: "'on the wall' = על הקיר." },
   { before: "She arrived ", after: " Monday.", correct: "on", wrong: ["in", "at", "to"], he: "'on' לימים ותאריכים." },
+  { before: "I was born ", after: " May.", correct: "in", wrong: ["on", "at", "of"], he: "'in' לחודשים ולשנים." },
+  { before: "He's afraid ", after: " spiders.", correct: "of", wrong: ["from", "to", "at"], he: "'afraid of' = מפחד מ־." },
+  { before: "This gift is ", after: " you.", correct: "for", wrong: ["to", "at", "of"], he: "'for' = עבור." },
+  { before: "We talked ", after: " the problem.", correct: "about", wrong: ["on", "of", "for"], he: "'talk about' = לדבר על." },
+  { before: "She's interested ", after: " art.", correct: "in", wrong: ["on", "at", "for"], he: "'interested in' = מתעניין ב־." },
+  { before: "It depends ", after: " the weather.", correct: "on", wrong: ["of", "in", "at"], he: "'depend on' = תלוי ב־." },
+];
+
+// Irregular plurals for the plural-formation drill.
+export const IRREGULAR_PLURALS = [
+  { sg: "child", pl: "children", he: "ילד" },
+  { sg: "man", pl: "men", he: "גבר" },
+  { sg: "woman", pl: "women", he: "אישה" },
+  { sg: "foot", pl: "feet", he: "כף רגל" },
+  { sg: "tooth", pl: "teeth", he: "שן" },
+  { sg: "mouse", pl: "mice", he: "עכבר" },
+  { sg: "leaf", pl: "leaves", he: "עלה" },
+  { sg: "knife", pl: "knives", he: "סכין" },
+  { sg: "city", pl: "cities", he: "עיר" },
+  { sg: "baby", pl: "babies", he: "תינוק" },
+];
+
+// Countable vs uncountable nouns for the much/many quantifier drill.
+export const COUNT_NOUNS = [
+  { noun: "water", type: "uncount", he: "מים" },
+  { noun: "money", type: "uncount", he: "כסף" },
+  { noun: "time", type: "uncount", he: "זמן" },
+  { noun: "information", type: "uncount", he: "מידע" },
+  { noun: "advice", type: "uncount", he: "עצה" },
+  { noun: "bread", type: "uncount", he: "לחם" },
+  { noun: "books", type: "count", he: "ספרים" },
+  { noun: "people", type: "count", he: "אנשים" },
+  { noun: "friends", type: "count", he: "חברים" },
+  { noun: "cars", type: "count", he: "מכוניות" },
+  { noun: "apples", type: "count", he: "תפוחים" },
+  { noun: "students", type: "count", he: "תלמידים" },
+];
+
+// Modal-verb items: pick the modal that fits the meaning. Hand-written.
+export const MODAL_ITEMS = [
+  { before: "You ", after: " see a doctor; it's serious.", correct: "should", wrong: ["can", "might", "would"], he: "'should' = המלצה (כדאי ש־)." },
+  { before: "I ", after: " swim when I was five.", correct: "could", wrong: ["can", "must", "should"], he: "'could' = יכולת בעבר." },
+  { before: "You ", after: " smoke here. It's forbidden.", correct: "mustn't", wrong: ["don't have to", "could", "might"], he: "'mustn't' = איסור." },
+  { before: "It ", after: " rain later, so take an umbrella.", correct: "might", wrong: ["must", "should", "can't"], he: "'might' = אפשרות." },
+  { before: "She ", after: " speak three languages.", correct: "can", wrong: ["must", "should", "ought"], he: "'can' = יכולת בהווה." },
+  { before: "We ", after: " hurry or we'll miss the train.", correct: "must", wrong: ["might", "could", "would"], he: "'must' = הכרח." },
 ];
 
 // ---------------------------------------------------------------------------
-// Vocabulary banks — verified word / part-of-speech / Hebrew definition /
-// English example / Hebrew translation, per CEFR level.
+// Vocabulary banks — CEFR-leveled, with Hebrew definition / English example /
+// Hebrew translation. ~36 words per level.
 // ---------------------------------------------------------------------------
 export const WORD_BANKS = {
   A1: [
@@ -120,6 +187,24 @@ export const WORD_BANKS = {
     { word: "work", partOfSpeech: "verb", definition: "לעשות עבודה", example: "I work in an office.", translation: "לעבוד" },
     { word: "good", partOfSpeech: "adjective", definition: "בעל איכות חיובית", example: "This is a good idea.", translation: "טוב" },
     { word: "child", partOfSpeech: "noun", definition: "אדם צעיר, ילד", example: "The child is playing.", translation: "ילד" },
+    { word: "time", partOfSpeech: "noun", definition: "מה שמודדים בשעות ובדקות", example: "What time is it?", translation: "זמן" },
+    { word: "woman", partOfSpeech: "noun", definition: "אדם בוגר ממין נקבה", example: "The woman is a doctor.", translation: "אישה" },
+    { word: "man", partOfSpeech: "noun", definition: "אדם בוגר ממין זכר", example: "The man is reading.", translation: "גבר" },
+    { word: "city", partOfSpeech: "noun", definition: "מקום גדול שבו גרים הרבה אנשים", example: "Tel Aviv is a big city.", translation: "עיר" },
+    { word: "food", partOfSpeech: "noun", definition: "מה שאנחנו אוכלים", example: "The food is delicious.", translation: "אוכל" },
+    { word: "drink", partOfSpeech: "verb", definition: "להכניס נוזל לפה ולבלוע", example: "I drink coffee in the morning.", translation: "לשתות" },
+    { word: "see", partOfSpeech: "verb", definition: "להשתמש בעיניים כדי להבחין", example: "I can see the sea.", translation: "לראות" },
+    { word: "know", partOfSpeech: "verb", definition: "להחזיק במידע או בהיכרות", example: "I know the answer.", translation: "לדעת/להכיר" },
+    { word: "like", partOfSpeech: "verb", definition: "לחבב משהו", example: "I like ice cream.", translation: "לחבב" },
+    { word: "new", partOfSpeech: "adjective", definition: "שנוצר או נקנה לאחרונה", example: "I have a new phone.", translation: "חדש" },
+    { word: "old", partOfSpeech: "adjective", definition: "קיים זמן רב; לא צעיר", example: "This is an old house.", translation: "ישן/זקן" },
+    { word: "hot", partOfSpeech: "adjective", definition: "בעל טמפרטורה גבוהה", example: "The soup is hot.", translation: "חם" },
+    { word: "cold", partOfSpeech: "adjective", definition: "בעל טמפרטורה נמוכה", example: "The water is cold.", translation: "קר" },
+    { word: "walk", partOfSpeech: "verb", definition: "ללכת ברגל", example: "We walk to school.", translation: "ללכת ברגל" },
+    { word: "open", partOfSpeech: "verb", definition: "לגרום למשהו לא להיות סגור", example: "Please open the door.", translation: "לפתוח" },
+    { word: "read", partOfSpeech: "verb", definition: "להבין טקסט כתוב", example: "I read before I sleep.", translation: "לקרוא" },
+    { word: "write", partOfSpeech: "verb", definition: "לסמן אותיות ומילים", example: "Write your name here.", translation: "לכתוב" },
+    { word: "room", partOfSpeech: "noun", definition: "חלל בתוך מבנה", example: "My room is small.", translation: "חדר" },
   ],
   A2: [
     { word: "travel", partOfSpeech: "verb", definition: "לנסוע ממקום למקום, בדרך כלל למרחקים", example: "They travel abroad every summer.", translation: "לטייל/לנסוע" },
@@ -140,6 +225,24 @@ export const WORD_BANKS = {
     { word: "help", partOfSpeech: "verb", definition: "לעזור למישהו", example: "Can you help me, please?", translation: "לעזור" },
     { word: "place", partOfSpeech: "noun", definition: "מקום מסוים", example: "This is a quiet place.", translation: "מקום" },
     { word: "start", partOfSpeech: "verb", definition: "להתחיל משהו", example: "The film starts at eight.", translation: "להתחיל" },
+    { word: "health", partOfSpeech: "noun", definition: "מצב הגוף — בריא או חולה", example: "Exercise is good for your health.", translation: "בריאות" },
+    { word: "hope", partOfSpeech: "verb", definition: "לרצות שמשהו טוב יקרה", example: "I hope you feel better.", translation: "לקוות" },
+    { word: "become", partOfSpeech: "verb", definition: "להפוך למשהו אחר עם הזמן", example: "She became a teacher.", translation: "להפוך ל־" },
+    { word: "change", partOfSpeech: "verb", definition: "לגרום למשהו להיות שונה", example: "We changed the plan.", translation: "לשנות" },
+    { word: "prefer", partOfSpeech: "verb", definition: "לאהוב דבר אחד יותר מאחר", example: "I prefer tea to coffee.", translation: "להעדיף" },
+    { word: "return", partOfSpeech: "verb", definition: "לחזור או להחזיר", example: "Please return the book.", translation: "לחזור/להחזיר" },
+    { word: "journey", partOfSpeech: "noun", definition: "נסיעה ממקום אחד לאחר", example: "The journey took two hours.", translation: "מסע/נסיעה" },
+    { word: "nervous", partOfSpeech: "adjective", definition: "מתוח, חושש", example: "I feel nervous before a test.", translation: "לחוץ/עצבני" },
+    { word: "afraid", partOfSpeech: "adjective", definition: "מפחד ממשהו", example: "She is afraid of dogs.", translation: "מפחד" },
+    { word: "patient", partOfSpeech: "adjective", definition: "סבלני, לא ממהר", example: "A good teacher is patient.", translation: "סבלני" },
+    { word: "fresh", partOfSpeech: "adjective", definition: "טרי, חדש ולא מקולקל", example: "I like fresh bread.", translation: "טרי" },
+    { word: "cheap", partOfSpeech: "adjective", definition: "עולה מעט כסף", example: "This shop is cheap.", translation: "זול" },
+    { word: "quiet", partOfSpeech: "adjective", definition: "ללא רעש; שקט", example: "The library is quiet.", translation: "שקט" },
+    { word: "borrow", partOfSpeech: "verb", definition: "לקחת משהו לזמן מה ולהחזיר", example: "Can I borrow your pen?", translation: "לשאול/ללוות" },
+    { word: "ticket", partOfSpeech: "noun", definition: "כרטיס שמאפשר כניסה או נסיעה", example: "I bought a train ticket.", translation: "כרטיס" },
+    { word: "plan", partOfSpeech: "noun", definition: "רעיון מסודר למה שעומדים לעשות", example: "What are your plans?", translation: "תוכנית" },
+    { word: "fix", partOfSpeech: "verb", definition: "לתקן משהו שבור", example: "He fixed my bike.", translation: "לתקן" },
+    { word: "wait", partOfSpeech: "verb", definition: "להישאר עד שמשהו יקרה", example: "Wait for me here.", translation: "לחכות" },
   ],
   B1: [
     { word: "achieve", partOfSpeech: "verb", definition: "להשיג מטרה לאחר מאמץ ועבודה קשה", example: "She worked hard to achieve her goals.", translation: "להשיג" },
@@ -160,6 +263,24 @@ export const WORD_BANKS = {
     { word: "opportunity", partOfSpeech: "noun", definition: "הזדמנות — מצב מתאים לפעולה", example: "This is a great opportunity.", translation: "הזדמנות" },
     { word: "require", partOfSpeech: "verb", definition: "לדרוש — להיות צורך הכרחי", example: "This job requires patience.", translation: "לדרוש" },
     { word: "successful", partOfSpeech: "adjective", definition: "מצליח — משיג את מטרתו", example: "She is a successful lawyer.", translation: "מצליח" },
+    { word: "advantage", partOfSpeech: "noun", definition: "יתרון — דבר חיובי שמסייע", example: "Speaking English is an advantage.", translation: "יתרון" },
+    { word: "society", partOfSpeech: "noun", definition: "חברה — קבוצת אנשים שחיים יחד", example: "Technology changes society.", translation: "חברה" },
+    { word: "environment", partOfSpeech: "noun", definition: "הסביבה — הטבע שמסביבנו", example: "We must protect the environment.", translation: "סביבה" },
+    { word: "behaviour", partOfSpeech: "noun", definition: "התנהגות — איך מישהו פועל", example: "His behaviour was strange.", translation: "התנהגות" },
+    { word: "attitude", partOfSpeech: "noun", definition: "גישה — דרך החשיבה כלפי משהו", example: "She has a positive attitude.", translation: "גישה/יחס" },
+    { word: "manage", partOfSpeech: "verb", definition: "להצליח להתמודד או לנהל", example: "He manages a small team.", translation: "לנהל/להסתדר" },
+    { word: "provide", partOfSpeech: "verb", definition: "לספק — לתת מה שצריך", example: "The hotel provides breakfast.", translation: "לספק" },
+    { word: "affect", partOfSpeech: "verb", definition: "להשפיע על משהו", example: "Noise can affect your sleep.", translation: "להשפיע על" },
+    { word: "reduce", partOfSpeech: "verb", definition: "להקטין בכמות או במידה", example: "We need to reduce waste.", translation: "להפחית" },
+    { word: "common", partOfSpeech: "adjective", definition: "נפוץ — קורה לעיתים קרובות", example: "It's a common mistake.", translation: "נפוץ/שכיח" },
+    { word: "realize", partOfSpeech: "verb", definition: "להבין פתאום משהו", example: "I realized I was wrong.", translation: "להבין/לקלוט" },
+    { word: "responsible", partOfSpeech: "adjective", definition: "אחראי — מי שצריך לדאוג למשהו", example: "She is responsible for the budget.", translation: "אחראי" },
+    { word: "social", partOfSpeech: "adjective", definition: "חברתי — הקשור ליחסים בין אנשים", example: "He has an active social life.", translation: "חברתי" },
+    { word: "recent", partOfSpeech: "adjective", definition: "מהזמן האחרון", example: "In recent years, prices rose.", translation: "אחרון/לאחרונה" },
+    { word: "prepare", partOfSpeech: "verb", definition: "להתכונן או להכין משהו", example: "I prepared dinner for guests.", translation: "להכין/להתכונן" },
+    { word: "explain", partOfSpeech: "verb", definition: "להסביר — לעשות משהו ברור", example: "Can you explain the rule?", translation: "להסביר" },
+    { word: "result", partOfSpeech: "noun", definition: "תוצאה — מה שקורה בסוף", example: "The result was a success.", translation: "תוצאה" },
+    { word: "situation", partOfSpeech: "noun", definition: "מצב — הנסיבות ברגע מסוים", example: "It was a difficult situation.", translation: "מצב" },
   ],
   B2: [
     { word: "significant", partOfSpeech: "adjective", definition: "משמעותי — בעל חשיבות או השפעה ניכרת", example: "There was a significant change in sales.", translation: "משמעותי" },
@@ -180,13 +301,31 @@ export const WORD_BANKS = {
     { word: "evident", partOfSpeech: "adjective", definition: "ברור — נראה לעין בבירור", example: "It was evident that he was tired.", translation: "ברור/גלוי" },
     { word: "framework", partOfSpeech: "noun", definition: "מסגרת — מבנה בסיסי לרעיון או מערכת", example: "We built a legal framework.", translation: "מסגרת" },
     { word: "anticipate", partOfSpeech: "verb", definition: "לצפות מראש — לחזות ולהיערך", example: "We anticipate strong demand.", translation: "לצפות מראש" },
+    { word: "assess", partOfSpeech: "verb", definition: "להעריך — לשפוט ערך או מצב", example: "Teachers assess students' work.", translation: "להעריך/לאמוד" },
+    { word: "factor", partOfSpeech: "noun", definition: "גורם — דבר שמשפיע על תוצאה", example: "Cost is an important factor.", translation: "גורם" },
+    { word: "conduct", partOfSpeech: "verb", definition: "לבצע או לנהל פעילות", example: "They conducted a survey.", translation: "לבצע/לערוך" },
+    { word: "distinct", partOfSpeech: "adjective", definition: "נבדל — ברור ושונה מאחרים", example: "There are two distinct groups.", translation: "נבדל/ברור" },
+    { word: "ensure", partOfSpeech: "verb", definition: "לוודא — לדאוג שמשהו יקרה", example: "Please ensure the door is locked.", translation: "לוודא" },
+    { word: "occur", partOfSpeech: "verb", definition: "להתרחש — לקרות", example: "The accident occurred at night.", translation: "להתרחש" },
+    { word: "maintain", partOfSpeech: "verb", definition: "לשמור על מצב או לתחזק", example: "It's hard to maintain a garden.", translation: "לשמר/לתחזק" },
+    { word: "potential", partOfSpeech: "noun", definition: "פוטנציאל — יכולת עתידית אפשרית", example: "She has great potential.", translation: "פוטנציאל" },
+    { word: "concept", partOfSpeech: "noun", definition: "מושג — רעיון מופשט", example: "It's a difficult concept.", translation: "מושג" },
+    { word: "indicate", partOfSpeech: "verb", definition: "להצביע על או לרמוז", example: "The data indicates a problem.", translation: "להצביע על" },
+    { word: "previous", partOfSpeech: "adjective", definition: "קודם — שהיה לפני", example: "See my previous email.", translation: "קודם" },
+    { word: "release", partOfSpeech: "verb", definition: "לשחרר או להוציא לציבור", example: "They released a new album.", translation: "לשחרר/להוציא" },
+    { word: "majority", partOfSpeech: "noun", definition: "רוב — החלק הגדול מתוך קבוצה", example: "The majority agreed.", translation: "רוב" },
+    { word: "via", partOfSpeech: "preposition", definition: "דרך, באמצעות", example: "We flew via Rome.", translation: "דרך/באמצעות" },
+    { word: "crucial", partOfSpeech: "adjective", definition: "מכריע — חשוב מאוד וקריטי", example: "This step is crucial.", translation: "מכריע/קריטי" },
+    { word: "minor", partOfSpeech: "adjective", definition: "קל ערך — קטן או לא חשוב", example: "It was a minor problem.", translation: "מינורי/זניח" },
+    { word: "appeal", partOfSpeech: "verb", definition: "למשוך, לקרוא לעזרה או לערער", example: "The idea appeals to me.", translation: "למשוך/לערער" },
+    { word: "respond", partOfSpeech: "verb", definition: "להגיב או לענות", example: "She responded quickly.", translation: "להגיב" },
   ],
   C1: [
     { word: "nevertheless", partOfSpeech: "adverb", definition: "אף על פי כן — מילת ניגוד פורמלית", example: "The plan was risky; nevertheless, it worked.", translation: "אף על פי כן" },
     { word: "compelling", partOfSpeech: "adjective", definition: "משכנע — חזק ומושך תשומת לב", example: "She made a compelling argument.", translation: "משכנע" },
-    { word: "undermine", partOfSpeech: "verb", definition: "לחתור תחת — להחליש בהדרגה", example: "Constant criticism can undermine confidence.", translation: "לחתור תחת/להחליש" },
-    { word: "inherent", partOfSpeech: "adjective", definition: "מובנה — קיים מטבעו של דבר", example: "There are inherent risks in any investment.", translation: "מובנה/טבוע" },
-    { word: "comprehensive", partOfSpeech: "adjective", definition: "מקיף — כולל את כל ההיבטים", example: "The report is comprehensive and detailed.", translation: "מקיף" },
+    { word: "undermine", partOfSpeech: "verb", definition: "לחתור תחת — להחליש בהדרגה", example: "Criticism can undermine confidence.", translation: "לחתור תחת/להחליש" },
+    { word: "inherent", partOfSpeech: "adjective", definition: "מובנה — קיים מטבעו של דבר", example: "There are inherent risks in investing.", translation: "מובנה/טבוע" },
+    { word: "comprehensive", partOfSpeech: "adjective", definition: "מקיף — כולל את כל ההיבטים", example: "The report is comprehensive.", translation: "מקיף" },
     { word: "advocate", partOfSpeech: "verb", definition: "לתמוך ולקדם רעיון בפומבי", example: "She advocates for equal rights.", translation: "לתמוך/לדגול" },
     { word: "discrepancy", partOfSpeech: "noun", definition: "אי-התאמה — הבדל בין דברים שאמורים להיות זהים", example: "There is a discrepancy in the figures.", translation: "אי-התאמה" },
     { word: "mitigate", partOfSpeech: "verb", definition: "להקל או להפחית חומרה של בעיה", example: "Steps were taken to mitigate the damage.", translation: "להקל/למתן" },
@@ -198,8 +337,25 @@ export const WORD_BANKS = {
     { word: "viable", partOfSpeech: "adjective", definition: "בר-ביצוע — מעשי ויכול להצליח", example: "It is the only viable option.", translation: "בר-ביצוע" },
     { word: "underlying", partOfSpeech: "adjective", definition: "בסיסי — שנמצא ביסוד הדברים אך אינו גלוי", example: "We must address the underlying cause.", translation: "בסיסי/שביסוד" },
     { word: "alleviate", partOfSpeech: "verb", definition: "להקל על כאב, סבל או בעיה", example: "The medicine alleviates the pain.", translation: "להקל/לשכך" },
-    { word: "notwithstanding", partOfSpeech: "preposition", definition: "על אף — למרות (פורמלי)", example: "Notwithstanding the delays, the project succeeded.", translation: "על אף" },
+    { word: "notwithstanding", partOfSpeech: "preposition", definition: "על אף — למרות (פורמלי)", example: "Notwithstanding the delays, it succeeded.", translation: "על אף" },
     { word: "intricate", partOfSpeech: "adjective", definition: "מורכב ומסובך, עם פרטים רבים", example: "The watch has an intricate design.", translation: "מורכב/סבוך" },
+    { word: "ambiguous", partOfSpeech: "adjective", definition: "דו-משמעי — ניתן לפרש ביותר מדרך אחת", example: "His answer was ambiguous.", translation: "דו-משמעי/עמום" },
+    { word: "robust", partOfSpeech: "adjective", definition: "חזק ועמיד; איתן", example: "We need a robust system.", translation: "חסון/איתן" },
+    { word: "plausible", partOfSpeech: "adjective", definition: "סביר — נשמע אפשרי ומשכנע", example: "That's a plausible explanation.", translation: "סביר/מתקבל על הדעת" },
+    { word: "implication", partOfSpeech: "noun", definition: "השלכה או משמעות נסתרת", example: "Consider the implications of the decision.", translation: "השלכה/משתמע" },
+    { word: "constitute", partOfSpeech: "verb", definition: "להוות — להרכיב או להיחשב כ־", example: "These acts constitute a crime.", translation: "להוות" },
+    { word: "explicit", partOfSpeech: "adjective", definition: "מפורש — נאמר באופן ברור וישיר", example: "She gave explicit instructions.", translation: "מפורש" },
+    { word: "facilitate", partOfSpeech: "verb", definition: "להקל ולסייע לתהליך להתקדם", example: "The app facilitates communication.", translation: "להקל/לאפשר" },
+    { word: "predominant", partOfSpeech: "adjective", definition: "השולט — הבולט או הנפוץ ביותר", example: "Blue was the predominant colour.", translation: "השולט/הבולט" },
+    { word: "subsequent", partOfSpeech: "adjective", definition: "מאוחר יותר — שבא אחרי", example: "In subsequent years, things changed.", translation: "שלאחר מכן" },
+    { word: "render", partOfSpeech: "verb", definition: "להפוך למצב מסוים; לגרום ל־", example: "The injury rendered him helpless.", translation: "להפוך/לעשות" },
+    { word: "albeit", partOfSpeech: "conjunction", definition: "אם כי — למרות ש (פורמלי)", example: "It was successful, albeit costly.", translation: "אם כי" },
+    { word: "paramount", partOfSpeech: "adjective", definition: "עליון — בעל החשיבות הגבוהה ביותר", example: "Safety is paramount.", translation: "עליון/ראשון במעלה" },
+    { word: "deteriorate", partOfSpeech: "verb", definition: "להתדרדר — להיהפך לגרוע יותר", example: "Her health deteriorated.", translation: "להתדרדר" },
+    { word: "vague", partOfSpeech: "adjective", definition: "מעורפל — לא ברור או לא מדויק", example: "He gave a vague answer.", translation: "מעורפל" },
+    { word: "endeavour", partOfSpeech: "noun", definition: "מאמץ או מיזם שאפתני", example: "A scientific endeavour.", translation: "מאמץ/מיזם" },
+    { word: "discern", partOfSpeech: "verb", definition: "להבחין — לזהות בקושי או בדיוק", example: "It was hard to discern the truth.", translation: "להבחין/להבדיל" },
+    { word: "prominent", partOfSpeech: "adjective", definition: "בולט — חשוב ומוכר", example: "A prominent scientist.", translation: "בולט/נודע" },
   ],
   C2: [
     { word: "ubiquitous", partOfSpeech: "adjective", definition: "נמצא בכל מקום בו-זמנית", example: "Smartphones are now ubiquitous.", translation: "נמצא בכל מקום" },
@@ -217,8 +373,24 @@ export const WORD_BANKS = {
     { word: "salient", partOfSpeech: "adjective", definition: "בולט — החשוב והניכר ביותר", example: "Let me note the salient points.", translation: "בולט/מרכזי" },
     { word: "anomaly", partOfSpeech: "noun", definition: "חריגה מהנורמה או מהצפוי", example: "The data showed a strange anomaly.", translation: "חריגה/אנומליה" },
     { word: "cogent", partOfSpeech: "adjective", definition: "משכנע ומבוסס היטב הגיונית", example: "She presented a cogent case.", translation: "משכנע/מנומק" },
-    { word: "dichotomy", partOfSpeech: "noun", definition: "ניגוד חד בין שני דברים נפרדים", example: "There is a dichotomy between theory and practice.", translation: "ניגוד/דיכוטומיה" },
+    { word: "dichotomy", partOfSpeech: "noun", definition: "ניגוד חד בין שני דברים נפרדים", example: "The dichotomy between theory and practice.", translation: "ניגוד/דיכוטומיה" },
     { word: "espouse", partOfSpeech: "verb", definition: "לאמץ ולתמוך ברעיון או באמונה", example: "He espoused liberal values.", translation: "לאמץ/לדגול" },
-    { word: "inexorable", partOfSpeech: "adjective", definition: "בלתי-נמנע — שאי אפשר לעצור", example: "The inexorable rise of technology continues.", translation: "בלתי-נמנע" },
+    { word: "inexorable", partOfSpeech: "adjective", definition: "בלתי-נמנע — שאי אפשר לעצור", example: "The inexorable rise of technology.", translation: "בלתי-נמנע" },
+    { word: "ostensible", partOfSpeech: "adjective", definition: "לכאורה — נראה כך אך אולי לא באמת", example: "The ostensible reason was cost.", translation: "לכאורה/למראית עין" },
+    { word: "idiosyncratic", partOfSpeech: "adjective", definition: "ייחודי ומוזר לאדם מסוים", example: "He has an idiosyncratic style.", translation: "ייחודי/אופייני־רק־לו" },
+    { word: "pernicious", partOfSpeech: "adjective", definition: "מזיק מאוד, לעיתים בהדרגה ובסתר", example: "A pernicious influence.", translation: "מזיק/ממאיר" },
+    { word: "eschew", partOfSpeech: "verb", definition: "להימנע במכוון ממשהו", example: "She eschews social media.", translation: "להימנע מ־/לבחול ב־" },
+    { word: "sanguine", partOfSpeech: "adjective", definition: "אופטימי ובטוח גם במצב קשה", example: "He remained sanguine about the future.", translation: "אופטימי" },
+    { word: "ameliorate", partOfSpeech: "verb", definition: "לשפר מצב גרוע; להיטיב", example: "Reforms ameliorated conditions.", translation: "להיטיב/לשפר" },
+    { word: "antithetical", partOfSpeech: "adjective", definition: "מנוגד לחלוטין במהותו", example: "The idea is antithetical to freedom.", translation: "מנוגד בתכלית" },
+    { word: "perfunctory", partOfSpeech: "adjective", definition: "שטחי ונעשה ללא עניין אמיתי", example: "A perfunctory nod.", translation: "שטחי/לצאת ידי חובה" },
+    { word: "burgeon", partOfSpeech: "verb", definition: "לצמוח ולהתפתח במהירות", example: "A burgeoning industry.", translation: "לפרוח/לשגשג" },
+    { word: "capitulate", partOfSpeech: "verb", definition: "להיכנע ולהפסיק להתנגד", example: "They finally capitulated.", translation: "להיכנע" },
+    { word: "equivocal", partOfSpeech: "adjective", definition: "דו-משמעי ומעורפל בכוונה", example: "An equivocal response.", translation: "דו-משמעי/מתחמק" },
+    { word: "intransigent", partOfSpeech: "adjective", definition: "עקשן ולא מוכן להתפשר", example: "An intransigent negotiator.", translation: "בלתי־מתפשר/עיקש" },
+    { word: "laconic", partOfSpeech: "adjective", definition: "ממעט במילים; תמציתי", example: "A laconic reply.", translation: "לקוני/קצר־אמרים" },
+    { word: "vicarious", partOfSpeech: "adjective", definition: "חוויה דרך חוויותיו של אחר", example: "Vicarious pleasure.", translation: "בעקיפין/דרך אחרים" },
+    { word: "untenable", partOfSpeech: "adjective", definition: "עמדה שאי אפשר להגן עליה", example: "An untenable position.", translation: "בלתי־ניתן־להגנה" },
+    { word: "circumspect", partOfSpeech: "adjective", definition: "זהיר ומחושב בפעולותיו", example: "Be circumspect in your dealings.", translation: "זהיר/מחושב" },
   ],
 };
