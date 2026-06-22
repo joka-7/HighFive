@@ -13,7 +13,16 @@
 import { writeFileSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { VERBS, ADJECTIVES, ARTICLE_NOUNS, PREP_ITEMS, WORD_BANKS } from "./content/banks.mjs";
+import {
+  VERBS,
+  ADJECTIVES,
+  ARTICLE_NOUNS,
+  PREP_ITEMS,
+  IRREGULAR_PLURALS,
+  COUNT_NOUNS,
+  MODAL_ITEMS,
+  WORD_BANKS,
+} from "./content/banks.mjs";
 import { READINGS, LISTENINGS, SPEAKING_SENTENCES } from "./content/passages.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -123,6 +132,45 @@ const GEN = {
     const p = pick(rng, ctx.preps);
     return mcq(rng, `${p.before}___${p.after}`, p.correct, p.wrong, p.he);
   },
+  plurals(rng, ctx) {
+    const n = pick(rng, ctx.plurals);
+    return mcq(
+      rng,
+      `What is the plural of "${n.sg}" (${n.he})?`,
+      n.pl,
+      [n.sg + "s", n.sg + "es"],
+      `הרבים של ${n.sg} הוא ${n.pl} (צורה חריגה — לא רק תוספת s).`,
+      [n.pl + "s", n.sg + "ren"],
+    );
+  },
+  quantifier(rng, ctx) {
+    const n = pick(rng, ctx.countNouns);
+    const correct = n.type === "uncount" ? "much" : "many";
+    return mcq(
+      rng,
+      `'How ___ ${n.noun} do you need?'`,
+      correct,
+      ["much", "many", "some", "any"].filter((x) => x !== correct),
+      n.type === "uncount"
+        ? `'${n.noun}' (${n.he}) אינו נספר, ולכן 'much'.`
+        : `'${n.noun}' (${n.he}) נספר ברבים, ולכן 'many'.`,
+    );
+  },
+  presentContinuous(rng, ctx) {
+    const v = pick(rng, ctx.verbs);
+    return mcq(
+      rng,
+      `'She is ___ now.' — the -ing form of "${v.base}"?`,
+      v.ing,
+      [v.base + "ing", v.base, v.third],
+      `צורת ה-ing של ${v.base} היא ${v.ing}.`,
+      ["been " + v.ing, "to " + v.base],
+    );
+  },
+  modals(rng, ctx) {
+    const m = pick(rng, ctx.modals);
+    return mcq(rng, `${m.before}___${m.after}`, m.correct, m.wrong, m.he);
+  },
   vocabMeaning(rng, ctx) {
     const w = pick(rng, ctx.words);
     const others = shuffle(
@@ -154,30 +202,40 @@ function curriculum(levelIdx) {
       { key: "presentSimple3rd", title: "Present Simple (הווה פשוט)", explanation: "בהווה פשוט, עם גוף שלישי יחיד (he/she/it) מוסיפים לפועל סיומת -s או -es: she works, he goes, it watches. עם I/you/we/they הפועל נשאר בצורת הבסיס." },
       { key: "articles", title: "Articles a / an (תווית a / an)", explanation: "לפני שם עצם ביחיד משתמשים ב-'a' לפני צליל עיצור (a book) וב-'an' לפני צליל תנועה (an apple, an hour). הקובע הוא הצליל, לא האות." },
       { key: "pastSimple", title: "Past Simple (עבר פשוט)", explanation: "עבר פשוט מתאר פעולה שהסתיימה. פעלים רגילים מקבלים -ed (worked), אך פעלים רבים ונפוצים הם חריגים: go→went, eat→ate." },
+      { key: "plurals", title: "Plural Nouns (שמות עצם ברבים)", explanation: "רוב שמות העצם מקבלים -s ברבים (book→books), אך יש חריגים שצריך לזכור בעל-פה: child→children, man→men, foot→feet." },
+      { key: "presentContinuous", title: "Present Continuous (הווה ממושך)", explanation: "הווה ממושך (am/is/are + V-ing) מתאר פעולה שקורית עכשיו: She is running. שימו לב לכתיב: run→running (הכפלת אות), make→making (השמטת e)." },
     ],
     // A2
     [
       { key: "pastSimple", title: "Past Simple (עבר פשוט)", explanation: "עבר פשוט מתאר פעולה שהסתיימה בעבר. שימו לב לפעלים החריגים הנפוצים: buy→bought, think→thought, find→found." },
       { key: "comparatives", title: "Comparatives (יחסת השוואה)", explanation: "להשוואה בין שניים: שם תואר קצר מקבל -er (bigger), שם תואר ארוך מקבל 'more' לפניו (more expensive). יש חריגים: good→better, bad→worse." },
+      { key: "quantifier", title: "Much / Many (כמת)", explanation: "עם שמות עצם שאינם נספרים משתמשים ב-'much' (much water), ועם שמות עצם נספרים ברבים ב-'many' (many books)." },
       { key: "presentSimple3rd", title: "Present Simple Review (חזרה על הווה פשוט)", explanation: "תזכורת: עם he/she/it הפועל מקבל -s/-es. שאלות ושלילה נבנות עם do/does." },
+      { key: "prepositions", title: "Prepositions of Time & Place (מילות יחס)", explanation: "'in' לערים, חודשים ושנים; 'on' לימים ולמשטחים; 'at' לשעה מדויקת ולמקום נקודתי." },
     ],
     // B1
     [
       { key: "pastParticiple", title: "Present Perfect (הווה מושלם)", explanation: "הווה מושלם (have/has + V3) מתאר פעולה מהעבר עם קשר להווה. ה-past participle של פעלים חריגים שונה מהעבר הפשוט: see→saw→seen, write→wrote→written." },
       { key: "comparatives", title: "Comparatives & Superlatives (השוואה והפלגה)", explanation: "השוואה בין שניים: -er / more. הפלגה (הטוב ביותר מכולם): -est / most, עם 'the': the biggest, the most important." },
+      { key: "modals", title: "Modal Verbs (פעלים מודאליים)", explanation: "פעלי עזר מודאליים משנים את משמעות הפועל: can (יכולת), should (המלצה), must (הכרח), might (אפשרות), mustn't (איסור)." },
+      { key: "prepositions", title: "Dependent Prepositions (מילות יחס קבועות)", explanation: "פעלים ושמות תואר רבים מתחברים למילת יחס קבועה: good at, wait for, depend on, interested in. כדאי ללמוד את הצירוף כולו כיחידה אחת." },
     ],
     // B2
     [
       { key: "pastParticiple", title: "Perfect Tenses (זמני Perfect)", explanation: "זמני ה-Perfect מחברים בין נקודות זמן. שליטה ב-past participle של פעלים חריגים היא הבסיס לבנייתם הנכונה." },
       { key: "prepositions", title: "Dependent Prepositions (מילות יחס קבועות)", explanation: "פעלים ושמות תואר רבים מתחברים למילת יחס קבועה: good at, wait for, depend on. כדאי ללמוד את הצירוף כולו כיחידה אחת." },
+      { key: "modals", title: "Modals of Deduction & Advice (מודאליים)", explanation: "מודאליים מביעים גם הסקה והמלצה: must (בטוח), might (ייתכן), should (כדאי), mustn't (אסור). שימו לב להבדל ביניהם." },
+      { key: "vocabMeaning", title: "Academic Vocabulary (אוצר מילים אקדמי)", explanation: "ברמה זו נכנסות מילים מופשטות ונפוצות בכתיבה רשמית: significant, establish, demonstrate, framework. למדו אותן בהקשר." },
     ],
     // C1
     [
       { key: "vocabMeaning", title: "Advanced Lexis (אוצר מילים מתקדם)", explanation: "ברמה זו הדגש הוא על דיוק ועל גוון (nuance). מילים כמו 'mitigate' או 'inherent' מאפשרות להביע רעיונות מורכבים בקצרה ובדייקנות." },
+      { key: "vocabMeaning", title: "Connectors & Register (מילות קישור ומשלב)", explanation: "מילים כמו nevertheless, albeit, notwithstanding מעלות את המשלב של הטקסט. שליטה בהן מבדילה כתיבה שוטפת מכתיבה מתקדמת." },
     ],
     // C2
     [
       { key: "vocabMeaning", title: "Precision & Nuance (דיוק וגוון)", explanation: "ברמת C2 ההבדל הוא בין מילה נכונה למילה מדויקת. שליטה במילים כמו 'ubiquitous' או 'tenuous' מעידה על שליטה כמעט-ילידית." },
+      { key: "vocabMeaning", title: "Idiomatic & Formal Lexis (אוצר מילים גבוה)", explanation: "ברמה הגבוהה ביותר משלבים מילים נדירות ומדויקות כמו 'quintessential' או 'cogent' באופן טבעי וללא מאמץ ניכר." },
     ],
   ];
   return [...byLevel[levelIdx], ...base];
@@ -190,6 +248,9 @@ function buildLevel(level, levelIdx) {
     adjs: ADJECTIVES.filter((a) => a.lvl <= levelIdx),
     nouns: ARTICLE_NOUNS,
     preps: PREP_ITEMS,
+    plurals: IRREGULAR_PLURALS,
+    countNouns: COUNT_NOUNS,
+    modals: MODAL_ITEMS,
     words: WORD_BANKS[level],
   };
   const topics = curriculum(levelIdx);
@@ -255,6 +316,17 @@ function main() {
   const summary = [];
   for (let i = 0; i < LEVELS.length; i++) {
     const level = LEVELS[i];
+
+    // Sanity-check the source word bank: no duplicate words, no missing fields.
+    const bankWords = WORD_BANKS[level].map((w) => w.word);
+    const dup = bankWords.find((w, n) => bankWords.indexOf(w) !== n);
+    if (dup) throw new Error(`${level} word bank has duplicate word: "${dup}"`);
+    for (const w of WORD_BANKS[level]) {
+      if (!w.word || !w.translation || !w.definition || !w.example) {
+        throw new Error(`${level} word bank: incomplete entry ${JSON.stringify(w)}`);
+      }
+    }
+
     const { vocabulary, lessons, quizzes, readings, listenings, speakings } = buildLevel(level, i);
 
     // Validate every generated question.
