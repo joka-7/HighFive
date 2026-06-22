@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -15,9 +16,20 @@ import type {
   UserProgress,
 } from "../types";
 import { isDue, isSrsMastered, scheduleNext } from "../utils/srs";
+import {
+  isCloudConfigured,
+  loadCloud,
+  saveCloud,
+  signInWithGoogle,
+  signOut as cloudSignOut,
+  watchAuth,
+  type CloudData,
+  type CloudUser,
+} from "../services/firebase";
 
-// Persistence layer — replaces High5's Room database (LingoDatabase.kt) with
-// localStorage. Each entity table becomes a namespaced key.
+// Persistence layer — replaces High5's Room database with localStorage in
+// "Local mode", and (optionally) Firestore in "Account mode" when the user
+// signs in with Google. Local mode is always the default and the offline cache.
 
 const KEYS = {
   progress: "high5.progress",
@@ -48,6 +60,12 @@ interface LingoContextValue {
   savedWords: SavedWord[];
   chatMessages: ChatMessage[];
   quizHistory: QuizHistory[];
+  // Cloud / account state
+  cloudConfigured: boolean;
+  user: CloudUser | null;
+  authReady: boolean;
+  signIn: () => Promise<void>;
+  signOut: () => Promise<void>;
   registerUser: (userName: string, nativeLanguage: string, level: Level) => void;
   updateLevel: (level: Level) => void;
   addPoints: (points: number) => void;
@@ -79,6 +97,10 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     load<QuizHistory[]>(KEYS.quizHistory, []),
   );
 
+  const [user, setUser] = useState<CloudUser | null>(null);
+  const [authReady, setAuthReady] = useState(!isCloudConfigured());
+
+  // Always mirror state to localStorage (local mode + offline cache).
   useEffect(() => {
     localStorage.setItem(KEYS.progress, JSON.stringify(progress));
   }, [progress]);
@@ -92,8 +114,20 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(KEYS.quizHistory, JSON.stringify(quizHistory));
   }, [quizHistory]);
 
-  // Streak bookkeeping on mount — mirrors the daily-activity logic in
-  // LingoViewModel. Same day → unchanged; consecutive day → +1; gap → reset.
+  // Keep the latest snapshot in a ref so the auth callback can seed the cloud
+  // with current data without depending on stale closures.
+  const latest = useRef<CloudData>({
+    progress,
+    savedWords,
+    chatMessages,
+    quizHistory,
+  });
+  useEffect(() => {
+    latest.current = { progress, savedWords, chatMessages, quizHistory };
+  }, [progress, savedWords, chatMessages, quizHistory]);
+
+  // Streak bookkeeping on mount — same day → unchanged; consecutive day → +1;
+  // gap → reset.
   useEffect(() => {
     setProgress((prev) => {
       if (!prev) return prev;
@@ -105,6 +139,49 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       const streak = last === yesterday ? prev.streak + 1 : 1;
       return { ...prev, streak, lastActiveTimestamp: now };
     });
+  }, []);
+
+  // Watch Google sign-in state. On sign-in, pull the user's cloud data if it
+  // exists; otherwise seed the cloud from whatever is currently local.
+  useEffect(() => {
+    return watchAuth(async (u) => {
+      setUser(u);
+      setAuthReady(true);
+      if (!u) return;
+      try {
+        const cloud = await loadCloud(u.uid);
+        if (cloud) {
+          setProgress(cloud.progress ?? null);
+          setSavedWords(cloud.savedWords ?? []);
+          setChatMessages(cloud.chatMessages ?? []);
+          setQuizHistory(cloud.quizHistory ?? []);
+        } else {
+          await saveCloud(u.uid, latest.current);
+        }
+      } catch {
+        // Network/permission issue → stay on local data.
+      }
+    });
+  }, []);
+
+  // While signed in, debounce-sync changes up to Firestore.
+  useEffect(() => {
+    if (!user) return;
+    const t = setTimeout(() => {
+      saveCloud(user.uid, { progress, savedWords, chatMessages, quizHistory }).catch(
+        () => {},
+      );
+    }, 800);
+    return () => clearTimeout(t);
+  }, [user, progress, savedWords, chatMessages, quizHistory]);
+
+  const signIn = useCallback(async () => {
+    await signInWithGoogle();
+  }, []);
+
+  const signOut = useCallback(async () => {
+    await cloudSignOut();
+    setUser(null);
   }, []);
 
   const registerUser = useCallback(
@@ -250,6 +327,11 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       savedWords,
       chatMessages,
       quizHistory,
+      cloudConfigured: isCloudConfigured(),
+      user,
+      authReady,
+      signIn,
+      signOut,
       registerUser,
       updateLevel,
       addPoints,
@@ -269,6 +351,10 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       savedWords,
       chatMessages,
       quizHistory,
+      user,
+      authReady,
+      signIn,
+      signOut,
       registerUser,
       updateLevel,
       addPoints,

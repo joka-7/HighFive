@@ -4,18 +4,15 @@ import { LEVELS, type Level } from "../types";
 import { PLACEMENT_QUESTIONS, levelFromScore } from "../data/placement";
 import QuizRunner from "../components/QuizRunner";
 
-const NATIVE_LANGUAGES = ["עברית", "العربية", "Русский", "English", "אחר"];
-
 type Step = "welcome" | "choose" | "test" | "manual";
 
 export default function Onboarding() {
   const { registerUser } = useLingo();
   const [step, setStep] = useState<Step>("welcome");
   const [name, setName] = useState("");
-  const [nativeLanguage, setNativeLanguage] = useState(NATIVE_LANGUAGES[0]);
 
   function finish(level: Level) {
-    registerUser(name, nativeLanguage, level);
+    registerUser(name, "עברית", level);
   }
 
   return (
@@ -37,21 +34,6 @@ export default function Onboarding() {
                 placeholder="השם שלך"
                 onChange={(e) => setName(e.target.value)}
               />
-            </label>
-
-            <label className="field">
-              <span>שפת האם שלך</span>
-              <select
-                className="input"
-                value={nativeLanguage}
-                onChange={(e) => setNativeLanguage(e.target.value)}
-              >
-                {NATIVE_LANGUAGES.map((l) => (
-                  <option key={l} value={l}>
-                    {l}
-                  </option>
-                ))}
-              </select>
             </label>
 
             <button
