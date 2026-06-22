@@ -8,12 +8,16 @@ import type {
   ChatMessage,
   GemDialogueReply,
   GemLesson,
+  GemListening,
   GemQuiz,
+  GemReading,
+  GemSpeaking,
   GemWordList,
   Level,
 } from "../types";
 import { complete, isAIReady } from "./ai";
 import { loadOfflineContent, pickRandom } from "../data/offline";
+import { LISTENINGS, READINGS, SPEAKINGS, pickExtra } from "../data/extras";
 import { parseJson } from "../utils/json";
 
 // --- Vocabulary ---
@@ -147,5 +151,82 @@ Return as JSON:
     return parseJson<GemQuiz>(await complete(prompt, systemInstruction));
   } catch {
     return pickRandom(loadOfflineContent(level).quizzes);
+  }
+}
+
+// --- Reading Lab — a real passage to read, with glossary + comprehension ---
+export async function generateReading(level: Level, topic: string): Promise<GemReading> {
+  if (!isAIReady()) return pickExtra(READINGS, level);
+
+  const prompt = `Write a short, engaging English reading passage for CEFR level ${level} on the theme: "${topic}".
+The passage should be 4-6 sentences for low levels and up to a short paragraph for higher levels, using natural language (not isolated sentences).
+Provide:
+- title (English + Hebrew translation in parentheses)
+- text (the passage, in English)
+- glossary: 3 key words from the text. Each: word, partOfSpeech, definition (HEBREW), example (English), translation (Hebrew)
+- questions: exactly 2 comprehension multiple choice questions. Each: question (English), options (4 strings), correctIndex (0-based), explanation (HEBREW)
+
+Return as JSON:
+{
+  "title": "...",
+  "text": "...",
+  "glossary": [{ "word": "...", "partOfSpeech": "...", "definition": "עברית", "example": "...", "translation": "עברית" }],
+  "questions": [{ "question": "...", "options": ["", "", "", ""], "correctIndex": 0, "explanation": "עברית" }]
+}`;
+
+  const systemInstruction =
+    "You are High5's reading tutor. Write natural, level-appropriate English passages with Hebrew glossary and Hebrew explanations for Israeli learners.";
+
+  try {
+    return parseJson<GemReading>(await complete(prompt, systemInstruction));
+  } catch {
+    return pickExtra(READINGS, level);
+  }
+}
+
+// --- Listening practice — a spoken clip (TTS) + comprehension ---
+export async function generateListening(level: Level, topic: string): Promise<GemListening> {
+  if (!isAIReady()) return pickExtra(LISTENINGS, level);
+
+  const prompt = `Create a short English listening exercise for CEFR level ${level} on: "${topic}".
+Provide:
+- transcript: 1-3 sentences of natural spoken English (a message, announcement or mini-dialogue) suitable to be read aloud by text-to-speech
+- questions: exactly 2 comprehension multiple choice questions. Each: question (English), options (4 strings), correctIndex (0-based), explanation (HEBREW)
+
+Return as JSON:
+{
+  "transcript": "...",
+  "questions": [{ "question": "...", "options": ["", "", "", ""], "correctIndex": 0, "explanation": "עברית" }]
+}`;
+
+  const systemInstruction =
+    "You are High5's listening-comprehension tutor. Write natural spoken-style English with Hebrew explanations.";
+
+  try {
+    return parseJson<GemListening>(await complete(prompt, systemInstruction));
+  } catch {
+    return pickExtra(LISTENINGS, level);
+  }
+}
+
+// --- Speaking practice — sentences to read aloud (scored against ASR) ---
+export async function generateSpeaking(level: Level, topic: string): Promise<GemSpeaking> {
+  if (!isAIReady()) return pickExtra(SPEAKINGS, level);
+
+  const prompt = `Create an English speaking practice set for CEFR level ${level} on: "${topic}".
+Provide 4 useful sentences the learner should read aloud, each with a Hebrew translation.
+
+Return as JSON:
+{
+  "prompts": [{ "text": "English sentence to say", "translation": "תרגום לעברית" }]
+}`;
+
+  const systemInstruction =
+    "You are High5's pronunciation coach. Provide practical English sentences with Hebrew translations for Israeli learners.";
+
+  try {
+    return parseJson<GemSpeaking>(await complete(prompt, systemInstruction));
+  } catch {
+    return pickExtra(SPEAKINGS, level);
   }
 }
