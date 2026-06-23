@@ -30,6 +30,7 @@ import { MORE_WORDS3 } from "./content/wordbank-extra3.mjs";
 import { MORE_WORDS4 } from "./content/wordbank-extra4.mjs";
 import { MORE_WORDS5 } from "./content/wordbank-extra5.mjs";
 import { MORE_WORDS6 } from "./content/wordbank-extra6.mjs";
+import { MORE_WORDS7 } from "./content/wordbank-extra7.mjs";
 import { MORE_READINGS, MORE_LISTENINGS } from "./content/passages-extra.mjs";
 import { MORE_READINGS2, MORE_LISTENINGS2, MORE_SPEAKING } from "./content/passages-extra2.mjs";
 import { MORE_READINGS3, MORE_LISTENINGS3, MORE_SPEAKING3 } from "./content/passages-extra3.mjs";
@@ -37,7 +38,7 @@ import { MORE_READINGS4, MORE_LISTENINGS4, MORE_SPEAKING4 } from "./content/pass
 import { MORE_READINGS5, MORE_LISTENINGS5, MORE_SPEAKING5 } from "./content/passages-extra5.mjs";
 
 // All extra vocabulary rounds, merged in order. Append new rounds here.
-const WORD_ROUNDS = [MORE_WORDS, MORE_WORDS2, MORE_WORDS3, MORE_WORDS4, MORE_WORDS5, MORE_WORDS6];
+const WORD_ROUNDS = [MORE_WORDS, MORE_WORDS2, MORE_WORDS3, MORE_WORDS4, MORE_WORDS5, MORE_WORDS6, MORE_WORDS7];
 const READING_ROUNDS = [MORE_READINGS, MORE_READINGS2, MORE_READINGS3, MORE_READINGS4, MORE_READINGS5];
 const LISTENING_ROUNDS = [MORE_LISTENINGS, MORE_LISTENINGS2, MORE_LISTENINGS3, MORE_LISTENINGS4, MORE_LISTENINGS5];
 const SPEAKING_ROUNDS = [MORE_SPEAKING, MORE_SPEAKING3, MORE_SPEAKING4, MORE_SPEAKING5];
