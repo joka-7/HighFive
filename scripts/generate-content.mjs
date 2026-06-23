@@ -24,6 +24,8 @@ import {
   WORD_BANKS,
 } from "./content/banks.mjs";
 import { READINGS, LISTENINGS, SPEAKING_SENTENCES } from "./content/passages.mjs";
+import { MORE_WORDS } from "./content/wordbank-extra.mjs";
+import { MORE_READINGS, MORE_LISTENINGS } from "./content/passages-extra.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = join(__dirname, "..", "src", "data", "offline");
@@ -243,6 +245,7 @@ function curriculum(levelIdx) {
 
 // --- Build everything for one level ------------------------------------------
 function buildLevel(level, levelIdx) {
+  const allWords = [...WORD_BANKS[level], ...(MORE_WORDS[level] || [])];
   const ctx = {
     verbs: VERBS.filter((v) => v.lvl <= levelIdx),
     adjs: ADJECTIVES.filter((a) => a.lvl <= levelIdx),
@@ -251,12 +254,12 @@ function buildLevel(level, levelIdx) {
     plurals: IRREGULAR_PLURALS,
     countNouns: COUNT_NOUNS,
     modals: MODAL_ITEMS,
-    words: WORD_BANKS[level],
+    words: allWords,
   };
   const topics = curriculum(levelIdx);
 
   // Vocabulary: 365 sets of 5, rotating the word bank so coverage spreads.
-  const bank = WORD_BANKS[level];
+  const bank = allWords;
   const vocabulary = [];
   for (let d = 0; d < DAYS; d++) {
     const words = [];
@@ -286,9 +289,9 @@ function buildLevel(level, levelIdx) {
 
   // Reading & Listening: emit the curated pool as-is. The app picks randomly,
   // so pool size = variety; padding to 365 would only duplicate bytes. Grow the
-  // banks in passages.mjs to add variety here.
-  const readings = READINGS[level];
-  const listenings = LISTENINGS[level];
+  // banks in passages.mjs / passages-extra.mjs to add variety here.
+  const readings = [...READINGS[level], ...(MORE_READINGS[level] || [])];
+  const listenings = [...LISTENINGS[level], ...(MORE_LISTENINGS[level] || [])];
 
   // Speaking: 365 sets of 4 sentences, recombined from the level's pool.
   const sent = SPEAKING_SENTENCES[level];
@@ -317,11 +320,13 @@ function main() {
   for (let i = 0; i < LEVELS.length; i++) {
     const level = LEVELS[i];
 
-    // Sanity-check the source word bank: no duplicate words, no missing fields.
-    const bankWords = WORD_BANKS[level].map((w) => w.word);
+    // Sanity-check the merged source word bank: no duplicate words, no missing
+    // fields (base + extra together).
+    const mergedBank = [...WORD_BANKS[level], ...(MORE_WORDS[level] || [])];
+    const bankWords = mergedBank.map((w) => w.word);
     const dup = bankWords.find((w, n) => bankWords.indexOf(w) !== n);
     if (dup) throw new Error(`${level} word bank has duplicate word: "${dup}"`);
-    for (const w of WORD_BANKS[level]) {
+    for (const w of mergedBank) {
       if (!w.word || !w.translation || !w.definition || !w.example) {
         throw new Error(`${level} word bank: incomplete entry ${JSON.stringify(w)}`);
       }
@@ -346,12 +351,13 @@ function main() {
     const distinctLessons = new Set(lessons.map((l) => JSON.stringify(l))).size;
     summary.push({
       level,
+      distinctWords: mergedBank.length,
       lessons: lessons.length,
       distinctLessons,
       vocabSets: vocabulary.length,
       quizzes: quizzes.length,
-      readingPool: READINGS[level].length,
-      listeningPool: LISTENINGS[level].length,
+      readingPool: readings.length,
+      listeningPool: listenings.length,
       speakingPool: SPEAKING_SENTENCES[level].length,
     });
   }
