@@ -52,7 +52,7 @@ export default function Onboarding() {
           <h2>מה הרמה שלך באנגלית?</h2>
           <p className="muted">אפשר לעשות מבחן מיון קצר, או לבחור רמה בעצמך.</p>
           <button className="btn accent" onClick={() => setStep("test")}>
-            🎯 מבחן מיון (3 שאלות)
+            🎯 מבחן מיון (6 שאלות)
           </button>
           <div style={{ height: 10 }} />
           <button className="btn secondary" onClick={() => setStep("manual")}>
