@@ -26,8 +26,17 @@ import {
 import { READINGS, LISTENINGS, SPEAKING_SENTENCES } from "./content/passages.mjs";
 import { MORE_WORDS } from "./content/wordbank-extra.mjs";
 import { MORE_WORDS2 } from "./content/wordbank-extra2.mjs";
+import { MORE_WORDS3 } from "./content/wordbank-extra3.mjs";
 import { MORE_READINGS, MORE_LISTENINGS } from "./content/passages-extra.mjs";
 import { MORE_READINGS2, MORE_LISTENINGS2, MORE_SPEAKING } from "./content/passages-extra2.mjs";
+import { MORE_READINGS3, MORE_LISTENINGS3, MORE_SPEAKING3 } from "./content/passages-extra3.mjs";
+
+// All extra vocabulary rounds, merged in order. Append new rounds here.
+const WORD_ROUNDS = [MORE_WORDS, MORE_WORDS2, MORE_WORDS3];
+const READING_ROUNDS = [MORE_READINGS, MORE_READINGS2, MORE_READINGS3];
+const LISTENING_ROUNDS = [MORE_LISTENINGS, MORE_LISTENINGS2, MORE_LISTENINGS3];
+const SPEAKING_ROUNDS = [MORE_SPEAKING, MORE_SPEAKING3];
+const merge = (rounds, level) => rounds.flatMap((r) => r[level] || []);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = join(__dirname, "..", "src", "data", "offline");
@@ -247,11 +256,7 @@ function curriculum(levelIdx) {
 
 // --- Build everything for one level ------------------------------------------
 function buildLevel(level, levelIdx) {
-  const allWords = [
-    ...WORD_BANKS[level],
-    ...(MORE_WORDS[level] || []),
-    ...(MORE_WORDS2[level] || []),
-  ];
+  const allWords = [...WORD_BANKS[level], ...merge(WORD_ROUNDS, level)];
   const ctx = {
     verbs: VERBS.filter((v) => v.lvl <= levelIdx),
     adjs: ADJECTIVES.filter((a) => a.lvl <= levelIdx),
@@ -296,19 +301,11 @@ function buildLevel(level, levelIdx) {
   // Reading & Listening: emit the curated pool as-is. The app picks randomly,
   // so pool size = variety; padding to 365 would only duplicate bytes. Grow the
   // banks in passages.mjs / passages-extra.mjs to add variety here.
-  const readings = [
-    ...READINGS[level],
-    ...(MORE_READINGS[level] || []),
-    ...(MORE_READINGS2[level] || []),
-  ];
-  const listenings = [
-    ...LISTENINGS[level],
-    ...(MORE_LISTENINGS[level] || []),
-    ...(MORE_LISTENINGS2[level] || []),
-  ];
+  const readings = [...READINGS[level], ...merge(READING_ROUNDS, level)];
+  const listenings = [...LISTENINGS[level], ...merge(LISTENING_ROUNDS, level)];
 
   // Speaking: 365 sets of 4 sentences, recombined from the level's pool.
-  const sent = [...SPEAKING_SENTENCES[level], ...(MORE_SPEAKING[level] || [])];
+  const sent = [...SPEAKING_SENTENCES[level], ...merge(SPEAKING_ROUNDS, level)];
   const speakings = [];
   for (let d = 0; d < DAYS; d++) {
     const rng = rngFrom(`${level}:speak:${d}`);
@@ -336,11 +333,7 @@ function main() {
 
     // Sanity-check the merged source word bank: no duplicate words, no missing
     // fields (base + extra together).
-    const mergedBank = [
-      ...WORD_BANKS[level],
-      ...(MORE_WORDS[level] || []),
-      ...(MORE_WORDS2[level] || []),
-    ];
+    const mergedBank = [...WORD_BANKS[level], ...merge(WORD_ROUNDS, level)];
     const bankWords = mergedBank.map((w) => w.word);
     const dup = bankWords.find((w, n) => bankWords.indexOf(w) !== n);
     if (dup) throw new Error(`${level} word bank has duplicate word: "${dup}"`);
@@ -377,7 +370,7 @@ function main() {
       readingPool: readings.length,
       listeningPool: listenings.length,
       speakingPool: speakings.length,
-      speakingSentences: SPEAKING_SENTENCES[level].length + (MORE_SPEAKING[level] || []).length,
+      speakingSentences: SPEAKING_SENTENCES[level].length + merge(SPEAKING_ROUNDS, level).length,
     });
   }
   console.table(summary);
