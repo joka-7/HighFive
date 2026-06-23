@@ -181,7 +181,7 @@ export const MORE_SPEAKING = {
   C1: [
     { text: "I'd like to play devil's advocate for a moment.", translation: "אני רוצה לשחק עורך דין של השטן לרגע." },
     { text: "On balance, I think the risk is justified.", translation: "בסך הכול, אני חושב שהסיכון מוצדק." },
-    { text: "That's a valid concern, and worth addressing.", translation: "זו חשש לגיטימי, וכדאי להתייחס אליו." },
+    { text: "That's a valid concern, and worth addressing.", translation: "זה חשש לגיטימי, וכדאי להתייחס אליו." },
     { text: "I'd hesitate to draw firm conclusions yet.", translation: "הייתי נמנע מלהסיק מסקנות נחרצות בשלב זה." },
     { text: "Let's distinguish the symptom from the cause.", translation: "בוא נבחין בין הסימפטום לסיבה." },
     { text: "With the benefit of hindsight, we'd do it differently.", translation: "בחוכמה שבדיעבד, היינו עושים זאת אחרת." },
@@ -192,6 +192,6 @@ export const MORE_SPEAKING = {
     { text: "We're conflating two quite separate issues.", translation: "אנחנו מערבבים שתי סוגיות נפרדות לגמרי." },
     { text: "I'd sooner reserve judgement than commit prematurely.", translation: "אעדיף להשהות שיפוט מאשר להתחייב בטרם עת." },
     { text: "The exception, far from disproving the rule, refines it.", translation: "החריג, רחוק מלהפריך את הכלל, מחדד אותו." },
-    { text: "Let's resist the temptation of a tidy narrative.", translation: "בוא ננגד את הפיתוי של נרטיב מסודר מדי." },
+    { text: "Let's resist the temptation of a tidy narrative.", translation: "בוא נעמוד בפני הפיתוי של נרטיב מסודר מדי." },
   ],
 };

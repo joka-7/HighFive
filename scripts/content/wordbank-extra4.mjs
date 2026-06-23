@@ -111,7 +111,7 @@ export const MORE_WORDS4 = {
     { word: "abound", partOfSpeech: "verb", definition: "להימצא בשפע", example: "Rumours abound.", translation: "לשפוע/להימצא בשפע" },
     { word: "aloof", partOfSpeech: "adjective", definition: "מסויג ומרוחק", example: "He stayed aloof.", translation: "מסויג/מרוחק" },
     { word: "amenable", partOfSpeech: "adjective", definition: "נוח לשכנוע, נכון לשתף", example: "Amenable to change.", translation: "נכון/נוח לשכנוע" },
-    { word: "austere", partOfSpeech: "adjective", definition: "צנוע ונוקשה, ללא קישוט", example: "An austere room.", translation: "צנום/נוקשה" },
+    { word: "austere", partOfSpeech: "adjective", definition: "צנוע ונוקשה, ללא קישוט", example: "An austere room.", translation: "צנוע/נוקשה" },
     { word: "belated", partOfSpeech: "adjective", definition: "מאוחר, באיחור", example: "A belated apology.", translation: "מאוחר/באיחור" },
     { word: "circumvent", partOfSpeech: "verb", definition: "לעקוף מכשול או חוק", example: "They circumvented the rules.", translation: "לעקוף" },
     { word: "commensurate", partOfSpeech: "adjective", definition: "תואם, יחסי בהיקפו", example: "Pay commensurate with skill.", translation: "תואם/יחסי" },

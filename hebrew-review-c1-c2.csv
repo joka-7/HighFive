@@ -34,7 +34,7 @@ C1,term,"assuage","verb","להפיג/להקל","להפיג, להקל (חשש/כ�
 C1,term,"astute","adjective","חריף/נבון","חריף ונבון בשיפוט","An astute investor."
 C1,term,"asymmetry","noun","אי-סימטריה","אי-סימטריה, חוסר איזון","This asymmetry."
 C1,term,"attune","verb","לכוונן/להתאים","לכוונן, להתאים לרגישות","Attuned to others' moods."
-C1,term,"austere","adjective","צנום/נוקשה","צנוע ונוקשה, ללא קישוט","An austere room."
+C1,term,"austere","adjective","צנוע/נוקשה","צנוע ונוקשה, ללא קישוט","An austere room."
 C1,term,"aversion","noun","סלידה/רתיעה","סלידה, רתיעה","Loss aversion."
 C1,term,"belated","adjective","מאוחר/באיחור","מאוחר, באיחור","A belated apology."
 C1,term,"benign","adjective","שפיר/תמים","שפיר; תמים ולא מזיק","A benign tumour."
@@ -254,7 +254,7 @@ C1,term,"vital","adjective","חיוני/מכריע","חיוני, מכריע","Th
 C1,term,"willpower","noun","כוח רצון","כוח רצון","Strong willpower."
 C1,phrase,"The small, repeated choices are what worry me most.",,"הבחירות הקטנות והחוזרות הן מה שמדאיג אותי יותר מכול.",,
 C1,phrase,"Let's not jump to conclusions before we've seen the data.",,"בוא לא נקפוץ למסקנות לפני שראינו את הנתונים.",,
-C1,phrase,"That's a valid concern, and worth addressing.",,"זו חשש לגיטימי, וכדאי להתייחס אליו.",,
+C1,phrase,"That's a valid concern, and worth addressing.",,"זה חשש לגיטימי, וכדאי להתייחס אליו.",,
 C1,phrase,"That's a fair point, but I see it slightly differently.",,"זו נקודה הוגנת, אבל אני רואה את זה קצת אחרת.",,
 C1,phrase,"Let's keep our options open for now.",,"בוא נשאיר את האפשרויות פתוחות לעת עתה.",,
 C1,phrase,"We may be stuck with this simply out of habit.",,"ייתכן שאנחנו תקועים עם זה פשוט מתוך הרגל.",,
@@ -542,7 +542,7 @@ C2,phrase,"The elegance of the argument is doing a lot of quiet work here.",,"ה
 C2,phrase,"The argument, for all its elegance, rests on a shaky premise.",,"הטיעון, על אף יופיו, נשען על הנחה רעועה.",,
 C2,phrase,"I'd want to separate a reason from a rationalisation here.",,"הייתי רוצה להפריד כאן בין סיבה לבין רציונליזציה.",,
 C2,phrase,"I'd venture that the consensus is beginning to shift.",,"אני מעז לשער שהקונצנזוס מתחיל להשתנות.",,
-C2,phrase,"Let's resist the temptation of a tidy narrative.",,"בוא ננגד את הפיתוי של נרטיב מסודר מדי.",,
+C2,phrase,"Let's resist the temptation of a tidy narrative.",,"בוא נעמוד בפני הפיתוי של נרטיב מסודר מדי.",,
 C2,phrase,"We should be wary of conflating correlation with causation.",,"כדאי שניזהר מלערבב בין מתאם לסיבתיות.",,
 C2,phrase,"It's a compelling case, albeit not a watertight one.",,"זה טיעון משכנע, גם אם לא חסין לחלוטין.",,
 C2,phrase,"Splitting the difference here would just buy us a confident error.",,"פשרה כאן רק תקנה לנו טעות בטוחה בעצמה.",,

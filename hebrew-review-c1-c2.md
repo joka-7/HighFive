@@ -43,7 +43,7 @@ Please correct any Hebrew in the **תרגום (translation)** and **הגדרה (
 | 33 | astute | adjective | חריף/נבון | חריף ונבון בשיפוט | An astute investor. |
 | 34 | asymmetry | noun | אי-סימטריה | אי-סימטריה, חוסר איזון | This asymmetry. |
 | 35 | attune | verb | לכוונן/להתאים | לכוונן, להתאים לרגישות | Attuned to others' moods. |
-| 36 | austere | adjective | צנום/נוקשה | צנוע ונוקשה, ללא קישוט | An austere room. |
+| 36 | austere | adjective | צנוע/נוקשה | צנוע ונוקשה, ללא קישוט | An austere room. |
 | 37 | aversion | noun | סלידה/רתיעה | סלידה, רתיעה | Loss aversion. |
 | 38 | belated | adjective | מאוחר/באיחור | מאוחר, באיחור | A belated apology. |
 | 39 | benign | adjective | שפיר/תמים | שפיר; תמים ולא מזיק | A benign tumour. |
@@ -268,7 +268,7 @@ Please correct any Hebrew in the **תרגום (translation)** and **הגדרה (
 |---|---------|---------------------|
 | 1 | The small, repeated choices are what worry me most. | הבחירות הקטנות והחוזרות הן מה שמדאיג אותי יותר מכול. |
 | 2 | Let's not jump to conclusions before we've seen the data. | בוא לא נקפוץ למסקנות לפני שראינו את הנתונים. |
-| 3 | That's a valid concern, and worth addressing. | זו חשש לגיטימי, וכדאי להתייחס אליו. |
+| 3 | That's a valid concern, and worth addressing. | זה חשש לגיטימי, וכדאי להתייחס אליו. |
 | 4 | That's a fair point, but I see it slightly differently. | זו נקודה הוגנת, אבל אני רואה את זה קצת אחרת. |
 | 5 | Let's keep our options open for now. | בוא נשאיר את האפשרויות פתוחות לעת עתה. |
 | 6 | We may be stuck with this simply out of habit. | ייתכן שאנחנו תקועים עם זה פשוט מתוך הרגל. |
@@ -566,7 +566,7 @@ Please correct any Hebrew in the **תרגום (translation)** and **הגדרה (
 | 8 | The argument, for all its elegance, rests on a shaky premise. | הטיעון, על אף יופיו, נשען על הנחה רעועה. |
 | 9 | I'd want to separate a reason from a rationalisation here. | הייתי רוצה להפריד כאן בין סיבה לבין רציונליזציה. |
 | 10 | I'd venture that the consensus is beginning to shift. | אני מעז לשער שהקונצנזוס מתחיל להשתנות. |
-| 11 | Let's resist the temptation of a tidy narrative. | בוא ננגד את הפיתוי של נרטיב מסודר מדי. |
+| 11 | Let's resist the temptation of a tidy narrative. | בוא נעמוד בפני הפיתוי של נרטיב מסודר מדי. |
 | 12 | We should be wary of conflating correlation with causation. | כדאי שניזהר מלערבב בין מתאם לסיבתיות. |
 | 13 | It's a compelling case, albeit not a watertight one. | זה טיעון משכנע, גם אם לא חסין לחלוטין. |
 | 14 | Splitting the difference here would just buy us a confident error. | פשרה כאן רק תקנה לנו טעות בטוחה בעצמה. |
