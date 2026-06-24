@@ -88,7 +88,16 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         {screen === "dashboard" ? (
-          <span className="brand">✋ High5</span>
+          <span className="brand">
+            <img
+              src="/icon-192.png"
+              alt=""
+              width={26}
+              height={26}
+              style={{ borderRadius: 7, verticalAlign: "middle" }}
+            />{" "}
+            High5
+          </span>
         ) : (
           <button className="brand" onClick={() => go("dashboard")}>
             → {TITLES[screen]}
