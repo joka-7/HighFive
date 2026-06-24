@@ -28,6 +28,36 @@
   font-family: "Heebo", "Assistant", "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
+/* --- Dark theme (toggled via html[data-theme="dark"]) --- */
+html[data-theme="dark"] {
+  --bg: #11161c;
+  --surface: #1b2128;
+  --surface-2: #232b34;
+  --surface-3: #2b343d;
+  --primary: #7d6df0;
+  --primary-strong: #c6bfff;
+  --primary-dark: #4a3db0;
+  --accent: #2fd6ad;
+  --accent-soft: #0e3a30;
+  --accent-2: #ffcd70;
+  --danger: #ff6b6b;
+  --text: #e9eef1;
+  --text-soft: #a8b3bd;
+  --border: #3a444e;
+  --border-soft: #2b343d;
+  --primary-fixed: #2c2358;
+  --shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 4px 14px -6px rgba(0, 0, 0, 0.45);
+}
+
+html[data-theme="dark"] body {
+  background: linear-gradient(160deg, #11161c 0%, #0e1a18 100%);
+}
+
+html[data-theme="dark"] .topbar {
+  background: rgba(17, 22, 28, 0.9);
+}
+
 * {
   box-sizing: border-box;
 }
