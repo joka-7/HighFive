@@ -112,10 +112,7 @@ export default function Settings() {
         </div>
 
         {isAIReady() && (
-          <div
-            className="banner"
-            style={{ background: "#e7faf3", borderColor: "#9ae6c8", color: "#0a7a5c" }}
-          >
+          <div className="banner success">
             ✅ פעיל: {PROVIDERS[loadAIConfig().provider].name}
           </div>
         )}
@@ -133,10 +130,7 @@ export default function Settings() {
             >
               {p.name}
               {p.free && (
-                <span
-                  className="tag"
-                  style={{ marginInlineStart: 6, background: "#e7faf3", color: "#0a7a5c" }}
-                >
+                <span className="tag ok" style={{ marginInlineStart: 6 }}>
                   חינם
                 </span>
               )}

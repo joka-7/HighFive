@@ -15,6 +15,16 @@
   --text-soft: #474554;
   --border: #c8c4d7;
   --border-soft: #e6e3f2;
+  /* Semantic tints (success / wrong / warn / tag) — overridden in dark theme */
+  --ok-bg: #e7faf3;
+  --ok-text: #0a7a5c;
+  --ok-border: #9ae6c8;
+  --wrong-bg: #fdecea;
+  --wrong-text: #b53224;
+  --warn-bg: #fff7e6;
+  --warn-border: #ffe3a3;
+  --warn-text: #8a6d1a;
+  --tag-bg: #efecff;
   --shadow: 0 10px 25px -5px rgba(108, 92, 231, 0.12);
   --shadow-sm: 0 4px 14px -4px rgba(108, 92, 231, 0.1);
   --radius: 18px;
@@ -48,6 +58,15 @@ html[data-theme="dark"] {
   --primary-fixed: #2c2358;
   --shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.5);
   --shadow-sm: 0 4px 14px -6px rgba(0, 0, 0, 0.45);
+  --ok-bg: #0e3a30;
+  --ok-text: #6ee7c0;
+  --ok-border: #1f6b56;
+  --wrong-bg: #3a1616;
+  --wrong-text: #ff9b8f;
+  --warn-bg: #382c12;
+  --warn-border: #5e4a16;
+  --warn-text: #f0c77a;
+  --tag-bg: #2c2358;
 }
 
 html[data-theme="dark"] body {
@@ -406,14 +425,14 @@ textarea.input:focus {
 
 .option.correct {
   border-color: var(--accent);
-  background: #e7faf3;
-  color: #0a7a5c;
+  background: var(--ok-bg);
+  color: var(--ok-text);
 }
 
 .option.wrong {
   border-color: var(--danger);
-  background: #fdecea;
-  color: #b53224;
+  background: var(--wrong-bg);
+  color: var(--wrong-text);
 }
 
 .option:disabled {
@@ -530,10 +549,10 @@ textarea.input:focus {
 .correction {
   margin-top: 6px;
   font-size: 13px;
-  background: #fff7e6;
+  background: var(--warn-bg);
   border-radius: 10px;
   padding: 6px 10px;
-  color: #8a6d1a;
+  color: var(--warn-text);
   direction: rtl;
   text-align: right;
 }
@@ -610,10 +629,15 @@ textarea.input:focus {
 .tag {
   font-size: 12px;
   font-weight: 700;
-  color: var(--primary);
-  background: #efecff;
+  color: var(--primary-strong);
+  background: var(--tag-bg);
   padding: 3px 10px;
   border-radius: 999px;
+}
+
+.tag.ok {
+  color: var(--ok-text);
+  background: var(--ok-bg);
 }
 
 .stat-grid {
@@ -642,13 +666,19 @@ textarea.input:focus {
 }
 
 .banner {
-  background: #fff7e6;
-  border: 1px solid #ffe3a3;
-  color: #8a6d1a;
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  color: var(--warn-text);
   border-radius: 12px;
   padding: 12px 14px;
   font-size: 14px;
   margin-bottom: 14px;
+}
+
+.banner.success {
+  background: var(--ok-bg);
+  border-color: var(--ok-border);
+  color: var(--ok-text);
 }
 
 pre.explanation-text {
