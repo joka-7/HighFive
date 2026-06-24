@@ -8,13 +8,46 @@ import {
   type ProviderId,
 } from "../services/ai";
 import { useLingo } from "../store/useLingo";
+import {
+  loadPrefs,
+  savePrefs,
+  applyTheme,
+  type SpeechSpeed,
+} from "../services/prefs";
+import { usePwaInstall, canShare, shareApp } from "../services/pwa";
+import { speak, ttsSupported } from "../services/tts";
+import { LEVELS, type Level } from "../types";
+
+const SPEECH_LABELS: { id: SpeechSpeed; label: string }[] = [
+  { id: "slow", label: "🐢 איטי" },
+  { id: "normal", label: "🚶 רגיל" },
+  { id: "fast", label: "🐇 מהיר" },
+];
 
 // API key / provider settings — mirrors JobFlowTracker's APIKeySettings:
 // pick a provider, paste a key (or Ollama URL), optional model override, save.
 export default function Settings() {
-  const { resetAll, cloudConfigured, user, authReady, signIn, signOut } = useLingo();
+  const { resetAll, cloudConfigured, user, authReady, signIn, signOut, progress, updateLevel } =
+    useLingo();
   const [authBusy, setAuthBusy] = useState(false);
   const [authError, setAuthError] = useState("");
+
+  const [prefs, setPrefs] = useState(() => loadPrefs());
+  const { canInstall, installed, install } = usePwaInstall();
+
+  function setTheme(dark: boolean) {
+    const next = { ...prefs, theme: dark ? ("dark" as const) : ("light" as const) };
+    setPrefs(next);
+    savePrefs(next);
+    applyTheme(next.theme);
+  }
+
+  function setSpeechSpeed(speed: SpeechSpeed) {
+    const next = { ...prefs, speechSpeed: speed };
+    setPrefs(next);
+    savePrefs(next);
+    if (ttsSupported()) speak("This is the playback speed.");
+  }
 
   async function handleSignIn() {
     setAuthError("");
@@ -79,10 +112,7 @@ export default function Settings() {
         </div>
 
         {isAIReady() && (
-          <div
-            className="banner"
-            style={{ background: "#e7faf3", borderColor: "#9ae6c8", color: "#0a7a5c" }}
-          >
+          <div className="banner success">
             ✅ פעיל: {PROVIDERS[loadAIConfig().provider].name}
           </div>
         )}
@@ -100,10 +130,7 @@ export default function Settings() {
             >
               {p.name}
               {p.free && (
-                <span
-                  className="tag"
-                  style={{ marginInlineStart: 6, background: "#e7faf3", color: "#0a7a5c" }}
-                >
+                <span className="tag ok" style={{ marginInlineStart: 6 }}>
                   חינם
                 </span>
               )}
@@ -165,6 +192,84 @@ export default function Settings() {
         <button className="btn ghost" onClick={clearAll}>
           מחיקת הגדרות AI
         </button>
+      </div>
+
+      <div className="card">
+        <h2>⚙️ העדפות</h2>
+
+        <div className="row-between" style={{ marginBottom: 16 }}>
+          <div>
+            <div style={{ fontWeight: 700 }}>🌙 מצב כהה</div>
+            <div className="muted" style={{ fontSize: 13 }}>נוח יותר לעיניים בלילה</div>
+          </div>
+          <button
+            className={`level-pill ${prefs.theme === "dark" ? "active" : ""}`}
+            style={{ minWidth: 64 }}
+            onClick={() => setTheme(prefs.theme !== "dark")}
+          >
+            {prefs.theme === "dark" ? "פעיל" : "כבוי"}
+          </button>
+        </div>
+
+        <label className="field">
+          <span>🔊 מהירות הקראה</span>
+        </label>
+        <div className="level-row" style={{ marginBottom: 16 }}>
+          {SPEECH_LABELS.map((s) => (
+            <button
+              key={s.id}
+              className={`level-pill ${prefs.speechSpeed === s.id ? "active" : ""}`}
+              onClick={() => setSpeechSpeed(s.id)}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+
+        {progress && (
+          <>
+            <label className="field">
+              <span>🎯 רמת לימוד</span>
+            </label>
+            <div className="level-row">
+              {LEVELS.map((lvl: Level) => (
+                <button
+                  key={lvl}
+                  className={`level-pill ${progress.currentLevel === lvl ? "active" : ""}`}
+                  onClick={() => updateLevel(lvl)}
+                >
+                  {lvl}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className="card">
+        <h3>📲 התקנה ושיתוף</h3>
+        {installed ? (
+          <p className="muted">✅ האפליקציה מותקנת במכשיר שלך.</p>
+        ) : canInstall ? (
+          <>
+            <p className="muted">התקן את High5 כאפליקציה במסך הבית לגישה מהירה וגם ללא אינטרנט.</p>
+            <button className="btn" onClick={install}>
+              📥 התקנת האפליקציה
+            </button>
+          </>
+        ) : (
+          <p className="muted">
+            כדי להתקין: פתח את תפריט הדפדפן ובחר "הוסף למסך הבית". ב-iPhone — דרך כפתור השיתוף בספארי.
+          </p>
+        )}
+        {canShare() && (
+          <>
+            <div style={{ height: 10 }} />
+            <button className="btn secondary" onClick={() => shareApp()}>
+              🔗 שיתוף האפליקציה
+            </button>
+          </>
+        )}
       </div>
 
       <div className="card">

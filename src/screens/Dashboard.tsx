@@ -1,5 +1,6 @@
 import { useLingo } from "../store/useLingo";
 import { isAIReady } from "../services/ai";
+import { usePwaInstall } from "../services/pwa";
 import type { Screen } from "../types";
 
 const TILES: { screen: Screen; emoji: string; title: string; sub: string }[] = [
@@ -17,6 +18,7 @@ const TILES: { screen: Screen; emoji: string; title: string; sub: string }[] = [
 
 export default function Dashboard({ go }: { go: (s: Screen) => void }) {
   const { progress, dueWords } = useLingo();
+  const { canInstall, install } = usePwaInstall();
   if (!progress) return null;
   const due = dueWords().length;
 
@@ -44,11 +46,20 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
         </div>
       )}
 
+      {canInstall && (
+        <div className="banner" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ flex: 1 }}>📲 התקן את High5 במסך הבית לגישה מהירה וגם ללא אינטרנט.</span>
+          <button className="btn small" style={{ width: "auto" }} onClick={() => install()}>
+            התקנה
+          </button>
+        </div>
+      )}
+
       <div className="menu-grid">
         {TILES.map((t) => (
           <button
             key={t.screen}
-            className="menu-tile"
+            className={`menu-tile skill-${t.screen}`}
             onClick={() => go(t.screen)}
             style={{ position: "relative" }}
           >
