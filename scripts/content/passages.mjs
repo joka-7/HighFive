@@ -273,7 +273,7 @@ export const SPEAKING_SENTENCES = {
     { text: "I'd rather discuss this in person.", translation: "אני מעדיף לדון בזה פנים אל פנים." },
     { text: "Could you clarify what you mean by that?", translation: "תוכל להבהיר למה אתה מתכוון?" },
     { text: "On the whole, the project went well.", translation: "באופן כללי, הפרויקט הלך טוב." },
-    { text: "I'm afraid I have to disagree on that point.", translation: "אני חושש שעליי לא להסכים בנקודה הזו." },
+    { text: "I'm afraid I have to disagree on that point.", translation: "אני חושש שאני נאלץ לחלוק עליך בנקודה הזו." },
     { text: "Let's focus on what we can actually control.", translation: "בוא נתמקד במה שבאמת בשליטתנו." },
     { text: "That's exactly the issue I wanted to raise.", translation: "זו בדיוק הסוגיה שרציתי להעלות." },
   ],
