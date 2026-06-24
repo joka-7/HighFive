@@ -90,14 +90,14 @@ export default function App() {
         {screen === "dashboard" ? (
           <span className="brand">✋ High5</span>
         ) : (
-          <button className="brand" onClick={() => go("dashboard")} style={{ color: "#fff" }}>
+          <button className="brand" onClick={() => go("dashboard")}>
             → {TITLES[screen]}
           </button>
         )}
         <div className="stats">
           <span className="chip">✨ {progress.points}</span>
           <span className="chip">🔥 {progress.streak}</span>
-          <span className="chip">{progress.currentLevel}</span>
+          <span className="chip level">{progress.currentLevel}</span>
         </div>
       </header>
 

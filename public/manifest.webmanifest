@@ -1,0 +1,28 @@
+{
+  "name": "High5 — לומדים אנגלית בכיף",
+  "short_name": "High5",
+  "description": "אפליקציה ללימוד אנגלית בעברית: שיעורים יומיים, אוצר מילים עם חזרה מרווחת, קריאה, האזנה, דיבור ומאמן שיחה חכם — עובדת גם ללא חיבור לאינטרנט.",
+  "lang": "he",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4fafd",
+  "theme_color": "#6C5CE7",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

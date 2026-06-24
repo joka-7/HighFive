@@ -48,7 +48,7 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
         {TILES.map((t) => (
           <button
             key={t.screen}
-            className="menu-tile"
+            className={`menu-tile skill-${t.screen}`}
             onClick={() => go(t.screen)}
             style={{ position: "relative" }}
           >
