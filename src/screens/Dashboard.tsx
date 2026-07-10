@@ -5,6 +5,7 @@ import type { Screen } from "../types";
 
 const TILES: { screen: Screen; emoji: string; title: string; sub: string }[] = [
   { screen: "lesson", emoji: "📚", title: "שיעור יומי", sub: "לימוד + תרגול" },
+  { screen: "missions", emoji: "🎯", title: "משימות יומיות", sub: "סרטון + שיחה" },
   { screen: "vocabulary", emoji: "🃏", title: "אוצר מילים", sub: "כרטיסיות" },
   { screen: "dialogue", emoji: "💬", title: "מאמן שיחה", sub: "תרגול דיבור" },
   { screen: "quiz", emoji: "🧠", title: "חידון", sub: "בחן את עצמך" },

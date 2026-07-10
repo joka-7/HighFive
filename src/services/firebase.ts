@@ -15,6 +15,7 @@ import type { Auth, User } from "firebase/auth";
 import type { Firestore } from "firebase/firestore";
 import type {
   ChatMessage,
+  DailyMissionsState,
   QuizHistory,
   SavedWord,
   UserProgress,
@@ -119,6 +120,7 @@ export interface CloudData {
   savedWords: SavedWord[];
   chatMessages: ChatMessage[];
   quizHistory: QuizHistory[];
+  dailyMissions?: DailyMissionsState | null;
 }
 
 export async function loadCloud(uid: string): Promise<CloudData | null> {

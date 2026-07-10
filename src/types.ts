@@ -117,6 +117,16 @@ export interface QuizHistory {
   timestamp: number;
 }
 
+// Daily Missions — a small daily checklist ("watch a video in English",
+// "talk with the AI coach in English"). The user marks each mission done for
+// the day and earns points; `date` gates re-claiming and resets the missions
+// each new day (mirrors dailyLessonCompletedText's date-key pattern).
+export interface DailyMissionsState {
+  date: string;
+  video: boolean;
+  talk: boolean;
+}
+
 export type Screen =
   | "onboarding"
   | "dashboard"
@@ -130,4 +140,5 @@ export type Screen =
   | "review"
   | "reading"
   | "listening"
-  | "speaking";
+  | "speaking"
+  | "missions";
