@@ -10,6 +10,7 @@ import {
 } from "react";
 import type {
   ChatMessage,
+  DailyMissionsState,
   Level,
   QuizHistory,
   SavedWord,
@@ -36,6 +37,7 @@ const KEYS = {
   savedWords: "high5.saved_words",
   chat: "high5.chat_messages",
   quizHistory: "high5.quiz_history",
+  dailyMissions: "high5.daily_missions",
   // Remembers that the user opted into cloud sync, so we only eagerly load the
   // (heavy) Firebase SDK on startup for returning signed-in users.
   cloudSession: "high5.cloud_session",
@@ -52,6 +54,25 @@ function load<T>(key: string, fallback: T): T {
 
 function dateKey(ts: number): string {
   return new Date(ts).toISOString().slice(0, 10);
+}
+
+// Daily Missions — points awarded once per mission per day.
+const MISSION_POINTS = 30;
+export const DAILY_WORD_TARGET = 5;
+const EMPTY_MISSIONS: DailyMissionsState = {
+  date: "",
+  video: false,
+  talk: false,
+  words: false,
+  reading: false,
+  grammar: false,
+};
+
+// Missions from a previous day don't carry over — a new day starts blank.
+function todaysMissions(m: DailyMissionsState, today: string): DailyMissionsState {
+  return m.date === today
+    ? m
+    : { date: today, video: false, talk: false, words: false, reading: false, grammar: false };
 }
 
 function uid(): string {
@@ -79,6 +100,9 @@ interface LingoContextValue {
   reviewWord: (id: string, remembered: boolean) => void;
   completeLesson: (correctCount: number) => void;
   completeQuiz: (level: Level, topic: string, score: number, total: number) => void;
+  dailyMissions: DailyMissionsState;
+  todayWordCount: number;
+  completeMission: (id: "video" | "talk") => void;
   addChatMessage: (msg: Omit<ChatMessage, "id" | "timestamp">) => void;
   clearChat: (scenario: string, level: Level) => void;
   resetAll: () => void;
@@ -98,6 +122,9 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   );
   const [quizHistory, setQuizHistory] = useState<QuizHistory[]>(() =>
     load<QuizHistory[]>(KEYS.quizHistory, []),
+  );
+  const [dailyMissions, setDailyMissions] = useState<DailyMissionsState>(() =>
+    load<DailyMissionsState>(KEYS.dailyMissions, EMPTY_MISSIONS),
   );
 
   const [user, setUser] = useState<CloudUser | null>(null);
@@ -121,6 +148,9 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem(KEYS.quizHistory, JSON.stringify(quizHistory));
   }, [quizHistory]);
+  useEffect(() => {
+    localStorage.setItem(KEYS.dailyMissions, JSON.stringify(dailyMissions));
+  }, [dailyMissions]);
 
   // Keep the latest snapshot in a ref so the auth callback can seed the cloud
   // with current data without depending on stale closures.
@@ -129,10 +159,11 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     savedWords,
     chatMessages,
     quizHistory,
+    dailyMissions,
   });
   useEffect(() => {
-    latest.current = { progress, savedWords, chatMessages, quizHistory };
-  }, [progress, savedWords, chatMessages, quizHistory]);
+    latest.current = { progress, savedWords, chatMessages, quizHistory, dailyMissions };
+  }, [progress, savedWords, chatMessages, quizHistory, dailyMissions]);
 
   // Streak bookkeeping on mount — same day → unchanged; consecutive day → +1;
   // gap → reset.
@@ -171,6 +202,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
           setSavedWords(cloud.savedWords ?? []);
           setChatMessages(cloud.chatMessages ?? []);
           setQuizHistory(cloud.quizHistory ?? []);
+          setDailyMissions(cloud.dailyMissions ?? EMPTY_MISSIONS);
         } else {
           await saveCloud(u.uid, latest.current);
         }
@@ -195,12 +227,16 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!user) return;
     const t = setTimeout(() => {
-      saveCloud(user.uid, { progress, savedWords, chatMessages, quizHistory }).catch(
-        () => {},
-      );
+      saveCloud(user.uid, {
+        progress,
+        savedWords,
+        chatMessages,
+        quizHistory,
+        dailyMissions,
+      }).catch(() => {});
     }, 800);
     return () => clearTimeout(t);
-  }, [user, progress, savedWords, chatMessages, quizHistory]);
+  }, [user, progress, savedWords, chatMessages, quizHistory, dailyMissions]);
 
   const signIn = useCallback(async () => {
     // Start listening first so onAuthStateChanged catches this sign-in; this is
@@ -330,6 +366,55 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  // Mark today's mission done and award points once per mission per day.
+  // Missions from a prior day are dropped first, so yesterday's checkmarks
+  // never carry over or block today's points. Shared by the manual "mark as
+  // done" missions and the auto-detected ones below.
+  const awardMission = useCallback((id: keyof Omit<DailyMissionsState, "date">) => {
+    const today = dateKey(Date.now());
+    setDailyMissions((prev) => {
+      const current = todaysMissions(prev, today);
+      if (current[id]) return current;
+      setProgress((p) => (p ? { ...p, points: p.points + MISSION_POINTS } : p));
+      return { ...current, [id]: true };
+    });
+  }, []);
+
+  const completeMission = useCallback(
+    (id: "video" | "talk") => awardMission(id),
+    [awardMission],
+  );
+
+  // Words saved today (via toggleSaveWord) — drives the "save 5 words" mission.
+  const todayWordCount = useMemo(() => {
+    const today = dateKey(Date.now());
+    return savedWords.filter((w) => dateKey(w.savedAt) === today).length;
+  }, [savedWords]);
+
+  // Auto-complete the "words" mission (no manual mark) once the daily target
+  // is reached, awarding points the same way the manual missions do.
+  useEffect(() => {
+    if (todayWordCount >= DAILY_WORD_TARGET) awardMission("words");
+  }, [todayWordCount, awardMission]);
+
+  // Auto-complete "read an article" once a Reading Lab article's comprehension
+  // quiz has been finished today (Reading.tsx logs it via completeQuiz).
+  useEffect(() => {
+    const today = dateKey(Date.now());
+    const done = quizHistory.some(
+      (h) => h.topic === "Reading" && dateKey(h.timestamp) === today,
+    );
+    if (done) awardMission("reading");
+  }, [quizHistory, awardMission]);
+
+  // Auto-complete "learn one grammar topic" once today's Daily Lesson is done
+  // — dailyLessonCompletedText is already the per-day gate completeLesson sets.
+  useEffect(() => {
+    if (progress?.dailyLessonCompletedText === dateKey(Date.now())) {
+      awardMission("grammar");
+    }
+  }, [progress?.dailyLessonCompletedText, awardMission]);
+
   const addChatMessage = useCallback<LingoContextValue["addChatMessage"]>((msg) => {
     setChatMessages((prev) => [...prev, { ...msg, id: uid(), timestamp: Date.now() }]);
     // Each user dialogue turn awards +15 points (LingoViewModel.sendChatMessage).
@@ -349,7 +434,13 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     setSavedWords([]);
     setChatMessages([]);
     setQuizHistory([]);
+    setDailyMissions(EMPTY_MISSIONS);
   }, []);
+
+  const todayMissions = useMemo(
+    () => todaysMissions(dailyMissions, dateKey(Date.now())),
+    [dailyMissions],
+  );
 
   const value = useMemo<LingoContextValue>(
     () => ({
@@ -357,6 +448,9 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       savedWords,
       chatMessages,
       quizHistory,
+      dailyMissions: todayMissions,
+      todayWordCount,
+      completeMission,
       cloudConfigured: isCloudConfigured(),
       user,
       authReady,
@@ -381,6 +475,9 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       savedWords,
       chatMessages,
       quizHistory,
+      todayMissions,
+      todayWordCount,
+      completeMission,
       user,
       authReady,
       signIn,

@@ -63,6 +63,20 @@ export const SPEAKING_TOPICS = [
   "At a restaurant",
 ];
 
+// Topics for the "watch a video in English" daily mission — used to build a
+// YouTube search link (no specific video IDs are hardcoded, since those can
+// go stale or be region-locked).
+export const VIDEO_TOPICS = [
+  "English listening practice for beginners",
+  "Learn English conversation",
+  "English vocabulary lesson",
+  "English grammar explained",
+  "English short story for learners",
+  "English pronunciation practice",
+  "Everyday English phrases",
+  "English news for learners",
+];
+
 // Roleplay scenarios for the Dialogue Coach.
 export const DIALOGUE_SCENARIOS = [
   { id: "cafe", label: "☕ בבית קפה", en: "Ordering at a cafe" },

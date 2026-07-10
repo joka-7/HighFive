@@ -4,6 +4,7 @@ import type { Screen } from "./types";
 import Onboarding from "./screens/Onboarding";
 import Dashboard from "./screens/Dashboard";
 import DailyLesson from "./screens/DailyLesson";
+import DailyMissions from "./screens/DailyMissions";
 import Vocabulary from "./screens/Vocabulary";
 import DialogueCoach from "./screens/DialogueCoach";
 import PracticeQuiz from "./screens/PracticeQuiz";
@@ -29,11 +30,13 @@ const TITLES: Record<Screen, string> = {
   reading: "קריאה",
   listening: "האזנה",
   speaking: "דיבור",
+  missions: "משימות יומיות",
 };
 
 const NAV: { screen: Screen; ico: string; label: string }[] = [
   { screen: "dashboard", ico: "🏠", label: "בית" },
   { screen: "lesson", ico: "📚", label: "שיעור" },
+  { screen: "missions", ico: "🎯", label: "משימות" },
   { screen: "vocabulary", ico: "🃏", label: "מילים" },
   { screen: "progress", ico: "📈", label: "התקדמות" },
   { screen: "settings", ico: "⚙️", label: "הגדרות" },
@@ -59,6 +62,8 @@ export default function App() {
         return <Dashboard go={go} />;
       case "lesson":
         return <DailyLesson />;
+      case "missions":
+        return <DailyMissions go={go} />;
       case "vocabulary":
         return <Vocabulary />;
       case "dialogue":
