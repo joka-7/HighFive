@@ -58,11 +58,17 @@ function dateKey(ts: number): string {
 
 // Daily Missions — points awarded once per mission per day.
 const MISSION_POINTS = 30;
-const EMPTY_MISSIONS: DailyMissionsState = { date: "", video: false, talk: false };
+export const DAILY_WORD_TARGET = 5;
+const EMPTY_MISSIONS: DailyMissionsState = {
+  date: "",
+  video: false,
+  talk: false,
+  words: false,
+};
 
 // Missions from a previous day don't carry over — a new day starts blank.
 function todaysMissions(m: DailyMissionsState, today: string): DailyMissionsState {
-  return m.date === today ? m : { date: today, video: false, talk: false };
+  return m.date === today ? m : { date: today, video: false, talk: false, words: false };
 }
 
 function uid(): string {
@@ -91,6 +97,7 @@ interface LingoContextValue {
   completeLesson: (correctCount: number) => void;
   completeQuiz: (level: Level, topic: string, score: number, total: number) => void;
   dailyMissions: DailyMissionsState;
+  todayWordCount: number;
   completeMission: (id: "video" | "talk") => void;
   addChatMessage: (msg: Omit<ChatMessage, "id" | "timestamp">) => void;
   clearChat: (scenario: string, level: Level) => void;
@@ -368,6 +375,25 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  // Words saved today (via toggleSaveWord) — drives the "save 5 words" mission.
+  const todayWordCount = useMemo(() => {
+    const today = dateKey(Date.now());
+    return savedWords.filter((w) => dateKey(w.savedAt) === today).length;
+  }, [savedWords]);
+
+  // Auto-complete the "words" mission (no manual mark) once the daily target
+  // is reached, awarding points the same way the manual missions do.
+  useEffect(() => {
+    if (todayWordCount < DAILY_WORD_TARGET) return;
+    const today = dateKey(Date.now());
+    setDailyMissions((prev) => {
+      const current = todaysMissions(prev, today);
+      if (current.words) return current;
+      setProgress((p) => (p ? { ...p, points: p.points + MISSION_POINTS } : p));
+      return { ...current, words: true };
+    });
+  }, [todayWordCount]);
+
   const addChatMessage = useCallback<LingoContextValue["addChatMessage"]>((msg) => {
     setChatMessages((prev) => [...prev, { ...msg, id: uid(), timestamp: Date.now() }]);
     // Each user dialogue turn awards +15 points (LingoViewModel.sendChatMessage).
@@ -402,6 +428,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       chatMessages,
       quizHistory,
       dailyMissions: todayMissions,
+      todayWordCount,
       completeMission,
       cloudConfigured: isCloudConfigured(),
       user,
@@ -428,6 +455,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       chatMessages,
       quizHistory,
       todayMissions,
+      todayWordCount,
       completeMission,
       user,
       authReady,

@@ -125,6 +125,7 @@ export interface DailyMissionsState {
   date: string;
   video: boolean;
   talk: boolean;
+  words: boolean; // auto-completes once 5 words are saved that day
 }
 
 export type Screen =
