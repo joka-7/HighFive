@@ -126,6 +126,8 @@ export interface DailyMissionsState {
   video: boolean;
   talk: boolean;
   words: boolean; // auto-completes once 5 words are saved that day
+  reading: boolean; // auto-completes on finishing a Reading Lab article
+  grammar: boolean; // auto-completes on finishing the Daily Lesson
 }
 
 export type Screen =

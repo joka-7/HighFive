@@ -64,11 +64,15 @@ const EMPTY_MISSIONS: DailyMissionsState = {
   video: false,
   talk: false,
   words: false,
+  reading: false,
+  grammar: false,
 };
 
 // Missions from a previous day don't carry over — a new day starts blank.
 function todaysMissions(m: DailyMissionsState, today: string): DailyMissionsState {
-  return m.date === today ? m : { date: today, video: false, talk: false, words: false };
+  return m.date === today
+    ? m
+    : { date: today, video: false, talk: false, words: false, reading: false, grammar: false };
 }
 
 function uid(): string {
@@ -364,8 +368,9 @@ export function LingoProvider({ children }: { children: ReactNode }) {
 
   // Mark today's mission done and award points once per mission per day.
   // Missions from a prior day are dropped first, so yesterday's checkmarks
-  // never carry over or block today's points.
-  const completeMission = useCallback((id: "video" | "talk") => {
+  // never carry over or block today's points. Shared by the manual "mark as
+  // done" missions and the auto-detected ones below.
+  const awardMission = useCallback((id: keyof Omit<DailyMissionsState, "date">) => {
     const today = dateKey(Date.now());
     setDailyMissions((prev) => {
       const current = todaysMissions(prev, today);
@@ -374,6 +379,11 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       return { ...current, [id]: true };
     });
   }, []);
+
+  const completeMission = useCallback(
+    (id: "video" | "talk") => awardMission(id),
+    [awardMission],
+  );
 
   // Words saved today (via toggleSaveWord) — drives the "save 5 words" mission.
   const todayWordCount = useMemo(() => {
@@ -384,15 +394,26 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   // Auto-complete the "words" mission (no manual mark) once the daily target
   // is reached, awarding points the same way the manual missions do.
   useEffect(() => {
-    if (todayWordCount < DAILY_WORD_TARGET) return;
+    if (todayWordCount >= DAILY_WORD_TARGET) awardMission("words");
+  }, [todayWordCount, awardMission]);
+
+  // Auto-complete "read an article" once a Reading Lab article's comprehension
+  // quiz has been finished today (Reading.tsx logs it via completeQuiz).
+  useEffect(() => {
     const today = dateKey(Date.now());
-    setDailyMissions((prev) => {
-      const current = todaysMissions(prev, today);
-      if (current.words) return current;
-      setProgress((p) => (p ? { ...p, points: p.points + MISSION_POINTS } : p));
-      return { ...current, words: true };
-    });
-  }, [todayWordCount]);
+    const done = quizHistory.some(
+      (h) => h.topic === "Reading" && dateKey(h.timestamp) === today,
+    );
+    if (done) awardMission("reading");
+  }, [quizHistory, awardMission]);
+
+  // Auto-complete "learn one grammar topic" once today's Daily Lesson is done
+  // — dailyLessonCompletedText is already the per-day gate completeLesson sets.
+  useEffect(() => {
+    if (progress?.dailyLessonCompletedText === dateKey(Date.now())) {
+      awardMission("grammar");
+    }
+  }, [progress?.dailyLessonCompletedText, awardMission]);
 
   const addChatMessage = useCallback<LingoContextValue["addChatMessage"]>((msg) => {
     setChatMessages((prev) => [...prev, { ...msg, id: uid(), timestamp: Date.now() }]);

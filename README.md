@@ -24,10 +24,11 @@ key.
   score via the browser's speech recognition.
 - **Dialogue Coach** — roleplay scenarios where the AI replies in English and
   corrects your mistakes in Hebrew. *(Requires an AI key.)*
-- **Daily Missions** — a simple daily checklist: watch a video in English,
-  talk with the AI coach in English, and save 5 new vocabulary words (this one
-  completes automatically). Mark each mission done and earn points; missions
-  reset every day.
+- **Daily Missions** — a daily checklist: watch a video in English, talk with
+  the AI coach in English, read an article in the Reading Lab, learn one
+  grammar topic (Daily Lesson), and save 5 new vocabulary words. The last
+  three complete automatically as you use those features. Earn points per
+  mission; missions reset every day.
 - **Practice quiz** — 5 multiple-choice questions with Hebrew explanations.
 - **Saved words** — bookmark words, mark them mastered, review later.
 - **Progress** — points, daily streaks, and a placement test.
