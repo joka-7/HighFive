@@ -34,8 +34,8 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
 
       {!isAIReady() && (
         <div className="banner">
-          💡 ללא ספק AI האפליקציה עובדת עם תוכן מובנה (לא מקוון). להוספת שיעורים
-          ושיחות AI חיים, הוסף מפתח ב{" "}
+          💡 בלי מפתח AI, האפליקציה פועלת עם תוכן מובנה (לא מקוון). כדי לקבל
+          שיעורים ושיחות AI חיות, הוסיפו מפתח ב
           <button
             className="btn ghost small"
             style={{ padding: 0, display: "inline" }}

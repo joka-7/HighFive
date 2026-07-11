@@ -6,6 +6,9 @@ import type { GemReading } from "../types";
 import QuizRunner from "../components/QuizRunner";
 import Spinner from "../components/Spinner";
 import { speak } from "../services/tts";
+import { loadDailyCache, saveDailyCache } from "../utils/dailyCache";
+
+const CACHE_KEY = "high5.reading_today";
 
 // Reading Lab — read a real, level-adapted passage, tap glossary words to see
 // the Hebrew (and save them into the spaced-repetition queue), then answer
@@ -18,18 +21,36 @@ export default function Reading() {
   const [phase, setPhase] = useState<"read" | "quiz" | "done">("read");
   const [open, setOpen] = useState<string | null>(null);
 
-  const load = useCallback(() => {
-    setLoading(true);
-    setPhase("read");
-    setOpen(null);
-    generateReading(level, topicForToday(READING_TOPICS))
-      .then(setReading)
-      .finally(() => setLoading(false));
-  }, [level]);
+  // Reuses today's passage on every remount (the screen unmounts on tab
+  // switches) so the user doesn't lose their place mid-article. Pass
+  // `force` to explicitly fetch a new one (e.g. after finishing).
+  const load = useCallback(
+    (force = false) => {
+      setLoading(true);
+      setPhase("read");
+      setOpen(null);
+      if (!force) {
+        const cached = loadDailyCache<GemReading>(CACHE_KEY, level);
+        if (cached) {
+          setReading(cached);
+          setLoading(false);
+          return;
+        }
+      }
+      generateReading(level, topicForToday(READING_TOPICS))
+        .then((r) => {
+          setReading(r);
+          saveDailyCache(CACHE_KEY, level, r);
+        })
+        .finally(() => setLoading(false));
+    },
+    [level],
+  );
 
   useEffect(() => {
     load();
-  }, [load]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [level]);
 
   if (!reading || loading) return <Spinner label="טוען קטע קריאה..." />;
 
@@ -39,7 +60,7 @@ export default function Reading() {
         <div className="big">📖</div>
         <h2>כל הכבוד!</h2>
         <p className="muted">סיימת את קטע הקריאה.</p>
-        <button className="btn accent" onClick={load} style={{ marginTop: 12 }}>
+        <button className="btn accent" onClick={() => load(true)} style={{ marginTop: 12 }}>
           קטע חדש 🔄
         </button>
       </div>

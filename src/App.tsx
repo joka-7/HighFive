@@ -63,7 +63,7 @@ export default function App() {
       case "lesson":
         return <DailyLesson />;
       case "missions":
-        return <DailyMissions go={go} />;
+        return <DailyMissions />;
       case "vocabulary":
         return <Vocabulary />;
       case "dialogue":
