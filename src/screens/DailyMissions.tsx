@@ -1,15 +1,12 @@
 import { DAILY_WORD_TARGET, useLingo } from "../store/useLingo";
-import { topicForToday, VIDEO_TOPICS } from "../data/topics";
-import type { Screen } from "../types";
 
-// Missions the user marks done manually (an external action we can't detect
-// in-app: watching a video, having a conversation).
+// Missions the user marks done manually — an external action the app can't
+// detect (watching a video, having a conversation somewhere).
 interface ManualMission {
   id: "video" | "talk";
   emoji: string;
   title: string;
   sub: string;
-  cta: string;
 }
 
 const MANUAL_MISSIONS: ManualMission[] = [
@@ -17,26 +14,23 @@ const MANUAL_MISSIONS: ManualMission[] = [
     id: "video",
     emoji: "🎬",
     title: "צפו בסרטון באנגלית",
-    sub: "בחרו סרטון קצר באנגלית וצפו בו היום.",
-    cta: "פתיחת סרטון",
+    sub: "צפיתם היום בסרטון קצר באנגלית? סמנו שהשלמתם.",
   },
   {
     id: "talk",
     emoji: "💬",
     title: "שוחחו עם מאמן ה-AI באנגלית",
-    sub: "נהלו שיחה קצרה עם מאמן השיחה באנגלית.",
-    cta: "פתיחת מאמן שיחה",
+    sub: "ניהלתם היום שיחה עם מאמן השיחה באנגלית? סמנו שהשלמתם.",
   },
 ];
 
-// Missions that auto-complete once their in-app action is done (no button).
+// Missions that auto-complete once their in-app action is done — practiced
+// from their own tab, so there's nothing to press here.
 interface AutoMission {
   id: "reading" | "grammar";
   emoji: string;
   title: string;
   sub: string;
-  cta: string;
-  target: Screen;
 }
 
 const AUTO_MISSIONS: AutoMission[] = [
@@ -44,34 +38,23 @@ const AUTO_MISSIONS: AutoMission[] = [
     id: "reading",
     emoji: "📖",
     title: "קראו מאמר באנגלית",
-    sub: "קראו קטע ב-Reading Lab וענו על שאלות ההבנה — המשימה מסתיימת אוטומטית.",
-    cta: "לקטע קריאה",
-    target: "reading",
+    sub: "סיימו קטע וענו על שאלות ההבנה בטאב הקריאה — המשימה מסתיימת אוטומטית.",
   },
   {
     id: "grammar",
     emoji: "✏️",
     title: "למדו נושא דקדוק אחד",
-    sub: "השלימו את השיעור היומי — המשימה מסתיימת אוטומטית.",
-    cta: "לשיעור היומי",
-    target: "lesson",
+    sub: "השלימו את השיעור היומי בטאב השיעור — המשימה מסתיימת אוטומטית.",
   },
 ];
 
 const TOTAL_MISSIONS = MANUAL_MISSIONS.length + AUTO_MISSIONS.length + 1; // + the "5 words" mission
 
-// A YouTube search link (not a specific video ID, which can go stale or be
-// region-locked) seeded with today's rotating topic.
-function videoSearchUrl(): string {
-  const topic = topicForToday(VIDEO_TOPICS);
-  return `https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}`;
-}
-
 function DoneBadge({ done }: { done: boolean }) {
   return done ? <span className="tag ok">✓ הושלם (+30)</span> : null;
 }
 
-export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
+export default function DailyMissions() {
   const { dailyMissions, todayWordCount, completeMission } = useLingo();
 
   const doneCount =
@@ -80,14 +63,6 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
     (dailyMissions.words ? 1 : 0);
   const allDone = doneCount === TOTAL_MISSIONS;
   const wordsProgress = Math.min(todayWordCount, DAILY_WORD_TARGET);
-
-  function act(mission: ManualMission) {
-    if (mission.id === "video") {
-      window.open(videoSearchUrl(), "_blank", "noopener,noreferrer");
-    } else {
-      go("dialogue");
-    }
-  }
 
   return (
     <div>
@@ -114,18 +89,14 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
             <p className="muted" style={{ marginTop: 0 }}>
               {mission.sub}
             </p>
-            <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-              <button className="btn secondary" onClick={() => act(mission)}>
-                {mission.cta}
-              </button>
-              <button
-                className="btn accent"
-                disabled={done}
-                onClick={() => completeMission(mission.id)}
-              >
-                {done ? "בוצע ✓" : "סמן כהושלם"}
-              </button>
-            </div>
+            <button
+              className="btn accent"
+              style={{ marginTop: 10 }}
+              disabled={done}
+              onClick={() => completeMission(mission.id)}
+            >
+              {done ? "בוצע ✓" : "סמן כהושלם"}
+            </button>
           </div>
         );
       })}
@@ -142,9 +113,6 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
             <p className="muted" style={{ marginTop: 0 }}>
               {mission.sub}
             </p>
-            <button className="btn secondary" style={{ marginTop: 10 }} onClick={() => go(mission.target)}>
-              {mission.cta}
-            </button>
           </div>
         );
       })}
@@ -156,7 +124,7 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
         </div>
         <h3 style={{ margin: "8px 0 2px" }}>למדו {DAILY_WORD_TARGET} מילים חדשות</h3>
         <p className="muted" style={{ marginTop: 0 }}>
-          שמרו {DAILY_WORD_TARGET} מילים חדשות באוצר המילים היום — המשימה מסתיימת אוטומטית.
+          שמרו {DAILY_WORD_TARGET} מילים חדשות בטאב אוצר המילים — המשימה מסתיימת אוטומטית.
         </p>
         <div
           style={{
@@ -164,7 +132,7 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
             borderRadius: 999,
             background: "var(--surface-2, #eee)",
             overflow: "hidden",
-            margin: "10px 0",
+            margin: "10px 0 4px",
           }}
         >
           <div
@@ -177,14 +145,9 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
             }}
           />
         </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "space-between" }}>
-          <span className="muted">
-            {wordsProgress}/{DAILY_WORD_TARGET} מילים
-          </span>
-          <button className="btn secondary" onClick={() => go("vocabulary")}>
-            לאוצר מילים
-          </button>
-        </div>
+        <span className="muted">
+          {wordsProgress}/{DAILY_WORD_TARGET} מילים
+        </span>
       </div>
     </div>
   );
