@@ -57,6 +57,7 @@ export default function QuizRunner({ questions, onFinish }: Props) {
           </button>
         </div>
         <h3 style={{ direction: "ltr", textAlign: "left" }}>{q.question}</h3>
+        {q.questionHe && <p className="muted" style={{ margin: "4px 0 12px" }}>{q.questionHe}</p>}
 
         {q.options.map((opt, i) => {
           let cls = "option";
@@ -73,6 +74,11 @@ export default function QuizRunner({ questions, onFinish }: Props) {
               style={{ direction: "ltr", textAlign: "left" }}
             >
               {opt}
+              {q.optionsHe?.[i] && (
+                <span className="muted" style={{ display: "block", fontSize: "0.85em", marginTop: 2 }}>
+                  {q.optionsHe[i]}
+                </span>
+              )}
             </button>
           );
         })}

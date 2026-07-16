@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { generateSpeaking } from "../services/content";
-import { topicForToday, SPEAKING_TOPICS } from "../data/topics";
+import { topicForTodayByLevel, SPEAKING_TOPICS_BY_LEVEL } from "../data/topics";
 import type { GemSpeaking } from "../types";
 import Spinner from "../components/Spinner";
 import { speak } from "../services/tts";
@@ -13,8 +13,9 @@ import { scoreSpeaking, type SpeakingScore } from "../utils/score";
 // never actually speak. ASR is a graceful enhancement; unsupported browsers
 // still see the sentences and can practise with the model audio.
 export default function Speaking() {
-  const { progress, addPoints, logMission } = useLingo();
+  const { progress, addPoints, logMission, learnedWords } = useLingo();
   const level = progress?.currentLevel ?? "A1";
+  const topic = topicForTodayByLevel(SPEAKING_TOPICS_BY_LEVEL, level);
   const [set, setSet] = useState<GemSpeaking | null>(null);
   const [loading, setLoading] = useState(false);
   const [index, setIndex] = useState(0);
@@ -32,10 +33,10 @@ export default function Speaking() {
     });
     setResult(null);
     setError(null);
-    generateSpeaking(level, topicForToday(SPEAKING_TOPICS))
+    generateSpeaking(level, topic, Object.keys(learnedWords))
       .then(setSet)
       .finally(() => setLoading(false));
-  }, [level, logMission, set]);
+  }, [level, topic, learnedWords, logMission, set]);
 
   useEffect(() => {
     load();

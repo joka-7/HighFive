@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { generateReading } from "../services/content";
-import { topicForToday, READING_TOPICS } from "../data/topics";
+import { topicForTodayByLevel, READING_TOPICS_BY_LEVEL } from "../data/topics";
 import type { GemReading } from "../types";
 import QuizRunner from "../components/QuizRunner";
 import Spinner from "../components/Spinner";
@@ -10,25 +10,21 @@ import { loadDailyCache, saveDailyCache } from "../utils/dailyCache";
 
 const CACHE_KEY = "high5.reading_today";
 
-// Reading Lab — read a real, level-adapted passage, tap glossary words to see
-// the Hebrew (and save them into the spaced-repetition queue), then answer
-// comprehension questions. Addresses the article's "reading live texts" gap.
 export default function Reading() {
-  const { progress, isWordSaved, toggleSaveWord, completeQuiz } = useLingo();
+  const { progress, isWordSaved, toggleSaveWord, completeQuiz, learnedWords } = useLingo();
   const level = progress?.currentLevel ?? "A1";
   const [reading, setReading] = useState<GemReading | null>(null);
   const [loading, setLoading] = useState(false);
   const [phase, setPhase] = useState<"read" | "quiz" | "done">("read");
   const [open, setOpen] = useState<string | null>(null);
+  const [showHe, setShowHe] = useState(false);
 
-  // Reuses today's passage on every remount (the screen unmounts on tab
-  // switches) so the user doesn't lose their place mid-article. Pass
-  // `force` to explicitly fetch a new one (e.g. after finishing).
   const load = useCallback(
     (force = false) => {
       setLoading(true);
       setPhase("read");
       setOpen(null);
+      setShowHe(false);
       if (!force) {
         const cached = loadDailyCache<GemReading>(CACHE_KEY, level);
         if (cached) {
@@ -37,20 +33,23 @@ export default function Reading() {
           return;
         }
       }
-      generateReading(level, topicForToday(READING_TOPICS))
+      generateReading(
+        level,
+        topicForTodayByLevel(READING_TOPICS_BY_LEVEL, level),
+        Object.keys(learnedWords),
+      )
         .then((r) => {
           setReading(r);
           saveDailyCache(CACHE_KEY, level, r);
         })
         .finally(() => setLoading(false));
     },
-    [level],
+    [level, learnedWords],
   );
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [level]);
+  }, [load]);
 
   if (!reading || loading) return <Spinner label="טוען קטע קריאה..." />;
 
@@ -91,6 +90,18 @@ export default function Reading() {
         <pre className="explanation-text" style={{ direction: "ltr", textAlign: "left", marginTop: 10 }}>
           {reading.text}
         </pre>
+        {reading.textHe && (
+          <>
+            <button className="btn ghost small" style={{ marginTop: 8 }} onClick={() => setShowHe((s) => !s)}>
+              {showHe ? "הסתר תרגום מלא" : "הצג תרגום מלא"}
+            </button>
+            {showHe && (
+              <pre className="explanation-text" style={{ marginTop: 8 }}>
+                {reading.textHe}
+              </pre>
+            )}
+          </>
+        )}
       </div>
 
       <div className="card">

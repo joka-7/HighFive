@@ -710,6 +710,20 @@ textarea.input:focus {
   color: var(--text-soft);
 }
 
+.progress-bar {
+  height: 8px;
+  background: var(--surface-alt, #eee);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #8e7bff);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
 .banner {
   background: var(--warn-bg);
   border: 1px solid var(--warn-border);
