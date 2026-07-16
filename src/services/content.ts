@@ -8,6 +8,7 @@ import type {
   GemLesson,
   GemListening,
   GemQuiz,
+  GemQuestion,
   GemReading,
   GemSpeaking,
   GemWord,
@@ -64,6 +65,63 @@ function validateOrThrow(texts: string[], allowed: Set<string>, label: string): 
     throw new Error(`${label}: vocabulary guard failed (${[...new Set(bad)].slice(0, 5).join(", ")})`);
   }
 }
+function ensureQuizHebrew(quiz: GemQuiz): GemQuiz {
+  return { questions: quiz.questions.map((q) => sanitizeEnglishMcq(q)) };
+}
+
+function ensureLessonHebrew(lesson: GemLesson): GemLesson {
+  return {
+    ...lesson,
+    questions: lesson.questions.map((q) => sanitizeEnglishMcq(q)),
+  };
+}
+
+function ensureReadingHebrew(reading: GemReading): GemReading {
+  if (!reading.textHe) throw new Error("reading: missing textHe");
+  const questions = reading.questions.map((q) => sanitizeEnglishMcq(q));
+  return { ...reading, questions };
+}
+
+function ensureListeningHebrew(listening: GemListening): GemListening {
+  if (!listening.transcriptHe) throw new Error("listening: missing transcriptHe");
+  const questions = listening.questions.map((q) => sanitizeEnglishMcq(q));
+  return { ...listening, questions };
+}
+
+/** Keep MCQ face English-only; Hebrew lives in questionHe/optionsHe (revealed after answer). */
+function sanitizeEnglishMcq(q: GemQuestion): GemQuestion {
+  return {
+    ...q,
+    questionHe: q.questionHe ?? q.explanation,
+  };
+}
+
+async function pickOfflineReading(
+  level: Level,
+  allowed: Set<string>,
+  day: number,
+): Promise<GemReading> {
+  const items = await READINGS[level]();
+  const pool = items.map((r) => ({ ...r, textsToCheck: readingTexts(r) }));
+  const picked = pickVocabSafeItem(pool, allowed, day);
+  const { textsToCheck, ...reading } = picked;
+  void textsToCheck;
+  return reading;
+}
+
+async function pickOfflineListening(
+  level: Level,
+  allowed: Set<string>,
+  day: number,
+): Promise<GemListening> {
+  const items = await LISTENINGS[level]();
+  const pool = items.map((l) => ({ ...l, textsToCheck: listeningTexts(l) }));
+  const picked = pickVocabSafeItem(pool, allowed, day);
+  const { textsToCheck, ...listening } = picked;
+  void textsToCheck;
+  return listening;
+}
+
 
 // --- Vocabulary ---
 export async function generateLevelAdaptiveWords(
@@ -111,7 +169,7 @@ export async function generateDailyLesson(
   const ctx = await buildContentContext(level, learnedKeys, day);
 
   if (!isAIReady()) {
-    return pickVocabSafeItem(offlinePool, ctx.allowed, day);
+    return ensureLessonHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, day));
   }
 
   const prompt = `Create an interactive daily English lesson matching CEFR level ${level} on: "${topic}".
@@ -128,11 +186,11 @@ Return as JSON with questionHe and optionsHe on every question.`;
     "You are High5's English-Hebrew tutor. Write lessons with quizzes. All instructions and explanations must be in Hebrew for Israeli students.";
 
   try {
-    const result = parseJson<GemLesson>(await complete(prompt, systemInstruction));
+    const result = ensureLessonHebrew(parseJson<GemLesson>(await complete(prompt, systemInstruction)));
     validateOrThrow(lessonTexts(result), ctx.allowed, "lesson");
     return result;
   } catch {
-    return pickVocabSafeItem(offlinePool, ctx.allowed, day);
+    return ensureLessonHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, day));
   }
 }
 
@@ -187,7 +245,7 @@ export async function generatePracticeQuiz(
   const ctx = await buildContentContext(level, learnedKeys, day);
 
   if (!isAIReady()) {
-    return pickVocabSafeItem(offlinePool, ctx.allowed, day);
+    return ensureQuizHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, day));
   }
 
   const prompt = `Generate 5 multiple choice questions for CEFR level ${level} on "${topic}".
@@ -201,101 +259,67 @@ Return as JSON.`;
     "You are High5's assessment evaluator. Compose accurate multiple-choice tests for English learners. All explanations in Hebrew.";
 
   try {
-    const result = parseJson<GemQuiz>(await complete(prompt, systemInstruction));
+    const result = ensureQuizHebrew(parseJson<GemQuiz>(await complete(prompt, systemInstruction)));
     validateOrThrow(quizTexts(result), ctx.allowed, "quiz");
     return result;
   } catch {
-    return pickVocabSafeItem(offlinePool, ctx.allowed, day);
+    return ensureQuizHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, day));
   }
 }
 
 // --- Reading Lab ---
 export async function generateReading(
   level: Level,
-  topic: string,
+  _topic: string,
   learnedKeys: Iterable<string>,
   day = dayIndex(),
 ): Promise<GemReading> {
   const ctx = await buildContentContext(level, learnedKeys, day);
-
-  if (!isAIReady()) {
-    return pickByDayExtra(READINGS, level, day);
-  }
-
-  const prompt = `Write a short, engaging English reading passage for CEFR level ${level} on the theme: "${topic}".
-${vocabPromptBlock(ctx)}
-The passage should be 4-6 sentences using ONLY allowed vocabulary.
-Provide:
-- title (English + Hebrew translation in parentheses)
-- text (English), textHe (full Hebrew translation)
-- glossary: 3 key words from today's list. Each: word, partOfSpeech, definition (HEBREW), example (English), translation (Hebrew)
-- questions: exactly 2 comprehension MCQs with questionHe and optionsHe
-
-Return as JSON.`;
-
-  const systemInstruction =
-    "You are High5's reading tutor. Write natural, level-appropriate English passages with Hebrew glossary and Hebrew explanations for Israeli learners.";
-
-  try {
-    const result = parseJson<GemReading>(await complete(prompt, systemInstruction));
-    validateOrThrow(readingTexts(result), ctx.allowed, "reading");
-    return result;
-  } catch {
-    return pickByDayExtra(READINGS, level, day);
-  }
+  return ensureReadingHebrew(await pickOfflineReading(level, ctx.allowed, day));
 }
 
 // --- Listening practice ---
 export async function generateListening(
   level: Level,
-  topic: string,
+  _topic: string,
   learnedKeys: Iterable<string>,
   day = dayIndex(),
 ): Promise<GemListening> {
   const ctx = await buildContentContext(level, learnedKeys, day);
-
-  if (!isAIReady()) {
-    return pickByDayExtra(LISTENINGS, level, day);
-  }
-
-  const prompt = `Create a short English listening exercise for CEFR level ${level} on: "${topic}".
-${vocabPromptBlock(ctx)}
-Provide:
-- transcript: 1-3 sentences using ONLY allowed vocabulary
-- transcriptHe: full Hebrew translation
-- questions: exactly 2 comprehension MCQs with questionHe and optionsHe
-
-Return as JSON.`;
-
-  const systemInstruction =
-    "You are High5's listening-comprehension tutor. Write natural spoken-style English with Hebrew explanations.";
-
-  try {
-    const result = parseJson<GemListening>(await complete(prompt, systemInstruction));
-    validateOrThrow(listeningTexts(result), ctx.allowed, "listening");
-    return result;
-  } catch {
-    return pickByDayExtra(LISTENINGS, level, day);
-  }
+  return ensureListeningHebrew(await pickOfflineListening(level, ctx.allowed, day));
 }
 
 // --- Speaking practice ---
+const SPEAKING_AI_TIMEOUT_MS = 12_000;
+
+async function pickOfflineSpeaking(
+  level: Level,
+  learnedKeys: Iterable<string>,
+  day: number,
+): Promise<GemSpeaking> {
+  const ctx = await buildContentContext(level, learnedKeys, day);
+  const set = await pickByDayExtra(SPEAKINGS, level, day);
+  const safe = set.prompts.filter((p) =>
+    contentUsesOnlyAllowedVocab([p.text], ctx.allowed),
+  );
+  if (safe.length >= 4) return { prompts: safe.slice(0, 4) };
+  if (safe.length > 0) return { prompts: safe };
+  return set;
+}
+
 export async function generateSpeaking(
   level: Level,
   topic: string,
   learnedKeys: Iterable<string>,
   day = dayIndex(),
 ): Promise<GemSpeaking> {
-  const ctx = await buildContentContext(level, learnedKeys, day);
+  const offline = () => pickOfflineSpeaking(level, learnedKeys, day);
 
   if (!isAIReady()) {
-    const set = await pickByDayExtra(SPEAKINGS, level, day);
-    const safe = set.prompts.filter((p) =>
-      contentUsesOnlyAllowedVocab([p.text], ctx.allowed),
-    );
-    if (safe.length >= 4) return { prompts: safe.slice(0, 4) };
-    return set;
+    return offline();
   }
+
+  const ctx = await buildContentContext(level, learnedKeys, day);
 
   const prompt = `Create an English speaking practice set for CEFR level ${level} on: "${topic}".
 ${vocabPromptBlock(ctx)}
@@ -311,11 +335,17 @@ Return as JSON:
     "You are High5's pronunciation coach. Provide practical English sentences with Hebrew translations for Israeli learners.";
 
   try {
-    const result = parseJson<GemSpeaking>(await complete(prompt, systemInstruction));
+    const raw = await Promise.race([
+      complete(prompt, systemInstruction),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("speaking AI timeout")), SPEAKING_AI_TIMEOUT_MS),
+      ),
+    ]);
+    const result = parseJson<GemSpeaking>(raw);
     validateOrThrow(speakingTexts(result), ctx.allowed, "speaking");
     return result;
   } catch {
-    return pickByDayExtra(SPEAKINGS, level, day);
+    return offline();
   }
 }
 

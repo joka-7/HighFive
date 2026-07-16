@@ -8,6 +8,8 @@ export const MISSION_ICONS: Record<MissionKind, string> = {
   speaking: "🎤",
   review: "🔁",
   dialogue: "💬",
+  video: "🎬",
+  words: "🃏",
 };
 
 export function dateKeyFromTs(ts: number): string {
@@ -26,15 +28,33 @@ export function kindFromQuizTopic(topic: string): MissionKind {
 
 export function quizToMission(q: QuizHistory): MissionLog {
   const kind = kindFromQuizTopic(q.topic);
+  const label =
+    q.topic === "Reading"
+      ? DAILY_CHECKLIST_LABELS.reading.label
+      : q.topic === "Listening"
+        ? "האזנה"
+        : q.topic;
   return {
     id: q.id,
     kind,
-    label: q.topic,
+    label,
     timestamp: q.timestamp,
     score: q.score,
     total: q.totalQuestions,
   };
 }
+
+/** Labels for daily checklist missions logged to the calendar. */
+export const DAILY_CHECKLIST_LABELS: Record<
+  "video" | "talk" | "words" | "reading" | "grammar",
+  { kind: MissionKind; label: string }
+> = {
+  video: { kind: "video", label: "צפייה בסרטון באנגלית" },
+  talk: { kind: "dialogue", label: "שיחה עם מאמן AI" },
+  words: { kind: "words", label: "למידת 5 מילים" },
+  reading: { kind: "reading", label: "קריאת מאמר" },
+  grammar: { kind: "lesson", label: "שיעור דקדוק" },
+};
 
 /** Merge persisted mission log with legacy quiz rows and today's lesson flag. */
 export function allMissions(
@@ -56,7 +76,7 @@ export function allMissions(
       merged.push({
         id: `lesson-${day}`,
         kind: "lesson",
-        label: "שיעור יומי",
+        label: DAILY_CHECKLIST_LABELS.grammar.label,
         timestamp: Date.parse(`${day}T12:00:00`),
       });
     }

@@ -9,7 +9,7 @@ import { speak } from "../services/tts";
 import { dateKeyFromTs } from "../utils/missions";
 import { loadDailyCache, saveDailyCache } from "../utils/dailyCache";
 
-const CACHE_KEY = "high5.lesson_today";
+const CACHE_KEY = "high5.lesson_today.v2";
 
 type Phase = "reading" | "quiz" | "done";
 
@@ -61,7 +61,7 @@ export default function DailyLesson() {
       <QuizRunner
         questions={lesson.questions}
         onFinish={(score) => {
-          completeLesson(score);
+          completeLesson(score, lesson.questions.length);
           const today = progress?.dailyLessonCompletedText;
           const todayKey = dateKeyFromTs(Date.now());
           const base = today === todayKey ? 0 : 50;

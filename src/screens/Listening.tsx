@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { generateListening } from "../services/content";
 import { topicForTodayByLevel, LISTENING_TOPICS_BY_LEVEL } from "../data/topics";
@@ -8,13 +8,17 @@ import Spinner from "../components/Spinner";
 import { speak, ttsSupported } from "../services/tts";
 import { loadDailyCache, saveDailyCache } from "../utils/dailyCache";
 
-const CACHE_KEY = "high5.listening_today";
+const CACHE_KEY = "high5.listening_today.v3";
 
 export default function Listening() {
   const { progress, completeQuiz, learnedWords } = useLingo();
   const level = progress?.currentLevel ?? "A1";
+  const learnedKey = useMemo(
+    () => Object.keys(learnedWords).sort().join(","),
+    [learnedWords],
+  );
   const [clip, setClip] = useState<GemListening | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [phase, setPhase] = useState<"listen" | "quiz" | "done">("listen");
   const [showText, setShowText] = useState(false);
 
@@ -23,33 +27,58 @@ export default function Listening() {
       setLoading(true);
       setPhase("listen");
       setShowText(false);
+
       if (!force) {
         const cached = loadDailyCache<GemListening>(CACHE_KEY, level);
-        if (cached) {
+        if (cached?.transcript) {
           setClip(cached);
           setLoading(false);
-          return;
+          return () => {};
         }
       }
+
+      let active = true;
       generateListening(
         level,
         topicForTodayByLevel(LISTENING_TOPICS_BY_LEVEL, level),
-        Object.keys(learnedWords),
+        learnedKey ? learnedKey.split(",") : [],
       )
         .then((c) => {
+          if (!active) return;
           setClip(c);
           saveDailyCache(CACHE_KEY, level, c);
         })
-        .finally(() => setLoading(false));
+        .catch(() => {
+          if (!active) return;
+          setClip(null);
+        })
+        .finally(() => {
+          if (active) setLoading(false);
+        });
+
+      return () => {
+        active = false;
+      };
     },
-    [level, learnedWords],
+    [level, learnedKey],
   );
 
   useEffect(() => {
-    load();
+    return load();
   }, [load]);
 
-  if (!clip || loading) return <Spinner label="טוען תרגיל האזנה..." />;
+  if (loading) return <Spinner label="טוען תרגיל האזנה..." />;
+
+  if (!clip?.transcript) {
+    return (
+      <div className="card center">
+        <h2>לא הצלחנו לטעון תרגיל האזנה</h2>
+        <button className="btn" onClick={() => load(true)} style={{ marginTop: 12 }}>
+          נסו שוב 🔄
+        </button>
+      </div>
+    );
+  }
 
   if (phase === "done") {
     return (
