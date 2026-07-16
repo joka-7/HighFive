@@ -31,6 +31,7 @@ import { MORE_WORDS4 } from "./content/wordbank-extra4.mjs";
 import { MORE_WORDS5 } from "./content/wordbank-extra5.mjs";
 import { MORE_WORDS6 } from "./content/wordbank-extra6.mjs";
 import { MORE_WORDS7 } from "./content/wordbank-extra7.mjs";
+import { MORE_WORDS8 } from "./content/wordbank-extra8.mjs";
 import { MORE_READINGS, MORE_LISTENINGS } from "./content/passages-extra.mjs";
 import { MORE_READINGS2, MORE_LISTENINGS2, MORE_SPEAKING } from "./content/passages-extra2.mjs";
 import { MORE_READINGS3, MORE_LISTENINGS3, MORE_SPEAKING3 } from "./content/passages-extra3.mjs";
@@ -41,7 +42,7 @@ import { MORE_READINGS7, MORE_LISTENINGS7, MORE_SPEAKING7 } from "./content/pass
 import { MORE_READINGS8, MORE_LISTENINGS8, MORE_SPEAKING8 } from "./content/passages-extra8.mjs";
 
 // All extra vocabulary rounds, merged in order. Append new rounds here.
-const WORD_ROUNDS = [MORE_WORDS, MORE_WORDS2, MORE_WORDS3, MORE_WORDS4, MORE_WORDS5, MORE_WORDS6, MORE_WORDS7];
+const WORD_ROUNDS = [MORE_WORDS, MORE_WORDS2, MORE_WORDS3, MORE_WORDS4, MORE_WORDS5, MORE_WORDS6, MORE_WORDS7, MORE_WORDS8];
 const READING_ROUNDS = [MORE_READINGS, MORE_READINGS2, MORE_READINGS3, MORE_READINGS4, MORE_READINGS5, MORE_READINGS6, MORE_READINGS7, MORE_READINGS8];
 const LISTENING_ROUNDS = [MORE_LISTENINGS, MORE_LISTENINGS2, MORE_LISTENINGS3, MORE_LISTENINGS4, MORE_LISTENINGS5, MORE_LISTENINGS6, MORE_LISTENINGS7, MORE_LISTENINGS8];
 const SPEAKING_ROUNDS = [MORE_SPEAKING, MORE_SPEAKING3, MORE_SPEAKING4, MORE_SPEAKING5, MORE_SPEAKING6, MORE_SPEAKING7, MORE_SPEAKING8];
@@ -89,6 +90,25 @@ function mcq(rng, question, correct, distractors, explanation, fallback = []) {
   if (opts.length < 3) throw new Error(`mcq could not build 4 options for: ${question}`);
   const all = shuffle(rng, [correct, ...opts]);
   return { question, options: all, correctIndex: all.indexOf(correct), explanation };
+}
+
+// Build `count` questions that are distinct within the set. `make` produces one
+// (already randomized) question; we retry when it repeats a question text
+// already chosen, so no lesson/quiz shows the same question twice. Retries are
+// bounded so a small generator pool can't loop forever — the guard in main()
+// then fails the build if a set still couldn't be filled with unique questions.
+function genDistinct(make, count, maxTriesPerItem = 60) {
+  const out = [];
+  const seen = new Set();
+  let tries = 0;
+  while (out.length < count && tries < count * maxTriesPerItem) {
+    tries++;
+    const q = make();
+    if (seen.has(q.question)) continue;
+    seen.add(q.question);
+    out.push(q);
+  }
+  return out;
 }
 
 // --- Per-topic question generators (correct by construction) ------------------
@@ -292,8 +312,7 @@ function buildLevel(level, levelIdx) {
   for (let d = 0; d < DAYS; d++) {
     const topic = topics[d % topics.length];
     const rng = rngFrom(`${level}:lesson:${d}`);
-    const questions = [];
-    for (let q = 0; q < 3; q++) questions.push(GEN[topic.key](rng, ctx));
+    const questions = genDistinct(() => GEN[topic.key](rng, ctx), 3);
     lessons.push({ title: topic.title, explanation: topic.explanation, questions });
   }
 
@@ -302,8 +321,7 @@ function buildLevel(level, levelIdx) {
   const quizzes = [];
   for (let d = 0; d < DAYS; d++) {
     const rng = rngFrom(`${level}:quiz:${d}`);
-    const questions = [];
-    for (let q = 0; q < 5; q++) questions.push(GEN[pick(rng, genKeys)](rng, ctx));
+    const questions = genDistinct(() => GEN[pick(rng, genKeys)](rng, ctx), 5);
     quizzes.push({ questions });
   }
 
@@ -334,6 +352,18 @@ function validateQuestion(q, where) {
   if (typeof q.explanation !== "string" || !q.explanation) throw new Error(`${where}: empty explanation`);
 }
 
+// A lesson/quiz must have the expected number of questions, all distinct — no
+// learner should see the same question twice in one set.
+function validateQuestionSet(questions, expected, where) {
+  if (questions.length !== expected) {
+    throw new Error(`${where}: expected ${expected} questions, got ${questions.length}`);
+  }
+  const texts = questions.map((q) => q.question);
+  if (new Set(texts).size !== texts.length) {
+    throw new Error(`${where}: duplicate question within the set`);
+  }
+}
+
 function main() {
   mkdirSync(OUT_DIR, { recursive: true });
   const summary = [];
@@ -354,9 +384,16 @@ function main() {
 
     const { vocabulary, lessons, quizzes, readings, listenings, speakings } = buildLevel(level, i);
 
-    // Validate every generated question.
-    lessons.forEach((l, d) => l.questions.forEach((q, n) => validateQuestion(q, `${level} lesson ${d} q${n}`)));
-    quizzes.forEach((z, d) => z.questions.forEach((q, n) => validateQuestion(q, `${level} quiz ${d} q${n}`)));
+    // Validate every generated question, and that each set has the right number
+    // of distinct questions.
+    lessons.forEach((l, d) => {
+      validateQuestionSet(l.questions, 3, `${level} lesson ${d}`);
+      l.questions.forEach((q, n) => validateQuestion(q, `${level} lesson ${d} q${n}`));
+    });
+    quizzes.forEach((z, d) => {
+      validateQuestionSet(z.questions, 5, `${level} quiz ${d}`);
+      z.questions.forEach((q, n) => validateQuestion(q, `${level} quiz ${d} q${n}`));
+    });
     readings.forEach((r, d) => r.questions.forEach((q, n) => validateQuestion(q, `${level} reading ${d} q${n}`)));
     listenings.forEach((r, d) => r.questions.forEach((q, n) => validateQuestion(q, `${level} listening ${d} q${n}`)));
     vocabulary.forEach((v, d) => { if (v.words.length !== 5) throw new Error(`${level} vocab ${d}: need 5 words`); });
