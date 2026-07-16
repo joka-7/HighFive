@@ -64,7 +64,6 @@ function validateOrThrow(texts: string[], allowed: Set<string>, label: string): 
     throw new Error(`${label}: vocabulary guard failed (${[...new Set(bad)].slice(0, 5).join(", ")})`);
   }
 }
-
 function ensureLessonHebrew(lesson: GemLesson): GemLesson {
   return {
     ...lesson,
@@ -103,6 +102,7 @@ async function pickOfflineReading(
   const { textsToCheck: _, ...reading } = picked;
   return reading;
 }
+
 
 // --- Vocabulary ---
 export async function generateLevelAdaptiveWords(
