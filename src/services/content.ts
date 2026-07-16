@@ -104,7 +104,8 @@ async function pickOfflineReading(
   const items = await READINGS[level]();
   const pool = items.map((r) => ({ ...r, textsToCheck: readingTexts(r) }));
   const picked = pickVocabSafeItem(pool, allowed, day);
-  const { textsToCheck: _, ...reading } = picked;
+  const { textsToCheck, ...reading } = picked;
+  void textsToCheck;
   return reading;
 }
 
@@ -116,7 +117,8 @@ async function pickOfflineListening(
   const items = await LISTENINGS[level]();
   const pool = items.map((l) => ({ ...l, textsToCheck: listeningTexts(l) }));
   const picked = pickVocabSafeItem(pool, allowed, day);
-  const { textsToCheck: _, ...listening } = picked;
+  const { textsToCheck, ...listening } = picked;
+  void textsToCheck;
   return listening;
 }
 
