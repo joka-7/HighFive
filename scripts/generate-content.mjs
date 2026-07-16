@@ -119,43 +119,163 @@ function genDistinct(make, count, maxTriesPerItem = 60) {
   return out;
 }
 
-// Simple sentence templates using only starter grammar + one target word.
-const READ_TEMPLATES = [
-  { en: (w) => `I like ${w.word}.`, he: (w) => `אני אוהב את ${w.translation}.` },
-  { en: (w) => `I have ${w.word}.`, he: (w) => `יש לי ${w.translation}.` },
-  { en: (w) => `This is my ${w.word}.`, he: (w) => `זה ה${w.translation} שלי.` },
-  { en: (w) => `I see ${w.word}.`, he: (w) => `אני רואה ${w.translation}.` },
-  { en: (w) => `We use ${w.word}.`, he: (w) => `אנחנו משתמשים ב${w.translation}.` },
-];
+import { EXAMPLE_HE } from "./content/example-he.mjs";
 
-function buildVocabWordMcq(rng, w, today, bank, distractorPool, context) {
+// Last-resort English fallbacks when the example sentence lacks the target word.
+const FALLBACK_EN = {
+  verb: [
+    (w) => `I ${w.word} every day.`,
+    (w) => `Please ${w.word}.`,
+    (w) => `She can ${w.word}.`,
+  ],
+  noun: [
+    (w) => `I see the ${w.word}.`,
+    (w) => `This is a ${w.word}.`,
+    (w) => `I like the ${w.word}.`,
+  ],
+  adjective: [
+    (w) => `It is ${w.word}.`,
+    (w) => `She looks ${w.word}.`,
+    (w) => `That is very ${w.word}.`,
+  ],
+  adverb: [
+    (w) => `She walks ${w.word}.`,
+    (w) => `He speaks ${w.word}.`,
+  ],
+  conjunction: [(w) => `I stayed home ${w.word} I was tired.`],
+  preposition: [(w) => `The book is ${w.word} the table.`],
+};
+const FALLBACK_HE = {
+  verb: [
+    (w) => `אני ${w.translation} כל יום.`,
+    (w) => `בבקשה ${w.translation}.`,
+    (w) => `היא יכולה ${w.translation}.`,
+  ],
+  noun: [
+    (w) => `אני רואה את ה${w.translation}.`,
+    (w) => `זה ${w.translation}.`,
+    (w) => `אני אוהב את ה${w.translation}.`,
+  ],
+  adjective: [
+    (w) => `זה ${w.translation}.`,
+    (w) => `היא נראית ${w.translation}.`,
+    (w) => `זה מאוד ${w.translation}.`,
+  ],
+  adverb: [
+    (w) => `היא הולכת ${w.translation}.`,
+    (w) => `הוא מדבר ${w.translation}.`,
+  ],
+  conjunction: [(w) => `נשארתי בבית ${w.translation} הייתי עייף.`],
+  preposition: [(w) => `הספר ${w.translation} השולחן.`],
+};
+
+function wordFormInText(text, word) {
+  if (!text || !word) return null;
+  const tokens = text.match(/\b[\w']+\b/g) || [];
+  const lw = word.toLowerCase();
+  const candidates = [lw, lw + "s", lw + "es", lw + "ed", lw + "ing"];
+  if (lw.endsWith("e")) candidates.push(lw.slice(0, -1) + "ing");
+  if (lw.endsWith("y")) candidates.push(lw.slice(0, -1) + "ies", lw.slice(0, -1) + "ied");
+  for (const tok of tokens) {
+    const lt = tok.toLowerCase();
+    if (candidates.includes(lt)) return tok;
+  }
+  return null;
+}
+
+function blankWordInText(text, word) {
+  const form = wordFormInText(text, word);
+  if (!form) return text;
+  const escaped = form.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return text.replace(new RegExp(`\\b${escaped}\\b`, "i"), "___");
+}
+
+function enrichWord(w, level) {
+  const key = `${level}:${w.word}`;
+  const exampleHe = w.exampleHe ?? EXAMPLE_HE[key];
+  return exampleHe ? { ...w, exampleHe } : { ...w };
+}
+
+function englishSentence(w, templateIndex = 0) {
+  if (w.example && wordFormInText(w.example, w.word)) return w.example;
+  const pos = w.partOfSpeech || "noun";
+  const fallbacks = FALLBACK_EN[pos] || FALLBACK_EN.noun;
+  return fallbacks[templateIndex % fallbacks.length](w);
+}
+
+function hebrewSentence(w, level, templateIndex = 0) {
+  const enriched = enrichWord(w, level);
+  if (enriched.exampleHe) return enriched.exampleHe;
+  const pos = w.partOfSpeech || "noun";
+  const fallbacks = FALLBACK_HE[pos] || FALLBACK_HE.noun;
+  return fallbacks[templateIndex % fallbacks.length](w);
+}
+
+function sentenceForWord(w, level, templateIndex = 0) {
+  return englishSentence(w, templateIndex);
+}
+
+/** Ask which English word fits a real sentence — not a circular "which word is X". */
+function buildExampleMcq(rng, w, today, bank, distractorPool, contextNote, level, templateIndex = 0,
+                          hint = "") {
+  const sentence = blankWordInText(sentenceForWord(w, level, templateIndex), w.word);
+  const hintSuffix = hint ? ` ${hint}` : "";
+  const context =
+    contextNote === "from the passage"
+      ? "מתוך הקטע"
+      : contextNote
+        ? contextNote
+        : null;
   return mcq(
     rng,
-    `Which word is "${w.word}"?`,
+    `Which word completes the sentence: "${sentence}"${hintSuffix}`,
     w.word,
     shuffle(rng, distractorPool).slice(0, 3),
     `"${w.word}" = ${w.translation}. ${w.definition}.`,
     ["table", "chair", "window"],
     {
-      questionHe: `איזו מילה היא "${w.word}"? (פירוש: ${w.translation})${context ? ` — ${context}` : ""}`,
+      questionHe: `איזו מילה משלימה את המשפט: "${sentence}"?${hintSuffix}${context ? ` (${context})` : ""}`,
       optionHe: (opt) => wordTranslation(opt, today, bank),
     },
   );
 }
 
-function buildProgressiveReading(day, vocabulary, bank, rng) {
+function uniqueExampleMcq(rng, w, today, bank, distractorPool, contextNote, level, startTemplate,
+                          usedQuestions) {
+  const hints = [
+    "",
+    `(${w.definition})`,
+    w.partOfSpeech ? `(a ${w.partOfSpeech})` : "",
+    `(${w.word.length} letters)`,
+  ].filter((h, i, arr) => h !== "" || i === 0);
+  const templateCount = 5;
+  for (let t = 0; t < templateCount; t++) {
+    const ti = (startTemplate + t) % templateCount;
+    for (const hint of hints) {
+      const q = buildExampleMcq(rng, w, today, bank, distractorPool, contextNote, level, ti, hint);
+      if (!usedQuestions.has(q.question)) return q;
+    }
+  }
+  const fallback = buildExampleMcq(
+    rng, w, today, bank, distractorPool, contextNote, level, startTemplate,
+    `(today's word #${today.indexOf(w) + 1})`,
+  );
+  return fallback;
+}
+
+function buildProgressiveReading(day, vocabulary, bank, level, rng) {
   const today = vocabulary[day].words;
   const glossary = today.slice(0, 3);
-  const sentences = today.map((w, i) => READ_TEMPLATES[i % READ_TEMPLATES.length]);
-  const text = sentences.map((t, i) => t.en(today[i])).join(" ");
-  const textHe = sentences.map((t, i) => t.he(today[i])).join(" ");
+  const sentences = today.map((w, i) => englishSentence(w, i));
+  const text = sentences.join(" ");
+  const textHe = today.map((w, i) => hebrewSentence(w, level, i)).join(" ");
   const title = `Today's Words (מילות היום)`;
   const distractorPool = bank.map((w) => w.word).filter((w) => !today.some((t) => t.word === w));
 
   const w0 = today[0];
   const w1 = today[1] ?? today[0];
-  const q1 = buildVocabWordMcq(rng, w0, today, bank, distractorPool, "from the passage");
-  const q2 = buildVocabWordMcq(rng, w1, today, bank, distractorPool, "from the passage");
+  const q1 = buildExampleMcq(rng, w0, today, bank, distractorPool, "from the passage", level, 0);
+  const q2 = buildExampleMcq(rng, w1, today, bank, distractorPool, "from the passage", level, 1);
 
   return { title, text, textHe, glossary, questions: [q1, q2] };
 }
@@ -165,31 +285,34 @@ function wordTranslation(opt, today, bank) {
   return hit ? hit.translation : opt;
 }
 
-function buildProgressiveQuiz(day, vocabulary, bank, rng) {
+function buildProgressiveQuiz(day, vocabulary, bank, level, rng) {
   const today = vocabulary[day].words;
   const distractorPool = bank.map((w) => w.word).filter((w) => !today.some((t) => t.word === w));
-  const questions = [];
-  for (let i = 0; i < 5; i++) {
-    const w = today[i % today.length];
-    questions.push(buildVocabWordMcq(rng, w, today, bank, distractorPool, null));
-  }
+  const usedQuestions = new Set();
+  const questions = today.map((w, i) => {
+    const q = uniqueExampleMcq(rng, w, today, bank, distractorPool, null, level, i, usedQuestions);
+    usedQuestions.add(q.question);
+    return q;
+  });
   return { questions };
 }
 
-function buildProgressiveListening(day, vocabulary, bank, rng) {
-  const reading = buildProgressiveReading(day, vocabulary, bank, rng);
+function buildProgressiveListening(day, vocabulary, bank, level, rng) {
+  const reading = buildProgressiveReading(day, vocabulary, bank, level, rng);
   const transcript = reading.text;
   const transcriptHe = reading.textHe;
   return { transcript, transcriptHe, questions: reading.questions };
 }
 
-function buildProgressiveSpeaking(day, vocabulary) {
+function buildProgressiveSpeaking(day, vocabulary, level) {
   const today = vocabulary[day].words;
   const prompts = [];
   for (let i = 0; i < 4; i++) {
     const w = today[i % today.length];
-    const t = READ_TEMPLATES[i % READ_TEMPLATES.length];
-    prompts.push({ text: t.en(w), translation: t.he(w) });
+    prompts.push({
+      text: englishSentence(w, i),
+      translation: hebrewSentence(w, level, i),
+    });
   }
   return { prompts };
 }
@@ -427,7 +550,7 @@ function buildLevel(level, levelIdx) {
   const topics = curriculum(levelIdx);
 
   // Vocabulary: 365 sets of 5, rotating the word bank so coverage spreads.
-  const bank = allWords;
+  const bank = allWords.map((w) => enrichWord(w, level));
   const vocabulary = [];
   for (let d = 0; d < DAYS; d++) {
     const words = [];
@@ -448,7 +571,7 @@ function buildLevel(level, levelIdx) {
   const quizzes = [];
   for (let d = 0; d < DAYS; d++) {
     const rng = rngFrom(`${level}:quiz:${d}`);
-    quizzes.push(buildProgressiveQuiz(d, vocabulary, bank, rng));
+    quizzes.push(buildProgressiveQuiz(d, vocabulary, bank, level, rng));
   }
 
   // Reading & Listening: 365 progressive sets using only cumulative vocabulary.
@@ -456,14 +579,14 @@ function buildLevel(level, levelIdx) {
   const listenings = [];
   for (let d = 0; d < DAYS; d++) {
     const rng = rngFrom(`${level}:read:${d}`);
-    readings.push(buildProgressiveReading(d, vocabulary, bank, rng));
-    listenings.push(buildProgressiveListening(d, vocabulary, bank, rng));
+    readings.push(buildProgressiveReading(d, vocabulary, bank, level, rng));
+    listenings.push(buildProgressiveListening(d, vocabulary, bank, level, rng));
   }
 
   // Speaking: 365 progressive sets tied to today's vocabulary.
   const speakings = [];
   for (let d = 0; d < DAYS; d++) {
-    speakings.push(buildProgressiveSpeaking(d, vocabulary));
+    speakings.push(buildProgressiveSpeaking(d, vocabulary, level));
   }
 
   return { vocabulary, lessons, quizzes, readings, listenings, speakings };
@@ -506,6 +629,9 @@ function main() {
     for (const w of mergedBank) {
       if (!w.word || !w.translation || !w.definition || !w.example) {
         throw new Error(`${level} word bank: incomplete entry ${JSON.stringify(w)}`);
+      }
+      if (!enrichWord(w, level).exampleHe) {
+        throw new Error(`${level} word bank: missing exampleHe for "${w.word}"`);
       }
     }
 

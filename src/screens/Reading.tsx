@@ -8,7 +8,7 @@ import Spinner from "../components/Spinner";
 import { speak } from "../services/tts";
 import { loadDailyCache, saveDailyCache } from "../utils/dailyCache";
 
-const CACHE_KEY = "high5.reading_today.v3";
+const CACHE_KEY = "high5.reading_today.v5";
 
 export default function Reading() {
   const { progress, isWordSaved, toggleSaveWord, completeQuiz, learnedWords } = useLingo();
