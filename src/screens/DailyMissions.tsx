@@ -1,4 +1,6 @@
+import type { ReactNode } from "react";
 import { DAILY_WORD_TARGET, useLingo } from "../store/useLingo";
+import type { Screen } from "../types";
 
 // Missions the user marks done manually — an external action the app can't
 // detect (watching a video, having a conversation somewhere).
@@ -31,6 +33,8 @@ interface AutoMission {
   emoji: string;
   title: string;
   sub: string;
+  screen: Screen;
+  cta: string;
 }
 
 const AUTO_MISSIONS: AutoMission[] = [
@@ -38,13 +42,17 @@ const AUTO_MISSIONS: AutoMission[] = [
     id: "reading",
     emoji: "📖",
     title: "קראו מאמר באנגלית",
-    sub: "סיימו קטע וענו על שאלות ההבנה בטאב הקריאה — המשימה מסתיימת אוטומטית.",
+    sub: "סיימו קטע וענו על שאלות ההבנה — המשימה מסתיימת אוטומטית.",
+    screen: "reading",
+    cta: "עברו לקריאה ←",
   },
   {
     id: "grammar",
     emoji: "✏️",
     title: "למדו נושא דקדוק אחד",
-    sub: "השלימו את השיעור היומי בטאב השיעור — המשימה מסתיימת אוטומטית.",
+    sub: "השלימו את השיעור היומי — המשימה מסתיימת אוטומטית.",
+    screen: "lesson",
+    cta: "עברו לשיעור ←",
   },
 ];
 
@@ -54,7 +62,34 @@ function DoneBadge({ done }: { done: boolean }) {
   return done ? <span className="tag ok">✓ הושלם (+30)</span> : null;
 }
 
-export default function DailyMissions() {
+function MissionDoneBar() {
+  return (
+    <div className="mission-done" role="status">
+      <span className="mission-done-check">✓</span>
+      <span>בוצע</span>
+      <span className="mission-done-points">+30 נק׳</span>
+    </div>
+  );
+}
+
+function MissionAction({ done, actionLabel, onClick, secondary }: {
+  done: boolean;
+  actionLabel: string;
+  onClick: () => void;
+  secondary?: ReactNode;
+}) {
+  if (done) return <MissionDoneBar />;
+  return (
+    <>
+      <button className="btn accent" style={{ marginTop: 10 }} onClick={onClick}>
+        {actionLabel}
+      </button>
+      {secondary}
+    </>
+  );
+}
+
+export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
   const { dailyMissions, todayWordCount, completeMission } = useLingo();
 
   const doneCount =
@@ -80,7 +115,7 @@ export default function DailyMissions() {
       {MANUAL_MISSIONS.map((mission) => {
         const done: boolean = dailyMissions[mission.id];
         return (
-          <div className="card" key={mission.id}>
+          <div className={`card${done ? " mission-card-done" : ""}`} key={mission.id}>
             <div className="row-between">
               <span style={{ fontSize: 28 }}>{mission.emoji}</span>
               <DoneBadge done={done} />
@@ -89,14 +124,22 @@ export default function DailyMissions() {
             <p className="muted" style={{ marginTop: 0 }}>
               {mission.sub}
             </p>
-            <button
-              className="btn accent"
-              style={{ marginTop: 10 }}
-              disabled={done}
+            <MissionAction
+              done={done}
+              actionLabel="סמן כהושלם"
               onClick={() => completeMission(mission.id)}
-            >
-              {done ? "בוצע ✓" : "סמן כהושלם"}
-            </button>
+              secondary={
+                mission.id === "talk" ? (
+                  <button
+                    className="btn ghost"
+                    style={{ marginTop: 8 }}
+                    onClick={() => go("dialogue")}
+                  >
+                    עברו למאמן שיחה ←
+                  </button>
+                ) : undefined
+              }
+            />
           </div>
         );
       })}
@@ -104,7 +147,7 @@ export default function DailyMissions() {
       {AUTO_MISSIONS.map((mission) => {
         const done: boolean = dailyMissions[mission.id];
         return (
-          <div className="card" key={mission.id}>
+          <div className={`card${done ? " mission-card-done" : ""}`} key={mission.id}>
             <div className="row-between">
               <span style={{ fontSize: 28 }}>{mission.emoji}</span>
               <DoneBadge done={done} />
@@ -113,18 +156,23 @@ export default function DailyMissions() {
             <p className="muted" style={{ marginTop: 0 }}>
               {mission.sub}
             </p>
+            <MissionAction
+              done={done}
+              actionLabel={mission.cta}
+              onClick={() => go(mission.screen)}
+            />
           </div>
         );
       })}
 
-      <div className="card">
+      <div className={`card${dailyMissions.words ? " mission-card-done" : ""}`}>
         <div className="row-between">
           <span style={{ fontSize: 28 }}>📚</span>
           <DoneBadge done={dailyMissions.words} />
         </div>
         <h3 style={{ margin: "8px 0 2px" }}>למדו {DAILY_WORD_TARGET} מילים חדשות</h3>
         <p className="muted" style={{ marginTop: 0 }}>
-          שמרו {DAILY_WORD_TARGET} מילים חדשות בטאב אוצר המילים — המשימה מסתיימת אוטומטית.
+          שמרו {DAILY_WORD_TARGET} מילים חדשות — המשימה מסתיימת אוטומטית.
         </p>
         <div
           style={{
@@ -148,6 +196,11 @@ export default function DailyMissions() {
         <span className="muted">
           {wordsProgress}/{DAILY_WORD_TARGET} מילים
         </span>
+        <MissionAction
+          done={dailyMissions.words}
+          actionLabel="עברו לאוצר מילים ←"
+          onClick={() => go("vocabulary")}
+        />
       </div>
     </div>
   );
