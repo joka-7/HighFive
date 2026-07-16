@@ -117,6 +117,25 @@ export interface QuizHistory {
   timestamp: number;
 }
 
+/** A completed learning activity shown on the mission calendar. */
+export type MissionKind =
+  | "lesson"
+  | "quiz"
+  | "reading"
+  | "listening"
+  | "speaking"
+  | "review"
+  | "dialogue";
+
+export interface MissionLog {
+  id: string;
+  kind: MissionKind;
+  label: string;
+  timestamp: number;
+  score?: number;
+  total?: number;
+}
+
 export type Screen =
   | "onboarding"
   | "dashboard"
@@ -130,4 +149,5 @@ export type Screen =
   | "review"
   | "reading"
   | "listening"
-  | "speaking";
+  | "speaking"
+  | "calendar";
