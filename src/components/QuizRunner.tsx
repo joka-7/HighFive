@@ -13,9 +13,12 @@ export default function QuizRunner({ questions, onFinish }: Props) {
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [score, setScore] = useState(0);
+  const [showHe, setShowHe] = useState(false);
 
   const q = questions[index];
   const isLast = index === questions.length - 1;
+  const hasHe = Boolean(q.questionHe || q.optionsHe?.some(Boolean));
+  const revealHe = showHe || selected !== null;
 
   function choose(i: number) {
     if (selected !== null) return;
@@ -30,6 +33,10 @@ export default function QuizRunner({ questions, onFinish }: Props) {
     }
     setIndex((n) => n + 1);
     setSelected(null);
+  }
+
+  function toggleHe() {
+    setShowHe((s) => !s);
   }
 
   return (
@@ -57,7 +64,12 @@ export default function QuizRunner({ questions, onFinish }: Props) {
           </button>
         </div>
         <h3 style={{ direction: "ltr", textAlign: "left" }}>{q.question}</h3>
-        {selected !== null && q.questionHe && (
+        {hasHe && selected === null && (
+          <button className="btn ghost small" style={{ marginTop: 4, marginBottom: 4 }} onClick={toggleHe}>
+            {showHe ? "הסתר תרגום" : "הצג תרגום"}
+          </button>
+        )}
+        {revealHe && q.questionHe && (
           <p className="muted" style={{ margin: "4px 0 12px" }}>{q.questionHe}</p>
         )}
 
@@ -76,7 +88,7 @@ export default function QuizRunner({ questions, onFinish }: Props) {
               style={{ direction: "ltr", textAlign: "left" }}
             >
               {opt}
-              {selected !== null && q.optionsHe?.[i] && (
+              {revealHe && q.optionsHe?.[i] && (
                 <span className="muted" style={{ display: "block", fontSize: "0.85em", marginTop: 2 }}>
                   {q.optionsHe[i]}
                 </span>

@@ -9,7 +9,7 @@ import { asrSupported, recognizeOnce } from "../services/asr";
 import { scoreSpeaking, type SpeakingScore } from "../utils/score";
 import { loadDailyCache, saveDailyCache } from "../utils/dailyCache";
 
-const CACHE_KEY = "high5.speaking_today";
+const CACHE_KEY = "high5.speaking_today.v5";
 
 // Speaking practice — read a sentence aloud and get scored against speech
 // recognition. Directly addresses the article's sharpest point: learners who
