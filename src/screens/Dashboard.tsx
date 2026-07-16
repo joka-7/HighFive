@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { isAIReady } from "../services/ai";
 import { usePwaInstall } from "../services/pwa";
-import type { Screen } from "../types";
+import { getTodaysWords } from "../data/todays-words";
+import type { GemWord, Screen } from "../types";
 
 const TILES: { screen: Screen; emoji: string; title: string; sub: string }[] = [
   { screen: "lesson", emoji: "📚", title: "שיעור יומי", sub: "לימוד + תרגול" },
@@ -19,8 +21,15 @@ const TILES: { screen: Screen; emoji: string; title: string; sub: string }[] = [
 ];
 
 export default function Dashboard({ go }: { go: (s: Screen) => void }) {
-  const { progress, dueWords } = useLingo();
+  const { progress, dueWords, levelUpNotice, clearLevelUpNotice } = useLingo();
   const { canInstall, install } = usePwaInstall();
+  const [todaysWords, setTodaysWords] = useState<GemWord[]>([]);
+
+  useEffect(() => {
+    if (!progress) return;
+    getTodaysWords(progress.currentLevel).then(setTodaysWords).catch(() => setTodaysWords([]));
+  }, [progress?.currentLevel]);
+
   if (!progress) return null;
   const due = dueWords().length;
 
@@ -32,6 +41,44 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
           רמה {progress.currentLevel} · {progress.points} נק' · רצף {progress.streak} ימים 🔥
         </p>
       </div>
+
+      {levelUpNotice && (
+        <div
+          className="banner"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            background: "linear-gradient(135deg,#00b894,#55efc4)",
+            color: "#fff",
+          }}
+        >
+          <span style={{ flex: 1 }}>
+            🎉 עלית לרמה {levelUpNotice}! +100 נקודות. תוכן חדש מחכה לך.
+          </span>
+          <button className="btn small" style={{ background: "#fff", color: "#00b894" }} onClick={clearLevelUpNotice}>
+            מעולה!
+          </button>
+        </div>
+      )}
+
+      {todaysWords.length > 0 && (
+        <div className="card" style={{ marginBottom: 12 }}>
+          <div className="row-between">
+            <span className="tag">מילות היום</span>
+            <button className="btn ghost small" onClick={() => go("vocabulary")}>
+              לכרטיסיות ←
+            </button>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 }}>
+            {todaysWords.map((w) => (
+              <span key={w.word} className="level-pill" style={{ direction: "ltr" }}>
+                {w.word} <span className="muted">({w.translation})</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {!isAIReady() && (
         <div className="banner">

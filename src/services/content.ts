@@ -1,8 +1,6 @@
 // English-learning content generation — ported from High5's LingoRepository.kt.
-// The prompts and system instructions are preserved verbatim from the original;
-// only the transport is swapped to the multi-provider `complete()` (Gemini,
-// Groq, Anthropic, OpenAI, Ollama). Falls back to bundled offline content on any
-// failure or when no provider key is configured.
+// Falls back to bundled offline content on any failure or when no provider key
+// is configured. Content is day-aligned and vocabulary-safe (progressive unlock).
 
 import type {
   ChatMessage,
@@ -12,82 +10,129 @@ import type {
   GemQuiz,
   GemReading,
   GemSpeaking,
+  GemWord,
   GemWordList,
   Level,
 } from "../types";
 import { complete, isAIReady } from "./ai";
-import { loadOfflineContent, pickRandom } from "../data/offline";
-import { LISTENINGS, READINGS, SPEAKINGS, pickExtra } from "../data/extras";
+import { getTodaysWords } from "../data/todays-words";
+import { dayIndex, loadOfflineContent, pickByDay } from "../data/offline";
+import { LISTENINGS, READINGS, SPEAKINGS, pickByDayExtra } from "../data/extras";
 import { parseJson } from "../utils/json";
+import {
+  contentUsesOnlyAllowedVocab,
+  lessonTexts,
+  listeningTexts,
+  pickVocabSafeItem,
+  quizTexts,
+  readingTexts,
+  speakingTexts,
+} from "../utils/vocabulary";
+import { buildAllowedVocabulary } from "../utils/vocabulary";
+import { expandWordTokens } from "../data/starter-words";
+
+export interface ContentContext {
+  allowed: Set<string>;
+  todaysWords: GemWord[];
+  todayWordList: string;
+}
+
+/** Build vocabulary context for content generation. */
+export async function buildContentContext(
+  level: Level,
+  learnedKeys: Iterable<string>,
+  day = dayIndex(),
+): Promise<ContentContext> {
+  const todaysWords = await getTodaysWords(level, day);
+  const allowed = buildAllowedVocabulary(level, learnedKeys, todaysWords);
+  const todayWordList = todaysWords.map((w) => w.word).join(", ");
+  return { allowed, todaysWords, todayWordList };
+}
+
+function vocabPromptBlock(ctx: ContentContext): string {
+  const allowedList = [...ctx.allowed].sort().slice(0, 200).join(", ");
+  return `Today's 5 words (feature these): ${ctx.todayWordList}.
+ALLOWED English vocabulary (use ONLY these words; do not introduce new words): ${allowedList}
+(and common function words already implied: I, you, the, is, are, etc.)`;
+}
+
+function validateOrThrow(texts: string[], allowed: Set<string>, label: string): void {
+  if (!contentUsesOnlyAllowedVocab(texts, allowed)) {
+    const bad = texts.flatMap((t) =>
+      t.match(/[a-z']+/gi)?.filter((w) => !allowed.has(w.toLowerCase())) ?? [],
+    );
+    throw new Error(`${label}: vocabulary guard failed (${[...new Set(bad)].slice(0, 5).join(", ")})`);
+  }
+}
 
 // --- Vocabulary ---
-export async function generateLevelAdaptiveWords(level: Level): Promise<GemWordList> {
-  if (!isAIReady()) return pickRandom((await loadOfflineContent(level)).vocabulary);
+export async function generateLevelAdaptiveWords(
+  level: Level,
+  day = dayIndex(),
+): Promise<GemWordList> {
+  const bundle = await loadOfflineContent(level);
+  const list = pickByDay(bundle.vocabulary, day);
 
-  const prompt = `Generate 5 highly useful, practical English vocabulary words specifically suited for CEFR level ${level}.
-For each word, provide:
-- word
-- partOfSpeech
-- definition (clear explanation written entirely in HEBREW)
-- example (an English sentence showing proper usage)
-- translation (natural Hebrew equivalent)
+  if (!isAIReady()) return list;
 
-Return as a single JSON object:
-{
-  "words": [
-    {
-      "word": "word string in English",
-      "partOfSpeech": "noun/verb/etc.",
-      "definition": "הסבר מפורט בעברית",
-      "example": "English sentence illustrating use",
-      "translation": "תרגום לעברית"
-    }
-  ]
-}`;
+  const ctx = await buildContentContext(level, [], day);
+  const prompt = `Generate exactly these 5 vocabulary words for CEFR level ${level} (words of the day):
+${ctx.todayWordList}
+For each word, provide: word, partOfSpeech, definition (HEBREW), example (English, using ONLY allowed vocabulary), translation (Hebrew).
+${vocabPromptBlock(ctx)}
+
+Return JSON: { "words": [{ "word": "...", "partOfSpeech": "...", "definition": "עברית", "example": "...", "translation": "עברית" }] }`;
 
   const systemInstruction =
     "You are High5's expert English-Hebrew lexicographer. Design vocabulary lists adapted to CEFR levels with Hebrew explanations for native Hebrew speakers.";
 
   try {
-    return parseJson<GemWordList>(await complete(prompt, systemInstruction));
+    const result = parseJson<GemWordList>(await complete(prompt, systemInstruction));
+    validateOrThrow(
+      result.words.flatMap((w) => [w.example, w.word]),
+      ctx.allowed,
+      "vocabulary",
+    );
+    return result;
   } catch {
-    return pickRandom((await loadOfflineContent(level)).vocabulary);
+    return list;
   }
 }
 
 // --- Daily Lesson ---
-export async function generateDailyLesson(level: Level, topic: string): Promise<GemLesson> {
-  if (!isAIReady()) return pickRandom((await loadOfflineContent(level)).lessons);
+export async function generateDailyLesson(
+  level: Level,
+  topic: string,
+  learnedKeys: Iterable<string>,
+  day = dayIndex(),
+): Promise<GemLesson> {
+  const bundle = await loadOfflineContent(level);
+  const offlinePool = bundle.lessons.map((l) => ({ ...l, textsToCheck: lessonTexts(l) }));
+  const ctx = await buildContentContext(level, learnedKeys, day);
+
+  if (!isAIReady()) {
+    return pickVocabSafeItem(offlinePool, ctx.allowed, day);
+  }
 
   const prompt = `Create an interactive daily English lesson matching CEFR level ${level} on: "${topic}".
 All explanations MUST be written in HEBREW.
+${vocabPromptBlock(ctx)}
 Provide:
 - title (English + Hebrew translation in parentheses)
 - explanation: grammar/vocab concept with examples and Hebrew translations
-- questions: exactly 3 multiple choice questions (English questions, Hebrew explanations)
-  Each question: question, options (4 strings), correctIndex (0-based), explanation (Hebrew)
+- questions: exactly 3 multiple choice questions. Each: question, questionHe (Hebrew), options (4 English strings), optionsHe (4 Hebrew strings), correctIndex (0-based), explanation (Hebrew)
 
-Return as JSON:
-{
-  "title": "lesson title",
-  "explanation": "הסבר בעברית",
-  "questions": [
-    {
-      "question": "question in English",
-      "options": ["option 0", "option 1", "option 2", "option 3"],
-      "correctIndex": 0,
-      "explanation": "הסבר בעברית"
-    }
-  ]
-}`;
+Return as JSON with questionHe and optionsHe on every question.`;
 
   const systemInstruction =
     "You are High5's English-Hebrew tutor. Write lessons with quizzes. All instructions and explanations must be in Hebrew for Israeli students.";
 
   try {
-    return parseJson<GemLesson>(await complete(prompt, systemInstruction));
+    const result = parseJson<GemLesson>(await complete(prompt, systemInstruction));
+    validateOrThrow(lessonTexts(result), ctx.allowed, "lesson");
+    return result;
   } catch {
-    return pickRandom((await loadOfflineContent(level)).lessons);
+    return pickVocabSafeItem(offlinePool, ctx.allowed, day);
   }
 }
 
@@ -97,19 +142,23 @@ export async function generateDialogueReply(
   scenario: string,
   history: ChatMessage[],
   newText: string,
+  learnedKeys: Iterable<string>,
 ): Promise<GemDialogueReply> {
   if (!isAIReady()) throw new Error("Dialogue Coach requires an AI provider key.");
+
+  const ctx = await buildContentContext(level, learnedKeys);
 
   const chatContext = history
     .map((m) => `${m.role.toUpperCase()}: ${m.messageText}`)
     .join("\n");
 
   const prompt = `You are an English roleplay partner at CEFR level ${level} under scenario "${scenario}".
+${vocabPromptBlock(ctx)}
 The student says: "${newText}"
 Conversation history:
 ${chatContext}
 
-1. Respond naturally at level ${level}.
+1. Respond naturally at level ${level} using ONLY allowed vocabulary.
 2. Check the student's message for errors. Provide corrections in HEBREW, or null if perfect.
 
 Return as JSON:
@@ -121,100 +170,137 @@ Return as JSON:
   const systemInstruction =
     "You are High5's English dialogue partner. Roleplay in English and explain grammar corrections in Hebrew.";
 
-  return parseJson<GemDialogueReply>(await complete(prompt, systemInstruction));
+  const result = parseJson<GemDialogueReply>(await complete(prompt, systemInstruction));
+  validateOrThrow([result.reply, newText], ctx.allowed, "dialogue");
+  return result;
 }
 
 // --- Practice Quiz ---
-export async function generatePracticeQuiz(level: Level, topic: string): Promise<GemQuiz> {
-  if (!isAIReady()) return pickRandom((await loadOfflineContent(level)).quizzes);
+export async function generatePracticeQuiz(
+  level: Level,
+  topic: string,
+  learnedKeys: Iterable<string>,
+  day = dayIndex(),
+): Promise<GemQuiz> {
+  const bundle = await loadOfflineContent(level);
+  const offlinePool = bundle.quizzes.map((q) => ({ ...q, textsToCheck: quizTexts(q) }));
+  const ctx = await buildContentContext(level, learnedKeys, day);
+
+  if (!isAIReady()) {
+    return pickVocabSafeItem(offlinePool, ctx.allowed, day);
+  }
 
   const prompt = `Generate 5 multiple choice questions for CEFR level ${level} on "${topic}".
+${vocabPromptBlock(ctx)}
 Questions and options in English; explanations in HEBREW.
-Each question: question, options (4 strings), correctIndex (0-based), explanation (Hebrew)
+Each question: question, questionHe (Hebrew), options (4 strings), optionsHe (4 Hebrew strings), correctIndex (0-based), explanation (Hebrew)
 
-Return as JSON:
-{
-  "questions": [
-    {
-      "question": "question in English",
-      "options": ["option 0", "option 1", "option 2", "option 3"],
-      "correctIndex": 0,
-      "explanation": "הסבר בעברית"
-    }
-  ]
-}`;
+Return as JSON.`;
 
   const systemInstruction =
     "You are High5's assessment evaluator. Compose accurate multiple-choice tests for English learners. All explanations in Hebrew.";
 
   try {
-    return parseJson<GemQuiz>(await complete(prompt, systemInstruction));
+    const result = parseJson<GemQuiz>(await complete(prompt, systemInstruction));
+    validateOrThrow(quizTexts(result), ctx.allowed, "quiz");
+    return result;
   } catch {
-    return pickRandom((await loadOfflineContent(level)).quizzes);
+    return pickVocabSafeItem(offlinePool, ctx.allowed, day);
   }
 }
 
-// --- Reading Lab — a real passage to read, with glossary + comprehension ---
-export async function generateReading(level: Level, topic: string): Promise<GemReading> {
-  if (!isAIReady()) return pickExtra(READINGS, level);
+// --- Reading Lab ---
+export async function generateReading(
+  level: Level,
+  topic: string,
+  learnedKeys: Iterable<string>,
+  day = dayIndex(),
+): Promise<GemReading> {
+  const ctx = await buildContentContext(level, learnedKeys, day);
+
+  if (!isAIReady()) {
+    return pickByDayExtra(READINGS, level, day);
+  }
 
   const prompt = `Write a short, engaging English reading passage for CEFR level ${level} on the theme: "${topic}".
-The passage should be 4-6 sentences for low levels and up to a short paragraph for higher levels, using natural language (not isolated sentences).
+${vocabPromptBlock(ctx)}
+The passage should be 4-6 sentences using ONLY allowed vocabulary.
 Provide:
 - title (English + Hebrew translation in parentheses)
-- text (the passage, in English)
-- glossary: 3 key words from the text. Each: word, partOfSpeech, definition (HEBREW), example (English), translation (Hebrew)
-- questions: exactly 2 comprehension multiple choice questions. Each: question (English), options (4 strings), correctIndex (0-based), explanation (HEBREW)
+- text (English), textHe (full Hebrew translation)
+- glossary: 3 key words from today's list. Each: word, partOfSpeech, definition (HEBREW), example (English), translation (Hebrew)
+- questions: exactly 2 comprehension MCQs with questionHe and optionsHe
 
-Return as JSON:
-{
-  "title": "...",
-  "text": "...",
-  "glossary": [{ "word": "...", "partOfSpeech": "...", "definition": "עברית", "example": "...", "translation": "עברית" }],
-  "questions": [{ "question": "...", "options": ["", "", "", ""], "correctIndex": 0, "explanation": "עברית" }]
-}`;
+Return as JSON.`;
 
   const systemInstruction =
     "You are High5's reading tutor. Write natural, level-appropriate English passages with Hebrew glossary and Hebrew explanations for Israeli learners.";
 
   try {
-    return parseJson<GemReading>(await complete(prompt, systemInstruction));
+    const result = parseJson<GemReading>(await complete(prompt, systemInstruction));
+    validateOrThrow(readingTexts(result), ctx.allowed, "reading");
+    return result;
   } catch {
-    return pickExtra(READINGS, level);
+    return pickByDayExtra(READINGS, level, day);
   }
 }
 
-// --- Listening practice — a spoken clip (TTS) + comprehension ---
-export async function generateListening(level: Level, topic: string): Promise<GemListening> {
-  if (!isAIReady()) return pickExtra(LISTENINGS, level);
+// --- Listening practice ---
+export async function generateListening(
+  level: Level,
+  topic: string,
+  learnedKeys: Iterable<string>,
+  day = dayIndex(),
+): Promise<GemListening> {
+  const ctx = await buildContentContext(level, learnedKeys, day);
+
+  if (!isAIReady()) {
+    return pickByDayExtra(LISTENINGS, level, day);
+  }
 
   const prompt = `Create a short English listening exercise for CEFR level ${level} on: "${topic}".
+${vocabPromptBlock(ctx)}
 Provide:
-- transcript: 1-3 sentences of natural spoken English (a message, announcement or mini-dialogue) suitable to be read aloud by text-to-speech
-- questions: exactly 2 comprehension multiple choice questions. Each: question (English), options (4 strings), correctIndex (0-based), explanation (HEBREW)
+- transcript: 1-3 sentences using ONLY allowed vocabulary
+- transcriptHe: full Hebrew translation
+- questions: exactly 2 comprehension MCQs with questionHe and optionsHe
 
-Return as JSON:
-{
-  "transcript": "...",
-  "questions": [{ "question": "...", "options": ["", "", "", ""], "correctIndex": 0, "explanation": "עברית" }]
-}`;
+Return as JSON.`;
 
   const systemInstruction =
     "You are High5's listening-comprehension tutor. Write natural spoken-style English with Hebrew explanations.";
 
   try {
-    return parseJson<GemListening>(await complete(prompt, systemInstruction));
+    const result = parseJson<GemListening>(await complete(prompt, systemInstruction));
+    validateOrThrow(listeningTexts(result), ctx.allowed, "listening");
+    return result;
   } catch {
-    return pickExtra(LISTENINGS, level);
+    return pickByDayExtra(LISTENINGS, level, day);
   }
 }
 
-// --- Speaking practice — sentences to read aloud (scored against ASR) ---
-export async function generateSpeaking(level: Level, topic: string): Promise<GemSpeaking> {
-  if (!isAIReady()) return pickExtra(SPEAKINGS, level);
+// --- Speaking practice ---
+export async function generateSpeaking(
+  level: Level,
+  topic: string,
+  learnedKeys: Iterable<string>,
+  day = dayIndex(),
+): Promise<GemSpeaking> {
+  const ctx = await buildContentContext(level, learnedKeys, day);
+
+  if (!isAIReady()) {
+    const set = await pickByDayExtra(SPEAKINGS, level, day);
+    const safe = set.prompts.filter((p) =>
+      contentUsesOnlyAllowedVocab([p.text], ctx.allowed),
+    );
+    if (safe.length >= 4) return { prompts: safe.slice(0, 4) };
+    return set;
+  }
 
   const prompt = `Create an English speaking practice set for CEFR level ${level} on: "${topic}".
+${vocabPromptBlock(ctx)}
 Provide 4 useful sentences the learner should read aloud, each with a Hebrew translation.
+Use ONLY allowed vocabulary.
 
 Return as JSON:
 {
@@ -225,8 +311,13 @@ Return as JSON:
     "You are High5's pronunciation coach. Provide practical English sentences with Hebrew translations for Israeli learners.";
 
   try {
-    return parseJson<GemSpeaking>(await complete(prompt, systemInstruction));
+    const result = parseJson<GemSpeaking>(await complete(prompt, systemInstruction));
+    validateOrThrow(speakingTexts(result), ctx.allowed, "speaking");
+    return result;
   } catch {
-    return pickExtra(SPEAKINGS, level);
+    return pickByDayExtra(SPEAKINGS, level, day);
   }
 }
+
+/** Export helper for screens that need today's words synchronously from cache. */
+export { expandWordTokens };

@@ -32,6 +32,7 @@ import { MORE_WORDS5 } from "./content/wordbank-extra5.mjs";
 import { MORE_WORDS6 } from "./content/wordbank-extra6.mjs";
 import { MORE_WORDS7 } from "./content/wordbank-extra7.mjs";
 import { MORE_WORDS8 } from "./content/wordbank-extra8.mjs";
+import { MORE_WORDS9 } from "./content/wordbank-extra9.mjs";
 import { MORE_READINGS, MORE_LISTENINGS } from "./content/passages-extra.mjs";
 import { MORE_READINGS2, MORE_LISTENINGS2, MORE_SPEAKING } from "./content/passages-extra2.mjs";
 import { MORE_READINGS3, MORE_LISTENINGS3, MORE_SPEAKING3 } from "./content/passages-extra3.mjs";
@@ -42,7 +43,7 @@ import { MORE_READINGS7, MORE_LISTENINGS7, MORE_SPEAKING7 } from "./content/pass
 import { MORE_READINGS8, MORE_LISTENINGS8, MORE_SPEAKING8 } from "./content/passages-extra8.mjs";
 
 // All extra vocabulary rounds, merged in order. Append new rounds here.
-const WORD_ROUNDS = [MORE_WORDS, MORE_WORDS2, MORE_WORDS3, MORE_WORDS4, MORE_WORDS5, MORE_WORDS6, MORE_WORDS7, MORE_WORDS8];
+const WORD_ROUNDS = [MORE_WORDS, MORE_WORDS2, MORE_WORDS3, MORE_WORDS4, MORE_WORDS5, MORE_WORDS6, MORE_WORDS7, MORE_WORDS8, MORE_WORDS9];
 const READING_ROUNDS = [MORE_READINGS, MORE_READINGS2, MORE_READINGS3, MORE_READINGS4, MORE_READINGS5, MORE_READINGS6, MORE_READINGS7, MORE_READINGS8];
 const LISTENING_ROUNDS = [MORE_LISTENINGS, MORE_LISTENINGS2, MORE_LISTENINGS3, MORE_LISTENINGS4, MORE_LISTENINGS5, MORE_LISTENINGS6, MORE_LISTENINGS7, MORE_LISTENINGS8];
 const SPEAKING_ROUNDS = [MORE_SPEAKING, MORE_SPEAKING3, MORE_SPEAKING4, MORE_SPEAKING5, MORE_SPEAKING6, MORE_SPEAKING7, MORE_SPEAKING8];
@@ -80,16 +81,23 @@ function shuffle(rng, arr) {
   return a;
 }
 
-// Build a 4-option MCQ: dedupe distractors, keep the correct answer, shuffle,
-// and report the new correctIndex. Pads from a fallback pool if needed.
-function mcq(rng, question, correct, distractors, explanation, fallback = []) {
+// Build a 4-option MCQ with optional Hebrew translations for question/options.
+function mcq(rng, question, correct, distractors, explanation, fallback = [], he = {}) {
   const opts = [];
   for (const d of [...distractors, ...fallback]) {
     if (d !== correct && !opts.includes(d) && opts.length < 3) opts.push(d);
   }
   if (opts.length < 3) throw new Error(`mcq could not build 4 options for: ${question}`);
   const all = shuffle(rng, [correct, ...opts]);
-  return { question, options: all, correctIndex: all.indexOf(correct), explanation };
+  const out = {
+    question,
+    options: all,
+    correctIndex: all.indexOf(correct),
+    explanation,
+  };
+  if (he.questionHe) out.questionHe = he.questionHe;
+  if (he.optionsHe) out.optionsHe = he.optionsHe;
+  return out;
 }
 
 // Build `count` questions that are distinct within the set. `make` produces one
@@ -109,6 +117,82 @@ function genDistinct(make, count, maxTriesPerItem = 60) {
     out.push(q);
   }
   return out;
+}
+
+// Simple sentence templates using only starter grammar + one target word.
+const READ_TEMPLATES = [
+  { en: (w) => `I like ${w.word}.`, he: (w) => `אני אוהב את ${w.translation}.` },
+  { en: (w) => `I have ${w.word}.`, he: (w) => `יש לי ${w.translation}.` },
+  { en: (w) => `This is my ${w.word}.`, he: (w) => `זה ה${w.translation} שלי.` },
+  { en: (w) => `I see ${w.word}.`, he: (w) => `אני רואה ${w.translation}.` },
+  { en: (w) => `We use ${w.word}.`, he: (w) => `אנחנו משתמשים ב${w.translation}.` },
+];
+
+function buildProgressiveReading(day, vocabulary, bank, rng) {
+  const today = vocabulary[day].words;
+  const glossary = today.slice(0, 3);
+  const sentences = today.map((w, i) => READ_TEMPLATES[i % READ_TEMPLATES.length]);
+  const text = sentences.map((t, i) => t.en(today[i])).join(" ");
+  const textHe = sentences.map((t, i) => t.he(today[i])).join(" ");
+  const title = `Today's Words (מילות היום)`;
+  const distractorPool = bank.map((w) => w.word).filter((w) => !today.some((t) => t.word === w));
+
+  const w0 = today[0];
+  const w1 = today[1] ?? today[0];
+  const q1 = mcq(
+    rng,
+    `Which word means "${w0.translation}"?`,
+    w0.word,
+    shuffle(rng, distractorPool).slice(0, 3),
+    `המילה "${w0.word}" פירושה ${w0.translation}.`,
+    ["table", "chair", "window"],
+    {
+      questionHe: `איזו מילה פירושה "${w0.translation}"?`,
+      optionsHe: shuffle(rng, [w0.word, ...shuffle(rng, distractorPool).slice(0, 3)]).map((opt) => {
+        const hit = bank.find((b) => b.word === opt);
+        return hit ? hit.translation : opt;
+      }),
+    },
+  );
+  // Fix optionsHe order to match shuffled options in q1
+  q1.optionsHe = q1.options.map((opt) => {
+    const hit = [...today, ...bank].find((b) => b.word === opt);
+    return hit ? hit.translation : opt;
+  });
+
+  const q2 = mcq(
+    rng,
+    `Which word means "${w1.translation}"?`,
+    w1.word,
+    shuffle(rng, distractorPool).slice(0, 3),
+    `המילה "${w1.word}" פירושה ${w1.translation}.`,
+    ["happy", "sad", "big"],
+    { questionHe: `איזו מילה פירושה "${w1.translation}"?` },
+  );
+  q2.optionsHe = q2.options.map((opt) => {
+    const hit = [...today, ...bank].find((b) => b.word === opt);
+    return hit ? hit.translation : opt;
+  });
+
+  return { title, text, textHe, glossary, questions: [q1, q2] };
+}
+
+function buildProgressiveListening(day, vocabulary, bank, rng) {
+  const reading = buildProgressiveReading(day, vocabulary, bank, rng);
+  const transcript = reading.text;
+  const transcriptHe = reading.textHe;
+  return { transcript, transcriptHe, questions: reading.questions };
+}
+
+function buildProgressiveSpeaking(day, vocabulary) {
+  const today = vocabulary[day].words;
+  const prompts = [];
+  for (let i = 0; i < 4; i++) {
+    const w = today[i % today.length];
+    const t = READ_TEMPLATES[i % READ_TEMPLATES.length];
+    prompts.push({ text: t.en(w), translation: t.he(w) });
+  }
+  return { prompts };
 }
 
 // --- Per-topic question generators (correct by construction) ------------------
@@ -325,19 +409,19 @@ function buildLevel(level, levelIdx) {
     quizzes.push({ questions });
   }
 
-  // Reading & Listening: emit the curated pool as-is. The app picks randomly,
-  // so pool size = variety; padding to 365 would only duplicate bytes. Grow the
-  // banks in passages.mjs / passages-extra.mjs to add variety here.
-  const readings = [...READINGS[level], ...merge(READING_ROUNDS, level)];
-  const listenings = [...LISTENINGS[level], ...merge(LISTENING_ROUNDS, level)];
+  // Reading & Listening: 365 progressive sets using only cumulative vocabulary.
+  const readings = [];
+  const listenings = [];
+  for (let d = 0; d < DAYS; d++) {
+    const rng = rngFrom(`${level}:read:${d}`);
+    readings.push(buildProgressiveReading(d, vocabulary, bank, rng));
+    listenings.push(buildProgressiveListening(d, vocabulary, bank, rng));
+  }
 
-  // Speaking: 365 sets of 4 sentences, recombined from the level's pool.
-  const sent = [...SPEAKING_SENTENCES[level], ...merge(SPEAKING_ROUNDS, level)];
+  // Speaking: 365 progressive sets tied to today's vocabulary.
   const speakings = [];
   for (let d = 0; d < DAYS; d++) {
-    const rng = rngFrom(`${level}:speak:${d}`);
-    const prompts = shuffle(rng, sent).slice(0, 4);
-    speakings.push({ prompts });
+    speakings.push(buildProgressiveSpeaking(d, vocabulary));
   }
 
   return { vocabulary, lessons, quizzes, readings, listenings, speakings };
@@ -394,8 +478,14 @@ function main() {
       validateQuestionSet(z.questions, 5, `${level} quiz ${d}`);
       z.questions.forEach((q, n) => validateQuestion(q, `${level} quiz ${d} q${n}`));
     });
-    readings.forEach((r, d) => r.questions.forEach((q, n) => validateQuestion(q, `${level} reading ${d} q${n}`)));
-    listenings.forEach((r, d) => r.questions.forEach((q, n) => validateQuestion(q, `${level} listening ${d} q${n}`)));
+    readings.forEach((r, d) => {
+      if (!r.textHe) throw new Error(`${level} reading ${d}: missing textHe`);
+      r.questions.forEach((q, n) => validateQuestion(q, `${level} reading ${d} q${n}`));
+    });
+    listenings.forEach((r, d) => {
+      if (!r.transcriptHe) throw new Error(`${level} listening ${d}: missing transcriptHe`);
+      r.questions.forEach((q, n) => validateQuestion(q, `${level} listening ${d} q${n}`));
+    });
     vocabulary.forEach((v, d) => { if (v.words.length !== 5) throw new Error(`${level} vocab ${d}: need 5 words`); });
     speakings.forEach((s, d) => { if (s.prompts.length !== 4) throw new Error(`${level} speaking ${d}: need 4 prompts`); });
 

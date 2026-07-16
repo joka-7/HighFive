@@ -24,3 +24,5 @@ export function loadOfflineContent(level: Level): Promise<OfflineLevelContent> {
 export function pickRandom<T>(items: T[]): T {
   return items[Math.floor(Math.random() * items.length)];
 }
+
+export { pickByDay, dayIndex } from "../utils/daily";

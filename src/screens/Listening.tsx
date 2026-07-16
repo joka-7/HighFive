@@ -1,31 +1,49 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { generateListening } from "../services/content";
-import { topicForToday, LISTENING_TOPICS } from "../data/topics";
+import { topicForTodayByLevel, LISTENING_TOPICS_BY_LEVEL } from "../data/topics";
 import type { GemListening } from "../types";
 import QuizRunner from "../components/QuizRunner";
 import Spinner from "../components/Spinner";
 import { speak, ttsSupported } from "../services/tts";
+import { loadDailyCache, saveDailyCache } from "../utils/dailyCache";
 
-// Listening practice — hear a natural spoken clip (via TTS), answer
-// comprehension questions, then reveal the transcript. Trains the ear on
-// connected speech rather than single words.
+const CACHE_KEY = "high5.listening_today";
+
 export default function Listening() {
-  const { progress, completeQuiz } = useLingo();
+  const { progress, completeQuiz, learnedWords } = useLingo();
   const level = progress?.currentLevel ?? "A1";
   const [clip, setClip] = useState<GemListening | null>(null);
   const [loading, setLoading] = useState(false);
   const [phase, setPhase] = useState<"listen" | "quiz" | "done">("listen");
   const [showText, setShowText] = useState(false);
 
-  const load = useCallback(() => {
-    setLoading(true);
-    setPhase("listen");
-    setShowText(false);
-    generateListening(level, topicForToday(LISTENING_TOPICS))
-      .then(setClip)
-      .finally(() => setLoading(false));
-  }, [level]);
+  const load = useCallback(
+    (force = false) => {
+      setLoading(true);
+      setPhase("listen");
+      setShowText(false);
+      if (!force) {
+        const cached = loadDailyCache<GemListening>(CACHE_KEY, level);
+        if (cached) {
+          setClip(cached);
+          setLoading(false);
+          return;
+        }
+      }
+      generateListening(
+        level,
+        topicForTodayByLevel(LISTENING_TOPICS_BY_LEVEL, level),
+        Object.keys(learnedWords),
+      )
+        .then((c) => {
+          setClip(c);
+          saveDailyCache(CACHE_KEY, level, c);
+        })
+        .finally(() => setLoading(false));
+    },
+    [level, learnedWords],
+  );
 
   useEffect(() => {
     load();
@@ -43,8 +61,13 @@ export default function Listening() {
           <pre className="explanation-text" style={{ direction: "ltr", textAlign: "left", marginTop: 8 }}>
             {clip.transcript}
           </pre>
+          {clip.transcriptHe && (
+            <pre className="explanation-text" style={{ marginTop: 8 }}>
+              {clip.transcriptHe}
+            </pre>
+          )}
         </div>
-        <button className="btn accent" onClick={load} style={{ marginTop: 12 }}>
+        <button className="btn accent" onClick={() => load(true)} style={{ marginTop: 12 }}>
           תרגיל חדש 🔄
         </button>
       </div>
@@ -88,9 +111,16 @@ export default function Listening() {
           {showText ? "הסתר תמלול" : "הצג תמלול (לא חובה)"}
         </button>
         {showText && (
-          <pre className="explanation-text" style={{ direction: "ltr", textAlign: "left", marginTop: 8 }}>
-            {clip.transcript}
-          </pre>
+          <>
+            <pre className="explanation-text" style={{ direction: "ltr", textAlign: "left", marginTop: 8 }}>
+              {clip.transcript}
+            </pre>
+            {clip.transcriptHe && (
+              <pre className="explanation-text" style={{ marginTop: 8 }}>
+                {clip.transcriptHe}
+              </pre>
+            )}
+          </>
         )}
       </div>
 

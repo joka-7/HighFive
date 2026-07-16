@@ -16,6 +16,7 @@ import type { Firestore } from "firebase/firestore";
 import type {
   ChatMessage,
   DailyMissionsState,
+  LearnedWordEntry,
   MissionLog,
   QuizHistory,
   SavedWord,
@@ -119,6 +120,7 @@ export async function signOut(): Promise<void> {
 export interface CloudData {
   progress: UserProgress | null;
   savedWords: SavedWord[];
+  learnedWords?: Record<string, LearnedWordEntry>;
   chatMessages: ChatMessage[];
   quizHistory: QuizHistory[];
   missionLog: MissionLog[];

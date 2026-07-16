@@ -11,6 +11,8 @@ import {
 import type {
   ChatMessage,
   DailyMissionsState,
+  GemWord,
+  LearnedWordEntry,
   Level,
   MissionKind,
   MissionLog,
@@ -18,7 +20,13 @@ import type {
   SavedWord,
   UserProgress,
 } from "../types";
+import { seedStarterEntries } from "../data/starter-words";
+import { buildAllowedVocabulary } from "../utils/vocabulary";
 import { isDue, isSrsMastered, scheduleNext } from "../utils/srs";
+import {
+  isWordAtOrBelowLevel,
+  promotionTarget,
+} from "../utils/levelProgress";
 import {
   isCloudConfigured,
   loadCloud,
@@ -41,6 +49,7 @@ const KEYS = {
   quizHistory: "high5.quiz_history",
   missionLog: "high5.mission_log",
   dailyMissions: "high5.daily_missions",
+  learnedWords: "high5.learned_words",
   // Remembers that the user opted into cloud sync, so we only eagerly load the
   // (heavy) Firebase SDK on startup for returning signed-in users.
   cloudSession: "high5.cloud_session",
@@ -89,6 +98,7 @@ function uid(): string {
 interface LingoContextValue {
   progress: UserProgress | null;
   savedWords: SavedWord[];
+  learnedWords: Record<string, LearnedWordEntry>;
   chatMessages: ChatMessage[];
   quizHistory: QuizHistory[];
   missionLog: MissionLog[];
@@ -100,9 +110,13 @@ interface LingoContextValue {
   signOut: () => Promise<void>;
   registerUser: (userName: string, nativeLanguage: string, level: Level) => void;
   updateLevel: (level: Level) => void;
+  levelUpNotice: Level | null;
+  clearLevelUpNotice: () => void;
   addPoints: (points: number) => void;
   isWordSaved: (word: string) => boolean;
   toggleSaveWord: (word: Omit<SavedWord, "id" | "savedAt" | "isMastered">) => void;
+  markWordsLearned: (words: GemWord[], level: Level) => void;
+  getAllowedVocabulary: (level: Level, todaysWords?: GemWord[]) => Set<string>;
   toggleMastered: (id: string) => void;
   dueWords: () => SavedWord[];
   reviewWord: (id: string, remembered: boolean) => void;
@@ -126,6 +140,10 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   const [savedWords, setSavedWords] = useState<SavedWord[]>(() =>
     load<SavedWord[]>(KEYS.savedWords, []),
   );
+  const [learnedWords, setLearnedWords] = useState<Record<string, LearnedWordEntry>>(() => {
+    const stored = load<Record<string, LearnedWordEntry>>(KEYS.learnedWords, {});
+    return Object.keys(stored).length > 0 ? stored : seedStarterEntries();
+  });
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() =>
     load<ChatMessage[]>(KEYS.chat, []),
   );
@@ -138,6 +156,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   const [dailyMissions, setDailyMissions] = useState<DailyMissionsState>(() =>
     load<DailyMissionsState>(KEYS.dailyMissions, EMPTY_MISSIONS),
   );
+  const [levelUpNotice, setLevelUpNotice] = useState<Level | null>(null);
 
   const [user, setUser] = useState<CloudUser | null>(null);
   // We only wait on auth (and load Firebase) at startup if the user previously
@@ -154,6 +173,9 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem(KEYS.savedWords, JSON.stringify(savedWords));
   }, [savedWords]);
+  useEffect(() => {
+    localStorage.setItem(KEYS.learnedWords, JSON.stringify(learnedWords));
+  }, [learnedWords]);
   useEffect(() => {
     localStorage.setItem(KEYS.chat, JSON.stringify(chatMessages));
   }, [chatMessages]);
@@ -172,6 +194,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   const latest = useRef<CloudData>({
     progress,
     savedWords,
+    learnedWords,
     chatMessages,
     quizHistory,
     missionLog,
@@ -181,12 +204,13 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     latest.current = {
       progress,
       savedWords,
+      learnedWords,
       chatMessages,
       quizHistory,
       missionLog,
       dailyMissions,
     };
-  }, [progress, savedWords, chatMessages, quizHistory, missionLog, dailyMissions]);
+  }, [progress, savedWords, learnedWords, chatMessages, quizHistory, missionLog, dailyMissions]);
 
   // Streak bookkeeping on mount — same day → unchanged; consecutive day → +1;
   // gap → reset.
@@ -223,6 +247,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
         if (cloud) {
           setProgress(cloud.progress ?? null);
           setSavedWords(cloud.savedWords ?? []);
+          setLearnedWords(cloud.learnedWords ?? seedStarterEntries());
           setChatMessages(cloud.chatMessages ?? []);
           setQuizHistory(cloud.quizHistory ?? []);
           setMissionLog(cloud.missionLog ?? []);
@@ -254,6 +279,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       saveCloud(user.uid, {
         progress,
         savedWords,
+        learnedWords,
         chatMessages,
         quizHistory,
         missionLog,
@@ -261,7 +287,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       }).catch(() => {});
     }, 800);
     return () => clearTimeout(t);
-  }, [user, progress, savedWords, chatMessages, quizHistory, missionLog, dailyMissions]);
+  }, [user, progress, savedWords, learnedWords, chatMessages, quizHistory, missionLog, dailyMissions]);
 
   const signIn = useCallback(async () => {
     // Start listening first so onAuthStateChanged catches this sign-in; this is
@@ -295,6 +321,28 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     setProgress((prev) => (prev ? { ...prev, currentLevel: level } : prev));
   }, []);
 
+  const clearLevelUpNotice = useCallback(() => setLevelUpNotice(null), []);
+
+  // Auto-promote when vocabulary mastery thresholds are met at the current level.
+  useEffect(() => {
+    if (!progress) return;
+    const target = promotionTarget(progress.currentLevel, learnedWords, savedWords);
+    if (!target || target === progress.currentLevel) return;
+    setLevelUpNotice(target);
+    setMissionLog((ml) => [
+      {
+        id: uid(),
+        kind: "lesson",
+        label: `עלית לרמה ${target}! 🎉`,
+        timestamp: Date.now(),
+      },
+      ...ml,
+    ]);
+    setProgress((prev) =>
+      prev ? { ...prev, currentLevel: target, points: prev.points + 100 } : prev,
+    );
+  }, [learnedWords, savedWords, progress?.currentLevel]);
+
   const addPoints = useCallback((points: number) => {
     setProgress((prev) => (prev ? { ...prev, points: prev.points + points } : prev));
   }, []);
@@ -302,6 +350,26 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   const isWordSaved = useCallback(
     (word: string) => savedWords.some((w) => w.word.toLowerCase() === word.toLowerCase()),
     [savedWords],
+  );
+
+  const markWordsLearned = useCallback((words: GemWord[], level: Level) => {
+    setLearnedWords((prev) => {
+      const next = { ...prev };
+      const now = Date.now();
+      for (const w of words) {
+        const key = w.word.toLowerCase();
+        if (!next[key]) {
+          next[key] = { word: w.word, translation: w.translation, level, firstSeenAt: now };
+        }
+      }
+      return next;
+    });
+  }, []);
+
+  const getAllowedVocabulary = useCallback(
+    (level: Level, todaysWords: GemWord[] = []) =>
+      buildAllowedVocabulary(level, Object.keys(learnedWords), todaysWords),
+    [learnedWords],
   );
 
   const toggleSaveWord = useCallback<LingoContextValue["toggleSaveWord"]>(
@@ -314,6 +382,20 @@ export function LingoProvider({ children }: { children: ReactNode }) {
         // Saving a new word awards +10 points (LingoViewModel.toggleSaveWord).
         setProgress((p) => (p ? { ...p, points: p.points + 10 } : p));
         // New words enter the spaced-repetition queue immediately due (box 0).
+        // Saving also marks the word as learned for progressive content.
+        setLearnedWords((lw) => {
+          const key = word.word.toLowerCase();
+          if (lw[key]) return lw;
+          return {
+            ...lw,
+            [key]: {
+              word: word.word,
+              translation: word.translation,
+              level: word.level,
+              firstSeenAt: Date.now(),
+            },
+          };
+        });
         return [
           {
             ...word,
@@ -337,10 +419,18 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
-  // Words whose next review time has arrived (or that have never been reviewed).
+  // Words due for review at or below the learner's current CEFR level.
   const dueWords = useCallback<LingoContextValue["dueWords"]>(
-    () => savedWords.filter((w) => !w.isMastered && isDue(w.nextReviewAt)),
-    [savedWords],
+    () => {
+      const lvl = progress?.currentLevel ?? "A1";
+      return savedWords.filter(
+        (w) =>
+          !w.isMastered &&
+          isDue(w.nextReviewAt) &&
+          isWordAtOrBelowLevel(w.level, lvl),
+      );
+    },
+    [savedWords, progress?.currentLevel],
   );
 
   // Grade a review: advance/reset the Leitner box, schedule the next review,
@@ -477,10 +567,12 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   const resetAll = useCallback(() => {
     setProgress(null);
     setSavedWords([]);
+    setLearnedWords(seedStarterEntries());
     setChatMessages([]);
     setQuizHistory([]);
     setMissionLog([]);
     setDailyMissions(EMPTY_MISSIONS);
+    setLevelUpNotice(null);
   }, []);
 
   const todayMissions = useMemo(
@@ -492,6 +584,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     () => ({
       progress,
       savedWords,
+      learnedWords,
       chatMessages,
       quizHistory,
       missionLog,
@@ -505,8 +598,12 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       signOut,
       registerUser,
       updateLevel,
+      levelUpNotice,
+      clearLevelUpNotice,
       addPoints,
       isWordSaved,
+      markWordsLearned,
+      getAllowedVocabulary,
       toggleSaveWord,
       toggleMastered,
       dueWords,
@@ -521,6 +618,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     [
       progress,
       savedWords,
+      learnedWords,
       chatMessages,
       quizHistory,
       missionLog,
@@ -533,8 +631,12 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       signOut,
       registerUser,
       updateLevel,
+      levelUpNotice,
+      clearLevelUpNotice,
       addPoints,
       isWordSaved,
+      markWordsLearned,
+      getAllowedVocabulary,
       toggleSaveWord,
       toggleMastered,
       dueWords,

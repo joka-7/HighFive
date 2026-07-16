@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { generateDailyLesson } from "../services/content";
-import { topicForToday, LESSON_TOPICS } from "../data/topics";
+import { topicForTodayByLevel, LESSON_TOPICS_BY_LEVEL } from "../data/topics";
 import type { GemLesson } from "../types";
 import QuizRunner from "../components/QuizRunner";
 import Spinner from "../components/Spinner";
@@ -14,7 +14,7 @@ const CACHE_KEY = "high5.lesson_today";
 type Phase = "reading" | "quiz" | "done";
 
 export default function DailyLesson() {
-  const { progress, completeLesson } = useLingo();
+  const { progress, completeLesson, learnedWords } = useLingo();
   const [lesson, setLesson] = useState<GemLesson | null>(null);
   const [phase, setPhase] = useState<Phase>("reading");
   const [earned, setEarned] = useState(0);
@@ -29,7 +29,11 @@ export default function DailyLesson() {
       setLesson(cached);
       return;
     }
-    generateDailyLesson(level, topicForToday(LESSON_TOPICS)).then((l) => {
+    generateDailyLesson(
+      level,
+      topicForTodayByLevel(LESSON_TOPICS_BY_LEVEL, level),
+      Object.keys(learnedWords),
+    ).then((l) => {
       if (active) {
         setLesson(l);
         saveDailyCache(CACHE_KEY, level, l);
@@ -38,7 +42,7 @@ export default function DailyLesson() {
     return () => {
       active = false;
     };
-  }, [progress?.currentLevel]);
+  }, [progress?.currentLevel, learnedWords]);
 
   if (!lesson) return <Spinner label="מכין שיעור..." />;
 

@@ -2,12 +2,12 @@ import { useMemo, useRef, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { generateDialogueReply } from "../services/content";
 import { isAIReady } from "../services/ai";
-import { DIALOGUE_SCENARIOS } from "../data/topics";
+import { DIALOGUE_SCENARIOS, dialogueScenariosForLevel } from "../data/topics";
 import { speak } from "../services/tts";
 import type { Screen } from "../types";
 
 export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
-  const { progress, chatMessages, addChatMessage, clearChat } = useLingo();
+  const { progress, chatMessages, addChatMessage, clearChat, learnedWords } = useLingo();
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
@@ -15,7 +15,8 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
   const logRef = useRef<HTMLDivElement>(null);
 
   const level = progress?.currentLevel ?? "A1";
-  const scenario = DIALOGUE_SCENARIOS.find((s) => s.id === scenarioId);
+  const scenarios = dialogueScenariosForLevel(level);
+  const scenario = scenarios.find((s) => s.id === scenarioId) ?? DIALOGUE_SCENARIOS.find((s) => s.id === scenarioId);
 
   const messages = useMemo(
     () =>
@@ -42,7 +43,7 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
     return (
       <div>
         <h2 className="center">בחר תרחיש לשיחה 💬</h2>
-        {DIALOGUE_SCENARIOS.map((s) => (
+        {scenarios.map((s) => (
           <button
             key={s.id}
             className="btn secondary"
@@ -70,7 +71,13 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
     });
     setBusy(true);
     try {
-      const reply = await generateDialogueReply(level, scenario.en, messages, message);
+      const reply = await generateDialogueReply(
+        level,
+        scenario.en,
+        messages,
+        message,
+        Object.keys(learnedWords),
+      );
       addChatMessage({
         role: "assistant",
         messageText: reply.reply,

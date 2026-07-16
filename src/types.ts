@@ -21,7 +21,9 @@ export interface GemWordList {
 
 export interface GemQuestion {
   question: string;
+  questionHe?: string;
   options: string[];
+  optionsHe?: string[];
   correctIndex: number;
   explanation: string; // in Hebrew
 }
@@ -46,6 +48,7 @@ export interface GemQuiz {
 export interface GemReading {
   title: string; // English + (Hebrew)
   text: string; // the passage, in English
+  textHe?: string;
   glossary: GemWord[]; // key words with Hebrew (reuses GemWord)
   questions: GemQuestion[]; // comprehension MCQs (reuses GemQuestion)
 }
@@ -54,6 +57,7 @@ export interface GemReading {
 // comprehension questions. Addresses "understanding natural speech".
 export interface GemListening {
   transcript: string; // sentence / short dialogue, in English
+  transcriptHe?: string;
   questions: GemQuestion[];
 }
 
@@ -79,6 +83,14 @@ export interface UserProgress {
   streak: number;
   lastActiveTimestamp: number;
   dailyLessonCompletedText: string; // date key — prevents multiple daily claims
+}
+
+/** A word the learner has seen in the app (vocabulary screen or saved). */
+export interface LearnedWordEntry {
+  word: string;
+  translation: string;
+  level: Level;
+  firstSeenAt: number;
 }
 
 export interface SavedWord {
