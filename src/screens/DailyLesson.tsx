@@ -6,6 +6,7 @@ import type { GemLesson } from "../types";
 import QuizRunner from "../components/QuizRunner";
 import Spinner from "../components/Spinner";
 import { speak } from "../services/tts";
+import { dateKeyFromTs } from "../utils/missions";
 import { loadDailyCache, saveDailyCache } from "../utils/dailyCache";
 
 const CACHE_KEY = "high5.lesson_today";
@@ -58,7 +59,7 @@ export default function DailyLesson() {
         onFinish={(score) => {
           completeLesson(score);
           const today = progress?.dailyLessonCompletedText;
-          const todayKey = new Date().toISOString().slice(0, 10);
+          const todayKey = dateKeyFromTs(Date.now());
           const base = today === todayKey ? 0 : 50;
           setEarned(base + score * 20);
           setPhase("done");

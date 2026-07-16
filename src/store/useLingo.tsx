@@ -12,6 +12,8 @@ import type {
   ChatMessage,
   DailyMissionsState,
   Level,
+  MissionKind,
+  MissionLog,
   QuizHistory,
   SavedWord,
   UserProgress,
@@ -37,6 +39,7 @@ const KEYS = {
   savedWords: "high5.saved_words",
   chat: "high5.chat_messages",
   quizHistory: "high5.quiz_history",
+  missionLog: "high5.mission_log",
   dailyMissions: "high5.daily_missions",
   // Remembers that the user opted into cloud sync, so we only eagerly load the
   // (heavy) Firebase SDK on startup for returning signed-in users.
@@ -53,7 +56,11 @@ function load<T>(key: string, fallback: T): T {
 }
 
 function dateKey(ts: number): string {
-  return new Date(ts).toISOString().slice(0, 10);
+  const d = new Date(ts);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 // Daily Missions — points awarded once per mission per day.
@@ -84,6 +91,7 @@ interface LingoContextValue {
   savedWords: SavedWord[];
   chatMessages: ChatMessage[];
   quizHistory: QuizHistory[];
+  missionLog: MissionLog[];
   // Cloud / account state
   cloudConfigured: boolean;
   user: CloudUser | null;
@@ -100,6 +108,7 @@ interface LingoContextValue {
   reviewWord: (id: string, remembered: boolean) => void;
   completeLesson: (correctCount: number) => void;
   completeQuiz: (level: Level, topic: string, score: number, total: number) => void;
+  logMission: (kind: MissionKind, label: string, score?: number, total?: number) => void;
   dailyMissions: DailyMissionsState;
   todayWordCount: number;
   completeMission: (id: "video" | "talk") => void;
@@ -122,6 +131,9 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   );
   const [quizHistory, setQuizHistory] = useState<QuizHistory[]>(() =>
     load<QuizHistory[]>(KEYS.quizHistory, []),
+  );
+  const [missionLog, setMissionLog] = useState<MissionLog[]>(() =>
+    load<MissionLog[]>(KEYS.missionLog, []),
   );
   const [dailyMissions, setDailyMissions] = useState<DailyMissionsState>(() =>
     load<DailyMissionsState>(KEYS.dailyMissions, EMPTY_MISSIONS),
@@ -149,6 +161,9 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(KEYS.quizHistory, JSON.stringify(quizHistory));
   }, [quizHistory]);
   useEffect(() => {
+    localStorage.setItem(KEYS.missionLog, JSON.stringify(missionLog));
+  }, [missionLog]);
+  useEffect(() => {
     localStorage.setItem(KEYS.dailyMissions, JSON.stringify(dailyMissions));
   }, [dailyMissions]);
 
@@ -159,11 +174,19 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     savedWords,
     chatMessages,
     quizHistory,
+    missionLog,
     dailyMissions,
   });
   useEffect(() => {
-    latest.current = { progress, savedWords, chatMessages, quizHistory, dailyMissions };
-  }, [progress, savedWords, chatMessages, quizHistory, dailyMissions]);
+    latest.current = {
+      progress,
+      savedWords,
+      chatMessages,
+      quizHistory,
+      missionLog,
+      dailyMissions,
+    };
+  }, [progress, savedWords, chatMessages, quizHistory, missionLog, dailyMissions]);
 
   // Streak bookkeeping on mount — same day → unchanged; consecutive day → +1;
   // gap → reset.
@@ -202,6 +225,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
           setSavedWords(cloud.savedWords ?? []);
           setChatMessages(cloud.chatMessages ?? []);
           setQuizHistory(cloud.quizHistory ?? []);
+          setMissionLog(cloud.missionLog ?? []);
           setDailyMissions(cloud.dailyMissions ?? EMPTY_MISSIONS);
         } else {
           await saveCloud(u.uid, latest.current);
@@ -232,11 +256,12 @@ export function LingoProvider({ children }: { children: ReactNode }) {
         savedWords,
         chatMessages,
         quizHistory,
+        missionLog,
         dailyMissions,
       }).catch(() => {});
     }, 800);
     return () => clearTimeout(t);
-  }, [user, progress, savedWords, chatMessages, quizHistory, dailyMissions]);
+  }, [user, progress, savedWords, chatMessages, quizHistory, missionLog, dailyMissions]);
 
   const signIn = useCallback(async () => {
     // Start listening first so onAuthStateChanged catches this sign-in; this is
@@ -339,10 +364,21 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const logMission = useCallback<LingoContextValue["logMission"]>(
+    (kind, label, score, total) => {
+      setMissionLog((prev) => [
+        { id: uid(), kind, label, timestamp: Date.now(), score, total },
+        ...prev,
+      ]);
+    },
+    [],
+  );
+
   const completeLesson = useCallback((correctCount: number) => {
+    const now = Date.now();
+    const today = dateKey(now);
     setProgress((prev) => {
       if (!prev) return prev;
-      const today = dateKey(Date.now());
       const alreadyClaimedBase = prev.dailyLessonCompletedText === today;
       // 50 base (once per day) + 20 per correct answer (LingoViewModel).
       const earned = (alreadyClaimedBase ? 0 : 50) + correctCount * 20;
@@ -351,6 +387,15 @@ export function LingoProvider({ children }: { children: ReactNode }) {
         points: prev.points + earned,
         dailyLessonCompletedText: today,
       };
+    });
+    setMissionLog((prev) => {
+      if (prev.some((m) => m.kind === "lesson" && dateKey(m.timestamp) === today)) {
+        return prev;
+      }
+      return [
+        { id: uid(), kind: "lesson", label: "שיעור יומי", timestamp: now },
+        ...prev,
+      ];
     });
   }, []);
 
@@ -434,6 +479,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     setSavedWords([]);
     setChatMessages([]);
     setQuizHistory([]);
+    setMissionLog([]);
     setDailyMissions(EMPTY_MISSIONS);
   }, []);
 
@@ -448,6 +494,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       savedWords,
       chatMessages,
       quizHistory,
+      missionLog,
       dailyMissions: todayMissions,
       todayWordCount,
       completeMission,
@@ -466,6 +513,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       reviewWord,
       completeLesson,
       completeQuiz,
+      logMission,
       addChatMessage,
       clearChat,
       resetAll,
@@ -475,6 +523,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       savedWords,
       chatMessages,
       quizHistory,
+      missionLog,
       todayMissions,
       todayWordCount,
       completeMission,
@@ -492,6 +541,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       reviewWord,
       completeLesson,
       completeQuiz,
+      logMission,
       addChatMessage,
       clearChat,
       resetAll,

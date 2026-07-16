@@ -13,7 +13,7 @@ import { scoreSpeaking, type SpeakingScore } from "../utils/score";
 // never actually speak. ASR is a graceful enhancement; unsupported browsers
 // still see the sentences and can practise with the model audio.
 export default function Speaking() {
-  const { progress, addPoints } = useLingo();
+  const { progress, addPoints, logMission } = useLingo();
   const level = progress?.currentLevel ?? "A1";
   const [set, setSet] = useState<GemSpeaking | null>(null);
   const [loading, setLoading] = useState(false);
@@ -24,13 +24,18 @@ export default function Speaking() {
 
   const load = useCallback(() => {
     setLoading(true);
-    setIndex(0);
+    setIndex((prev) => {
+      if (set && prev === set.prompts.length - 1) {
+        logMission("speaking", "דיבור");
+      }
+      return 0;
+    });
     setResult(null);
     setError(null);
     generateSpeaking(level, topicForToday(SPEAKING_TOPICS))
       .then(setSet)
       .finally(() => setLoading(false));
-  }, [level]);
+  }, [level, logMission, set]);
 
   useEffect(() => {
     load();

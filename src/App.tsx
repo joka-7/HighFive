@@ -15,6 +15,7 @@ import Review from "./screens/Review";
 import Reading from "./screens/Reading";
 import Listening from "./screens/Listening";
 import Speaking from "./screens/Speaking";
+import Calendar from "./screens/Calendar";
 
 const TITLES: Record<Screen, string> = {
   onboarding: "ברוכים הבאים",
@@ -30,6 +31,7 @@ const TITLES: Record<Screen, string> = {
   reading: "קריאה",
   listening: "האזנה",
   speaking: "דיבור",
+  calendar: "לוח שנה",
   missions: "משימות יומיות",
 };
 
@@ -38,7 +40,7 @@ const NAV: { screen: Screen; ico: string; label: string }[] = [
   { screen: "lesson", ico: "📚", label: "שיעור" },
   { screen: "missions", ico: "🎯", label: "משימות" },
   { screen: "vocabulary", ico: "🃏", label: "מילים" },
-  { screen: "progress", ico: "📈", label: "התקדמות" },
+  { screen: "calendar", ico: "📅", label: "לוח שנה" },
   { screen: "settings", ico: "⚙️", label: "הגדרות" },
 ];
 
@@ -84,6 +86,8 @@ export default function App() {
         return <Listening />;
       case "speaking":
         return <Speaking />;
+      case "calendar":
+        return <Calendar />;
       default:
         return <Dashboard go={go} />;
     }

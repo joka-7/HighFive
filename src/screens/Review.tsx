@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { useLingo } from "../store/useLingo";
 import { speak } from "../services/tts";
 
@@ -6,13 +6,21 @@ import { speak } from "../services/tts";
 // Hebrew side, and self-grade "knew it / didn't". Grading reschedules the word
 // via the Leitner logic in the store (reviewWord).
 export default function Review() {
-  const { dueWords, reviewWord } = useLingo();
+  const { dueWords, reviewWord, logMission } = useLingo();
   // Snapshot the due queue once on mount so grading doesn't reshuffle the list
   // mid-session (reviewed words drop out only on the next visit).
   const queue = useMemo(() => dueWords(), []); // eslint-disable-line react-hooks/exhaustive-deps
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [done, setDone] = useState(0);
+  const loggedSession = useRef(false);
+
+  useEffect(() => {
+    if (index >= queue.length && done > 0 && !loggedSession.current) {
+      loggedSession.current = true;
+      logMission("review", `חזרה יומית (${done} מילים)`);
+    }
+  }, [index, done, queue.length, logMission]);
 
   if (queue.length === 0) {
     return (

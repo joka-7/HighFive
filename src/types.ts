@@ -117,6 +117,25 @@ export interface QuizHistory {
   timestamp: number;
 }
 
+/** A completed learning activity shown on the mission calendar. */
+export type MissionKind =
+  | "lesson"
+  | "quiz"
+  | "reading"
+  | "listening"
+  | "speaking"
+  | "review"
+  | "dialogue";
+
+export interface MissionLog {
+  id: string;
+  kind: MissionKind;
+  label: string;
+  timestamp: number;
+  score?: number;
+  total?: number;
+}
+
 // Daily Missions — a small daily checklist ("watch a video in English",
 // "talk with the AI coach in English"). The user marks each mission done for
 // the day and earns points; `date` gates re-claiming and resets the missions
@@ -144,4 +163,5 @@ export type Screen =
   | "reading"
   | "listening"
   | "speaking"
+  | "calendar"
   | "missions";

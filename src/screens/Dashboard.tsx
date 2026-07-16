@@ -15,6 +15,7 @@ const TILES: { screen: Screen; emoji: string; title: string; sub: string }[] = [
   { screen: "speaking", emoji: "🎤", title: "דיבור", sub: "תרגול הגייה" },
   { screen: "saved", emoji: "⭐", title: "מילים שמורות", sub: "לחזרה" },
   { screen: "progress", emoji: "📈", title: "ההתקדמות שלי", sub: "נקודות ורצף" },
+  { screen: "calendar", emoji: "📅", title: "לוח שנה", sub: "משימות שהושלמו" },
 ];
 
 export default function Dashboard({ go }: { go: (s: Screen) => void }) {

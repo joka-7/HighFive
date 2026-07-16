@@ -16,6 +16,7 @@ import type { Firestore } from "firebase/firestore";
 import type {
   ChatMessage,
   DailyMissionsState,
+  MissionLog,
   QuizHistory,
   SavedWord,
   UserProgress,
@@ -120,6 +121,7 @@ export interface CloudData {
   savedWords: SavedWord[];
   chatMessages: ChatMessage[];
   quizHistory: QuizHistory[];
+  missionLog: MissionLog[];
   dailyMissions?: DailyMissionsState | null;
 }
 

@@ -694,3 +694,113 @@ pre.explanation-text {
   line-height: 1.6;
   margin: 0;
 }
+
+/* --- Mission calendar --- */
+.calendar-summary-num {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--primary-strong);
+  line-height: 1.1;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.calendar-weekday {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-soft);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 2px solid transparent;
+  padding: 0;
+  min-height: 40px;
+}
+
+.calendar-day.outside {
+  opacity: 0.35;
+}
+
+.calendar-day.has-missions {
+  background: var(--accent-soft);
+}
+
+.calendar-day.today {
+  border-color: var(--primary);
+}
+
+.calendar-day.selected {
+  border-color: var(--accent);
+  background: var(--tag-bg);
+}
+
+.calendar-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.mission-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mission-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.mission-row:last-child {
+  border-bottom: none;
+}
+
+.mission-ico {
+  font-size: 20px;
+}
+
+.mission-label {
+  flex: 1;
+  font-weight: 600;
+}
+
+.mission-score {
+  font-weight: 800;
+  color: var(--primary-strong);
+}
+
