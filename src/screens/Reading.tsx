@@ -8,7 +8,7 @@ import Spinner from "../components/Spinner";
 import { speak } from "../services/tts";
 import { loadDailyCache, saveDailyCache } from "../utils/dailyCache";
 
-const CACHE_KEY = "high5.reading_today.v2";
+const CACHE_KEY = "high5.reading_today.v3";
 
 export default function Reading() {
   const { progress, isWordSaved, toggleSaveWord, completeQuiz, learnedWords } = useLingo();
@@ -24,7 +24,7 @@ export default function Reading() {
       setLoading(true);
       setPhase("read");
       setOpen(null);
-      setShowHe(false);
+      setShowHe(true);
       if (!force) {
         const cached = loadDailyCache<GemReading>(CACHE_KEY, level);
         if (cached) {

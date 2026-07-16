@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { generateSpeaking } from "../services/content";
 import { topicForTodayByLevel, SPEAKING_TOPICS_BY_LEVEL } from "../data/topics";
@@ -7,6 +7,9 @@ import Spinner from "../components/Spinner";
 import { speak } from "../services/tts";
 import { asrSupported, recognizeOnce } from "../services/asr";
 import { scoreSpeaking, type SpeakingScore } from "../utils/score";
+import { loadDailyCache, saveDailyCache } from "../utils/dailyCache";
+
+const CACHE_KEY = "high5.speaking_today";
 
 // Speaking practice — read a sentence aloud and get scored against speech
 // recognition. Directly addresses the article's sharpest point: learners who
@@ -16,6 +19,10 @@ export default function Speaking() {
   const { progress, addPoints, logMission, learnedWords } = useLingo();
   const level = progress?.currentLevel ?? "A1";
   const topic = topicForTodayByLevel(SPEAKING_TOPICS_BY_LEVEL, level);
+  const learnedKey = useMemo(
+    () => Object.keys(learnedWords).sort().join(","),
+    [learnedWords],
+  );
   const [speakingSet, setSpeakingSet] = useState<GemSpeaking | null>(null);
   const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
@@ -23,34 +30,64 @@ export default function Speaking() {
   const [result, setResult] = useState<(SpeakingScore & { heard: string }) | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const load = useCallback(() => {
-    setLoading(true);
-    setIndex((prev) => {
-      if (speakingSet && prev === speakingSet.prompts.length - 1) {
-        logMission("speaking", "דיבור");
+  const fetchSpeaking = useCallback(
+    (force = false) => {
+      setLoading(true);
+      setResult(null);
+      setError(null);
+
+      if (!force) {
+        const cached = loadDailyCache<GemSpeaking>(CACHE_KEY, level);
+        if (cached?.prompts?.length) {
+          setSpeakingSet(cached);
+          setIndex(0);
+          setLoading(false);
+          return () => {};
+        }
       }
-      return 0;
-    });
-    setResult(null);
-    setError(null);
-    generateSpeaking(level, topic, Object.keys(learnedWords))
-      .then(setSpeakingSet)
-      .catch(() => setSpeakingSet(null))
-      .finally(() => setLoading(false));
-  }, [level, topic, learnedWords, logMission]);
+
+      let active = true;
+      generateSpeaking(level, topic, learnedKey ? learnedKey.split(",") : [])
+        .then((set) => {
+          if (!active) return;
+          setSpeakingSet(set);
+          setIndex(0);
+          saveDailyCache(CACHE_KEY, level, set);
+        })
+        .catch(() => {
+          if (!active) return;
+          setSpeakingSet(null);
+        })
+        .finally(() => {
+          if (active) setLoading(false);
+        });
+
+      return () => {
+        active = false;
+      };
+    },
+    [level, topic, learnedKey],
+  );
 
   useEffect(() => {
-    load();
-  }, [load]);
+    return fetchSpeaking();
+  }, [fetchSpeaking]);
+
+  const reload = useCallback(() => {
+    if (speakingSet && index === speakingSet.prompts.length - 1) {
+      logMission("speaking", "דיבור");
+    }
+    fetchSpeaking(true);
+  }, [fetchSpeaking, index, logMission, speakingSet]);
 
   if (loading) return <Spinner label="טוען תרגול דיבור..." />;
 
-  if (!speakingSet) {
+  if (!speakingSet?.prompts?.length) {
     return (
       <div className="card center">
         <h2>לא הצלחנו לטעון תרגול דיבור</h2>
         <p className="muted">נסו שוב בעוד רגע.</p>
-        <button className="btn" onClick={load} style={{ marginTop: 12 }}>
+        <button className="btn" onClick={() => fetchSpeaking(true)} style={{ marginTop: 12 }}>
           נסו שוב 🔄
         </button>
       </div>
@@ -68,7 +105,6 @@ export default function Speaking() {
       const heard = await recognizeOnce();
       const s = scoreSpeaking(prompt.text, heard);
       setResult({ ...s, heard });
-      // Award points scaled by accuracy (up to +20 per sentence).
       addPoints(Math.round((s.score / 100) * 20));
     } catch {
       setError("לא הצלחנו לקלוט את הקול. ודאו שהמיקרופון מאופשר ונסו שוב.");
@@ -140,7 +176,7 @@ export default function Speaking() {
       </div>
 
       {isLast ? (
-        <button className="btn" onClick={load}>
+        <button className="btn" onClick={reload}>
           סבב חדש 🔄
         </button>
       ) : (

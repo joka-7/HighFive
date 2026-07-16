@@ -128,6 +128,21 @@ const READ_TEMPLATES = [
   { en: (w) => `We use ${w.word}.`, he: (w) => `אנחנו משתמשים ב${w.translation}.` },
 ];
 
+function buildVocabWordMcq(rng, w, today, bank, distractorPool, context) {
+  return mcq(
+    rng,
+    `Which word is "${w.word}"?`,
+    w.word,
+    shuffle(rng, distractorPool).slice(0, 3),
+    `"${w.word}" = ${w.translation}. ${w.definition}.`,
+    ["table", "chair", "window"],
+    {
+      questionHe: `איזו מילה היא "${w.word}"? (פירוש: ${w.translation})${context ? ` — ${context}` : ""}`,
+      optionHe: (opt) => wordTranslation(opt, today, bank),
+    },
+  );
+}
+
 function buildProgressiveReading(day, vocabulary, bank, rng) {
   const today = vocabulary[day].words;
   const glossary = today.slice(0, 3);
@@ -139,31 +154,8 @@ function buildProgressiveReading(day, vocabulary, bank, rng) {
 
   const w0 = today[0];
   const w1 = today[1] ?? today[0];
-  const q1 = mcq(
-    rng,
-    `Which word means "${w0.translation}"?`,
-    w0.word,
-    shuffle(rng, distractorPool).slice(0, 3),
-    `המילה "${w0.word}" פירושה ${w0.translation}.`,
-    ["table", "chair", "window"],
-    {
-      questionHe: `איזו מילה פירושה "${w0.translation}"?`,
-      optionHe: (opt) => wordTranslation(opt, today, bank),
-    },
-  );
-
-  const q2 = mcq(
-    rng,
-    `Which word means "${w1.translation}"?`,
-    w1.word,
-    shuffle(rng, distractorPool).slice(0, 3),
-    `המילה "${w1.word}" פירושה ${w1.translation}.`,
-    ["happy", "sad", "big"],
-    {
-      questionHe: `איזו מילה פירושה "${w1.translation}"?`,
-      optionHe: (opt) => wordTranslation(opt, today, bank),
-    },
-  );
+  const q1 = buildVocabWordMcq(rng, w0, today, bank, distractorPool, "from the passage");
+  const q2 = buildVocabWordMcq(rng, w1, today, bank, distractorPool, "from the passage");
 
   return { title, text, textHe, glossary, questions: [q1, q2] };
 }
@@ -179,43 +171,7 @@ function buildProgressiveQuiz(day, vocabulary, bank, rng) {
   const questions = [];
   for (let i = 0; i < 5; i++) {
     const w = today[i % today.length];
-    if (i % 2 === 0) {
-      const others = shuffle(
-        rng,
-        bank.filter((x) => x.translation !== w.translation),
-      )
-        .slice(0, 5)
-        .map((x) => x.translation);
-      questions.push(
-        mcq(
-          rng,
-          `What does "${w.word}" mean?`,
-          w.translation,
-          others,
-          `"${w.word}" = ${w.translation}. ${w.definition}.`,
-          ["שולחן", "דלת", "חלון"],
-          {
-            questionHe: `מה הפירוש של "${w.word}"?`,
-            optionHe: (opt) => opt,
-          },
-        ),
-      );
-    } else {
-      questions.push(
-        mcq(
-          rng,
-          `Which word means "${w.translation}"?`,
-          w.word,
-          shuffle(rng, distractorPool).slice(0, 3),
-          `המילה "${w.word}" פירושה ${w.translation}.`,
-          ["table", "chair", "window"],
-          {
-            questionHe: `איזו מילה פירושה "${w.translation}"?`,
-            optionHe: (opt) => wordTranslation(opt, today, bank),
-          },
-        ),
-      );
-    }
+    questions.push(buildVocabWordMcq(rng, w, today, bank, distractorPool, null));
   }
   return { questions };
 }
