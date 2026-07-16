@@ -2,65 +2,124 @@
 
 Module-level detail to accompany `docs/HLD.md`.
 
+## `src/main.tsx`
+
+Application entry point. Applies the saved theme *before* first paint
+(`applyTheme(loadPrefs().theme)`, to avoid a flash of the wrong theme), then
+mounts `<App>` inside `<LingoProvider>` within `<StrictMode>`.
+
+## `src/App.tsx`
+
+Shell + navigation (no router library):
+
+- Holds the active `Screen` in a single `useState` and switches on it in
+  `renderScreen()`.
+- **Onboarding gate:** while `progress` is `null`, renders `<Onboarding>`
+  full-screen and nothing else.
+- **Top bar:** on the dashboard shows `✋ High5`; on any other screen a back
+  button (`→ {Hebrew title}`) returning to the dashboard. The right side always
+  shows three chips: `✨ points`, `🔥 streak`, and the CEFR `level`.
+- **Bottom nav (`NAV`):** 5 tiles — `dashboard`, `lesson`, `vocabulary`,
+  `progress`, `settings`. The other 8 screens are reached from Dashboard tiles
+  or in-screen buttons via the `go(screen)` callback.
+- `TITLES` maps every `Screen` to its Hebrew title.
+
 ## `src/types.ts`
 
 Domain model, ported from the original Kotlin entities/response shapes:
 
-- `Level` — `"A1" | "A2" | "B1" | "B2" | "C1" | "C2"` (CEFR).
-- `GemWord` / `GemWordList` / `GemQuestion` / `GemLesson` / `GemQuiz` /
-  `GemDialogueReply` — shapes returned by AI providers (and mirrored exactly
-  in the offline JSON files), parsed straight into these interfaces.
-- `UserProgress`, `SavedWord`, `ChatMessage`, `QuizHistory` — persisted state,
-  one interface per `localStorage`-backed "table" (replaces Room entities).
-- `Screen` — the union of all navigable screens; `App.tsx` switches on this.
+- `Level` — `"A1" | "A2" | "B1" | "B2" | "C1" | "C2"` (CEFR); `LEVELS` array.
+- **AI/content shapes** (mirrored exactly in the offline JSON): `GemWord` /
+  `GemWordList` / `GemQuestion` / `GemLesson` / `GemDialogueReply` / `GemQuiz` /
+  `GemReading` (title/text/glossary/questions) / `GemListening`
+  (transcript/questions) / `GemSpeaking` (`prompts: {text, translation}[]`) /
+  `OfflineLevelContent`.
+- **Persisted entities** (one interface per `localStorage`-backed "table",
+  replacing Room entities): `UserProgress`, `SavedWord` (with optional Leitner
+  fields `srsLevel` / `nextReviewAt` / `reviewCount`), `ChatMessage`,
+  `QuizHistory`.
+- `Screen` — the union of all 13 navigable screens; `App.tsx` switches on this.
 
 ## `src/store/useLingo.tsx`
 
-React Context + `localStorage`, replacing the Room database.
+React Context + `localStorage` (+ optional Firestore), replacing the Room
+database. Exposes the `useLingo()` hook, which throws if used outside
+`<LingoProvider>` (mounted once in `main.tsx`).
 
-- Keys: `high5.progress`, `high5.saved_words`, `high5.chat_messages`,
-  `high5.quiz_history`.
-- Each piece of state is a `useState` initialized via `load<T>(key, fallback)`
-  and written back on every change via a matching `useEffect`.
-- Streak logic runs once on mount: same calendar day → unchanged; exactly one
-  day later → `streak + 1`; any larger gap → reset to `1`.
-- Points awarded: `+10` save word, `+50` once/day + `20`/correct answer
-  (daily lesson), `25`/correct answer (practice quiz), `+15`/dialogue turn —
-  all ported verbatim from `LingoViewModel`.
-- `resetAll()` clears all four keys; used by the Settings "danger zone".
-- Exposes `useLingo()` hook; throws if used outside `<LingoProvider>` (mounted
-  once in `main.tsx`, wrapping `<App>`).
+- **localStorage keys:** `high5.progress`, `high5.saved_words`,
+  `high5.chat_messages`, `high5.quiz_history`, plus `high5.cloud_session`
+  (remembers the user opted into cloud sync, so the Firebase SDK is only eagerly
+  loaded on startup for returning signed-in users).
+- Each of the four persisted slices is a `useState` initialised via
+  `load<T>(key, fallback)` and written back on every change via a matching
+  `useEffect` (this is also the offline cache in Account mode).
+- **Streak logic** runs once on mount: same calendar day → unchanged; exactly
+  the next day → `streak + 1`; any larger gap → reset to `1`.
+- **Points** (ported verbatim from `LingoViewModel`):
+  - `+10` — save a new word (`toggleSaveWord`).
+  - `+5` — remembered a word in review (`reviewWord` with `remembered = true`).
+  - `+50` once/day + `20`/correct — daily lesson (`completeLesson`, guarded by
+    `dailyLessonCompletedText === today`).
+  - `25`/correct — practice quiz, and also Reading/Listening comprehension
+    (they route through `completeQuiz`).
+  - `+15` — each user dialogue turn (`addChatMessage`).
+  - up to `+20` scaled by accuracy — speaking (screen calls `addPoints`).
+- **Spaced-repetition (Leitner):** `toggleSaveWord` inserts new words at box 0
+  with `nextReviewAt = now` (immediately due). `dueWords()` returns non-mastered
+  words whose review time has arrived. `reviewWord(id, remembered)` calls
+  `scheduleNext` (from `utils/srs`) to advance/reset the box + next-review time,
+  increments `reviewCount`, and auto-masters at the top box.
+- **Cloud sync:** `startAuthWatch()` (idempotent) subscribes via `watchAuth`; on
+  sign-in it pulls the user's Firestore doc if present, else seeds the cloud
+  from local state. A debounced (800 ms) `useEffect` mirrors state up to
+  Firestore while signed in. `signIn` / `signOut` wrap the firebase service;
+  `cloudConfigured` / `user` / `authReady` expose cloud state to the UI.
+- `resetAll()` clears all four learning slices; used by the Settings "danger
+  zone".
+- **Full API** (`LingoContextValue`): `progress`, `savedWords`, `chatMessages`,
+  `quizHistory`, `cloudConfigured`, `user`, `authReady`, `signIn`, `signOut`,
+  `registerUser`, `updateLevel`, `addPoints`, `isWordSaved`, `toggleSaveWord`,
+  `toggleMastered`, `dueWords`, `reviewWord`, `completeLesson`, `completeQuiz`,
+  `addChatMessage`, `clearChat`, `resetAll`.
 
 ## `src/services/ai.ts`
 
 - `ProviderId = "gemini" | "groq" | "ollama" | "anthropic" | "openai"`.
 - `PROVIDERS: Record<ProviderId, ProviderInfo>` — static metadata per provider
-  (display name, free flag, default model, input placeholder, key-signup
+  (display name, `free` flag, `defaultModel`, input placeholder, key-signup
   URL/text). `ollama.noKey = true` switches the Settings UI from an API-key
   field to a local server URL field.
-- `localStorage` keys: `aiProvider`, `aiApiKey`, `aiModel`, `ollamaUrl` —
+- **localStorage keys:** `aiProvider`, `aiApiKey`, `aiModel`, `ollamaUrl` —
   intentionally identical names to the JobFlowTracker app.
 - `loadAIConfig()` / `saveAIConfig(partial)` / `clearAIConfig()` — read/merge/
-  reset; `saveAIConfig` falls back to `PROVIDERS[provider].defaultModel` when
-  no model override is given.
-- `isAIReady()` — `true` if a key is set, or if the provider is Ollama (no key
-  required).
-- `complete(prompt, systemInstruction?)` — single entry point used by every
-  feature. Switches on `provider`:
-  - **gemini** — `generateContent` REST endpoint, `systemInstruction` field.
+  reset; `loadAIConfig` falls back to `PROVIDERS[provider].defaultModel` when no
+  model override is stored, and to `gemini` for an unknown provider.
+- `isAIReady()` — `true` if the provider is Ollama (no key required), else if an
+  API key is set.
+- `validateOllamaUrl(url)` — requires HTTPS unless the host is
+  localhost/127.0.0.1/::1, to avoid sending requests to an attacker-controlled
+  host if the stored value were ever corrupted.
+- `complete(prompt, systemInstruction?)` — single non-streaming entry point used
+  by every feature. Throws early if a key is required but missing, then switches
+  on `provider`:
+  - **gemini** — `:generateContent` REST endpoint; `responseMimeType:
+    "application/json"`; `systemInstruction` field.
   - **anthropic** — `/v1/messages`, requires the
-    `anthropic-dangerous-direct-browser-access: true` header (browser calls
-    are normally blocked by Anthropic's CORS policy otherwise).
-  - **ollama** — local `/api/generate`; the URL is validated before fetching
-    to avoid sending requests to an attacker-controlled host if the stored
-    value were ever corrupted.
+    `anthropic-dangerous-direct-browser-access: true` header (browser calls are
+    otherwise blocked by Anthropic's CORS policy); optional `system` field.
+  - **ollama** — local `/api/generate` with `format: "json"`; the URL is
+    validated first, and `systemInstruction` is prepended to the prompt.
   - **openai / groq** — both speak the OpenAI-compatible `/chat/completions`
-    shape, so they share one code path with a different `baseUrl`.
+    shape with `response_format: { type: "json_object" }`, so they share one
+    code path with a different `baseUrl`.
   - Every branch returns the raw text response; callers parse it as JSON.
+- `errorText(res)` builds a friendly `AI request failed: ...` message from the
+  provider's error body.
 
 ## `src/services/content.ts`
 
-Four generator functions, one per feature, each following the same shape:
+Seven generator functions, one per feature. Each (except dialogue) follows the
+same offline-fallback shape:
 
 ```
 if (!isAIReady()) return <random offline pick>;
@@ -74,63 +133,183 @@ try {
 - `generateLevelAdaptiveWords(level)` → `GemWordList`
 - `generateDailyLesson(level, topic)` → `GemLesson`
 - `generatePracticeQuiz(level, topic)` → `GemQuiz`
-- `generateDialogueReply(level, scenario, history, newText)` → `GemDialogueReply`
-  — the one exception: it has **no offline fallback** (a roleplay conversation
-  can't be canned) and throws if no provider is configured; the
-  `DialogueCoach` screen catches this and prompts the user to add a key.
+- `generateReading(level, topic)` → `GemReading`
+- `generateListening(level, topic)` → `GemListening`
+- `generateSpeaking(level, topic)` → `GemSpeaking`
+- `generateDialogueReply(level, scenario, history, newText)` →
+  `GemDialogueReply` — the one exception: it has **no offline fallback** (a
+  roleplay conversation can't be canned) and throws if no provider is
+  configured; the `DialogueCoach` screen catches this and prompts the user to
+  add a key.
 
-Prompts and system instructions are copied verbatim from `LingoRepository.kt`
-to preserve content/scoring parity with the Android app.
+The first three fall back to `loadOfflineContent(level).{vocabulary,lessons,
+quizzes}`; Reading/Listening/Speaking fall back to `pickExtra(READINGS |
+LISTENINGS | SPEAKINGS, level)`. Prompts and system instructions are copied
+verbatim from `LingoRepository.kt` to preserve content/scoring parity with the
+Android app.
+
+## `src/services/firebase.ts`
+
+Optional cloud sync (Google sign-in + Firestore), all opt-in:
+
+- `isCloudConfigured()` — `true` only when the minimum Firebase config
+  (apiKey/projectId/appId) is present. The web config ships defaults and can be
+  overridden by `VITE_FIREBASE_*` env vars; it is a public client identifier,
+  not a secret (access is controlled by `firestore.rules`).
+- The Firebase SDK is imported lazily via dynamic `import()` inside
+  `ensureInit()` (memoised), so it never enters the main bundle for Local-mode
+  users.
+- `watchAuth(cb)` — subscribes to sign-in state; a no-op returning `null` when
+  unconfigured. `signInWithGoogle()` / `signOut()` wrap the auth flow.
+- `loadCloud(uid)` / `saveCloud(uid, data)` — read/write the whole app state
+  (`CloudData`) as a single `users/{uid}` document.
+
+## `src/services/prefs.ts`
+
+Lightweight UI-chrome preferences, kept separate from learning progress so they
+never touch it:
+
+- `Prefs = { theme: "light" | "dark"; speechSpeed: "slow" | "normal" | "fast" }`,
+  persisted under `high5.prefs`.
+- `loadPrefs()` / `savePrefs()` — tolerant of missing/corrupt storage (falls
+  back to defaults).
+- `applyTheme(theme)` — reflects the theme onto `html[data-theme]` for CSS; safe
+  to call before React mounts.
+- `SPEECH_RATES` / `speechRate()` — resolves the saved speed to a numeric rate
+  for `tts.speak()`.
+
+## `src/services/tts.ts` / `src/services/asr.ts`
+
+Web Speech API wrappers, both feature-detected and safe to no-op where
+unsupported:
+
+- `tts.speak(text, lang="en-US", rate?)` — cancels any in-flight utterance and
+  speaks; uses the saved speech-speed preference when no explicit `rate` given.
+  `ttsSupported()` gates UI.
+- `asr.recognizeOnce(lang="en-US")` — resolves once with the recognised
+  transcript (rejects on error / when unsupported). `asrSupported()` gates the
+  "speak" button so browsers without recognition still show the sentence + model
+  audio.
+
+## `src/services/pwa.ts`
+
+- `usePwaInstall()` — React hook that stashes the `beforeinstallprompt` event and
+  exposes `{ canInstall, installed, install() }` to trigger the native install
+  flow on demand.
+- `canShare()` / `shareApp()` — Web Share API helpers (used from Settings /
+  Dashboard), degrading gracefully where unsupported (e.g. iOS install is via
+  the Share menu).
 
 ## `src/utils/json.ts`
 
 - `cleanJson(raw)` — strips ```` ```json ```` / ```` ``` ```` fences that some
-  providers wrap responses in, then trims whitespace.
+  providers wrap responses in, then trims. Mirrors `LingoRepository.cleanJson`.
 - `parseJson<T>(raw)` — `JSON.parse(cleanJson(raw)) as T`.
 
-## `src/data/offline.ts` + `src/data/offline/*.json`
+## `src/utils/srs.ts`
 
-- One JSON file per CEFR level (`a1.json` … `c2.json`), each shaped as
-  `OfflineLevelContent` (`vocabulary`, `lessons`, `quizzes` arrays).
-- `loadOfflineContent(level)` returns the matching bundle.
-- `pickRandom(list)` picks one entry — used so repeated offline use doesn't
-  always show the same content.
+Pure Leitner spaced-repetition logic (no React/storage dependency, so it's
+trivially unit-testable):
+
+- `INTERVALS_DAYS = [0, 1, 3, 7, 16, 35]`, `MAX_SRS_LEVEL = 5`.
+- `scheduleNext(srsLevel, remembered, now?)` — promotes one box (capped) on
+  success, resets to box 0 on failure, and returns the next `{srsLevel,
+  nextReviewAt}`. `now` is injectable for deterministic tests.
+- `isSrsMastered(level)` — `true` at the top box.
+- `isDue(nextReviewAt, now?)` — `true` when the review time has arrived (never
+  scheduled ⇒ due immediately).
+
+## `src/utils/score.ts`
+
+- `normalizeWords(text)` — lowercases, strips punctuation (keeps letters/
+  digits/apostrophes) and splits into words.
+- `scoreSpeaking(target, spoken)` — order-insensitive percentage of target words
+  detected (a duplicate-consuming `Map` so repeated words must be matched in
+  kind), plus the list of `missed` words.
+
+## `src/data/offline.ts` + `src/data/extras.ts` + `src/data/offline/*.json`
+
+- `offline.ts` — `LOADERS: Record<Level, () => Promise<OfflineLevelContent>>`
+  using dynamic `import("./offline/a1.json")` etc., so each ~1 MB level chunk is
+  code-split and downloaded on demand; results are memoised in a `Map`.
+  `loadOfflineContent(level)` returns the level bundle; `pickRandom(list)` picks
+  one entry so repeated offline use doesn't always show the same content.
+- `extras.ts` — the same lazy-loader pattern for the three "real-use" pillars
+  (`READING_LOADERS` / `LISTENING_LOADERS` / `SPEAKING_LOADERS`, one import per
+  level per type). `pickExtra(loaders, level)` returns a random item, **falling
+  back to the nearest level with content** so the offline path never breaks.
+- `offline/*.json` — generated by `scripts/generate-content.mjs`:
+  `a1.json … c2.json` (`{vocabulary, lessons, quizzes}`, a full year each) plus
+  `*.reading.json` / `*.listening.json` / `*.speaking.json` per level. These are
+  build artifacts and must be generated before build/tests.
 
 ## `src/data/placement.ts`
 
-- `PLACEMENT_QUESTIONS` — 3 fixed multiple-choice questions used during
+- `PLACEMENT_QUESTIONS` — 6 fixed grammar multiple-choice questions of
+  increasing difficulty, one targeting each CEFR band (A1 → C2), used during
   onboarding.
-- `levelFromScore(score)` — `0–1 → A1`, `2 → B1`, `3 → C1` (coarse 3-question
-  placement, matching the original app's mapping).
+- `levelFromScore(score)` — `≤1 → A1`, `2 → A2`, `3 → B1`, `4 → B2`, `5 → C1`,
+  else `C2`.
 
-## `src/App.tsx`
+## `src/data/topics.ts`
 
-- Top-level switch: renders `<Onboarding>` while `progress` is `null`,
-  otherwise renders the active `Screen` plus a top bar (brand/back + points/
-  streak/level chips) and a bottom nav (`dashboard`, `lesson`, `vocabulary`,
-  `progress`, `settings`).
-- `go(screen)` is passed down to screens that need to navigate (e.g. Dashboard
-  tiles, DialogueCoach's "add a key" prompt).
+- `LESSON_TOPICS`, `QUIZ_TOPICS`, `READING_TOPICS`, `LISTENING_TOPICS`,
+  `SPEAKING_TOPICS` — topic pools for the AI-generated pillars.
+- `DIALOGUE_SCENARIOS` — 16 roleplay scenarios (`{id, label (Hebrew), en}`) for
+  the Dialogue Coach.
+- `topicForToday(topics)` — deterministic per-day pick
+  (`floor(Date.now()/86_400_000) % len`), so everyone gets the same daily topic.
 
-## `src/screens/Settings.tsx`
+## `src/screens/*` and shared components
 
-- Local form state seeded from `loadAIConfig()`; provider buttons drive which
-  input is shown (Ollama URL vs. password-style API key field with a
-  show/hide toggle).
-- "Save" calls `saveAIConfig`; "Clear" calls `clearAIConfig` and resets local
-  form state to defaults. A separate "danger zone" card calls
-  `useLingo().resetAll()` behind a `confirm()` prompt.
+- **Shared:** `QuizRunner` (MCQ engine — dot progress, reveal correct/wrong +
+  Hebrew explanation, `onFinish(score)`), `WordCard` (TTS + save toggle),
+  `Spinner`.
+- **`Onboarding`** — multi-step flow: enter name, then take the 6-question
+  placement test or pick a level manually; calls `registerUser`.
+- **`Dashboard`** — 10-tile grid routing to every feature; greeting card; "no AI
+  key" banner (→ Settings); PWA install banner; a due-count badge on the Review
+  tile from `dueWords()`.
+- **`DailyLesson`** — phases `reading → quiz → done`; fetches today's lesson,
+  shows the Hebrew explanation, runs the 3-question quiz, then `completeLesson`.
+- **`Vocabulary`** — 5 level-adaptive flashcards with a "new words" refresh;
+  save/unsave via `toggleSaveWord`.
+- **`DialogueCoach`** — AI roleplay chat over 16 scenarios; requires a key
+  (shows a CTA to Settings otherwise); filters chat by scenario+level; shows
+  Hebrew corrections; TTS on assistant replies.
+- **`PracticeQuiz`** — 5-question quiz on today's quiz topic; result screen;
+  `completeQuiz`.
+- **`Review`** — spaced-repetition session: snapshots the due queue on mount,
+  reveal → self-grade ("knew it" +5 / "didn't"), reschedules via `reviewWord`.
+- **`Reading`** — Reading Lab: passage + tap-to-translate glossary (save into
+  SRS) + 2 comprehension questions (scored through `completeQuiz` as "Reading").
+- **`Listening`** — plays a TTS clip (normal/slow), 2 comprehension questions,
+  reveals the transcript.
+- **`Speaking`** — read 4 sentences aloud; `recognizeOnce` + `scoreSpeaking`
+  grade pronunciation; awards up to +20 scaled by accuracy; graceful when ASR is
+  unsupported.
+- **`SavedWords`** — lists saved words; TTS, toggle mastered, delete.
+- **`Progress`** — stat grid (points, streak, saved, mastered), CEFR level
+  switcher (`updateLevel`), last-10 quiz history.
+- **`Settings`** — AI provider/key/model form (Ollama-URL variant + show/hide
+  key), theme toggle, speech speed, learning level, PWA install/share, Google
+  cloud sign-in/out, and a "reset all" danger zone (`resetAll` behind a
+  `confirm()`).
 
 ## Testing notes
 
-- `src/test-setup.ts` registers `@testing-library/jest-dom` matchers and an
-  `afterEach(cleanup)` — required because Vitest's `globals` option is off in
-  this project, so Testing Library's automatic cleanup detection (which looks
-  for a global `afterEach`) doesn't fire on its own.
-- Integration tests render real screens inside a real `<LingoProvider>` (no
-  mocking of the store), only relying on `localStorage.clear()` between tests
-  for isolation.
-- E2E tests (`e2e/*.spec.ts`) run against a production build via
-  `vite preview`, driven by Playwright; CI installs Chromium with
-  `--with-deps` since GitHub's runners need the system libraries Playwright
-  doesn't bundle.
+- **Runner config:** Vitest is configured inside `vite.config.ts`
+  (`environment: "jsdom"`, `setupFiles: ["./src/test-setup.ts"]`, excludes
+  `e2e/**`). `test-setup.ts` registers `@testing-library/jest-dom` matchers and
+  an `afterEach(cleanup)` — required because Vitest's `globals` option is off in
+  this project, so Testing Library's automatic cleanup doesn't fire on its own.
+- **Unit tests:** `utils/json`, `utils/srs`, `utils/score`, `services/ai`,
+  `services/prefs`, `data/placement`, `data/offline` (the last asserts the full
+  generated corpus shape, so it requires the generated JSON to exist).
+- **Integration tests** render real screens inside a real `<LingoProvider>` (no
+  store mocking), relying on `localStorage.clear()` between tests for isolation:
+  `App.integration.test.tsx` (onboarding → dashboard → nav) and
+  `screens/Settings.integration.test.tsx` (provider save/clear flow).
+- **E2E** (`e2e/*.spec.ts`) run against a production build via `vite preview`,
+  driven by Playwright; CI installs Chromium with `--with-deps` since GitHub's
+  runners need the system libraries Playwright doesn't bundle.
