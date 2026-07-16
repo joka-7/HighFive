@@ -27,6 +27,7 @@ import {
   isWordAtOrBelowLevel,
   promotionTarget,
 } from "../utils/levelProgress";
+import { DAILY_CHECKLIST_LABELS } from "../utils/missions";
 import {
   isCloudConfigured,
   loadCloud,
@@ -120,7 +121,7 @@ interface LingoContextValue {
   toggleMastered: (id: string) => void;
   dueWords: () => SavedWord[];
   reviewWord: (id: string, remembered: boolean) => void;
-  completeLesson: (correctCount: number) => void;
+  completeLesson: (correctCount: number, totalQuestions: number) => void;
   completeQuiz: (level: Level, topic: string, score: number, total: number) => void;
   logMission: (kind: MissionKind, label: string, score?: number, total?: number) => void;
   dailyMissions: DailyMissionsState;
@@ -464,7 +465,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     [],
   );
 
-  const completeLesson = useCallback((correctCount: number) => {
+  const completeLesson = useCallback((correctCount: number, totalQuestions: number) => {
     const now = Date.now();
     const today = dateKey(now);
     setProgress((prev) => {
@@ -479,11 +480,25 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       };
     });
     setMissionLog((prev) => {
-      if (prev.some((m) => m.kind === "lesson" && dateKey(m.timestamp) === today)) {
-        return prev;
+      const existing = prev.find(
+        (m) => m.kind === "lesson" && dateKey(m.timestamp) === today,
+      );
+      if (existing) {
+        return prev.map((m) =>
+          m.id === existing.id
+            ? { ...m, score: correctCount, total: totalQuestions }
+            : m,
+        );
       }
       return [
-        { id: uid(), kind: "lesson", label: "שיעור יומי", timestamp: now },
+        {
+          id: uid(),
+          kind: "lesson",
+          label: DAILY_CHECKLIST_LABELS.grammar.label,
+          timestamp: now,
+          score: correctCount,
+          total: totalQuestions,
+        },
         ...prev,
       ];
     });
@@ -511,6 +526,21 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       const current = todaysMissions(prev, today);
       if (current[id]) return current;
       setProgress((p) => (p ? { ...p, points: p.points + MISSION_POINTS } : p));
+
+      // Log checklist missions that are not tracked elsewhere (video, talk, words).
+      if (id === "video" || id === "talk" || id === "words") {
+        const meta = DAILY_CHECKLIST_LABELS[id];
+        setMissionLog((ml) => {
+          if (ml.some((m) => m.kind === meta.kind && dateKey(m.timestamp) === today)) {
+            return ml;
+          }
+          return [
+            { id: uid(), kind: meta.kind, label: meta.label, timestamp: Date.now() },
+            ...ml,
+          ];
+        });
+      }
+
       return { ...current, [id]: true };
     });
   }, []);

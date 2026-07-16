@@ -61,7 +61,7 @@ export default function DailyLesson() {
       <QuizRunner
         questions={lesson.questions}
         onFinish={(score) => {
-          completeLesson(score);
+          completeLesson(score, lesson.questions.length);
           const today = progress?.dailyLessonCompletedText;
           const todayKey = dateKeyFromTs(Date.now());
           const base = today === todayKey ? 0 : 50;

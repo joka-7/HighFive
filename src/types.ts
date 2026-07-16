@@ -137,7 +137,9 @@ export type MissionKind =
   | "listening"
   | "speaking"
   | "review"
-  | "dialogue";
+  | "dialogue"
+  | "video"
+  | "words";
 
 export interface MissionLog {
   id: string;
