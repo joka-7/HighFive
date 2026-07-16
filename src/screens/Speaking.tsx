@@ -16,8 +16,8 @@ export default function Speaking() {
   const { progress, addPoints, logMission, learnedWords } = useLingo();
   const level = progress?.currentLevel ?? "A1";
   const topic = topicForTodayByLevel(SPEAKING_TOPICS_BY_LEVEL, level);
-  const [set, setSet] = useState<GemSpeaking | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [speakingSet, setSpeakingSet] = useState<GemSpeaking | null>(null);
+  const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
   const [listening, setListening] = useState(false);
   const [result, setResult] = useState<(SpeakingScore & { heard: string }) | null>(null);
@@ -26,7 +26,7 @@ export default function Speaking() {
   const load = useCallback(() => {
     setLoading(true);
     setIndex((prev) => {
-      if (set && prev === set.prompts.length - 1) {
+      if (speakingSet && prev === speakingSet.prompts.length - 1) {
         logMission("speaking", "דיבור");
       }
       return 0;
@@ -34,18 +34,31 @@ export default function Speaking() {
     setResult(null);
     setError(null);
     generateSpeaking(level, topic, Object.keys(learnedWords))
-      .then(setSet)
+      .then(setSpeakingSet)
+      .catch(() => setSpeakingSet(null))
       .finally(() => setLoading(false));
-  }, [level, topic, learnedWords, logMission, set]);
+  }, [level, topic, learnedWords, logMission]);
 
   useEffect(() => {
     load();
   }, [load]);
 
-  if (!set || loading) return <Spinner label="טוען תרגול דיבור..." />;
+  if (loading) return <Spinner label="טוען תרגול דיבור..." />;
 
-  const prompt = set.prompts[index];
-  const isLast = index === set.prompts.length - 1;
+  if (!speakingSet) {
+    return (
+      <div className="card center">
+        <h2>לא הצלחנו לטעון תרגול דיבור</h2>
+        <p className="muted">נסו שוב בעוד רגע.</p>
+        <button className="btn" onClick={load} style={{ marginTop: 12 }}>
+          נסו שוב 🔄
+        </button>
+      </div>
+    );
+  }
+
+  const prompt = speakingSet.prompts[index];
+  const isLast = index === speakingSet.prompts.length - 1;
 
   async function listen() {
     setError(null);
@@ -73,7 +86,7 @@ export default function Speaking() {
   return (
     <div>
       <div className="progress-dots">
-        {set.prompts.map((_, i) => (
+        {speakingSet.prompts.map((_, i) => (
           <span
             key={i}
             className={`dot ${i < index ? "done" : i === index ? "current" : ""}`}
@@ -90,7 +103,7 @@ export default function Speaking() {
 
       <div className="card center">
         <span className="tag">
-          משפט {index + 1}/{set.prompts.length}
+          משפט {index + 1}/{speakingSet.prompts.length}
         </span>
         <h3 style={{ direction: "ltr", margin: "12px 0 4px" }}>{prompt.text}</h3>
         <p className="muted">{prompt.translation}</p>

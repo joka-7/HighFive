@@ -96,7 +96,7 @@ function mcq(rng, question, correct, distractors, explanation, fallback = [], he
     explanation,
   };
   if (he.questionHe) out.questionHe = he.questionHe;
-  if (he.optionsHe) out.optionsHe = he.optionsHe;
+  if (he.optionHe) out.optionsHe = all.map((opt) => he.optionHe(opt));
   return out;
 }
 
@@ -148,17 +148,9 @@ function buildProgressiveReading(day, vocabulary, bank, rng) {
     ["table", "chair", "window"],
     {
       questionHe: `איזו מילה פירושה "${w0.translation}"?`,
-      optionsHe: shuffle(rng, [w0.word, ...shuffle(rng, distractorPool).slice(0, 3)]).map((opt) => {
-        const hit = bank.find((b) => b.word === opt);
-        return hit ? hit.translation : opt;
-      }),
+      optionHe: (opt) => wordTranslation(opt, today, bank),
     },
   );
-  // Fix optionsHe order to match shuffled options in q1
-  q1.optionsHe = q1.options.map((opt) => {
-    const hit = [...today, ...bank].find((b) => b.word === opt);
-    return hit ? hit.translation : opt;
-  });
 
   const q2 = mcq(
     rng,
@@ -167,14 +159,65 @@ function buildProgressiveReading(day, vocabulary, bank, rng) {
     shuffle(rng, distractorPool).slice(0, 3),
     `המילה "${w1.word}" פירושה ${w1.translation}.`,
     ["happy", "sad", "big"],
-    { questionHe: `איזו מילה פירושה "${w1.translation}"?` },
+    {
+      questionHe: `איזו מילה פירושה "${w1.translation}"?`,
+      optionHe: (opt) => wordTranslation(opt, today, bank),
+    },
   );
-  q2.optionsHe = q2.options.map((opt) => {
-    const hit = [...today, ...bank].find((b) => b.word === opt);
-    return hit ? hit.translation : opt;
-  });
 
   return { title, text, textHe, glossary, questions: [q1, q2] };
+}
+
+function wordTranslation(opt, today, bank) {
+  const hit = today.find((b) => b.word === opt) ?? bank.find((b) => b.word === opt);
+  return hit ? hit.translation : opt;
+}
+
+function buildProgressiveQuiz(day, vocabulary, bank, rng) {
+  const today = vocabulary[day].words;
+  const distractorPool = bank.map((w) => w.word).filter((w) => !today.some((t) => t.word === w));
+  const questions = [];
+  for (let i = 0; i < 5; i++) {
+    const w = today[i % today.length];
+    if (i % 2 === 0) {
+      const others = shuffle(
+        rng,
+        bank.filter((x) => x.translation !== w.translation),
+      )
+        .slice(0, 5)
+        .map((x) => x.translation);
+      questions.push(
+        mcq(
+          rng,
+          `What does "${w.word}" mean?`,
+          w.translation,
+          others,
+          `"${w.word}" = ${w.translation}. ${w.definition}.`,
+          ["שולחן", "דלת", "חלון"],
+          {
+            questionHe: `מה הפירוש של "${w.word}"?`,
+            optionHe: (opt) => opt,
+          },
+        ),
+      );
+    } else {
+      questions.push(
+        mcq(
+          rng,
+          `Which word means "${w.translation}"?`,
+          w.word,
+          shuffle(rng, distractorPool).slice(0, 3),
+          `המילה "${w.word}" פירושה ${w.translation}.`,
+          ["table", "chair", "window"],
+          {
+            questionHe: `איזו מילה פירושה "${w.translation}"?`,
+            optionHe: (opt) => wordTranslation(opt, today, bank),
+          },
+        ),
+      );
+    }
+  }
+  return { questions };
 }
 
 function buildProgressiveListening(day, vocabulary, bank, rng) {
@@ -207,6 +250,10 @@ const GEN = {
       [v.base, v.ing, v.past, v.pp],
       `עם גוף שלישי יחיד (${subj}) הפועל מקבל סיומת: ${v.third}.`,
       ["to " + v.base, "does " + v.base],
+      {
+        questionHe: `'${subj} ___ every day.' — בחרו את הצורה הנכונה של "${v.base}" (${v.he}).`,
+        optionHe: (opt) => opt,
+      },
     );
   },
   pastSimple(rng, ctx) {
@@ -218,6 +265,10 @@ const GEN = {
       [v.base + "ed", v.pp, v.ing, v.base],
       `הצורה בעבר פשוט של ${v.base} (${v.he}) היא ${v.past}.`,
       ["did " + v.base, "has " + v.base],
+      {
+        questionHe: `מה הצורה בעבר פשוט של "${v.base}" (${v.he})?`,
+        optionHe: (opt) => opt,
+      },
     );
   },
   pastParticiple(rng, ctx) {
@@ -229,6 +280,10 @@ const GEN = {
       [v.past, v.base, v.ing],
       `ב-Present Perfect משתמשים ב-past participle: ${v.pp}.`,
       ["to " + v.base, "having " + v.base],
+      {
+        questionHe: `'I have ___ it.' — מה ה-past participle של "${v.base}" (${v.he})?`,
+        optionHe: (opt) => opt,
+      },
     );
   },
   articles(rng, ctx) {
@@ -241,6 +296,11 @@ const GEN = {
       n.art === "an"
         ? `'${n.noun}' מתחילה בצליל תנועה, לכן 'an'.`
         : `'${n.noun}' מתחילה בצליל עיצור, לכן 'a'.`,
+      ["some", "any"],
+      {
+        questionHe: `בחרו את ה-article הנכון: '___ ${n.noun}'.`,
+        optionHe: (opt) => opt,
+      },
     );
   },
   comparatives(rng, ctx) {
@@ -252,11 +312,18 @@ const GEN = {
       ["more " + a.adj, "most " + a.adj, a.sup],
       `צורת ההשוואה של ${a.adj} היא ${a.comp}.`,
       [a.adj + "er", a.adj + "est"],
+      {
+        questionHe: `מה צורת ההשוואה (comparative) של "${a.adj}" (${a.he})?`,
+        optionHe: (opt) => opt,
+      },
     );
   },
   prepositions(rng, ctx) {
     const p = pick(rng, ctx.preps);
-    return mcq(rng, `${p.before}___${p.after}`, p.correct, p.wrong, p.he);
+    return mcq(rng, `${p.before}___${p.after}`, p.correct, p.wrong, p.he, [], {
+      questionHe: p.questionHe ?? `${p.before}___${p.after}`,
+      optionHe: (opt) => opt,
+    });
   },
   plurals(rng, ctx) {
     const n = pick(rng, ctx.plurals);
@@ -267,6 +334,10 @@ const GEN = {
       [n.sg + "s", n.sg + "es"],
       `הרבים של ${n.sg} הוא ${n.pl} (צורה חריגה — לא רק תוספת s).`,
       [n.pl + "s", n.sg + "ren"],
+      {
+        questionHe: `מה הרבים של "${n.sg}" (${n.he})?`,
+        optionHe: (opt) => opt,
+      },
     );
   },
   quantifier(rng, ctx) {
@@ -280,6 +351,11 @@ const GEN = {
       n.type === "uncount"
         ? `'${n.noun}' (${n.he}) אינו נספר, ולכן 'much'.`
         : `'${n.noun}' (${n.he}) נספר ברבים, ולכן 'many'.`,
+      ["few", "little"],
+      {
+        questionHe: `'How ___ ${n.noun} do you need?' — בחרו את המילה הנכונה.`,
+        optionHe: (opt) => opt,
+      },
     );
   },
   presentContinuous(rng, ctx) {
@@ -291,11 +367,18 @@ const GEN = {
       [v.base + "ing", v.base, v.third],
       `צורת ה-ing של ${v.base} היא ${v.ing}.`,
       ["been " + v.ing, "to " + v.base],
+      {
+        questionHe: `'She is ___ now.' — מה צורת ה-ing של "${v.base}" (${v.he})?`,
+        optionHe: (opt) => opt,
+      },
     );
   },
   modals(rng, ctx) {
     const m = pick(rng, ctx.modals);
-    return mcq(rng, `${m.before}___${m.after}`, m.correct, m.wrong, m.he);
+    return mcq(rng, `${m.before}___${m.after}`, m.correct, m.wrong, m.he, [], {
+      questionHe: m.questionHe ?? `${m.before}___${m.after}`,
+      optionHe: (opt) => opt,
+    });
   },
   vocabMeaning(rng, ctx) {
     const w = pick(rng, ctx.words);
@@ -311,6 +394,11 @@ const GEN = {
       w.translation,
       others,
       `"${w.word}" = ${w.translation}. ${w.definition}.`,
+      ["שולחן", "דלת", "חלון"],
+      {
+        questionHe: `מה הפירוש של "${w.word}"?`,
+        optionHe: (opt) => opt,
+      },
     );
   },
 };
@@ -400,13 +488,11 @@ function buildLevel(level, levelIdx) {
     lessons.push({ title: topic.title, explanation: topic.explanation, questions });
   }
 
-  // Quizzes: 365 sets of 5 mixed questions drawn from the level's generators.
-  const genKeys = [...new Set(topics.map((t) => t.key))];
+  // Quizzes: 365 progressive sets using today's vocabulary words.
   const quizzes = [];
   for (let d = 0; d < DAYS; d++) {
     const rng = rngFrom(`${level}:quiz:${d}`);
-    const questions = genDistinct(() => GEN[pick(rng, genKeys)](rng, ctx), 5);
-    quizzes.push({ questions });
+    quizzes.push(buildProgressiveQuiz(d, vocabulary, bank, rng));
   }
 
   // Reading & Listening: 365 progressive sets using only cumulative vocabulary.
@@ -434,6 +520,7 @@ function validateQuestion(q, where) {
   if (new Set(q.options).size !== 4) throw new Error(`${where}: duplicate options: ${q.options.join(" | ")}`);
   if (q.correctIndex < 0 || q.correctIndex > 3) throw new Error(`${where}: correctIndex out of range`);
   if (typeof q.explanation !== "string" || !q.explanation) throw new Error(`${where}: empty explanation`);
+  if (typeof q.questionHe !== "string" || !q.questionHe) throw new Error(`${where}: missing questionHe`);
 }
 
 // A lesson/quiz must have the expected number of questions, all distinct — no

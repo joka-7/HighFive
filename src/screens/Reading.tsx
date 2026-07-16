@@ -8,7 +8,7 @@ import Spinner from "../components/Spinner";
 import { speak } from "../services/tts";
 import { loadDailyCache, saveDailyCache } from "../utils/dailyCache";
 
-const CACHE_KEY = "high5.reading_today";
+const CACHE_KEY = "high5.reading_today.v2";
 
 export default function Reading() {
   const { progress, isWordSaved, toggleSaveWord, completeQuiz, learnedWords } = useLingo();
@@ -17,7 +17,7 @@ export default function Reading() {
   const [loading, setLoading] = useState(false);
   const [phase, setPhase] = useState<"read" | "quiz" | "done">("read");
   const [open, setOpen] = useState<string | null>(null);
-  const [showHe, setShowHe] = useState(false);
+  const [showHe, setShowHe] = useState(true);
 
   const load = useCallback(
     (force = false) => {
@@ -90,7 +90,7 @@ export default function Reading() {
         <pre className="explanation-text" style={{ direction: "ltr", textAlign: "left", marginTop: 10 }}>
           {reading.text}
         </pre>
-        {reading.textHe && (
+        {reading.textHe ? (
           <>
             <button className="btn ghost small" style={{ marginTop: 8 }} onClick={() => setShowHe((s) => !s)}>
               {showHe ? "הסתר תרגום מלא" : "הצג תרגום מלא"}
@@ -101,6 +101,8 @@ export default function Reading() {
               </pre>
             )}
           </>
+        ) : (
+          <p className="muted" style={{ marginTop: 8 }}>תרגום מלא לא זמין לקטע זה.</p>
         )}
       </div>
 

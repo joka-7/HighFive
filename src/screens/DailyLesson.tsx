@@ -9,7 +9,7 @@ import { speak } from "../services/tts";
 import { dateKeyFromTs } from "../utils/missions";
 import { loadDailyCache, saveDailyCache } from "../utils/dailyCache";
 
-const CACHE_KEY = "high5.lesson_today";
+const CACHE_KEY = "high5.lesson_today.v2";
 
 type Phase = "reading" | "quiz" | "done";
 

@@ -65,6 +65,45 @@ function validateOrThrow(texts: string[], allowed: Set<string>, label: string): 
   }
 }
 
+function ensureLessonHebrew(lesson: GemLesson): GemLesson {
+  return {
+    ...lesson,
+    questions: lesson.questions.map((q) => ({
+      ...q,
+      questionHe: q.questionHe ?? q.explanation,
+    })),
+  };
+}
+
+function ensureQuizHebrew(quiz: GemQuiz): GemQuiz {
+  const questions = quiz.questions.map((q) => ({
+    ...q,
+    questionHe: q.questionHe ?? q.explanation,
+  }));
+  return { questions };
+}
+
+function ensureReadingHebrew(reading: GemReading): GemReading {
+  if (!reading.textHe) throw new Error("reading: missing textHe");
+  const questions = reading.questions.map((q) => ({
+    ...q,
+    questionHe: q.questionHe ?? q.explanation,
+  }));
+  return { ...reading, questions };
+}
+
+async function pickOfflineReading(
+  level: Level,
+  allowed: Set<string>,
+  day: number,
+): Promise<GemReading> {
+  const items = await READINGS[level]();
+  const pool = items.map((r) => ({ ...r, textsToCheck: readingTexts(r) }));
+  const picked = pickVocabSafeItem(pool, allowed, day);
+  const { textsToCheck: _, ...reading } = picked;
+  return reading;
+}
+
 // --- Vocabulary ---
 export async function generateLevelAdaptiveWords(
   level: Level,
@@ -111,7 +150,7 @@ export async function generateDailyLesson(
   const ctx = await buildContentContext(level, learnedKeys, day);
 
   if (!isAIReady()) {
-    return pickVocabSafeItem(offlinePool, ctx.allowed, day);
+    return ensureLessonHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, day));
   }
 
   const prompt = `Create an interactive daily English lesson matching CEFR level ${level} on: "${topic}".
@@ -128,11 +167,11 @@ Return as JSON with questionHe and optionsHe on every question.`;
     "You are High5's English-Hebrew tutor. Write lessons with quizzes. All instructions and explanations must be in Hebrew for Israeli students.";
 
   try {
-    const result = parseJson<GemLesson>(await complete(prompt, systemInstruction));
+    const result = ensureLessonHebrew(parseJson<GemLesson>(await complete(prompt, systemInstruction)));
     validateOrThrow(lessonTexts(result), ctx.allowed, "lesson");
     return result;
   } catch {
-    return pickVocabSafeItem(offlinePool, ctx.allowed, day);
+    return ensureLessonHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, day));
   }
 }
 
@@ -187,7 +226,7 @@ export async function generatePracticeQuiz(
   const ctx = await buildContentContext(level, learnedKeys, day);
 
   if (!isAIReady()) {
-    return pickVocabSafeItem(offlinePool, ctx.allowed, day);
+    return ensureQuizHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, day));
   }
 
   const prompt = `Generate 5 multiple choice questions for CEFR level ${level} on "${topic}".
@@ -201,11 +240,11 @@ Return as JSON.`;
     "You are High5's assessment evaluator. Compose accurate multiple-choice tests for English learners. All explanations in Hebrew.";
 
   try {
-    const result = parseJson<GemQuiz>(await complete(prompt, systemInstruction));
+    const result = ensureQuizHebrew(parseJson<GemQuiz>(await complete(prompt, systemInstruction)));
     validateOrThrow(quizTexts(result), ctx.allowed, "quiz");
     return result;
   } catch {
-    return pickVocabSafeItem(offlinePool, ctx.allowed, day);
+    return ensureQuizHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, day));
   }
 }
 
@@ -219,7 +258,7 @@ export async function generateReading(
   const ctx = await buildContentContext(level, learnedKeys, day);
 
   if (!isAIReady()) {
-    return pickByDayExtra(READINGS, level, day);
+    return ensureReadingHebrew(await pickOfflineReading(level, ctx.allowed, day));
   }
 
   const prompt = `Write a short, engaging English reading passage for CEFR level ${level} on the theme: "${topic}".
@@ -227,7 +266,7 @@ ${vocabPromptBlock(ctx)}
 The passage should be 4-6 sentences using ONLY allowed vocabulary.
 Provide:
 - title (English + Hebrew translation in parentheses)
-- text (English), textHe (full Hebrew translation)
+- text (English), textHe (full Hebrew translation — REQUIRED)
 - glossary: 3 key words from today's list. Each: word, partOfSpeech, definition (HEBREW), example (English), translation (Hebrew)
 - questions: exactly 2 comprehension MCQs with questionHe and optionsHe
 
@@ -237,11 +276,11 @@ Return as JSON.`;
     "You are High5's reading tutor. Write natural, level-appropriate English passages with Hebrew glossary and Hebrew explanations for Israeli learners.";
 
   try {
-    const result = parseJson<GemReading>(await complete(prompt, systemInstruction));
+    const result = ensureReadingHebrew(parseJson<GemReading>(await complete(prompt, systemInstruction)));
     validateOrThrow(readingTexts(result), ctx.allowed, "reading");
     return result;
   } catch {
-    return pickByDayExtra(READINGS, level, day);
+    return ensureReadingHebrew(await pickOfflineReading(level, ctx.allowed, day));
   }
 }
 
