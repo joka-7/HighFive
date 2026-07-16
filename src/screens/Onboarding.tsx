@@ -20,7 +20,17 @@ export default function Onboarding() {
       {step === "welcome" && (
         <>
           <div className="celebrate">
-            <div className="big">✋</div>
+            <img
+              src="/icon-512.png"
+              alt="High5"
+              width={112}
+              height={112}
+              style={{
+                borderRadius: 26,
+                boxShadow: "0 12px 30px -8px rgba(22,53,110,0.5)",
+                marginBottom: 8,
+              }}
+            />
             <h1 style={{ margin: "4px 0" }}>High5</h1>
             <p className="muted">לומדים אנגלית בכיף — שיעורים, אוצר מילים ושיחות עם AI</p>
           </div>

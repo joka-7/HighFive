@@ -7,6 +7,9 @@ import QuizRunner from "../components/QuizRunner";
 import Spinner from "../components/Spinner";
 import { speak } from "../services/tts";
 import { dateKeyFromTs } from "../utils/missions";
+import { loadDailyCache, saveDailyCache } from "../utils/dailyCache";
+
+const CACHE_KEY = "high5.lesson_today";
 
 type Phase = "reading" | "quiz" | "done";
 
@@ -16,11 +19,21 @@ export default function DailyLesson() {
   const [phase, setPhase] = useState<Phase>("reading");
   const [earned, setEarned] = useState(0);
 
+  // Reuses today's lesson on every remount (the screen unmounts on tab
+  // switches) so the user doesn't lose their place mid-lesson.
   useEffect(() => {
     let active = true;
     const level = progress?.currentLevel ?? "A1";
+    const cached = loadDailyCache<GemLesson>(CACHE_KEY, level);
+    if (cached) {
+      setLesson(cached);
+      return;
+    }
     generateDailyLesson(level, topicForToday(LESSON_TOPICS)).then((l) => {
-      if (active) setLesson(l);
+      if (active) {
+        setLesson(l);
+        saveDailyCache(CACHE_KEY, level, l);
+      }
     });
     return () => {
       active = false;

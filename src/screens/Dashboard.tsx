@@ -5,6 +5,7 @@ import type { Screen } from "../types";
 
 const TILES: { screen: Screen; emoji: string; title: string; sub: string }[] = [
   { screen: "lesson", emoji: "📚", title: "שיעור יומי", sub: "לימוד + תרגול" },
+  { screen: "missions", emoji: "🎯", title: "משימות יומיות", sub: "סרטון + שיחה" },
   { screen: "vocabulary", emoji: "🃏", title: "אוצר מילים", sub: "כרטיסיות" },
   { screen: "dialogue", emoji: "💬", title: "מאמן שיחה", sub: "תרגול דיבור" },
   { screen: "quiz", emoji: "🧠", title: "חידון", sub: "בחן את עצמך" },
@@ -34,8 +35,8 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
 
       {!isAIReady() && (
         <div className="banner">
-          💡 ללא ספק AI האפליקציה עובדת עם תוכן מובנה (לא מקוון). להוספת שיעורים
-          ושיחות AI חיים, הוסף מפתח ב{" "}
+          💡 בלי מפתח AI, האפליקציה פועלת עם תוכן מובנה (לא מקוון). כדי לקבל
+          שיעורים ושיחות AI חיות, הוסיפו מפתח ב
           <button
             className="btn ghost small"
             style={{ padding: 0, display: "inline" }}

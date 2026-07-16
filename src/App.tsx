@@ -4,6 +4,7 @@ import type { Screen } from "./types";
 import Onboarding from "./screens/Onboarding";
 import Dashboard from "./screens/Dashboard";
 import DailyLesson from "./screens/DailyLesson";
+import DailyMissions from "./screens/DailyMissions";
 import Vocabulary from "./screens/Vocabulary";
 import DialogueCoach from "./screens/DialogueCoach";
 import PracticeQuiz from "./screens/PracticeQuiz";
@@ -31,11 +32,13 @@ const TITLES: Record<Screen, string> = {
   listening: "האזנה",
   speaking: "דיבור",
   calendar: "לוח שנה",
+  missions: "משימות יומיות",
 };
 
 const NAV: { screen: Screen; ico: string; label: string }[] = [
   { screen: "dashboard", ico: "🏠", label: "בית" },
   { screen: "lesson", ico: "📚", label: "שיעור" },
+  { screen: "missions", ico: "🎯", label: "משימות" },
   { screen: "vocabulary", ico: "🃏", label: "מילים" },
   { screen: "calendar", ico: "📅", label: "לוח שנה" },
   { screen: "settings", ico: "⚙️", label: "הגדרות" },
@@ -61,6 +64,8 @@ export default function App() {
         return <Dashboard go={go} />;
       case "lesson":
         return <DailyLesson />;
+      case "missions":
+        return <DailyMissions />;
       case "vocabulary":
         return <Vocabulary />;
       case "dialogue":
@@ -92,7 +97,16 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         {screen === "dashboard" ? (
-          <span className="brand">✋ High5</span>
+          <span className="brand">
+            <img
+              src="/icon-192.png"
+              alt=""
+              width={26}
+              height={26}
+              style={{ borderRadius: 7, verticalAlign: "middle" }}
+            />{" "}
+            High5
+          </span>
         ) : (
           <button className="brand" onClick={() => go("dashboard")}>
             → {TITLES[screen]}
