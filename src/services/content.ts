@@ -18,7 +18,7 @@ import type {
 import { complete, isAIReady } from "./ai";
 import { getTodaysWords } from "../data/todays-words";
 import { dayIndex, loadOfflineContent, pickByDay } from "../data/offline";
-import { LISTENINGS, READINGS, SPEAKINGS, pickByDayExtra } from "../data/extras";
+import { LISTENINGS, READINGS, SPEAKINGS } from "../data/extras";
 import { parseJson } from "../utils/json";
 import {
   contentUsesOnlyAllowedVocab,
@@ -311,13 +311,18 @@ async function pickOfflineSpeaking(
   day: number,
 ): Promise<GemSpeaking> {
   const ctx = await buildContentContext(level, learnedKeys, day);
-  const set = await pickByDayExtra(SPEAKINGS, level, day);
-  const safe = set.prompts.filter((p) =>
-    contentUsesOnlyAllowedVocab([p.text], ctx.allowed),
-  );
-  if (safe.length >= 4) return { prompts: safe.slice(0, 4) };
-  if (safe.length > 0) return { prompts: safe };
-  return set;
+  const items = await SPEAKINGS[level]();
+  // Filtering individual prompts out of one day-picked set (the old approach)
+  // could collapse a 4-sentence set down to just 1 for a new learner whose
+  // allowed vocabulary is still small — that's the offline "only one
+  // sentence" bug. Instead, pick a whole SET that best fits the allowed
+  // vocabulary (same pattern as pickOfflineReading/pickOfflineListening),
+  // so the learner always gets a full round of 4.
+  const pool = items.map((s) => ({ ...s, textsToCheck: speakingTexts(s) }));
+  const picked = pickVocabSafeItem(pool, ctx.allowed, day);
+  const { textsToCheck, ...speaking } = picked;
+  void textsToCheck;
+  return speaking;
 }
 
 export async function generateSpeaking(
