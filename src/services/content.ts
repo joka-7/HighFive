@@ -139,13 +139,26 @@ ${ctx.todayWordList}
 For each word, provide: word, partOfSpeech, definition (HEBREW), example (English, using ONLY allowed vocabulary), translation (Hebrew).
 ${vocabPromptBlock(ctx)}
 
-Return JSON: { "words": [{ "word": "...", "partOfSpeech": "...", "definition": "עברית", "example": "...", "translation": "עברית" }] }`;
+Return JSON with EXACTLY 5 words in the array (not 1 — one entry per word of the day above):
+{
+  "words": [
+    { "word": "...", "partOfSpeech": "...", "definition": "עברית", "example": "...", "translation": "עברית" },
+    { "word": "...", "partOfSpeech": "...", "definition": "עברית", "example": "...", "translation": "עברית" }
+    // ...continue this pattern until the array has all 5 words
+  ]
+}`;
 
   const systemInstruction =
     "You are High5's expert English-Hebrew lexicographer. Design vocabulary lists adapted to CEFR levels with Hebrew explanations for native Hebrew speakers.";
 
   try {
     const result = parseJson<GemWordList>(await complete(prompt, systemInstruction));
+    // Same schema-bias risk as Speaking: a model can truncate the array to a
+    // single word even when told to provide 5. Fall back rather than show a
+    // near-empty word list.
+    if (!result.words || result.words.length < 3) {
+      throw new Error("vocabulary: AI returned too few words");
+    }
     validateOrThrow(
       result.words.flatMap((w) => [w.example, w.word]),
       ctx.allowed,
@@ -326,9 +339,13 @@ ${vocabPromptBlock(ctx)}
 Provide 4 useful sentences the learner should read aloud, each with a Hebrew translation.
 Use ONLY allowed vocabulary.
 
-Return as JSON:
+Return as JSON with EXACTLY 4 sentences in the array (not 1 — keep adding entries until there are 4):
 {
-  "prompts": [{ "text": "English sentence to say", "translation": "תרגום לעברית" }]
+  "prompts": [
+    { "text": "first English sentence to say", "translation": "תרגום לעברית" },
+    { "text": "second English sentence to say", "translation": "תרגום לעברית" }
+    // ...continue this pattern until the array has exactly 4 sentences
+  ]
 }`;
 
   const systemInstruction =
@@ -342,6 +359,13 @@ Return as JSON:
       ),
     ]);
     const result = parseJson<GemSpeaking>(raw);
+    // A smaller/faster model can collapse the array down to a single entry
+    // even when told to provide 4 — this is what caused "only one sentence"
+    // in the Speaking tab. Falling back to offline content (which always has
+    // a full set) is safer than showing the learner an incomplete round.
+    if (!result.prompts || result.prompts.length < 2) {
+      throw new Error("speaking: AI returned too few sentences");
+    }
     validateOrThrow(speakingTexts(result), ctx.allowed, "speaking");
     return result;
   } catch {
