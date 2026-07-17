@@ -88,12 +88,15 @@ function ensureListeningHebrew(listening: GemListening): GemListening {
   return { ...listening, questions };
 }
 
-/** Keep MCQ face English-only; Hebrew lives in questionHe/optionsHe (revealed after answer). */
+/**
+ * Keep MCQ face English-only; real Hebrew lives in questionHe/optionsHe.
+ * Deliberately does NOT fall back to `explanation` when questionHe is
+ * missing — explanation reveals the correct answer, and the "show
+ * translation" toggle is available before the user has answered, so using
+ * it as a stand-in translation would leak the answer.
+ */
 function sanitizeEnglishMcq(q: GemQuestion): GemQuestion {
-  return {
-    ...q,
-    questionHe: q.questionHe ?? q.explanation,
-  };
+  return q;
 }
 
 async function pickOfflineReading(
@@ -200,6 +203,11 @@ Return as JSON with questionHe and optionsHe on every question.`;
 
   try {
     const result = ensureLessonHebrew(parseJson<GemLesson>(await complete(prompt, systemInstruction)));
+    // Same defensive count check as Speaking/Vocabulary: an AI response with
+    // too few questions is safer to reject than to show as-is.
+    if (!result.questions || result.questions.length < 2) {
+      throw new Error("lesson: AI returned too few questions");
+    }
     validateOrThrow(lessonTexts(result), ctx.allowed, "lesson");
     return result;
   } catch {
@@ -273,6 +281,11 @@ Return as JSON.`;
 
   try {
     const result = ensureQuizHebrew(parseJson<GemQuiz>(await complete(prompt, systemInstruction)));
+    // Same defensive count check as Speaking/Vocabulary: an AI response with
+    // too few questions is safer to reject than to show as-is.
+    if (!result.questions || result.questions.length < 3) {
+      throw new Error("quiz: AI returned too few questions");
+    }
     validateOrThrow(quizTexts(result), ctx.allowed, "quiz");
     return result;
   } catch {
