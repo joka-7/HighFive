@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLingo } from "./store/useLingo";
 import type { Screen } from "./types";
 import Onboarding from "./screens/Onboarding";
@@ -48,6 +48,22 @@ export default function App() {
   const { progress } = useLingo();
   const [screen, setScreen] = useState<Screen>("dashboard");
 
+  // Push a history entry on every in-app navigation so the mobile back
+  // button/gesture steps back through screens instead of exiting the app —
+  // without this, the browser has no in-app history to pop and closes
+  // straight out on the first back press.
+  useEffect(() => {
+    history.replaceState({ screen: "dashboard" }, "");
+  }, []);
+
+  useEffect(() => {
+    function onPopState(e: PopStateEvent) {
+      setScreen((e.state?.screen as Screen | undefined) ?? "dashboard");
+    }
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
   if (!progress) {
     return (
       <div className="app">
@@ -56,7 +72,11 @@ export default function App() {
     );
   }
 
-  const go = (s: Screen) => setScreen(s);
+  const go = (s: Screen) => {
+    if (s === screen) return;
+    setScreen(s);
+    history.pushState({ screen: s }, "");
+  };
 
   function renderScreen() {
     switch (screen) {
