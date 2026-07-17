@@ -7,6 +7,14 @@ interface Props {
   onFinish: (score: number) => void;
 }
 
+// Some bundled offline questions have questionHe/optionsHe that are just a
+// copy of the English text (a content-generation gap, not a translation) —
+// showing that as a "translation" is worse than not offering one at all.
+function realTranslation(en: string, he: string | undefined): string | undefined {
+  if (!he) return undefined;
+  return he.trim().toLowerCase() === en.trim().toLowerCase() ? undefined : he;
+}
+
 // Shared multiple-choice runner used by both the Daily Lesson and the Practice
 // Quiz. Reveals correctness + Hebrew explanation after each answer.
 export default function QuizRunner({ questions, onFinish }: Props) {
@@ -17,8 +25,15 @@ export default function QuizRunner({ questions, onFinish }: Props) {
 
   const q = questions[index];
   const isLast = index === questions.length - 1;
-  const hasHe = Boolean(q.questionHe || q.optionsHe?.some(Boolean));
-  const revealHe = showHe || selected !== null;
+  const questionHe = realTranslation(q.question, q.questionHe);
+  const optionsHe = q.optionsHe?.map((he, i) => realTranslation(q.options[i], he));
+  const hasHe = Boolean(questionHe) || Boolean(optionsHe?.some(Boolean));
+  // The question's translation is purely opt-in via the toggle, any time.
+  // The answer options' translations are never shown up front (that would
+  // give away hints before choosing) — they only appear once the user has
+  // committed to an answer, regardless of the toggle.
+  const revealQuestionHe = showHe;
+  const revealOptionsHe = selected !== null;
 
   function choose(i: number) {
     if (selected !== null) return;
@@ -64,13 +79,13 @@ export default function QuizRunner({ questions, onFinish }: Props) {
           </button>
         </div>
         <h3 style={{ direction: "ltr", textAlign: "left" }}>{q.question}</h3>
-        {hasHe && selected === null && (
+        {hasHe && (
           <button className="btn ghost small" style={{ marginTop: 4, marginBottom: 4 }} onClick={toggleHe}>
             {showHe ? "הסתר תרגום" : "הצג תרגום"}
           </button>
         )}
-        {revealHe && q.questionHe && (
-          <p className="muted" style={{ margin: "4px 0 12px" }}>{q.questionHe}</p>
+        {revealQuestionHe && questionHe && (
+          <p className="muted" style={{ margin: "4px 0 12px" }}>{questionHe}</p>
         )}
 
         {q.options.map((opt, i) => {
@@ -88,9 +103,9 @@ export default function QuizRunner({ questions, onFinish }: Props) {
               style={{ direction: "ltr", textAlign: "left" }}
             >
               {opt}
-              {revealHe && q.optionsHe?.[i] && (
+              {revealOptionsHe && optionsHe?.[i] && (
                 <span className="muted" style={{ display: "block", fontSize: "0.85em", marginTop: 2 }}>
-                  {q.optionsHe[i]}
+                  {optionsHe[i]}
                 </span>
               )}
             </button>
