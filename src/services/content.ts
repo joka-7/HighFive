@@ -88,12 +88,15 @@ function ensureListeningHebrew(listening: GemListening): GemListening {
   return { ...listening, questions };
 }
 
-/** Keep MCQ face English-only; Hebrew lives in questionHe/optionsHe (revealed after answer). */
+/**
+ * Keep MCQ face English-only; real Hebrew lives in questionHe/optionsHe.
+ * Deliberately does NOT fall back to `explanation` when questionHe is
+ * missing — explanation reveals the correct answer, and the "show
+ * translation" toggle is available before the user has answered, so using
+ * it as a stand-in translation would leak the answer.
+ */
 function sanitizeEnglishMcq(q: GemQuestion): GemQuestion {
-  return {
-    ...q,
-    questionHe: q.questionHe ?? q.explanation,
-  };
+  return q;
 }
 
 async function pickOfflineReading(
@@ -200,6 +203,11 @@ Return as JSON with questionHe and optionsHe on every question.`;
 
   try {
     const result = ensureLessonHebrew(parseJson<GemLesson>(await complete(prompt, systemInstruction)));
+    // Same defensive count check as Speaking/Vocabulary: an AI response with
+    // too few questions is safer to reject than to show as-is.
+    if (!result.questions || result.questions.length < 2) {
+      throw new Error("lesson: AI returned too few questions");
+    }
     validateOrThrow(lessonTexts(result), ctx.allowed, "lesson");
     return result;
   } catch {
@@ -273,6 +281,11 @@ Return as JSON.`;
 
   try {
     const result = ensureQuizHebrew(parseJson<GemQuiz>(await complete(prompt, systemInstruction)));
+    // Same defensive count check as Speaking/Vocabulary: an AI response with
+    // too few questions is safer to reject than to show as-is.
+    if (!result.questions || result.questions.length < 3) {
+      throw new Error("quiz: AI returned too few questions");
+    }
     validateOrThrow(quizTexts(result), ctx.allowed, "quiz");
     return result;
   } catch {
@@ -376,6 +389,40 @@ Return as JSON with EXACTLY 4 sentences in the array (not 1 — keep adding entr
   } catch {
     return offline();
   }
+}
+
+// --- On-demand Hebrew translation for a quiz question ---
+// A meaningful chunk of the bundled question bank has no real Hebrew for a
+// given question (questionHe/optionsHe were left equal to the English text
+// at content-generation time) — QuizRunner falls back to this when the
+// static translation isn't actually there, so the "show translation" toggle
+// still works for a configured AI provider instead of just doing nothing.
+export interface GemQuestionTranslation {
+  question: string;
+  options: string[];
+}
+
+export async function translateQuestion(
+  question: string,
+  options: string[],
+): Promise<GemQuestionTranslation> {
+  if (!isAIReady()) throw new Error("Translation requires an AI provider key.");
+
+  const prompt = `Translate the following English quiz question and its answer options into natural, fluent Hebrew, for an Israeli English learner.
+
+Question: "${question}"
+Options: ${JSON.stringify(options)}
+
+Return as JSON, preserving the exact same number of options in the same order:
+{
+  "question": "התרגום של השאלה לעברית",
+  "options": ["תרגום 1", "תרגום 2", "..."]
+}`;
+
+  const systemInstruction =
+    "You are a professional English-to-Hebrew translator for Israeli English learners. Translate naturally and return only the requested JSON.";
+
+  return parseJson<GemQuestionTranslation>(await complete(prompt, systemInstruction));
 }
 
 /** Export helper for screens that need today's words synchronously from cache. */
