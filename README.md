@@ -102,6 +102,38 @@ Without these variables the app simply stays in Local mode. The Firebase web
 config is safe to expose in the client — access is enforced by the Firestore
 rules.
 
+## Daily missions reminder (optional, requires Cloud sync)
+
+Signed-in users can opt into a push notification that fires if they haven't
+opened the app and haven't finished today's Daily Missions by the evening.
+Enable it from **Settings → 🔔 תזכורות יומיות**.
+
+This has three parts:
+
+1. **Web Push (client)** — needs a VAPID key: Firebase console → **Project
+   settings → Cloud Messaging → Web Push certificates → generate a key pair**.
+   Add it as `VITE_FIREBASE_VAPID_KEY` alongside your other Firebase env vars
+   (see [`.env.example`](./.env.example)), both locally and in Vercel.
+2. **The check itself (`api/mission-reminder.ts`)** — a Vercel serverless
+   function, kept outside the Vite build. It needs two *server-only* Vercel
+   environment variables (Project → Settings → Environment Variables — do not
+   put these in `.env`/`VITE_*`):
+   - `FIREBASE_SERVICE_ACCOUNT` — the full JSON of a service account key
+     (Firebase console → Project settings → Service accounts → Generate new
+     private key), pasted as a single-line string.
+   - `CRON_SECRET` — any random string; it authorizes calls to this endpoint.
+3. **The schedule (`.github/workflows/mission-reminder.yml`)** — calls that
+   endpoint every hour. Vercel's free Hobby plan only allows once-a-day cron,
+   which can't respect each user's own timezone, so the trigger lives in
+   GitHub Actions instead (free) and the endpoint decides per-user whether
+   it's actually their reminder hour. Add these repo secrets (**Settings →
+   Secrets and variables → Actions**):
+   - `REMINDER_ENDPOINT_URL` — `https://<your-vercel-domain>/api/mission-reminder`
+   - `CRON_SECRET` — the same value set in Vercel
+
+Everything here is free-tier: Firestore reads/writes and FCM sends have no
+cost at this scale, and GitHub Actions cron is free for a once-an-hour job.
+
 ## Testing
 
 ```bash

@@ -1,0 +1,19 @@
+name: Daily Mission Reminder
+
+# Vercel's free Hobby plan only runs cron jobs once a day, which can't respect
+# each user's own local time (see api/mission-reminder.ts). So this workflow
+# calls the endpoint every hour instead — the endpoint's own logic decides,
+# per user, whether it's currently their target local hour.
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the reminder endpoint
+        run: |
+          curl -sf -X POST "${{ secrets.REMINDER_ENDPOINT_URL }}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
