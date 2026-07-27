@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLingo } from "./store/useLingo";
 import { useServiceWorkerUpdate } from "./services/pwa";
+import { useOnlineStatus } from "./hooks/useOnlineStatus";
 import type { Screen } from "./types";
 import Onboarding from "./screens/Onboarding";
 import Dashboard from "./screens/Dashboard";
@@ -49,6 +50,7 @@ export default function App() {
   const { progress } = useLingo();
   const [screen, setScreen] = useState<Screen>("dashboard");
   const { needRefresh, applyUpdate } = useServiceWorkerUpdate();
+  const online = useOnlineStatus();
   const mainRef = useRef<HTMLElement>(null);
 
   // Push a history entry on every in-app navigation so the mobile back
@@ -77,6 +79,11 @@ export default function App() {
     return (
       <div className="app">
         {needRefresh && <UpdateBanner onUpdate={applyUpdate} />}
+        {!online && (
+          <div className="banner" role="status">
+            📡 אין חיבור לאינטרנט — אפשר להמשיך עם התוכן Offline.
+          </div>
+        )}
         <Onboarding />
       </div>
     );
@@ -126,6 +133,12 @@ export default function App() {
   return (
     <div className="app">
       {needRefresh && <UpdateBanner onUpdate={applyUpdate} />}
+      {!online && (
+        <div className="banner" role="status">
+          📡 אין חיבור לאינטרנט — תוכן Offline זמין, אבל מאמן השיחה וסנכרון הענן
+          לא יעבדו עד שהחיבור יחזור.
+        </div>
+      )}
       <header className="topbar">
         {screen === "dashboard" ? (
           <span className="brand">

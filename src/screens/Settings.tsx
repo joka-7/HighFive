@@ -38,9 +38,12 @@ export default function Settings() {
     signOut,
     progress,
     updateLevel,
+    exportProgress,
+    importProgress,
   } = useLingo();
   const [authBusy, setAuthBusy] = useState(false);
   const [authError, setAuthError] = useState("");
+  const [backupMsg, setBackupMsg] = useState("");
 
   const [prefs, setPrefs] = useState(() => loadPrefs());
   const { canInstall, installed, install } = usePwaInstall();
@@ -88,6 +91,41 @@ export default function Settings() {
     } finally {
       setAuthBusy(false);
     }
+  }
+
+  function handleExport() {
+    const data = exportProgress();
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `high5-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setBackupMsg("הקובץ הורד.");
+  }
+
+  function handleImportFile(file: File) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result));
+        if (
+          !confirm(
+            "לייבא את הקובץ? הנתונים הנוכחיים במכשיר יוחלפו בתוכן הקובץ.",
+          )
+        ) {
+          return;
+        }
+        importProgress(parsed);
+        setBackupMsg("הייבוא הצליח.");
+      } catch {
+        setBackupMsg("הייבוא נכשל — הקובץ אינו תקין.");
+      }
+    };
+    reader.readAsText(file);
   }
 
   const initial = loadAIConfig();
@@ -345,6 +383,36 @@ export default function Settings() {
               </p>
             )}
           </>
+        )}
+      </div>
+
+      <div className="card">
+        <h3>💾 גיבוי ושחזור</h3>
+        <p className="muted">
+          הורידו קובץ JSON של ההתקדמות, או ייבאו קובץ ממכשיר אחר — בלי חשבון
+          Google. מפתח ה-AI והעדפות הממשק לא נכללים בגיבוי.
+        </p>
+        <button className="btn" onClick={handleExport}>
+          ייצוא התקדמות
+        </button>
+        <div style={{ height: 10 }} />
+        <label className="btn secondary" style={{ display: "block", textAlign: "center" }}>
+          ייבוא מקובץ…
+          <input
+            type="file"
+            accept="application/json,.json"
+            style={{ display: "none" }}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleImportFile(file);
+              e.target.value = "";
+            }}
+          />
+        </label>
+        {backupMsg && (
+          <p className="muted" role="status" style={{ marginTop: 8 }}>
+            {backupMsg}
+          </p>
         )}
       </div>
 

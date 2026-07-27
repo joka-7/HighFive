@@ -160,6 +160,8 @@ export interface DailyMissionsState {
   talk: boolean;
   words: boolean; // auto-completes once 5 words are saved that day
   reading: boolean; // auto-completes on finishing a Reading Lab article
+  listening: boolean; // auto-completes on finishing a Listening quiz
+  speaking: boolean; // auto-completes on finishing a Speaking practice set
   grammar: boolean; // auto-completes on finishing the Daily Lesson
   // Number of Speaking-practice attempts scored today. Optional so state
   // persisted before this field existed still loads; treated as 0 when

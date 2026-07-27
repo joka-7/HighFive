@@ -25,10 +25,11 @@ key.
 - **Dialogue Coach** — roleplay scenarios where the AI replies in English and
   corrects your mistakes in Hebrew. *(Requires an AI key.)*
 - **Daily Missions** — a daily checklist: watch a video in English, talk with
-  the AI coach in English, read an article in the Reading Lab, learn one
-  grammar topic (Daily Lesson), and save 5 new vocabulary words. The last
-  three complete automatically as you use those features. Earn points per
-  mission; missions reset every day.
+  the AI coach in English, read an article, practice Listening, practice
+  Speaking, learn one grammar topic (Daily Lesson), and save 5 new vocabulary
+  words. All except the video (and optionally the talk mark) complete
+  automatically as you use those features. Earn points per mission; missions
+  reset every day.
 - **Practice quiz** — 5 multiple-choice questions with Hebrew explanations.
 - **Saved words** — bookmark words, mark them mastered, review later.
 - **Progress** — points, daily streaks, and a placement test.
@@ -36,8 +37,10 @@ key.
 
 > The Reading, Listening and Speaking pillars were added to move beyond
 > tap-the-answer drills toward *real language use* — reading, listening to
-> natural speech, and actually speaking. They work offline with bundled content
-> and use live AI generation when a provider key is set.
+> natural speech, and actually speaking. Reading and Listening use bundled
+> offline content (level-adapted passages and clips). Speaking uses bundled
+> prompts by default and can generate fresh practice sets when a provider key
+> is set. Only the Dialogue Coach *requires* a key.
 
 ## Getting started
 
