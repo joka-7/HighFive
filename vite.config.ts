@@ -85,5 +85,16 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test-setup.ts"],
     exclude: ["**/node_modules/**", "e2e/**"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "lcov"],
+      include: ["src/store/**", "src/services/**", "src/utils/**"],
+      // Floor — raise over time as more of the store/content paths are covered.
+      thresholds: {
+        lines: 35,
+        functions: 35,
+        statements: 35,
+      },
+    },
   },
 });

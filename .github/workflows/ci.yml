@@ -29,11 +29,33 @@ jobs:
       - name: Type check
         run: npm run typecheck
 
-      - name: Unit tests
-        run: npm test
+      - name: Unit tests with coverage
+        run: npm run test:coverage
 
       - name: Build
         run: npm run build
+
+      - name: Bundle size gate (app shell JS, excluding content chunks)
+        run: |
+          # Fail if any non-content JS chunk exceeds 600 KB (uncompressed).
+          # Content offline packs live under assets/content/ and are gated
+          # separately by the PWA precache ignore list.
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const limit = 600 * 1024;
+            const root = 'dist/assets';
+            const files = fs.readdirSync(root).filter((f) => f.endsWith('.js'));
+            const oversized = files
+              .map((f) => ({ f, size: fs.statSync(path.join(root, f)).size }))
+              .filter((x) => x.size > limit);
+            if (oversized.length) {
+              console.error('Bundle size gate failed:');
+              for (const x of oversized) console.error(' ', x.f, (x.size/1024).toFixed(1) + ' KB');
+              process.exit(1);
+            }
+            console.log('Bundle size gate OK (' + files.length + ' shell JS files under 600 KB)');
+          "
 
   e2e:
     runs-on: ubuntu-latest
