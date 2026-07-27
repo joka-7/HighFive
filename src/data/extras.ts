@@ -1,5 +1,4 @@
 import type { GemListening, GemReading, Level } from "../types";
-import { dayIndex, pickByDay } from "../utils/daily";
 
 type Loader<T> = () => Promise<T>;
 
@@ -33,14 +32,3 @@ const SPEAKING_LOADERS: Record<Level, Loader<{ prompts: { text: string; translat
 export const READINGS = READING_LOADERS;
 export const LISTENINGS = LISTENING_LOADERS;
 export const SPEAKINGS = SPEAKING_LOADERS;
-
-/** Load today's item for the exact level (365 day-aligned items). */
-export async function pickByDayExtra<T>(
-  loaders: Record<Level, Loader<T[]>>,
-  level: Level,
-  day = dayIndex(),
-): Promise<T> {
-  const items = await loaders[level]();
-  if (!items?.length) throw new Error(`No offline content for level ${level}`);
-  return pickByDay(items, day);
-}

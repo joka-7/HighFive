@@ -21,13 +21,12 @@ import type {
   UserProgress,
 } from "../types";
 import { seedStarterEntries } from "../data/starter-words";
-import { buildAllowedVocabulary } from "../utils/vocabulary";
 import { isDue, isSrsMastered, scheduleNext } from "../utils/srs";
 import {
   isWordAtOrBelowLevel,
   promotionTarget,
 } from "../utils/levelProgress";
-import { DAILY_CHECKLIST_LABELS } from "../utils/missions";
+import { DAILY_CHECKLIST_LABELS, dateKeyFromTs } from "../utils/missions";
 import { clearAllDailyCaches } from "../utils/dailyCache";
 import { parseProgressBackup, type ProgressBackup } from "../utils/backup";
 import {
@@ -41,9 +40,9 @@ import {
   type CloudUser,
 } from "../services/firebase";
 
-// Persistence layer — replaces High5's Room database with localStorage in
-// "Local mode", and (optionally) Firestore in "Account mode" when the user
-// signs in with Google. Local mode is always the default and the offline cache.
+// Persistence layer — localStorage in "Local mode", and (optionally) Firestore
+// in "Account mode" when the user signs in with Google. Local mode is always
+// the default and the offline cache.
 
 const KEYS = {
   progress: "high5.progress",
@@ -67,15 +66,6 @@ function load<T>(key: string, fallback: T): T {
   }
 }
 
-function dateKey(ts: number): string {
-  const d = new Date(ts);
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
-
-// Daily Missions — points awarded once per mission per day.
 const MISSION_POINTS = 30;
 export const DAILY_WORD_TARGET = 5;
 type MissionFlag =
@@ -168,7 +158,6 @@ interface LingoContextValue {
   isWordSaved: (word: string) => boolean;
   toggleSaveWord: (word: Omit<SavedWord, "id" | "savedAt" | "isMastered">) => void;
   markWordsLearned: (words: GemWord[], level: Level) => void;
-  getAllowedVocabulary: (level: Level, todaysWords?: GemWord[]) => Set<string>;
   toggleMastered: (id: string) => void;
   dueWords: () => SavedWord[];
   reviewWord: (id: string, remembered: boolean) => void;
@@ -281,10 +270,10 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       setProgress((prev) => {
         if (!prev) return prev;
         const now = Date.now();
-        const today = dateKey(now);
-        const last = prev.lastActiveTimestamp ? dateKey(prev.lastActiveTimestamp) : "";
+        const today = dateKeyFromTs(now);
+        const last = prev.lastActiveTimestamp ? dateKeyFromTs(prev.lastActiveTimestamp) : "";
         if (last === today) return prev;
-        const yesterday = dateKey(now - 86_400_000);
+        const yesterday = dateKeyFromTs(now - 86_400_000);
         const streak = last === yesterday ? prev.streak + 1 : 1;
         return { ...prev, streak, lastActiveTimestamp: now };
       });
@@ -483,12 +472,6 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const getAllowedVocabulary = useCallback(
-    (level: Level, todaysWords: GemWord[] = []) =>
-      buildAllowedVocabulary(level, Object.keys(learnedWords), todaysWords),
-    [learnedWords],
-  );
-
   const toggleSaveWord = useCallback<LingoContextValue["toggleSaveWord"]>(
     (word) => {
       setSavedWords((prev) => {
@@ -496,7 +479,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
         if (exists) {
           return prev.filter((w) => w.id !== exists.id);
         }
-        // Saving a new word awards +10 points (LingoViewModel.toggleSaveWord).
+        // Saving a new word awards +10 points.
         setProgress((p) => (p ? { ...p, points: p.points + 10 } : p));
         // New words enter the spaced-repetition queue immediately due (box 0).
         // Saving also marks the word as learned for progressive content.
@@ -585,11 +568,11 @@ export function LingoProvider({ children }: { children: ReactNode }) {
 
   const completeLesson = useCallback((correctCount: number, totalQuestions: number) => {
     const now = Date.now();
-    const today = dateKey(now);
+    const today = dateKeyFromTs(now);
     setProgress((prev) => {
       if (!prev) return prev;
       const alreadyClaimedBase = prev.dailyLessonCompletedText === today;
-      // 50 base (once per day) + 20 per correct answer (LingoViewModel).
+      // 50 base (once per day) + 20 per correct answer.
       const earned = (alreadyClaimedBase ? 0 : 50) + correctCount * 20;
       return {
         ...prev,
@@ -599,7 +582,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     });
     setMissionLog((prev) => {
       const existing = prev.find(
-        (m) => m.kind === "lesson" && dateKey(m.timestamp) === today,
+        (m) => m.kind === "lesson" && dateKeyFromTs(m.timestamp) === today,
       );
       if (existing) {
         return prev.map((m) =>
@@ -625,12 +608,12 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   const completeQuiz = useCallback(
     (level: Level, topic: string, score: number, total: number) => {
       // 25 points per correct answer the first time this topic is completed
-      // today (LingoViewModel.loadPracticeQuiz flow); reduced on repeats so
+      // today; reduced on repeats so
       // replaying the same day-aligned quiz can't be farmed for unlimited
       // points — same gate shape as completeLesson's per-day base bonus.
-      const today = dateKey(Date.now());
+      const today = dateKeyFromTs(Date.now());
       const alreadyToday = quizHistory.some(
-        (h) => h.topic === topic && dateKey(h.timestamp) === today,
+        (h) => h.topic === topic && dateKeyFromTs(h.timestamp) === today,
       );
       const perAnswer = alreadyToday
         ? Math.round(QUIZ_POINTS_PER_ANSWER * REPEAT_POINTS_FACTOR)
@@ -651,7 +634,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   // never carry over or block today's points. Shared by the manual "mark as
   // done" missions and the auto-detected ones below.
   const awardMission = useCallback((id: MissionFlag) => {
-    const today = dateKey(Date.now());
+    const today = dateKeyFromTs(Date.now());
     setDailyMissions((prev) => {
       const current = todaysMissions(prev, today);
       if (current[id]) return current;
@@ -661,7 +644,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       if (id === "video" || id === "talk" || id === "words") {
         const meta = DAILY_CHECKLIST_LABELS[id];
         setMissionLog((ml) => {
-          if (ml.some((m) => m.kind === meta.kind && dateKey(m.timestamp) === today)) {
+          if (ml.some((m) => m.kind === meta.kind && dateKeyFromTs(m.timestamp) === today)) {
             return ml;
           }
           return capMissionLog([
@@ -684,7 +667,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   // (SPEAKING_FULL_CREDIT_ATTEMPTS attempts), reduced after — otherwise the
   // same sentence could be re-recorded indefinitely for unlimited points.
   const awardSpeakingPoints = useCallback((score0to100: number) => {
-    const today = dateKey(Date.now());
+    const today = dateKeyFromTs(Date.now());
     setDailyMissions((prev) => {
       const current = todaysMissions(prev, today);
       const count = current.speakingCount ?? 0;
@@ -698,8 +681,8 @@ export function LingoProvider({ children }: { children: ReactNode }) {
 
   // Words saved today (via toggleSaveWord) — drives the "save 5 words" mission.
   const todayWordCount = useMemo(() => {
-    const today = dateKey(Date.now());
-    return savedWords.filter((w) => dateKey(w.savedAt) === today).length;
+    const today = dateKeyFromTs(Date.now());
+    return savedWords.filter((w) => dateKeyFromTs(w.savedAt) === today).length;
   }, [savedWords]);
 
   // Auto-complete the "words" mission (no manual mark) once the daily target
@@ -711,18 +694,18 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   // Auto-complete "read an article" once a Reading Lab article's comprehension
   // quiz has been finished today (Reading.tsx logs it via completeQuiz).
   useEffect(() => {
-    const today = dateKey(Date.now());
+    const today = dateKeyFromTs(Date.now());
     const done = quizHistory.some(
-      (h) => h.topic === "Reading" && dateKey(h.timestamp) === today,
+      (h) => h.topic === "Reading" && dateKeyFromTs(h.timestamp) === today,
     );
     if (done) awardMission("reading");
   }, [quizHistory, awardMission]);
 
   // Auto-complete Listening once today's Listening quiz is finished.
   useEffect(() => {
-    const today = dateKey(Date.now());
+    const today = dateKeyFromTs(Date.now());
     const done = quizHistory.some(
-      (h) => h.topic === "Listening" && dateKey(h.timestamp) === today,
+      (h) => h.topic === "Listening" && dateKeyFromTs(h.timestamp) === today,
     );
     if (done) awardMission("listening");
   }, [quizHistory, awardMission]);
@@ -730,9 +713,9 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   // Auto-complete Speaking once a speaking practice set is finished today
   // (Speaking.tsx logs it via logMission("speaking")).
   useEffect(() => {
-    const today = dateKey(Date.now());
+    const today = dateKeyFromTs(Date.now());
     const done = missionLog.some(
-      (m) => m.kind === "speaking" && dateKey(m.timestamp) === today,
+      (m) => m.kind === "speaking" && dateKeyFromTs(m.timestamp) === today,
     );
     if (done) awardMission("speaking");
   }, [missionLog, awardMission]);
@@ -740,7 +723,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   // Auto-complete "learn one grammar topic" once today's Daily Lesson is done
   // — dailyLessonCompletedText is already the per-day gate completeLesson sets.
   useEffect(() => {
-    if (progress?.dailyLessonCompletedText === dateKey(Date.now())) {
+    if (progress?.dailyLessonCompletedText === dateKeyFromTs(Date.now())) {
       awardMission("grammar");
     }
   }, [progress?.dailyLessonCompletedText, awardMission]);
@@ -750,7 +733,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       const next = [...prev, { ...msg, id: uid(), timestamp: Date.now() }];
       return next.length > MAX_CHAT_MESSAGES ? next.slice(-MAX_CHAT_MESSAGES) : next;
     });
-    // Each user dialogue turn awards +15 points (LingoViewModel.sendChatMessage).
+    // Each user dialogue turn awards +15 points.
     if (msg.role === "user") {
       setProgress((p) => (p ? { ...p, points: p.points + 15 } : p));
     }
@@ -812,13 +795,13 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     setChatMessages(data.chatMessages);
     setQuizHistory(data.quizHistory);
     setMissionLog(data.missionLog);
-    setDailyMissions(todaysMissions(data.dailyMissions, dateKey(Date.now())));
+    setDailyMissions(todaysMissions(data.dailyMissions, dateKeyFromTs(Date.now())));
     setLevelUpNotice(null);
     clearAllDailyCaches();
   }, []);
 
   const todayMissions = useMemo(
-    () => todaysMissions(dailyMissions, dateKey(Date.now())),
+    () => todaysMissions(dailyMissions, dateKeyFromTs(Date.now())),
     [dailyMissions],
   );
 
@@ -848,7 +831,6 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       awardSpeakingPoints,
       isWordSaved,
       markWordsLearned,
-      getAllowedVocabulary,
       toggleSaveWord,
       toggleMastered,
       dueWords,
@@ -886,7 +868,6 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       awardSpeakingPoints,
       isWordSaved,
       markWordsLearned,
-      getAllowedVocabulary,
       toggleSaveWord,
       toggleMastered,
       dueWords,

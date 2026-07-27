@@ -1,6 +1,6 @@
-// English-learning content generation — ported from High5's LingoRepository.kt.
-// Falls back to bundled offline content on any failure or when no provider key
-// is configured. Content is day-aligned and vocabulary-safe (progressive unlock).
+// English-learning content generation. Falls back to bundled offline content
+// on any failure or when no provider key is configured. Content is day-aligned
+// and vocabulary-safe (progressive unlock).
 
 import type {
   ChatMessage,
@@ -8,7 +8,6 @@ import type {
   GemLesson,
   GemListening,
   GemQuiz,
-  GemQuestion,
   GemReading,
   GemSpeaking,
   GemWord,
@@ -66,37 +65,21 @@ function validateOrThrow(texts: string[], allowed: Set<string>, label: string): 
   }
 }
 function ensureQuizHebrew(quiz: GemQuiz): GemQuiz {
-  return { questions: quiz.questions.map((q) => sanitizeEnglishMcq(q)) };
+  return quiz;
 }
 
 function ensureLessonHebrew(lesson: GemLesson): GemLesson {
-  return {
-    ...lesson,
-    questions: lesson.questions.map((q) => sanitizeEnglishMcq(q)),
-  };
+  return lesson;
 }
 
 function ensureReadingHebrew(reading: GemReading): GemReading {
   if (!reading.textHe) throw new Error("reading: missing textHe");
-  const questions = reading.questions.map((q) => sanitizeEnglishMcq(q));
-  return { ...reading, questions };
+  return reading;
 }
 
 function ensureListeningHebrew(listening: GemListening): GemListening {
   if (!listening.transcriptHe) throw new Error("listening: missing transcriptHe");
-  const questions = listening.questions.map((q) => sanitizeEnglishMcq(q));
-  return { ...listening, questions };
-}
-
-/**
- * Keep MCQ face English-only; real Hebrew lives in questionHe/optionsHe.
- * Deliberately does NOT fall back to `explanation` when questionHe is
- * missing — explanation reveals the correct answer, and the "show
- * translation" toggle is available before the user has answered, so using
- * it as a stand-in translation would leak the answer.
- */
-function sanitizeEnglishMcq(q: GemQuestion): GemQuestion {
-  return q;
+  return listening;
 }
 
 async function pickOfflineReading(
@@ -296,7 +279,6 @@ Return as JSON.`;
 // --- Reading Lab ---
 export async function generateReading(
   level: Level,
-  _topic: string,
   learnedKeys: Iterable<string>,
   day = dayIndex(),
 ): Promise<GemReading> {
@@ -307,7 +289,6 @@ export async function generateReading(
 // --- Listening practice ---
 export async function generateListening(
   level: Level,
-  _topic: string,
   learnedKeys: Iterable<string>,
   day = dayIndex(),
 ): Promise<GemListening> {

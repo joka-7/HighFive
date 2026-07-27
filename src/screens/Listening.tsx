@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { generateListening } from "../services/content";
-import { topicForTodayByLevel, LISTENING_TOPICS_BY_LEVEL } from "../data/topics";
 import type { GemListening } from "../types";
 import QuizRunner from "../components/QuizRunner";
 import Spinner from "../components/Spinner";
@@ -40,7 +39,6 @@ export default function Listening() {
       let active = true;
       generateListening(
         level,
-        topicForTodayByLevel(LISTENING_TOPICS_BY_LEVEL, level),
         learnedKey ? learnedKey.split(",") : [],
       )
         .then((c) => {

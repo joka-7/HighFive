@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "High5 — an interactive, playful English learning assistant for Hebrew speakers. Web app port of the High5 Android app, powered by Gemini.",
+  "description": "High5 — an interactive, playful English learning assistant for Hebrew speakers. Web app supporting multiple AI providers.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
