@@ -27,8 +27,18 @@ const SPEECH_LABELS: { id: SpeechSpeed; label: string }[] = [
 // API key / provider settings — mirrors JobFlowTracker's APIKeySettings:
 // pick a provider, paste a key (or Ollama URL), optional model override, save.
 export default function Settings() {
-  const { resetAll, cloudConfigured, user, authReady, signIn, signOut, progress, updateLevel } =
-    useLingo();
+  const {
+    resetAll,
+    cloudConfigured,
+    user,
+    authReady,
+    cloudSyncError,
+    retryCloudSync,
+    signIn,
+    signOut,
+    progress,
+    updateLevel,
+  } = useLingo();
   const [authBusy, setAuthBusy] = useState(false);
   const [authError, setAuthError] = useState("");
 
@@ -62,6 +72,16 @@ export default function Settings() {
   }
 
   async function handleSignOut() {
+    // Signing out clears this device's local learner data too (so the next
+    // person, or the next Google account, on a shared device doesn't inherit
+    // it) — the account's real progress stays safe in the cloud.
+    if (
+      !confirm(
+        "להתנתק? נתוני הלמידה שנשמרו במכשיר הזה יימחקו. ההתקדמות שלך נשארת בענן ותחזור בהתחברות הבאה.",
+      )
+    ) {
+      return;
+    }
     setAuthBusy(true);
     try {
       await signOut();
@@ -283,6 +303,21 @@ export default function Settings() {
           <p className="muted">טוען…</p>
         ) : user ? (
           <>
+            {cloudSyncError && (
+              <div className="banner" style={{ marginBottom: 10 }}>
+                ⚠️ הסנכרון לענן נכשל — ההתקדמות שלך נשארת מקומית בינתיים ולא
+                תידרס. בדוק חיבור לאינטרנט ונסה שוב.
+                <div>
+                  <button
+                    className="btn ghost small"
+                    style={{ marginTop: 6 }}
+                    onClick={retryCloudSync}
+                  >
+                    נסה סנכרון שוב
+                  </button>
+                </div>
+              </div>
+            )}
             <p className="muted">
               מחובר כ-<strong>{user.email ?? user.displayName ?? "משתמש Google"}</strong>.
               ההתקדמות מסונכרנת בין המכשירים שלך.
@@ -310,7 +345,10 @@ export default function Settings() {
 
       <div className="card">
         <h3>איפוס נתונים</h3>
-        <p className="muted">מחיקת כל ההתקדמות, המילים השמורות והשיחות.</p>
+        <p className="muted">
+          מחיקת כל ההתקדמות, המילים השמורות והשיחות. מפתח ה-AI וההעדפות (ערכת
+          נושא, מהירות הקראה) יישארו כפי שהם.
+        </p>
         <button
           className="btn"
           style={{ background: "var(--danger)" }}

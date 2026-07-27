@@ -14,11 +14,19 @@ export function countLearnedAtLevel(
   ).length;
 }
 
+/**
+ * A saved word counts as mastered once it's either marked mastered manually
+ * or has reached the top SRS box. Shared definition — Progress.tsx used to
+ * count only `isMastered` while this file also counted SRS-mastered words,
+ * so the same word could be "mastered" on one screen and not the other.
+ */
+export function countMastered(savedWords: SavedWord[]): number {
+  return savedWords.filter((w) => w.isMastered || isSrsMastered(w.srsLevel)).length;
+}
+
 /** Saved words mastered (SRS top box or manual) at this level. */
 export function countMasteredAtLevel(savedWords: SavedWord[], level: Level): number {
-  return savedWords.filter(
-    (w) => w.level === level && (w.isMastered || isSrsMastered(w.srsLevel)),
-  ).length;
+  return countMastered(savedWords.filter((w) => w.level === level));
 }
 
 export function nextLevel(level: Level): Level | null {

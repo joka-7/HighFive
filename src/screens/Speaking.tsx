@@ -16,7 +16,7 @@ const CACHE_KEY = "high5.speaking_today.v5";
 // never actually speak. ASR is a graceful enhancement; unsupported browsers
 // still see the sentences and can practise with the model audio.
 export default function Speaking() {
-  const { progress, addPoints, logMission, learnedWords } = useLingo();
+  const { progress, awardSpeakingPoints, logMission, learnedWords } = useLingo();
   const level = progress?.currentLevel ?? "A1";
   const topic = topicForTodayByLevel(SPEAKING_TOPICS_BY_LEVEL, level);
   const learnedKey = useMemo(
@@ -105,7 +105,7 @@ export default function Speaking() {
       const heard = await recognizeOnce();
       const s = scoreSpeaking(prompt.text, heard);
       setResult({ ...s, heard });
-      addPoints(Math.round((s.score / 100) * 20));
+      awardSpeakingPoints(s.score);
     } catch {
       setError("לא הצלחנו לקלוט את הקול. ודאו שהמיקרופון מאופשר ונסו שוב.");
     } finally {

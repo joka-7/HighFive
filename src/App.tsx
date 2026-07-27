@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLingo } from "./store/useLingo";
+import { useServiceWorkerUpdate } from "./services/pwa";
 import type { Screen } from "./types";
 import Onboarding from "./screens/Onboarding";
 import Dashboard from "./screens/Dashboard";
@@ -47,6 +48,7 @@ const NAV: { screen: Screen; ico: string; label: string }[] = [
 export default function App() {
   const { progress } = useLingo();
   const [screen, setScreen] = useState<Screen>("dashboard");
+  const { needRefresh, applyUpdate } = useServiceWorkerUpdate();
 
   // Push a history entry on every in-app navigation so the mobile back
   // button/gesture steps back through screens instead of exiting the app —
@@ -67,6 +69,7 @@ export default function App() {
   if (!progress) {
     return (
       <div className="app">
+        {needRefresh && <UpdateBanner onUpdate={applyUpdate} />}
         <Onboarding />
       </div>
     );
@@ -115,6 +118,7 @@ export default function App() {
 
   return (
     <div className="app">
+      {needRefresh && <UpdateBanner onUpdate={applyUpdate} />}
       <header className="topbar">
         {screen === "dashboard" ? (
           <span className="brand">
@@ -153,6 +157,20 @@ export default function App() {
           </button>
         ))}
       </nav>
+    </div>
+  );
+}
+
+// Shown when a new service-worker version has installed and is waiting —
+// the new version never activates on its own (registerType: "prompt" in
+// vite.config.ts), so nothing changes under the user until they tap this.
+function UpdateBanner({ onUpdate }: { onUpdate: () => void }) {
+  return (
+    <div className="banner" role="status" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <span style={{ flex: 1 }}>🔄 גרסה חדשה של האפליקציה מוכנה.</span>
+      <button className="btn small" style={{ width: "auto" }} onClick={onUpdate}>
+        רענון
+      </button>
     </div>
   );
 }
