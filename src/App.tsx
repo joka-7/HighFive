@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useLingo } from "./store/useLingo";
 import { useServiceWorkerUpdate } from "./services/pwa";
 import { useOnlineStatus } from "./hooks/useOnlineStatus";
+import { useLocalReminder } from "./hooks/useLocalReminder";
+import { navigateHash, screenFromHash } from "./utils/routing";
 import type { Screen } from "./types";
 import Onboarding from "./screens/Onboarding";
 import Dashboard from "./screens/Dashboard";
@@ -48,25 +50,22 @@ const NAV: { screen: Screen; ico: string; label: string }[] = [
 
 export default function App() {
   const { progress } = useLingo();
-  const [screen, setScreen] = useState<Screen>("dashboard");
+  const [screen, setScreen] = useState<Screen>(() => screenFromHash());
   const { needRefresh, applyUpdate } = useServiceWorkerUpdate();
   const online = useOnlineStatus();
   const mainRef = useRef<HTMLElement>(null);
+  useLocalReminder();
 
-  // Push a history entry on every in-app navigation so the mobile back
-  // button/gesture steps back through screens instead of exiting the app —
-  // without this, the browser has no in-app history to pop and closes
-  // straight out on the first back press.
+  // Hash routing: refresh-safe, shareable deep links; browser back/forward
+  // follow hash history instead of exiting the PWA.
   useEffect(() => {
-    history.replaceState({ screen: "dashboard" }, "");
-  }, []);
+    if (!window.location.hash) navigateHash("dashboard", true);
 
-  useEffect(() => {
-    function onPopState(e: PopStateEvent) {
-      setScreen((e.state?.screen as Screen | undefined) ?? "dashboard");
+    function onHashChange() {
+      setScreen(screenFromHash());
     }
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
   // Move keyboard/screen-reader focus into the new screen content on navigate.
@@ -91,8 +90,9 @@ export default function App() {
 
   const go = (s: Screen) => {
     if (s === screen) return;
+    navigateHash(s);
+    // hashchange will setScreen; set eagerly so UI feels instant
     setScreen(s);
-    history.pushState({ screen: s }, "");
   };
 
   function renderScreen() {
@@ -204,9 +204,6 @@ export default function App() {
   );
 }
 
-// Shown when a new service-worker version has installed and is waiting —
-// the new version never activates on its own (registerType: "prompt" in
-// vite.config.ts), so nothing changes under the user until they tap this.
 function UpdateBanner({ onUpdate }: { onUpdate: () => void }) {
   return (
     <div className="banner" role="status" style={{ display: "flex", alignItems: "center", gap: 10 }}>

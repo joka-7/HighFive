@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { DAILY_WORD_TARGET, useLingo } from "../store/useLingo";
+import { videoForToday, youtubeEmbedUrl } from "../data/videos";
 import type { Screen } from "../types";
 
 // Missions the user marks done manually — an external action the app can't
@@ -16,7 +17,7 @@ const MANUAL_MISSIONS: ManualMission[] = [
     id: "video",
     emoji: "🎬",
     title: "צפו בסרטון באנגלית",
-    sub: "צפיתם היום בסרטון קצר באנגלית? סמנו שהשלמתם.",
+    sub: "צפו בסרטון הקצר למטה (מותאם לרמה שלכם), ואז סמנו שהשלמתם.",
   },
   {
     id: "talk",
@@ -106,7 +107,9 @@ function MissionAction({ done, actionLabel, onClick, secondary }: {
 }
 
 export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
-  const { dailyMissions, todayWordCount, completeMission } = useLingo();
+  const { dailyMissions, todayWordCount, completeMission, progress } = useLingo();
+  const level = progress?.currentLevel ?? "A1";
+  const todaysVideo = videoForToday(level);
 
   const doneCount =
     MANUAL_MISSIONS.filter((m) => dailyMissions[m.id]).length +
@@ -140,6 +143,26 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
             <p className="muted" style={{ marginTop: 0 }}>
               {mission.sub}
             </p>
+            {mission.id === "video" && (
+              <div style={{ marginTop: 10 }}>
+                <p style={{ margin: "0 0 8px", fontWeight: 600 }}>
+                  {todaysVideo.titleHe}
+                  <span className="muted" style={{ fontWeight: 400 }}>
+                    {" "}
+                    · {todaysVideo.title}
+                  </span>
+                </p>
+                <div className="video-embed">
+                  <iframe
+                    title={todaysVideo.title}
+                    src={youtubeEmbedUrl(todaysVideo.youtubeId)}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+            )}
             <MissionAction
               done={done}
               actionLabel="סמן כהושלם"

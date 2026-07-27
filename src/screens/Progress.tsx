@@ -8,9 +8,19 @@ import {
   MASTERED_TO_ADVANCE,
   nextLevel,
 } from "../utils/levelProgress";
+import { allMissions } from "../utils/missions";
+import { missionsPerDay, quizScorePerDay } from "../utils/progressCharts";
+import MiniBarChart from "../components/MiniBarChart";
 
 export default function Progress() {
-  const { progress, savedWords, quizHistory, learnedWords, updateLevel } = useLingo();
+  const {
+    progress,
+    savedWords,
+    quizHistory,
+    missionLog,
+    learnedWords,
+    updateLevel,
+  } = useLingo();
   if (!progress) return null;
 
   const level = progress.currentLevel;
@@ -22,6 +32,10 @@ export default function Progress() {
   const learnedGoal = LEARNED_TO_ADVANCE[level];
   const masteredGoal = MASTERED_TO_ADVANCE[level];
   const upcoming = nextLevel(level);
+
+  const merged = allMissions(missionLog, quizHistory, progress);
+  const missionSeries = missionsPerDay(merged, 14);
+  const quizSeries = quizScorePerDay(quizHistory, 14);
 
   return (
     <div>
@@ -43,6 +57,9 @@ export default function Progress() {
           <div className="lbl">מילים שנלמדו</div>
         </div>
       </div>
+
+      <MiniBarChart title="משימות ליום" series={missionSeries} />
+      <MiniBarChart title="ציון ממוצע בחידונים" series={quizSeries} maxValue={100} unit="%" />
 
       <div className="card">
         <h3>הרמה שלי</h3>

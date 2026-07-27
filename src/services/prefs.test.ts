@@ -12,29 +12,46 @@ afterEach(() => {
   delete document.documentElement.dataset.theme;
 });
 
+const defaults = {
+  theme: "light" as const,
+  speechSpeed: "normal" as const,
+  remindersEnabled: false,
+  reminderHour: 18,
+};
+
 describe("prefs", () => {
   it("returns defaults when nothing is stored", () => {
-    expect(loadPrefs()).toEqual({ theme: "light", speechSpeed: "normal" });
+    expect(loadPrefs()).toEqual(defaults);
   });
 
   it("round-trips saved preferences", () => {
-    savePrefs({ theme: "dark", speechSpeed: "fast" });
-    expect(loadPrefs()).toEqual({ theme: "dark", speechSpeed: "fast" });
+    savePrefs({
+      theme: "dark",
+      speechSpeed: "fast",
+      remindersEnabled: true,
+      reminderHour: 20,
+    });
+    expect(loadPrefs()).toEqual({
+      theme: "dark",
+      speechSpeed: "fast",
+      remindersEnabled: true,
+      reminderHour: 20,
+    });
   });
 
   it("merges partial stored prefs over defaults", () => {
     localStorage.setItem("high5.prefs", JSON.stringify({ theme: "dark" }));
-    expect(loadPrefs()).toEqual({ theme: "dark", speechSpeed: "normal" });
+    expect(loadPrefs()).toEqual({ ...defaults, theme: "dark" });
   });
 
   it("tolerates corrupt JSON", () => {
     localStorage.setItem("high5.prefs", "{not json");
-    expect(loadPrefs()).toEqual({ theme: "light", speechSpeed: "normal" });
+    expect(loadPrefs()).toEqual(defaults);
   });
 
   it("resolves speech rate from the saved speed", () => {
     expect(speechRate()).toBe(SPEECH_RATES.normal);
-    savePrefs({ theme: "light", speechSpeed: "slow" });
+    savePrefs({ ...defaults, speechSpeed: "slow" });
     expect(speechRate()).toBe(SPEECH_RATES.slow);
   });
 
