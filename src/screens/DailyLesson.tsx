@@ -25,6 +25,7 @@ export default function DailyLesson() {
   // switches) so the user doesn't lose their place mid-lesson.
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
     setError(false);
     const level = progress?.currentLevel ?? "A1";
     const cached = loadDailyCache<GemLesson>(CACHE_KEY, level);
@@ -36,6 +37,8 @@ export default function DailyLesson() {
       level,
       topicForTodayByLevel(LESSON_TOPICS_BY_LEVEL, level),
       Object.keys(learnedWords),
+      undefined,
+      controller.signal,
     )
       .then((l) => {
         if (active) {
@@ -51,6 +54,7 @@ export default function DailyLesson() {
       });
     return () => {
       active = false;
+      controller.abort();
     };
   }, [progress?.currentLevel, learnedWords, reloadKey]);
 

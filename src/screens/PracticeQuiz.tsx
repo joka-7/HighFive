@@ -17,8 +17,9 @@ export default function PracticeQuiz() {
 
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
     setError(false);
-    generatePracticeQuiz(level, topic, Object.keys(learnedWords))
+    generatePracticeQuiz(level, topic, Object.keys(learnedWords), undefined, controller.signal)
       .then((q) => {
         if (active) setQuiz(q);
       })
@@ -27,6 +28,7 @@ export default function PracticeQuiz() {
       });
     return () => {
       active = false;
+      controller.abort();
     };
   }, [level, topic, learnedWords, reloadKey]);
 

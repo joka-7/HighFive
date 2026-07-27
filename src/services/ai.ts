@@ -120,11 +120,76 @@ function validateOllamaUrl(url: string): string {
   return parsed.origin;
 }
 
+// Every provider call gets a hard timeout (nothing previously bounded most of
+// them — only Speaking had its own bespoke Promise.race) and one retry on a
+// transient failure (429/5xx), with a short backoff. Callers can also pass
+// their own AbortSignal (e.g. abort on component unmount) — that's merged
+// with the timeout's own controller, and an external abort is never retried,
+// since that's a deliberate cancellation, not a transient failure.
+const REQUEST_TIMEOUT_MS = 20_000;
+const RETRY_DELAY_MS = 600;
+
+function isRetryableStatus(status: number): boolean {
+  return status === 429 || (status >= 500 && status < 600);
+}
+
+function withTimeout(externalSignal?: AbortSignal): {
+  signal: AbortSignal;
+  cleanup: () => void;
+} {
+  const controller = new AbortController();
+  const onAbort = () => controller.abort();
+  if (externalSignal) {
+    if (externalSignal.aborted) controller.abort();
+    else externalSignal.addEventListener("abort", onAbort);
+  }
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  return {
+    signal: controller.signal,
+    cleanup: () => {
+      clearTimeout(timer);
+      externalSignal?.removeEventListener("abort", onAbort);
+    },
+  };
+}
+
+async function fetchWithRetry(
+  url: string,
+  init: RequestInit,
+  externalSignal?: AbortSignal,
+): Promise<Response> {
+  for (let attempt = 0; ; attempt++) {
+    const { signal, cleanup } = withTimeout(externalSignal);
+    try {
+      const res = await fetch(url, { ...init, signal });
+      cleanup();
+      if (attempt === 0 && isRetryableStatus(res.status)) {
+        await new Promise((r) => setTimeout(r, RETRY_DELAY_MS));
+        continue;
+      }
+      return res;
+    } catch (err) {
+      cleanup();
+      // A caller-initiated cancellation (unmount, new request superseding
+      // this one) should propagate immediately — retrying it would just
+      // start a request nobody wants anymore.
+      if (externalSignal?.aborted || attempt > 0) throw err;
+      await new Promise((r) => setTimeout(r, RETRY_DELAY_MS));
+    }
+  }
+}
+
 /**
  * Non-streaming completion. Returns the raw text response from the active
  * provider. `systemInstruction` is applied per provider's native mechanism.
+ * `signal` optionally cancels the request (e.g. the calling screen unmounted)
+ * — independent of the timeout/retry behavior above, which always applies.
  */
-export async function complete(prompt: string, systemInstruction?: string): Promise<string> {
+export async function complete(
+  prompt: string,
+  systemInstruction?: string,
+  signal?: AbortSignal,
+): Promise<string> {
   const { provider, apiKey, model, ollamaUrl } = loadAIConfig();
 
   if (provider !== "ollama" && !apiKey) {
@@ -143,32 +208,40 @@ export async function complete(prompt: string, systemInstruction?: string): Prom
         ? { systemInstruction: { parts: [{ text: systemInstruction }] } }
         : {}),
     };
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-      body: JSON.stringify(body),
-    });
+    const res = await fetchWithRetry(
+      url,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+        body: JSON.stringify(body),
+      },
+      signal,
+    );
     if (!res.ok) throw new Error(await errorText(res));
     const data = await res.json();
     return data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
   }
 
   if (provider === "anthropic") {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true",
+    const res = await fetchWithRetry(
+      "https://api.anthropic.com/v1/messages",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
+        body: JSON.stringify({
+          model,
+          max_tokens: 1500,
+          ...(systemInstruction ? { system: systemInstruction } : {}),
+          messages: [{ role: "user", content: prompt }],
+        }),
       },
-      body: JSON.stringify({
-        model,
-        max_tokens: 1500,
-        ...(systemInstruction ? { system: systemInstruction } : {}),
-        messages: [{ role: "user", content: prompt }],
-      }),
-    });
+      signal,
+    );
     if (!res.ok) throw new Error(await errorText(res));
     const data = await res.json();
     return data.content?.[0]?.text ?? "";
@@ -177,11 +250,15 @@ export async function complete(prompt: string, systemInstruction?: string): Prom
   if (provider === "ollama") {
     const validUrl = validateOllamaUrl(ollamaUrl);
     const fullPrompt = systemInstruction ? `${systemInstruction}\n\n${prompt}` : prompt;
-    const res = await fetch(`${validUrl}/api/generate`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model, prompt: fullPrompt, stream: false, format: "json" }),
-    });
+    const res = await fetchWithRetry(
+      `${validUrl}/api/generate`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model, prompt: fullPrompt, stream: false, format: "json" }),
+      },
+      signal,
+    );
     if (!res.ok) throw new Error(`Ollama error: HTTP ${res.status}. Is Ollama running?`);
     const data = await res.json();
     return data.response ?? "";
@@ -196,16 +273,20 @@ export async function complete(prompt: string, systemInstruction?: string): Prom
     ...(systemInstruction ? [{ role: "system", content: systemInstruction }] : []),
     { role: "user", content: prompt },
   ];
-  const res = await fetch(base, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify({
-      model,
-      messages,
-      temperature: 0.7,
-      response_format: { type: "json_object" },
-    }),
-  });
+  const res = await fetchWithRetry(
+    base,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model,
+        messages,
+        temperature: 0.7,
+        response_format: { type: "json_object" },
+      }),
+    },
+    signal,
+  );
   if (!res.ok) throw new Error(await errorText(res));
   const data = await res.json();
   return data.choices?.[0]?.message?.content ?? "";
