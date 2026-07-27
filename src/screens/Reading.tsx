@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { generateReading } from "../services/content";
-import { topicForTodayByLevel, READING_TOPICS_BY_LEVEL } from "../data/topics";
 import type { GemReading } from "../types";
 import QuizRunner from "../components/QuizRunner";
 import Spinner from "../components/Spinner";
@@ -44,7 +43,6 @@ export default function Reading() {
       }
       generateReading(
         level,
-        topicForTodayByLevel(READING_TOPICS_BY_LEVEL, level),
         learnedKey ? learnedKey.split(",") : [],
       )
         .then((r) => {

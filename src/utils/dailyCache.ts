@@ -4,6 +4,8 @@
 // would lose their place mid-article or mid-lesson. Content only changes when
 // the day or the level changes, or the caller explicitly forces a refresh.
 
+import { dateKeyFromTs } from "./missions";
+
 interface CachedEntry<T> {
   date: string;
   level: string;
@@ -11,7 +13,9 @@ interface CachedEntry<T> {
 }
 
 function todayKey(): string {
-  return new Date().toISOString().slice(0, 10);
+  // Local calendar day — must match dateKeyFromTs used by missions/streaks,
+  // not UTC toISOString (which flips the date near midnight in positive offsets).
+  return dateKeyFromTs(Date.now());
 }
 
 export function loadDailyCache<T>(key: string, level: string): T | null {
