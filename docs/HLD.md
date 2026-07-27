@@ -3,24 +3,26 @@
 ## Overview
 
 High5 (`✋ High5`) is a client-only, Hebrew-first single-page PWA
-(React 18 + Vite + TypeScript) that teaches English to Hebrew speakers. It is a
-web port of the original High5 Android app (Kotlin / Jetpack Compose), keeping
-the same content, prompts and scoring rules. The UI is right-to-left Hebrew.
+(React 18 + Vite + TypeScript) that teaches English to Hebrew speakers. The UI
+is right-to-left Hebrew. A Workbox service worker (via `vite-plugin-pwa`)
+precachees the app shell and runtime-caches per-level content chunks.
 
 There is no backend of its own. The app runs in two persistence modes:
 
 - **Local mode (default):** all state lives in the browser (`localStorage`) and
   every AI call goes directly from the browser to the chosen provider's REST
-  API. No account, no server, no env vars required.
-- **Account mode (optional):** if a Firebase project is configured, the user can
-  sign in with Google and their progress syncs to Firestore under their `uid`,
-  so it follows them across devices. Local mode always remains the offline
-  cache underneath.
+  API. No account, no server, no env vars required. Optional JSON export/import
+  covers cross-device backup without Google.
+- **Account mode (optional):** if a Firebase project is configured via
+  `VITE_FIREBASE_*`, the user can sign in with Google and their progress syncs
+  to Firestore under their `uid`. Local mode always remains the offline cache.
 
 The learning surface is organised as feature "pillars" — Daily Lesson,
 Vocabulary, Dialogue Coach, Practice Quiz, Spaced-Repetition Review, Reading,
-Listening and Speaking — each backed by AI when a key is configured and by
-bundled offline content otherwise.
+Listening, Speaking, Daily Missions, and Mission Calendar. Lessons / vocab /
+quizzes / speaking can use AI when a key is set (else bundled offline JSON).
+Reading and Listening always use bundled offline content. Only the Dialogue
+Coach *requires* a live key.
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
@@ -60,49 +62,44 @@ bundled offline content otherwise.
 
 | Component | Responsibility |
 |---|---|
-| `src/screens/*` | One React component per `Screen` — onboarding, dashboard, daily lesson, vocabulary, dialogue coach, practice quiz, spaced-repetition review, reading, listening, speaking, saved words, progress, settings (13 in total). |
-| `src/App.tsx` | Shell + navigation: gates on onboarding, switches on the active `Screen`, renders the top bar (points/streak/level chips) and 5-item bottom nav. No router library. |
-| `src/store/useLingo.tsx` | App state (`UserProgress`, saved words, chat history, quiz history) as a React Context, persisted to `localStorage` and — in Account mode — mirrored to Firestore. Owns points, streak and SRS scheduling. Replaces the Android app's Room database. |
-| `src/services/ai.ts` | Multi-provider AI client. Stores provider/key/model in `localStorage` (same key names as the sibling JobFlowTracker app for a consistent settings UX) and exposes a single `complete(prompt, systemInstruction)` used by every feature. |
-| `src/services/content.ts` | Builds the exact prompts ported from the original Kotlin app (`LingoRepository.kt`), one generator per pillar, and falls back to bundled offline content when no AI key is configured or a call fails. |
-| `src/services/firebase.ts` | Optional Google sign-in + Firestore per-user sync. Loaded lazily via dynamic `import()`, so the (heavy) SDK never enters the main bundle for Local-mode users. |
-| `src/services/prefs.ts` | Theme (light/dark) and speech-speed preferences, persisted separately from learning progress. |
-| `src/services/tts.ts` / `asr.ts` | Web Speech API wrappers: text-to-speech (pronunciation playback) and speech recognition (speaking practice), both feature-detected. |
-| `src/services/pwa.ts` | Install prompt (`beforeinstallprompt`) + native share helpers. |
-| `src/data/offline.ts` + `extras.ts` | Loaders for bundled per-CEFR-level content, code-split via dynamic `import()` so a learner only downloads their own level. Used whenever AI isn't configured or fails. |
-| `src/data/placement.ts` | 6-question placement test → CEFR level mapping, used during onboarding. |
-| `src/data/topics.ts` | Rotating daily topics (deterministic per calendar day) and Dialogue Coach scenarios. |
-| `src/utils/*` | Pure helpers: `json` (fence-stripping + parse), `srs` (Leitner scheduling), `score` (speaking accuracy). |
-| `scripts/generate-content.mjs` | Build-time generator that expands curated content banks into a full year of offline content per level (`src/data/offline/*.json`). |
+| `src/screens/*` | One React component per `Screen` — onboarding, dashboard, daily lesson, daily missions, vocabulary, dialogue coach, practice quiz, spaced-repetition review, reading, listening, speaking, saved words, progress, calendar, settings. |
+| `src/App.tsx` | Shell + hash routing (`#/missions`, etc.): gates on onboarding, switches on the active `Screen`, top bar (points/streak/level), 6-item bottom nav, offline banner, SW update prompt. |
+| `src/store/useLingo.tsx` | App state (`UserProgress`, saved words, chat, quizzes, mission log, daily missions checklist) as a React Context, persisted to `localStorage` and — in Account mode — mirrored to Firestore. Owns points, streak, SRS, mission auto-complete, export/import. |
+| `src/services/ai.ts` | Multi-provider AI client. Stores provider/key/model in `localStorage` and exposes `complete(prompt, systemInstruction)`. |
+| `src/services/content.ts` | Generators per pillar with vocabulary-safe offline fallbacks. Reading/Listening always pick bundled content; other pillars try AI then fall back. |
+| `src/services/firebase.ts` | Optional Google sign-in + Firestore sync. Env-var config only (no hardcoded project). Lazy `import()`. |
+| `src/services/prefs.ts` | Theme, speech speed, and local reminder prefs. |
+| `src/services/reminders.ts` | Best-effort local Notification reminders while the app is open. |
+| `src/services/errors.ts` | `reportError` — console always; optional Sentry when `VITE_SENTRY_DSN` is set. |
+| `src/services/tts.ts` / `asr.ts` | Web Speech API wrappers. |
+| `src/services/pwa.ts` | Install prompt + SW update registration (`virtual:pwa-register`). |
+| `src/data/offline.ts` + `extras.ts` | Per-CEFR-level offline loaders (lessons/vocab/quizzes + reading/listening/speaking pools). |
+| `src/data/videos.ts` | Level-tagged curated YouTube list for the daily video mission. |
+| `src/data/placement.ts` / `topics.ts` | Placement test + rotating daily topics / dialogue scenarios. |
+| `src/utils/*` | Pure helpers: `json`, `srs`, `score`, `missions`, `levelProgress`, `routing`, `progressCharts`, `backup`, `dailyCache`. |
+| `scripts/generate-content.mjs` | Build-time generator for offline JSON banks. |
 
 ## Key design decisions
 
-- **Client-only, offline-first.** All configuration happens in-app (Settings
-  screen) and is stored client-side. Every AI-backed feature degrades to
-  bundled JSON content rather than failing, so the app is fully functional
-  without any provider configured. Only the Dialogue Coach requires a live key,
-  since a roleplay conversation is inherently live and can't be canned.
-- **Optional cloud, not required cloud.** Cloud sync is strictly opt-in and
-  gated on Firebase being configured (`isCloudConfigured()`). Users who never
-  sign in never download the Firebase SDK; returning signed-in users restore
-  their session on startup. The Firebase web config is a public client
-  identifier (safe to ship); access is enforced by Firestore security rules
-  (`firestore.rules`) scoping each document to its owner's `uid`.
-- **No secrets in the client, but the AI key is browser-visible.** Static Vite
-  build deploys to Vercel with no server. The AI key entered in Settings is
-  visible to the browser — acceptable for personal use, flagged in-app and in
-  the README for public deployments.
-- **Provider abstraction mirrors JobFlowTracker.** The same `localStorage` key
-  names (`aiProvider`, `aiApiKey`, `aiModel`, `ollamaUrl`) so a user who already
-  has a key saved in one app doesn't have to learn a different UI in the other.
-  Five providers share one `complete()` entry point.
-- **Code-split content.** The offline corpus is a full year of daily content per
-  level (~1 MB each). Each level (and each Reading/Listening/Speaking pool) is a
-  separate dynamic-`import()` chunk, so the initial bundle stays small and a
-  learner only ever downloads their own level.
-- **Content parity with the Android app.** Prompts, system instructions and
-  point values are copied verbatim from `LingoRepository.kt` / `LingoViewModel`
-  to preserve content and scoring behaviour.
+- **Client-only, offline-first.** Settings are in-app. A service worker
+  precaches the shell; content chunks cache on first use. AI-backed features
+  (lesson/vocab/quiz/speaking) degrade to bundled JSON; Reading/Listening are
+  offline-only by design; Dialogue Coach requires a live key.
+- **Optional cloud, not required cloud.** Cloud sync is opt-in and gated on
+  `VITE_FIREBASE_*` (`isCloudConfigured()`). No hardcoded Firebase project.
+- **Optional error monitoring.** `reportError` logs always; Sentry loads only
+  when `VITE_SENTRY_DSN` is set.
+- **Hash routing.** Screens are bookmarkable (`#/reading`) without a router
+  library; browser back/forward follow the hash.
+- **Daily Missions + Calendar.** Checklist (video, talk, reading, listening,
+  speaking, grammar, words) with auto-complete where possible; calendar shows
+  completed mission history.
+- **Level progression.** Learned/mastered vocabulary thresholds can auto-promote
+  CEFR level (`utils/levelProgress.ts`).
+- **Provider abstraction.** Five providers share one `complete()` entry point;
+  Gemini key is sent via header (not query string).
+- **Code-split content.** Per-level offline packs are dynamic-`import()` chunks
+  under `assets/content/`, excluded from the SW precache.
 
 ## Data flow (example: Daily Lesson)
 
@@ -128,9 +125,18 @@ bundled offline content otherwise.
    returns a transcript.
 3. `scoreSpeaking(target, heard)` computes an order-insensitive word-match
    percentage.
-4. `addPoints(round(score/100 * 20))` awards up to +20 per sentence.
+4. `addPoints` / `awardSpeakingPoints` awards speaking credit (full for the
+   first round of the day, reduced after to prevent farming).
 5. Browsers without speech recognition still see the sentence + model audio
    (graceful degradation).
+
+## Daily Missions
+
+`DailyMissions` shows a seven-item checklist. Manual: video (embedded curated
+YouTube by level) and talk. Auto: reading / listening (via `quizHistory` topics),
+speaking (via `missionLog`), grammar (`dailyLessonCompletedText`), words (5
+saves today). Each awards +30 once per day. `Calendar` aggregates `missionLog`
++ quiz history by local `dateKeyFromTs`.
 
 ## Data flow (Account mode sync)
 
@@ -145,13 +151,13 @@ bundled offline content otherwise.
 
 | Layer | Tool | Covers |
 |---|---|---|
-| Unit | Vitest | Pure logic: placement scoring, offline content shape, JSON cleaning, SRS scheduling, speaking score, AI/prefs config persistence. |
-| Integration | Vitest + React Testing Library | Screens wired to the real `LingoProvider`/`ai.ts` (Settings save/clear flow, onboarding → dashboard → navigation). |
-| E2E | Playwright | Full browser flow against the built app: onboarding, dashboard navigation, practice quiz. |
-| Security gate | `npm audit` (CI) | Fails CI on high/critical vulnerabilities in production dependencies. |
+| Unit | Vitest | Pure logic + store (`useLingo`) + content offline/AI-fallback paths + coverage floors. |
+| Integration | Vitest + RTL | Screens wired to `LingoProvider` (Settings, onboarding → dashboard). |
+| E2E | Playwright | Desktop + mobile: onboarding, quiz, lesson, save-word, hash deep-link, dark mode. |
+| Security / size | CI | `npm audit --omit=dev`, shell-bundle size gate, Dependabot. |
 
-CI (`.github/workflows/ci.yml`) runs audit → lint → typecheck → unit tests →
-build, then a separate job builds and runs the Playwright E2E suite on Chromium.
+CI (`.github/workflows/ci.yml`) runs audit → lint → typecheck → coverage tests →
+build → bundle gate, then Playwright E2E on Chromium (desktop + Pixel 5).
 
 ## Build-time content generation
 

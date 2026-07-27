@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
+import { reportError } from "../services/errors";
 
 interface Props {
   children: ReactNode;
@@ -18,7 +19,7 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error("Unhandled render error:", error, info.componentStack);
+    reportError(error, `render${info.componentStack ?? ""}`);
   }
 
   private retry = () => {
