@@ -29,6 +29,7 @@ import {
 } from "../utils/levelProgress";
 import { DAILY_CHECKLIST_LABELS } from "../utils/missions";
 import { clearAllDailyCaches } from "../utils/dailyCache";
+import { parseProgressBackup, type ProgressBackup } from "../utils/backup";
 import {
   isCloudConfigured,
   loadCloud,
@@ -77,29 +78,39 @@ function dateKey(ts: number): string {
 // Daily Missions — points awarded once per mission per day.
 const MISSION_POINTS = 30;
 export const DAILY_WORD_TARGET = 5;
+type MissionFlag =
+  | "video"
+  | "talk"
+  | "words"
+  | "reading"
+  | "listening"
+  | "speaking"
+  | "grammar";
+
 const EMPTY_MISSIONS: DailyMissionsState = {
   date: "",
   video: false,
   talk: false,
   words: false,
   reading: false,
+  listening: false,
+  speaking: false,
   grammar: false,
   speakingCount: 0,
 };
 
 // Missions from a previous day don't carry over — a new day starts blank.
+// Also backfills flags added after older localStorage snapshots were written.
 function todaysMissions(m: DailyMissionsState, today: string): DailyMissionsState {
-  return m.date === today
-    ? m
-    : {
-        date: today,
-        video: false,
-        talk: false,
-        words: false,
-        reading: false,
-        grammar: false,
-        speakingCount: 0,
-      };
+  if (m.date !== today) {
+    return { ...EMPTY_MISSIONS, date: today };
+  }
+  return {
+    ...m,
+    listening: m.listening ?? false,
+    speaking: m.speaking ?? false,
+    speakingCount: m.speakingCount ?? 0,
+  };
 }
 
 function uid(): string {
@@ -173,6 +184,8 @@ interface LingoContextValue {
   addChatMessage: (msg: Omit<ChatMessage, "id" | "timestamp">) => void;
   clearChat: (scenario: string, level: Level) => void;
   resetAll: () => void;
+  exportProgress: () => ProgressBackup;
+  importProgress: (raw: unknown) => void;
 }
 
 const LingoContext = createContext<LingoContextValue | null>(null);
@@ -637,7 +650,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   // Missions from a prior day are dropped first, so yesterday's checkmarks
   // never carry over or block today's points. Shared by the manual "mark as
   // done" missions and the auto-detected ones below.
-  const awardMission = useCallback((id: keyof Omit<DailyMissionsState, "date">) => {
+  const awardMission = useCallback((id: MissionFlag) => {
     const today = dateKey(Date.now());
     setDailyMissions((prev) => {
       const current = todaysMissions(prev, today);
@@ -705,6 +718,25 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     if (done) awardMission("reading");
   }, [quizHistory, awardMission]);
 
+  // Auto-complete Listening once today's Listening quiz is finished.
+  useEffect(() => {
+    const today = dateKey(Date.now());
+    const done = quizHistory.some(
+      (h) => h.topic === "Listening" && dateKey(h.timestamp) === today,
+    );
+    if (done) awardMission("listening");
+  }, [quizHistory, awardMission]);
+
+  // Auto-complete Speaking once a speaking practice set is finished today
+  // (Speaking.tsx logs it via logMission("speaking")).
+  useEffect(() => {
+    const today = dateKey(Date.now());
+    const done = missionLog.some(
+      (m) => m.kind === "speaking" && dateKey(m.timestamp) === today,
+    );
+    if (done) awardMission("speaking");
+  }, [missionLog, awardMission]);
+
   // Auto-complete "learn one grammar topic" once today's Daily Lesson is done
   // — dailyLessonCompletedText is already the per-day gate completeLesson sets.
   useEffect(() => {
@@ -743,6 +775,45 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     // so a reset doesn't leave stale content showing on the next visit.
     // Deliberately does NOT touch the AI provider key or UI prefs (theme,
     // speech speed) — those are user settings, not learning progress.
+    clearAllDailyCaches();
+  }, []);
+
+  const exportProgress = useCallback((): ProgressBackup => {
+    return {
+      version: 1,
+      exportedAt: Date.now(),
+      progress,
+      savedWords,
+      learnedWords,
+      chatMessages,
+      quizHistory,
+      missionLog,
+      dailyMissions,
+    };
+  }, [
+    progress,
+    savedWords,
+    learnedWords,
+    chatMessages,
+    quizHistory,
+    missionLog,
+    dailyMissions,
+  ]);
+
+  const importProgress = useCallback((raw: unknown) => {
+    const data = parseProgressBackup(raw);
+    setProgress(data.progress);
+    setSavedWords(data.savedWords);
+    setLearnedWords(
+      Object.keys(data.learnedWords).length > 0
+        ? data.learnedWords
+        : seedStarterEntries(),
+    );
+    setChatMessages(data.chatMessages);
+    setQuizHistory(data.quizHistory);
+    setMissionLog(data.missionLog);
+    setDailyMissions(todaysMissions(data.dailyMissions, dateKey(Date.now())));
+    setLevelUpNotice(null);
     clearAllDailyCaches();
   }, []);
 
@@ -788,6 +859,8 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       addChatMessage,
       clearChat,
       resetAll,
+      exportProgress,
+      importProgress,
     }),
     [
       progress,
@@ -824,6 +897,8 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       addChatMessage,
       clearChat,
       resetAll,
+      exportProgress,
+      importProgress,
     ],
   );
 

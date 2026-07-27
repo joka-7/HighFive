@@ -29,7 +29,7 @@ const MANUAL_MISSIONS: ManualMission[] = [
 // Missions that auto-complete once their in-app action is done — practiced
 // from their own tab, so there's nothing to press here.
 interface AutoMission {
-  id: "reading" | "grammar";
+  id: "reading" | "listening" | "speaking" | "grammar";
   emoji: string;
   title: string;
   sub: string;
@@ -45,6 +45,22 @@ const AUTO_MISSIONS: AutoMission[] = [
     sub: "סיימו קטע וענו על שאלות ההבנה — המשימה מסתיימת אוטומטית.",
     screen: "reading",
     cta: "עברו לקריאה ←",
+  },
+  {
+    id: "listening",
+    emoji: "🎧",
+    title: "תרגלו האזנה",
+    sub: "הקשיבו לקטע וענו על שאלות ההבנה — המשימה מסתיימת אוטומטית.",
+    screen: "listening",
+    cta: "עברו להאזנה ←",
+  },
+  {
+    id: "speaking",
+    emoji: "🎤",
+    title: "תרגלו דיבור",
+    sub: "סיימו סט משפטי הגייה — המשימה מסתיימת אוטומטית.",
+    screen: "speaking",
+    cta: "עברו לדיבור ←",
   },
   {
     id: "grammar",
