@@ -8,11 +8,20 @@ export type SpeechSpeed = "slow" | "normal" | "fast";
 export interface Prefs {
   theme: Theme;
   speechSpeed: SpeechSpeed;
+  /** Local best-effort daily mission reminder (requires Notification permission). */
+  remindersEnabled: boolean;
+  /** Local hour (0–23) at/after which a reminder may fire while the app is open. */
+  reminderHour: number;
 }
 
 const KEY = "high5.prefs";
 
-const DEFAULTS: Prefs = { theme: "light", speechSpeed: "normal" };
+const DEFAULTS: Prefs = {
+  theme: "light",
+  speechSpeed: "normal",
+  remindersEnabled: false,
+  reminderHour: 18,
+};
 
 export const SPEECH_RATES: Record<SpeechSpeed, number> = {
   slow: 0.7,

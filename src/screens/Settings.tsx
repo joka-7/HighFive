@@ -14,6 +14,10 @@ import {
   applyTheme,
   type SpeechSpeed,
 } from "../services/prefs";
+import {
+  notificationsSupported,
+  requestReminderPermission,
+} from "../services/reminders";
 import { usePwaInstall, canShare, shareApp } from "../services/pwa";
 import { speak, ttsSupported } from "../services/tts";
 import { LEVELS, type Level } from "../types";
@@ -60,6 +64,29 @@ export default function Settings() {
     setPrefs(next);
     savePrefs(next);
     if (ttsSupported()) speak("This is the playback speed.");
+  }
+
+  async function setRemindersEnabled(enabled: boolean) {
+    if (enabled) {
+      if (!notificationsSupported()) {
+        setBackupMsg("הדפדפן לא תומך בהתראות.");
+        return;
+      }
+      const perm = await requestReminderPermission();
+      if (perm !== "granted") {
+        setBackupMsg("יש לאשר התראות בהגדרות הדפדפן.");
+        return;
+      }
+    }
+    const next = { ...prefs, remindersEnabled: enabled };
+    setPrefs(next);
+    savePrefs(next);
+  }
+
+  function setReminderHour(hour: number) {
+    const next = { ...prefs, reminderHour: hour };
+    setPrefs(next);
+    savePrefs(next);
   }
 
   async function handleSignIn() {
@@ -306,6 +333,38 @@ export default function Settings() {
               ))}
             </div>
           </>
+        )}
+
+        <div className="row-between" style={{ margin: "16px 0 8px" }}>
+          <div>
+            <div style={{ fontWeight: 700 }}>🔔 תזכורת משימות</div>
+            <div className="muted" style={{ fontSize: 13 }}>
+              התראה מקומית כשהאפליקציה פתוחה אחרי השעה שנבחרה ומשימות לא הושלמו.
+            </div>
+          </div>
+          <button
+            className={`level-pill ${prefs.remindersEnabled ? "active" : ""}`}
+            style={{ minWidth: 64 }}
+            onClick={() => setRemindersEnabled(!prefs.remindersEnabled)}
+          >
+            {prefs.remindersEnabled ? "פעיל" : "כבוי"}
+          </button>
+        </div>
+        {prefs.remindersEnabled && (
+          <label className="field">
+            <span>שעת תזכורת</span>
+            <select
+              className="input"
+              value={prefs.reminderHour}
+              onChange={(e) => setReminderHour(Number(e.target.value))}
+            >
+              {Array.from({ length: 24 }, (_, h) => (
+                <option key={h} value={h}>
+                  {String(h).padStart(2, "0")}:00
+                </option>
+              ))}
+            </select>
+          </label>
         )}
       </div>
 
