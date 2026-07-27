@@ -132,7 +132,10 @@ export async function complete(prompt: string, systemInstruction?: string): Prom
   }
 
   if (provider === "gemini") {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    // The key travels in a header rather than the `?key=` query string — a
+    // URL ends up in proxy/server access logs and browser history, while a
+    // header does not. Gemini supports both; this is the safer one.
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
     const body = {
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       generationConfig: { responseMimeType: "application/json", temperature: 0.7 },
@@ -142,7 +145,7 @@ export async function complete(prompt: string, systemInstruction?: string): Prom
     };
     const res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
       body: JSON.stringify(body),
     });
     if (!res.ok) throw new Error(await errorText(res));
