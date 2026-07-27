@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { generateReading } from "../services/content";
 import { topicForTodayByLevel, READING_TOPICS_BY_LEVEL } from "../data/topics";
@@ -13,6 +13,15 @@ const CACHE_KEY = "high5.reading_today.v5";
 export default function Reading() {
   const { progress, isWordSaved, toggleSaveWord, completeQuiz, learnedWords } = useLingo();
   const level = progress?.currentLevel ?? "A1";
+  // A stable string key rather than depending on the `learnedWords` object
+  // directly — that object gets a new identity every time a word is saved
+  // (e.g. from this screen's own glossary), which used to re-run `load()`
+  // below and reset the reading mid-article (phase/open glossary/showHe all
+  // snapped back). Same pattern already used in Listening.tsx/Speaking.tsx.
+  const learnedKey = useMemo(
+    () => Object.keys(learnedWords).sort().join(","),
+    [learnedWords],
+  );
   const [reading, setReading] = useState<GemReading | null>(null);
   const [loading, setLoading] = useState(false);
   const [phase, setPhase] = useState<"read" | "quiz" | "done">("read");
@@ -36,22 +45,34 @@ export default function Reading() {
       generateReading(
         level,
         topicForTodayByLevel(READING_TOPICS_BY_LEVEL, level),
-        Object.keys(learnedWords),
+        learnedKey ? learnedKey.split(",") : [],
       )
         .then((r) => {
           setReading(r);
           saveDailyCache(CACHE_KEY, level, r);
         })
+        .catch(() => setReading(null))
         .finally(() => setLoading(false));
     },
-    [level, learnedWords],
+    [level, learnedKey],
   );
 
   useEffect(() => {
     load();
   }, [load]);
 
-  if (!reading || loading) return <Spinner label="טוען קטע קריאה..." />;
+  if (loading) return <Spinner label="טוען קטע קריאה..." />;
+
+  if (!reading) {
+    return (
+      <div className="card center">
+        <h2>לא הצלחנו לטעון קטע קריאה</h2>
+        <button className="btn" onClick={() => load(true)} style={{ marginTop: 12 }}>
+          נסו שוב 🔄
+        </button>
+      </div>
+    );
+  }
 
   if (phase === "done") {
     return (

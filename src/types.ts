@@ -161,6 +161,11 @@ export interface DailyMissionsState {
   words: boolean; // auto-completes once 5 words are saved that day
   reading: boolean; // auto-completes on finishing a Reading Lab article
   grammar: boolean; // auto-completes on finishing the Daily Lesson
+  // Number of Speaking-practice attempts scored today. Optional so state
+  // persisted before this field existed still loads; treated as 0 when
+  // absent. Drives diminishing points after the first full round so re-
+  // recording the same sentence can't be farmed for unlimited points.
+  speakingCount?: number;
 }
 
 export type Screen =

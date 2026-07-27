@@ -16,6 +16,8 @@ type Phase = "reading" | "quiz" | "done";
 export default function DailyLesson() {
   const { progress, completeLesson, learnedWords } = useLingo();
   const [lesson, setLesson] = useState<GemLesson | null>(null);
+  const [error, setError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const [phase, setPhase] = useState<Phase>("reading");
   const [earned, setEarned] = useState(0);
 
@@ -23,6 +25,7 @@ export default function DailyLesson() {
   // switches) so the user doesn't lose their place mid-lesson.
   useEffect(() => {
     let active = true;
+    setError(false);
     const level = progress?.currentLevel ?? "A1";
     const cached = loadDailyCache<GemLesson>(CACHE_KEY, level);
     if (cached) {
@@ -33,16 +36,34 @@ export default function DailyLesson() {
       level,
       topicForTodayByLevel(LESSON_TOPICS_BY_LEVEL, level),
       Object.keys(learnedWords),
-    ).then((l) => {
-      if (active) {
-        setLesson(l);
-        saveDailyCache(CACHE_KEY, level, l);
-      }
-    });
+    )
+      .then((l) => {
+        if (active) {
+          setLesson(l);
+          saveDailyCache(CACHE_KEY, level, l);
+        }
+      })
+      .catch(() => {
+        // Content failed to load (e.g. a chunk-load failure fetching the
+        // level's offline bundle) — surface a retry instead of leaving the
+        // spinner up forever.
+        if (active) setError(true);
+      });
     return () => {
       active = false;
     };
-  }, [progress?.currentLevel, learnedWords]);
+  }, [progress?.currentLevel, learnedWords, reloadKey]);
+
+  if (error) {
+    return (
+      <div className="card center">
+        <h2>לא הצלחנו לטעון את השיעור</h2>
+        <button className="btn" onClick={() => setReloadKey((k) => k + 1)} style={{ marginTop: 12 }}>
+          נסו שוב 🔄
+        </button>
+      </div>
+    );
+  }
 
   if (!lesson) return <Spinner label="מכין שיעור..." />;
 

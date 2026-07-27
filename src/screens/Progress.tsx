@@ -2,6 +2,7 @@ import { useLingo } from "../store/useLingo";
 import { LEVELS } from "../types";
 import {
   countLearnedAtLevel,
+  countMastered,
   countMasteredAtLevel,
   LEARNED_TO_ADVANCE,
   MASTERED_TO_ADVANCE,
@@ -13,7 +14,9 @@ export default function Progress() {
   if (!progress) return null;
 
   const level = progress.currentLevel;
-  const mastered = savedWords.filter((w) => w.isMastered).length;
+  // Same definition of "mastered" used everywhere else on this screen (and in
+  // levelProgress.ts): manually marked OR reached the top SRS box.
+  const mastered = countMastered(savedWords);
   const learnedAtLevel = countLearnedAtLevel(learnedWords, level);
   const masteredAtLevel = countMasteredAtLevel(savedWords, level);
   const learnedGoal = LEARNED_TO_ADVANCE[level];

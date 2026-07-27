@@ -9,32 +9,50 @@ import Spinner from "../components/Spinner";
 export default function PracticeQuiz() {
   const { progress, completeQuiz, learnedWords } = useLingo();
   const [quiz, setQuiz] = useState<GemQuiz | null>(null);
-  const [result, setResult] = useState<number | null>(null);
+  const [error, setError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
+  const [result, setResult] = useState<{ score: number; earned: number } | null>(null);
   const level = progress?.currentLevel ?? "A1";
   const topic = topicForTodayByLevel(QUIZ_TOPICS_BY_LEVEL, level);
 
   useEffect(() => {
     let active = true;
-    generatePracticeQuiz(level, topic, Object.keys(learnedWords)).then((q) => {
-      if (active) setQuiz(q);
-    });
+    setError(false);
+    generatePracticeQuiz(level, topic, Object.keys(learnedWords))
+      .then((q) => {
+        if (active) setQuiz(q);
+      })
+      .catch(() => {
+        if (active) setError(true);
+      });
     return () => {
       active = false;
     };
-  }, [level, topic, learnedWords]);
+  }, [level, topic, learnedWords, reloadKey]);
+
+  if (error) {
+    return (
+      <div className="card center">
+        <h2>לא הצלחנו לטעון את החידון</h2>
+        <button className="btn" onClick={() => setReloadKey((k) => k + 1)} style={{ marginTop: 12 }}>
+          נסו שוב 🔄
+        </button>
+      </div>
+    );
+  }
 
   if (!quiz) return <Spinner label="מכין חידון..." />;
 
   if (result !== null) {
     const total = quiz.questions.length;
-    const perfect = result === total;
+    const perfect = result.score === total;
     return (
       <div className="celebrate">
         <div className="big">{perfect ? "🏆" : "👏"}</div>
         <h2>
-          {result}/{total} נכון
+          {result.score}/{total} נכון
         </h2>
-        <p className="muted">זכית ב-{result * 25} נקודות!</p>
+        <p className="muted">זכית ב-{result.earned} נקודות!</p>
       </div>
     );
   }
@@ -45,8 +63,8 @@ export default function PracticeQuiz() {
       <QuizRunner
         questions={quiz.questions}
         onFinish={(score) => {
-          completeQuiz(level, topic, score, quiz.questions.length);
-          setResult(score);
+          const earned = completeQuiz(level, topic, score, quiz.questions.length);
+          setResult({ score, earned });
         }}
       />
     </>

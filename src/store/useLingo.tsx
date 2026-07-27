@@ -28,6 +28,7 @@ import {
   promotionTarget,
 } from "../utils/levelProgress";
 import { DAILY_CHECKLIST_LABELS } from "../utils/missions";
+import { clearAllDailyCaches } from "../utils/dailyCache";
 import {
   isCloudConfigured,
   loadCloud,
@@ -83,17 +84,48 @@ const EMPTY_MISSIONS: DailyMissionsState = {
   words: false,
   reading: false,
   grammar: false,
+  speakingCount: 0,
 };
 
 // Missions from a previous day don't carry over — a new day starts blank.
 function todaysMissions(m: DailyMissionsState, today: string): DailyMissionsState {
   return m.date === today
     ? m
-    : { date: today, video: false, talk: false, words: false, reading: false, grammar: false };
+    : {
+        date: today,
+        video: false,
+        talk: false,
+        words: false,
+        reading: false,
+        grammar: false,
+        speakingCount: 0,
+      };
 }
 
 function uid(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+// Points economy — a fixed amount is awarded in full once per activity per
+// day; repeating the same activity again the same day still earns something,
+// but at a reduced rate, so the same day-aligned quiz/sentence can't be
+// replayed for unlimited points. Mirrors the gate `completeLesson` already
+// had for the Daily Lesson.
+const REPEAT_POINTS_FACTOR = 0.25;
+const QUIZ_POINTS_PER_ANSWER = 25;
+const SPEAKING_POINTS_MAX = 20;
+// One full round of Speaking practice is 4 sentences (see generateSpeaking) —
+// so the first round each day earns full credit per attempt.
+const SPEAKING_FULL_CREDIT_ATTEMPTS = 4;
+
+// Keep persisted history bounded so it can't grow forever — both so the
+// synced Firestore document stays under Firestore's 1 MiB document limit, and
+// so localStorage doesn't grow unbounded on long-term local-mode users.
+const MAX_CHAT_MESSAGES = 200;
+const MAX_MISSION_LOG = 400;
+
+function capMissionLog(list: MissionLog[]): MissionLog[] {
+  return list.length > MAX_MISSION_LOG ? list.slice(0, MAX_MISSION_LOG) : list;
 }
 
 interface LingoContextValue {
@@ -107,6 +139,11 @@ interface LingoContextValue {
   cloudConfigured: boolean;
   user: CloudUser | null;
   authReady: boolean;
+  // True once the initial cloud load for the current session has either
+  // applied real cloud data or confirmed there was none and seeded it — the
+  // gate that stops the debounced upload effect from firing on a failed load.
+  cloudSyncError: boolean;
+  retryCloudSync: () => void;
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
   registerUser: (userName: string, nativeLanguage: string, level: Level) => void;
@@ -114,6 +151,9 @@ interface LingoContextValue {
   levelUpNotice: Level | null;
   clearLevelUpNotice: () => void;
   addPoints: (points: number) => void;
+  // Speaking-practice points, gated to diminishing returns after the first
+  // full round of the day (see SPEAKING_FULL_CREDIT_ATTEMPTS).
+  awardSpeakingPoints: (score0to100: number) => void;
   isWordSaved: (word: string) => boolean;
   toggleSaveWord: (word: Omit<SavedWord, "id" | "savedAt" | "isMastered">) => void;
   markWordsLearned: (words: GemWord[], level: Level) => void;
@@ -122,7 +162,10 @@ interface LingoContextValue {
   dueWords: () => SavedWord[];
   reviewWord: (id: string, remembered: boolean) => void;
   completeLesson: (correctCount: number, totalQuestions: number) => void;
-  completeQuiz: (level: Level, topic: string, score: number, total: number) => void;
+  // Returns the points actually awarded (full rate the first time this topic
+  // is completed today, reduced on repeats — see completeQuiz's impl) so
+  // callers can display an accurate figure instead of assuming the full rate.
+  completeQuiz: (level: Level, topic: string, score: number, total: number) => number;
   logMission: (kind: MissionKind, label: string, score?: number, total?: number) => void;
   dailyMissions: DailyMissionsState;
   todayWordCount: number;
@@ -160,6 +203,9 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   const [levelUpNotice, setLevelUpNotice] = useState<Level | null>(null);
 
   const [user, setUser] = useState<CloudUser | null>(null);
+  // See LingoContextValue.cloudSyncError for what these two gate.
+  const [cloudLoaded, setCloudLoaded] = useState(false);
+  const [cloudSyncError, setCloudSyncError] = useState(false);
   // We only wait on auth (and load Firebase) at startup if the user previously
   // signed in. Local-mode users resolve immediately and never fetch the SDK.
   const willRestoreSession =
@@ -213,19 +259,48 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     };
   }, [progress, savedWords, learnedWords, chatMessages, quizHistory, missionLog, dailyMissions]);
 
-  // Streak bookkeeping on mount — same day → unchanged; consecutive day → +1;
-  // gap → reset.
+  // Streak bookkeeping — same day → unchanged; consecutive day → +1; gap →
+  // reset. Runs on mount and again whenever the tab regains visibility, so a
+  // session left open across midnight still rolls the streak instead of only
+  // catching it on the next full reload.
   useEffect(() => {
-    setProgress((prev) => {
-      if (!prev) return prev;
-      const now = Date.now();
-      const today = dateKey(now);
-      const last = prev.lastActiveTimestamp ? dateKey(prev.lastActiveTimestamp) : "";
-      if (last === today) return prev;
-      const yesterday = dateKey(now - 86_400_000);
-      const streak = last === yesterday ? prev.streak + 1 : 1;
-      return { ...prev, streak, lastActiveTimestamp: now };
-    });
+    function recomputeStreak() {
+      setProgress((prev) => {
+        if (!prev) return prev;
+        const now = Date.now();
+        const today = dateKey(now);
+        const last = prev.lastActiveTimestamp ? dateKey(prev.lastActiveTimestamp) : "";
+        if (last === today) return prev;
+        const yesterday = dateKey(now - 86_400_000);
+        const streak = last === yesterday ? prev.streak + 1 : 1;
+        return { ...prev, streak, lastActiveTimestamp: now };
+      });
+    }
+    recomputeStreak();
+    function onVisibility() {
+      if (document.visibilityState === "visible") recomputeStreak();
+    }
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
+
+  // Apply a loaded (or freshly seeded) cloud document to local state and mark
+  // the load as successful — shared by the initial auth watcher and the
+  // manual retry below.
+  const applyCloudLoad = useCallback(async (uid: string) => {
+    const cloud = await loadCloud(uid);
+    if (cloud) {
+      setProgress(cloud.progress ?? null);
+      setSavedWords(cloud.savedWords ?? []);
+      setLearnedWords(cloud.learnedWords ?? seedStarterEntries());
+      setChatMessages(cloud.chatMessages ?? []);
+      setQuizHistory(cloud.quizHistory ?? []);
+      setMissionLog(cloud.missionLog ?? []);
+      setDailyMissions(cloud.dailyMissions ?? EMPTY_MISSIONS);
+    } else {
+      await saveCloud(uid, latest.current);
+    }
+    setCloudLoaded(true);
   }, []);
 
   // Begin watching Google sign-in state. This is what pulls in the Firebase
@@ -240,27 +315,31 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       setAuthReady(true);
       if (!u) {
         localStorage.removeItem(KEYS.cloudSession);
+        setCloudLoaded(false);
+        setCloudSyncError(false);
         return;
       }
       localStorage.setItem(KEYS.cloudSession, JSON.stringify(true));
+      setCloudSyncError(false);
       try {
-        const cloud = await loadCloud(u.uid);
-        if (cloud) {
-          setProgress(cloud.progress ?? null);
-          setSavedWords(cloud.savedWords ?? []);
-          setLearnedWords(cloud.learnedWords ?? seedStarterEntries());
-          setChatMessages(cloud.chatMessages ?? []);
-          setQuizHistory(cloud.quizHistory ?? []);
-          setMissionLog(cloud.missionLog ?? []);
-          setDailyMissions(cloud.dailyMissions ?? EMPTY_MISSIONS);
-        } else {
-          await saveCloud(u.uid, latest.current);
-        }
+        await applyCloudLoad(u.uid);
       } catch {
-        // Network/permission issue → stay on local data.
+        // Network/permission issue → stay on local data, and deliberately do
+        // NOT mark cloudLoaded — the debounced upload effect below stays off
+        // until a retry succeeds, so a transient failure here can never
+        // silently overwrite the user's real cloud progress with stale local
+        // data. Surfaced via cloudSyncError so the UI can offer a retry.
+        setCloudSyncError(true);
       }
     });
-  }, []);
+  }, [applyCloudLoad]);
+
+  // Manual retry for the UI to call after a failed initial load.
+  const retryCloudSync = useCallback(() => {
+    if (!user) return;
+    setCloudSyncError(false);
+    applyCloudLoad(user.uid).catch(() => setCloudSyncError(true));
+  }, [user, applyCloudLoad]);
 
   // Only restore a session (and load Firebase) on startup for users who were
   // signed in last time. Everyone else stays in Local mode with no SDK fetch.
@@ -273,9 +352,11 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // While signed in, debounce-sync changes up to Firestore.
+  // While signed in, debounce-sync changes up to Firestore — gated on
+  // cloudLoaded so this never fires before the initial load has either
+  // applied the user's real cloud data or confirmed there was none.
   useEffect(() => {
-    if (!user) return;
+    if (!user || !cloudLoaded) return;
     const t = setTimeout(() => {
       saveCloud(user.uid, {
         progress,
@@ -285,10 +366,20 @@ export function LingoProvider({ children }: { children: ReactNode }) {
         quizHistory,
         missionLog,
         dailyMissions,
-      }).catch(() => {});
+      }).catch(() => setCloudSyncError(true));
     }, 800);
     return () => clearTimeout(t);
-  }, [user, progress, savedWords, learnedWords, chatMessages, quizHistory, missionLog, dailyMissions]);
+  }, [
+    user,
+    cloudLoaded,
+    progress,
+    savedWords,
+    learnedWords,
+    chatMessages,
+    quizHistory,
+    missionLog,
+    dailyMissions,
+  ]);
 
   const signIn = useCallback(async () => {
     // Start listening first so onAuthStateChanged catches this sign-in; this is
@@ -300,6 +391,16 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     await cloudSignOut();
     setUser(null);
+    setCloudLoaded(false);
+    setCloudSyncError(false);
+    localStorage.removeItem(KEYS.cloudSession);
+    // Signing out only happens from an account session (the Settings sign-out
+    // button only renders while `user` is set), so this device's local data
+    // is a copy of that account's progress — clear it so the next person (or
+    // the next Google account) on a shared device doesn't inherit it, or have
+    // it re-uploaded over their own cloud data.
+    resetAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const registerUser = useCallback(
@@ -330,15 +431,17 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     const target = promotionTarget(progress.currentLevel, learnedWords, savedWords);
     if (!target || target === progress.currentLevel) return;
     setLevelUpNotice(target);
-    setMissionLog((ml) => [
-      {
-        id: uid(),
-        kind: "lesson",
-        label: `עלית לרמה ${target}! 🎉`,
-        timestamp: Date.now(),
-      },
-      ...ml,
-    ]);
+    setMissionLog((ml) =>
+      capMissionLog([
+        {
+          id: uid(),
+          kind: "lesson",
+          label: `עלית לרמה ${target}! 🎉`,
+          timestamp: Date.now(),
+        },
+        ...ml,
+      ]),
+    );
     setProgress((prev) =>
       prev ? { ...prev, currentLevel: target, points: prev.points + 100 } : prev,
     );
@@ -457,10 +560,12 @@ export function LingoProvider({ children }: { children: ReactNode }) {
 
   const logMission = useCallback<LingoContextValue["logMission"]>(
     (kind, label, score, total) => {
-      setMissionLog((prev) => [
-        { id: uid(), kind, label, timestamp: Date.now(), score, total },
-        ...prev,
-      ]);
+      setMissionLog((prev) =>
+        capMissionLog([
+          { id: uid(), kind, label, timestamp: Date.now(), score, total },
+          ...prev,
+        ]),
+      );
     },
     [],
   );
@@ -490,7 +595,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
             : m,
         );
       }
-      return [
+      return capMissionLog([
         {
           id: uid(),
           kind: "lesson",
@@ -500,20 +605,32 @@ export function LingoProvider({ children }: { children: ReactNode }) {
           total: totalQuestions,
         },
         ...prev,
-      ];
+      ]);
     });
   }, []);
 
   const completeQuiz = useCallback(
     (level: Level, topic: string, score: number, total: number) => {
-      // 25 points per correct answer (LingoViewModel.loadPracticeQuiz flow).
-      setProgress((prev) => (prev ? { ...prev, points: prev.points + score * 25 } : prev));
+      // 25 points per correct answer the first time this topic is completed
+      // today (LingoViewModel.loadPracticeQuiz flow); reduced on repeats so
+      // replaying the same day-aligned quiz can't be farmed for unlimited
+      // points — same gate shape as completeLesson's per-day base bonus.
+      const today = dateKey(Date.now());
+      const alreadyToday = quizHistory.some(
+        (h) => h.topic === topic && dateKey(h.timestamp) === today,
+      );
+      const perAnswer = alreadyToday
+        ? Math.round(QUIZ_POINTS_PER_ANSWER * REPEAT_POINTS_FACTOR)
+        : QUIZ_POINTS_PER_ANSWER;
+      const earned = score * perAnswer;
+      setProgress((prev) => (prev ? { ...prev, points: prev.points + earned } : prev));
       setQuizHistory((prev) => [
         { id: uid(), level, topic, score, totalQuestions: total, timestamp: Date.now() },
         ...prev,
       ]);
+      return earned;
     },
-    [],
+    [quizHistory],
   );
 
   // Mark today's mission done and award points once per mission per day.
@@ -534,10 +651,10 @@ export function LingoProvider({ children }: { children: ReactNode }) {
           if (ml.some((m) => m.kind === meta.kind && dateKey(m.timestamp) === today)) {
             return ml;
           }
-          return [
+          return capMissionLog([
             { id: uid(), kind: meta.kind, label: meta.label, timestamp: Date.now() },
             ...ml,
-          ];
+          ]);
         });
       }
 
@@ -549,6 +666,22 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     (id: "video" | "talk") => awardMission(id),
     [awardMission],
   );
+
+  // Speaking-practice points: full credit for the first round of the day
+  // (SPEAKING_FULL_CREDIT_ATTEMPTS attempts), reduced after — otherwise the
+  // same sentence could be re-recorded indefinitely for unlimited points.
+  const awardSpeakingPoints = useCallback((score0to100: number) => {
+    const today = dateKey(Date.now());
+    setDailyMissions((prev) => {
+      const current = todaysMissions(prev, today);
+      const count = current.speakingCount ?? 0;
+      const fullCredit = count < SPEAKING_FULL_CREDIT_ATTEMPTS;
+      const raw = Math.round((score0to100 / 100) * SPEAKING_POINTS_MAX);
+      const earned = fullCredit ? raw : Math.round(raw * REPEAT_POINTS_FACTOR);
+      setProgress((p) => (p ? { ...p, points: p.points + earned } : p));
+      return { ...current, speakingCount: count + 1 };
+    });
+  }, []);
 
   // Words saved today (via toggleSaveWord) — drives the "save 5 words" mission.
   const todayWordCount = useMemo(() => {
@@ -581,7 +714,10 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   }, [progress?.dailyLessonCompletedText, awardMission]);
 
   const addChatMessage = useCallback<LingoContextValue["addChatMessage"]>((msg) => {
-    setChatMessages((prev) => [...prev, { ...msg, id: uid(), timestamp: Date.now() }]);
+    setChatMessages((prev) => {
+      const next = [...prev, { ...msg, id: uid(), timestamp: Date.now() }];
+      return next.length > MAX_CHAT_MESSAGES ? next.slice(-MAX_CHAT_MESSAGES) : next;
+    });
     // Each user dialogue turn awards +15 points (LingoViewModel.sendChatMessage).
     if (msg.role === "user") {
       setProgress((p) => (p ? { ...p, points: p.points + 15 } : p));
@@ -603,6 +739,11 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     setMissionLog([]);
     setDailyMissions(EMPTY_MISSIONS);
     setLevelUpNotice(null);
+    // Also clear cached lesson/reading/listening/speaking-of-the-day content
+    // so a reset doesn't leave stale content showing on the next visit.
+    // Deliberately does NOT touch the AI provider key or UI prefs (theme,
+    // speech speed) — those are user settings, not learning progress.
+    clearAllDailyCaches();
   }, []);
 
   const todayMissions = useMemo(
@@ -624,6 +765,8 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       cloudConfigured: isCloudConfigured(),
       user,
       authReady,
+      cloudSyncError,
+      retryCloudSync,
       signIn,
       signOut,
       registerUser,
@@ -631,6 +774,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       levelUpNotice,
       clearLevelUpNotice,
       addPoints,
+      awardSpeakingPoints,
       isWordSaved,
       markWordsLearned,
       getAllowedVocabulary,
@@ -657,6 +801,8 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       completeMission,
       user,
       authReady,
+      cloudSyncError,
+      retryCloudSync,
       signIn,
       signOut,
       registerUser,
@@ -664,6 +810,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       levelUpNotice,
       clearLevelUpNotice,
       addPoints,
+      awardSpeakingPoints,
       isWordSaved,
       markWordsLearned,
       getAllowedVocabulary,
