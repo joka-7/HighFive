@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLingo } from "./store/useLingo";
 import { useServiceWorkerUpdate } from "./services/pwa";
 import type { Screen } from "./types";
@@ -49,6 +49,7 @@ export default function App() {
   const { progress } = useLingo();
   const [screen, setScreen] = useState<Screen>("dashboard");
   const { needRefresh, applyUpdate } = useServiceWorkerUpdate();
+  const mainRef = useRef<HTMLElement>(null);
 
   // Push a history entry on every in-app navigation so the mobile back
   // button/gesture steps back through screens instead of exiting the app —
@@ -65,6 +66,12 @@ export default function App() {
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
+
+  // Move keyboard/screen-reader focus into the new screen content on navigate.
+  useEffect(() => {
+    if (!progress) return;
+    mainRef.current?.focus();
+  }, [screen, progress]);
 
   if (!progress) {
     return (
@@ -132,30 +139,53 @@ export default function App() {
             High5
           </span>
         ) : (
-          <button className="brand" onClick={() => go("dashboard")}>
+          <button
+            className="brand"
+            onClick={() => go("dashboard")}
+            aria-label={`חזרה לדף הבית — ${TITLES[screen]}`}
+          >
             → {TITLES[screen]}
           </button>
         )}
-        <div className="stats">
-          <span className="chip">✨ {progress.points}</span>
-          <span className="chip">🔥 {progress.streak}</span>
-          <span className="chip level">{progress.currentLevel}</span>
+        <div className="stats" aria-label="סטטוס">
+          <span className="chip" aria-label={`${progress.points} נקודות`}>
+            ✨ {progress.points}
+          </span>
+          <span className="chip" aria-label={`רצף של ${progress.streak} ימים`}>
+            🔥 {progress.streak}
+          </span>
+          <span className="chip level" aria-label={`רמה ${progress.currentLevel}`}>
+            {progress.currentLevel}
+          </span>
         </div>
       </header>
 
-      <main className="screen">{renderScreen()}</main>
+      <main
+        className="screen"
+        ref={mainRef}
+        tabIndex={-1}
+        aria-label={TITLES[screen]}
+      >
+        {renderScreen()}
+      </main>
 
-      <nav className="bottom-nav">
-        {NAV.map((n) => (
-          <button
-            key={n.screen}
-            className={`nav-item ${screen === n.screen ? "active" : ""}`}
-            onClick={() => go(n.screen)}
-          >
-            <span className="ico">{n.ico}</span>
-            <span>{n.label}</span>
-          </button>
-        ))}
+      <nav className="bottom-nav" aria-label="ניווט ראשי">
+        {NAV.map((n) => {
+          const active = screen === n.screen;
+          return (
+            <button
+              key={n.screen}
+              className={`nav-item ${active ? "active" : ""}`}
+              onClick={() => go(n.screen)}
+              aria-current={active ? "page" : undefined}
+            >
+              <span className="ico" aria-hidden="true">
+                {n.ico}
+              </span>
+              <span>{n.label}</span>
+            </button>
+          );
+        })}
       </nav>
     </div>
   );

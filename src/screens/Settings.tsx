@@ -181,8 +181,13 @@ export default function Settings() {
                 placeholder={info.placeholder}
                 onChange={(e) => setApiKeyState(e.target.value)}
               />
-              <button className="icon-btn" onClick={() => setShowKey((s) => !s)}>
-                {showKey ? "🙈" : "👁️"}
+              <button
+                className="icon-btn"
+                aria-label={showKey ? "הסתר מפתח API" : "הצג מפתח API"}
+                aria-pressed={showKey}
+                onClick={() => setShowKey((s) => !s)}
+              >
+                <span aria-hidden="true">{showKey ? "🙈" : "👁️"}</span>
               </button>
             </div>
           </label>

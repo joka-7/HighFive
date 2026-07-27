@@ -104,8 +104,13 @@ export default function Reading() {
       <div className="card">
         <div className="row-between">
           <h3 style={{ margin: 0 }}>{reading.title}</h3>
-          <button className="icon-btn" title="הקראה" onClick={() => speak(reading.text)}>
-            🔊
+          <button
+            className="icon-btn"
+            title="הקראה"
+            aria-label="הקרא את הקטע"
+            onClick={() => speak(reading.text)}
+          >
+            <span aria-hidden="true">🔊</span>
           </button>
         </div>
         <pre className="explanation-text" style={{ direction: "ltr", textAlign: "left", marginTop: 10 }}>
@@ -151,8 +156,12 @@ export default function Reading() {
                   <strong style={{ direction: "ltr" }}>
                     {w.word} <span className="pos">{w.partOfSpeech}</span>
                   </strong>
-                  <button className="icon-btn" onClick={() => speak(w.word)}>
-                    🔊
+                  <button
+                    className="icon-btn"
+                    aria-label={`השמע את המילה ${w.word}`}
+                    onClick={() => speak(w.word)}
+                  >
+                    <span aria-hidden="true">🔊</span>
                   </button>
                 </div>
                 <p style={{ margin: "6px 0" }}>

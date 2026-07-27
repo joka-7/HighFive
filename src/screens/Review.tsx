@@ -76,10 +76,11 @@ export default function Review() {
         <button
           className="icon-btn"
           title="השמע"
+          aria-label={`השמע את המילה ${word.word}`}
           style={{ margin: "10px auto" }}
           onClick={() => speak(word.word)}
         >
-          🔊
+          <span aria-hidden="true">🔊</span>
         </button>
 
         {revealed ? (
