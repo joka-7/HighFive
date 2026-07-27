@@ -121,9 +121,10 @@ export default function QuizRunner({ questions, onFinish }: Props) {
             <button
               className="icon-btn"
               title="השמע"
+              aria-label="השמע את השאלה"
               onClick={() => speak(q.question)}
             >
-              🔊
+              <span aria-hidden="true">🔊</span>
             </button>
           </div>
         </div>
@@ -161,7 +162,7 @@ export default function QuizRunner({ questions, onFinish }: Props) {
 
         {selected !== null && (
           <>
-            <div className="explanation">
+            <div className="explanation" role="status" aria-live="polite">
               {selected === q.correctIndex ? "✅ נכון! " : "❌ לא מדויק. "}
               {q.explanation}
             </div>

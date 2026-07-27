@@ -98,8 +98,12 @@ export default function DailyLesson() {
       <div className="card">
         <div className="row-between">
           <h2 style={{ margin: 0 }}>{lesson.title}</h2>
-          <button className="icon-btn" onClick={() => speak(lesson.title)}>
-            🔊
+          <button
+            className="icon-btn"
+            aria-label="השמע את כותרת השיעור"
+            onClick={() => speak(lesson.title)}
+          >
+            <span aria-hidden="true">🔊</span>
           </button>
         </div>
       </div>

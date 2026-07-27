@@ -16,15 +16,22 @@ export default function WordCard({ word, saved, onToggleSave }: Props) {
           <div className="pos">{word.partOfSpeech}</div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
-          <button className="icon-btn" title="השמע" onClick={() => speak(word.word)}>
-            🔊
+          <button
+            className="icon-btn"
+            title="השמע"
+            aria-label={`השמע את המילה ${word.word}`}
+            onClick={() => speak(word.word)}
+          >
+            <span aria-hidden="true">🔊</span>
           </button>
           <button
             className="icon-btn"
             title={saved ? "הסר מהשמורים" : "שמור מילה (+10)"}
+            aria-label={saved ? `הסר את ${word.word} מהשמורים` : `שמור את ${word.word}`}
+            aria-pressed={saved}
             onClick={onToggleSave}
           >
-            {saved ? "⭐" : "☆"}
+            <span aria-hidden="true">{saved ? "⭐" : "☆"}</span>
           </button>
         </div>
       </div>

@@ -29,19 +29,28 @@ export default function SavedWords() {
               </div>
             </div>
             <div style={{ display: "flex", gap: 8 }}>
-              <button className="icon-btn" onClick={() => speak(w.word)}>
-                🔊
+              <button
+                className="icon-btn"
+                aria-label={`השמע את המילה ${w.word}`}
+                onClick={() => speak(w.word)}
+              >
+                <span aria-hidden="true">🔊</span>
               </button>
               <button
                 className="icon-btn"
                 title={w.isMastered ? "סמן כלא נלמד" : "סמן כנלמד"}
+                aria-label={
+                  w.isMastered ? `סמן את ${w.word} כלא נלמד` : `סמן את ${w.word} כנלמד`
+                }
+                aria-pressed={w.isMastered}
                 onClick={() => toggleMastered(w.id)}
               >
-                {w.isMastered ? "✅" : "⬜"}
+                <span aria-hidden="true">{w.isMastered ? "✅" : "⬜"}</span>
               </button>
               <button
                 className="icon-btn"
                 title="מחק"
+                aria-label={`מחק את ${w.word}`}
                 onClick={() =>
                   toggleSaveWord({
                     word: w.word,
@@ -53,7 +62,7 @@ export default function SavedWords() {
                   })
                 }
               >
-                🗑️
+                <span aria-hidden="true">🗑️</span>
               </button>
             </div>
           </div>
