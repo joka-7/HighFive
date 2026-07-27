@@ -58,7 +58,7 @@ export default function DailyLesson() {
     return (
       <div className="card center">
         <h2>לא הצלחנו לטעון את השיעור</h2>
-        <button className="btn" onClick={() => setReloadKey((k) => k + 1)} style={{ marginTop: 12 }}>
+        <button className="btn mt-3" onClick={() => setReloadKey((k) => k + 1)}>
           נסו שוב 🔄
         </button>
       </div>
@@ -97,7 +97,7 @@ export default function DailyLesson() {
     <div>
       <div className="card">
         <div className="row-between">
-          <h2 style={{ margin: 0 }}>{lesson.title}</h2>
+          <h2 className="m-0">{lesson.title}</h2>
           <button
             className="icon-btn"
             aria-label="השמע את כותרת השיעור"

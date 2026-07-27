@@ -205,17 +205,16 @@ export default function Settings() {
         <label className="field">
           <span>ספק AI</span>
         </label>
-        <div className="menu-grid" style={{ marginBottom: 14 }}>
+        <div className="menu-grid mb-4">
           {Object.values(PROVIDERS).map((p) => (
             <button
               key={p.id}
-              className={`level-pill ${provider === p.id ? "active" : ""}`}
-              style={{ width: "100%", justifyContent: "center", position: "relative" }}
+              className={`level-pill provider-pill ${provider === p.id ? "active" : ""}`}
               onClick={() => setProvider(p.id)}
             >
               {p.name}
               {p.free && (
-                <span className="tag ok" style={{ marginInlineStart: 6 }}>
+                <span className="tag ok ms-1">
                   חינם
                 </span>
               )}
@@ -227,8 +226,7 @@ export default function Settings() {
           <label className="field">
             <span>כתובת Ollama</span>
             <input
-              className="input"
-              style={{ direction: "ltr", textAlign: "left" }}
+              className="input input-ltr"
               value={ollamaUrl}
               placeholder={info.placeholder}
               onChange={(e) => setOllamaUrl(e.target.value)}
@@ -237,10 +235,9 @@ export default function Settings() {
         ) : (
           <label className="field">
             <span>מפתח API</span>
-            <div style={{ display: "flex", gap: 8 }}>
+            <div className="icon-row">
               <input
-                className="input"
-                style={{ direction: "ltr", textAlign: "left" }}
+                className="input input-ltr"
                 type={showKey ? "text" : "password"}
                 value={apiKey}
                 placeholder={info.placeholder}
@@ -261,15 +258,14 @@ export default function Settings() {
         <label className="field">
           <span>מודל (אופציונלי)</span>
           <input
-            className="input"
-            style={{ direction: "ltr", textAlign: "left" }}
+            className="input input-ltr"
             value={model}
             placeholder={info.defaultModel}
             onChange={(e) => setModel(e.target.value)}
           />
         </label>
 
-        <p className="muted" style={{ fontSize: 13 }}>
+        <p className="muted fs-13">
           <a href={info.infoUrl} target="_blank" rel="noreferrer">
             {info.infoText}
           </a>
@@ -278,7 +274,7 @@ export default function Settings() {
         <button className="btn" onClick={save}>
           {saved ? "נשמר ✓" : "שמירה"}
         </button>
-        <div style={{ height: 10 }} />
+        <div className="spacer-sm" />
         <button className="btn ghost" onClick={clearAll}>
           מחיקת הגדרות AI
         </button>
@@ -287,14 +283,13 @@ export default function Settings() {
       <div className="card">
         <h2>⚙️ העדפות</h2>
 
-        <div className="row-between" style={{ marginBottom: 16 }}>
+        <div className="row-between mb-5">
           <div>
-            <div style={{ fontWeight: 700 }}>🌙 מצב כהה</div>
-            <div className="muted" style={{ fontSize: 13 }}>נוח יותר לעיניים בלילה</div>
+            <div className="fw-700">🌙 מצב כהה</div>
+            <div className="muted fs-13">נוח יותר לעיניים בלילה</div>
           </div>
           <button
-            className={`level-pill ${prefs.theme === "dark" ? "active" : ""}`}
-            style={{ minWidth: 64 }}
+            className={`level-pill min-w-64 ${prefs.theme === "dark" ? "active" : ""}`}
             onClick={() => setTheme(prefs.theme !== "dark")}
           >
             {prefs.theme === "dark" ? "פעיל" : "כבוי"}
@@ -304,7 +299,7 @@ export default function Settings() {
         <label className="field">
           <span>🔊 מהירות הקראה</span>
         </label>
-        <div className="level-row" style={{ marginBottom: 16 }}>
+        <div className="level-row mb-5">
           {SPEECH_LABELS.map((s) => (
             <button
               key={s.id}
@@ -335,16 +330,15 @@ export default function Settings() {
           </>
         )}
 
-        <div className="row-between" style={{ margin: "16px 0 8px" }}>
+        <div className="row-between my-prefs">
           <div>
-            <div style={{ fontWeight: 700 }}>🔔 תזכורת משימות</div>
-            <div className="muted" style={{ fontSize: 13 }}>
+            <div className="fw-700">🔔 תזכורת משימות</div>
+            <div className="muted fs-13">
               התראה מקומית כשהאפליקציה פתוחה אחרי השעה שנבחרה ומשימות לא הושלמו.
             </div>
           </div>
           <button
-            className={`level-pill ${prefs.remindersEnabled ? "active" : ""}`}
-            style={{ minWidth: 64 }}
+            className={`level-pill min-w-64 ${prefs.remindersEnabled ? "active" : ""}`}
             onClick={() => setRemindersEnabled(!prefs.remindersEnabled)}
           >
             {prefs.remindersEnabled ? "פעיל" : "כבוי"}
@@ -386,7 +380,7 @@ export default function Settings() {
         )}
         {canShare() && (
           <>
-            <div style={{ height: 10 }} />
+            <div className="spacer-sm" />
             <button className="btn secondary" onClick={() => shareApp()}>
               🔗 שיתוף האפליקציה
             </button>
@@ -406,13 +400,12 @@ export default function Settings() {
         ) : user ? (
           <>
             {cloudSyncError && (
-              <div className="banner" style={{ marginBottom: 10 }}>
+              <div className="banner mb-2_5">
                 ⚠️ הסנכרון לענן נכשל — ההתקדמות שלך נשארת מקומית בינתיים ולא
                 תידרס. בדוק חיבור לאינטרנט ונסה שוב.
                 <div>
                   <button
-                    className="btn ghost small"
-                    style={{ marginTop: 6 }}
+                    className="btn ghost small mt-1_5"
                     onClick={retryCloudSync}
                   >
                     נסה סנכרון שוב
@@ -437,7 +430,7 @@ export default function Settings() {
               {authBusy ? "מתחבר…" : "התחברות עם Google"}
             </button>
             {authError && (
-              <p className="muted" style={{ color: "var(--danger)" }}>
+              <p className="muted text-danger">
                 {authError}
               </p>
             )}
@@ -454,13 +447,13 @@ export default function Settings() {
         <button className="btn" onClick={handleExport}>
           ייצוא התקדמות
         </button>
-        <div style={{ height: 10 }} />
-        <label className="btn secondary" style={{ display: "block", textAlign: "center" }}>
+        <div className="spacer-sm" />
+        <label className="btn secondary block-center">
           ייבוא מקובץ…
           <input
             type="file"
             accept="application/json,.json"
-            style={{ display: "none" }}
+            className="hidden"
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) handleImportFile(file);
@@ -469,7 +462,7 @@ export default function Settings() {
           />
         </label>
         {backupMsg && (
-          <p className="muted" role="status" style={{ marginTop: 8 }}>
+          <p className="muted mt-2" role="status">
             {backupMsg}
           </p>
         )}
@@ -482,8 +475,7 @@ export default function Settings() {
           נושא, מהירות הקראה) יישארו כפי שהם.
         </p>
         <button
-          className="btn"
-          style={{ background: "var(--danger)" }}
+          className="btn btn-danger"
           onClick={() => {
             if (confirm("לאפס את כל הנתונים? פעולה זו אינה הפיכה.")) resetAll();
           }}
@@ -492,7 +484,7 @@ export default function Settings() {
         </button>
       </div>
 
-      <p className="center muted" style={{ fontSize: 12 }}>
+      <p className="center muted fs-12">
         High5 · גרסת ווב · נבנה באהבה ✋
       </p>
     </div>

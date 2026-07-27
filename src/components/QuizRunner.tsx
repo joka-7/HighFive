@@ -110,7 +110,7 @@ export default function QuizRunner({ questions, onFinish }: Props) {
           <span className="tag">
             שאלה {index + 1}/{questions.length}
           </span>
-          <div style={{ display: "flex", gap: 4 }}>
+          <div className="flex-row gap-1">
             <button
               className="btn ghost small"
               disabled={translating}
@@ -128,12 +128,12 @@ export default function QuizRunner({ questions, onFinish }: Props) {
             </button>
           </div>
         </div>
-        <h3 style={{ direction: "ltr", textAlign: "left" }}>{q.question}</h3>
+        <h3 className="ltr">{q.question}</h3>
         {revealQuestionHe && questionHe && (
-          <p className="muted" style={{ margin: "4px 0 12px" }}>{questionHe}</p>
+          <p className="muted my-quiz-he">{questionHe}</p>
         )}
         {translateError && (
-          <p className="muted" style={{ margin: "4px 0 12px" }}>{translateError}</p>
+          <p className="muted my-quiz-he">{translateError}</p>
         )}
 
         {q.options.map((opt, i) => {
@@ -145,14 +145,13 @@ export default function QuizRunner({ questions, onFinish }: Props) {
           return (
             <button
               key={i}
-              className={cls}
+              className={`${cls} ltr`}
               disabled={selected !== null}
               onClick={() => choose(i)}
-              style={{ direction: "ltr", textAlign: "left" }}
             >
               {opt}
               {revealOptionsHe && optionsHe?.[i] && (
-                <span className="muted" style={{ display: "block", fontSize: "0.85em", marginTop: 2 }}>
+                <span className="muted opt-he">
                   {optionsHe[i]}
                 </span>
               )}
