@@ -16,6 +16,7 @@ const SCREENS: readonly Screen[] = [
   "speaking",
   "calendar",
   "missions",
+  "memorize",
 ] as const;
 
 const SCREEN_SET = new Set<string>(SCREENS);

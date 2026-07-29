@@ -33,6 +33,7 @@ import { MORE_WORDS6 } from "./content/wordbank-extra6.mjs";
 import { MORE_WORDS7 } from "./content/wordbank-extra7.mjs";
 import { MORE_WORDS8 } from "./content/wordbank-extra8.mjs";
 import { MORE_WORDS9 } from "./content/wordbank-extra9.mjs";
+import { MORE_WORDS10 } from "./content/wordbank-extra10.mjs";
 import { MORE_READINGS, MORE_LISTENINGS } from "./content/passages-extra.mjs";
 import { MORE_READINGS2, MORE_LISTENINGS2, MORE_SPEAKING } from "./content/passages-extra2.mjs";
 import { MORE_READINGS3, MORE_LISTENINGS3, MORE_SPEAKING3 } from "./content/passages-extra3.mjs";
@@ -41,12 +42,13 @@ import { MORE_READINGS5, MORE_LISTENINGS5, MORE_SPEAKING5 } from "./content/pass
 import { MORE_READINGS6, MORE_LISTENINGS6, MORE_SPEAKING6 } from "./content/passages-extra6.mjs";
 import { MORE_READINGS7, MORE_LISTENINGS7, MORE_SPEAKING7 } from "./content/passages-extra7.mjs";
 import { MORE_READINGS8, MORE_LISTENINGS8, MORE_SPEAKING8 } from "./content/passages-extra8.mjs";
+import { MORE_READINGS9, MORE_LISTENINGS9, MORE_SPEAKING9 } from "./content/passages-extra9.mjs";
 
 // All extra vocabulary rounds, merged in order. Append new rounds here.
-const WORD_ROUNDS = [MORE_WORDS, MORE_WORDS2, MORE_WORDS3, MORE_WORDS4, MORE_WORDS5, MORE_WORDS6, MORE_WORDS7, MORE_WORDS8, MORE_WORDS9];
-const READING_ROUNDS = [MORE_READINGS, MORE_READINGS2, MORE_READINGS3, MORE_READINGS4, MORE_READINGS5, MORE_READINGS6, MORE_READINGS7, MORE_READINGS8];
-const LISTENING_ROUNDS = [MORE_LISTENINGS, MORE_LISTENINGS2, MORE_LISTENINGS3, MORE_LISTENINGS4, MORE_LISTENINGS5, MORE_LISTENINGS6, MORE_LISTENINGS7, MORE_LISTENINGS8];
-const SPEAKING_ROUNDS = [MORE_SPEAKING, MORE_SPEAKING3, MORE_SPEAKING4, MORE_SPEAKING5, MORE_SPEAKING6, MORE_SPEAKING7, MORE_SPEAKING8];
+const WORD_ROUNDS = [MORE_WORDS, MORE_WORDS2, MORE_WORDS3, MORE_WORDS4, MORE_WORDS5, MORE_WORDS6, MORE_WORDS7, MORE_WORDS8, MORE_WORDS9, MORE_WORDS10];
+const READING_ROUNDS = [MORE_READINGS, MORE_READINGS2, MORE_READINGS3, MORE_READINGS4, MORE_READINGS5, MORE_READINGS6, MORE_READINGS7, MORE_READINGS8, MORE_READINGS9];
+const LISTENING_ROUNDS = [MORE_LISTENINGS, MORE_LISTENINGS2, MORE_LISTENINGS3, MORE_LISTENINGS4, MORE_LISTENINGS5, MORE_LISTENINGS6, MORE_LISTENINGS7, MORE_LISTENINGS8, MORE_LISTENINGS9];
+const SPEAKING_ROUNDS = [MORE_SPEAKING, MORE_SPEAKING3, MORE_SPEAKING4, MORE_SPEAKING5, MORE_SPEAKING6, MORE_SPEAKING7, MORE_SPEAKING8, MORE_SPEAKING9];
 const merge = (rounds, level) => rounds.flatMap((r) => r[level] || []);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -342,6 +344,51 @@ function buildProgressiveSpeaking(day, vocabulary, level) {
   return { prompts };
 }
 
+// --- Curated pools ------------------------------------------------------------
+// The day-aligned reading/listening arrays above are *progressive*: they are
+// built from the learner's five words of the day, so they are always
+// vocabulary-safe but they read like word drills. The curated banks in
+// scripts/content/passages*.mjs are real hand-written passages — the app
+// prefers one of those whenever the learner's vocabulary already covers it
+// (see services/content.ts) and falls back to the progressive text otherwise.
+//
+// An item only qualifies if it is fully bilingual, because the Reading and
+// Listening screens require a Hebrew translation and the quiz runner shows
+// Hebrew questions. Add `textHe`/`transcriptHe` + `questionHe` to an older
+// round (see passages-extra9.mjs for the shape) and it joins the pool.
+
+function questionsAreBilingual(questions) {
+  return (
+    Array.isArray(questions) &&
+    questions.length > 0 &&
+    questions.every((q) => typeof q.questionHe === "string" && q.questionHe.length > 0)
+  );
+}
+
+function curatedReadings(level) {
+  return [...READINGS[level], ...merge(READING_ROUNDS, level)].filter(
+    (r) => r.textHe && questionsAreBilingual(r.questions),
+  );
+}
+
+function curatedListenings(level) {
+  return [...LISTENINGS[level], ...merge(LISTENING_ROUNDS, level)].filter(
+    (l) => l.transcriptHe && questionsAreBilingual(l.questions),
+  );
+}
+
+/** Curated speaking sentences grouped into full rounds of 4. */
+function curatedSpeaking(level) {
+  const sentences = [...SPEAKING_SENTENCES[level], ...merge(SPEAKING_ROUNDS, level)].filter(
+    (s) => s && s.text && s.translation,
+  );
+  const sets = [];
+  for (let i = 0; i + 4 <= sentences.length; i += 4) {
+    sets.push({ prompts: sentences.slice(i, i + 4) });
+  }
+  return sets;
+}
+
 // --- Per-topic question generators (correct by construction) ------------------
 const GEN = {
   presentSimple3rd(rng, ctx) {
@@ -574,12 +621,16 @@ function buildLevel(level, levelIdx) {
   };
   const topics = curriculum(levelIdx);
 
-  // Vocabulary: 365 sets of 5, rotating the word bank so coverage spreads.
+  // Vocabulary: 365 sets of 5, walking the word bank five at a time. The
+  // stride matches the set size on purpose — with a smaller stride consecutive
+  // days overlapped, so a "five new words a day" promise really delivered
+  // three, and a five-day cycle covered fewer than the 20 words the
+  // Memorization day reviews (see src/utils/cycle.ts).
   const bank = allWords.map((w) => enrichWord(w, level));
   const vocabulary = [];
   for (let d = 0; d < DAYS; d++) {
     const words = [];
-    for (let j = 0; j < 5; j++) words.push(bank[(d * 3 + j) % bank.length]);
+    for (let j = 0; j < 5; j++) words.push(bank[(d * 5 + j) % bank.length]);
     vocabulary.push({ words });
   }
 
@@ -642,6 +693,11 @@ function validateQuestionSet(questions, expected, where) {
 function main() {
   mkdirSync(OUT_DIR, { recursive: true });
   const summary = [];
+  // Flat per-level word list (tokens only). The app unions every level at or
+  // below the learner's into their allowed vocabulary, so content is judged
+  // against everything the curriculum teaches up to that point rather than
+  // against the current level's bank alone.
+  const vocabIndex = {};
   for (let i = 0; i < LEVELS.length; i++) {
     const level = LEVELS[i];
 
@@ -659,6 +715,12 @@ function main() {
         throw new Error(`${level} word bank: missing exampleHe for "${w.word}"`);
       }
     }
+
+    vocabIndex[level] = [
+      ...new Set(
+        mergedBank.flatMap((w) => w.word.toLowerCase().split(/\s+/).filter(Boolean)),
+      ),
+    ].sort();
 
     const { vocabulary, lessons, quizzes, readings, listenings, speakings } = buildLevel(level, i);
 
@@ -680,10 +742,49 @@ function main() {
       if (!r.transcriptHe) throw new Error(`${level} listening ${d}: missing transcriptHe`);
       r.questions.forEach((q, n) => validateQuestion(q, `${level} listening ${d} q${n}`));
     });
-    vocabulary.forEach((v, d) => { if (v.words.length !== 5) throw new Error(`${level} vocab ${d}: need 5 words`); });
+    vocabulary.forEach((v, d) => {
+      if (v.words.length !== 5) throw new Error(`${level} vocab ${d}: need 5 words`);
+      if (new Set(v.words.map((w) => w.word)).size !== 5) {
+        throw new Error(`${level} vocab ${d}: repeated word in the day's five`);
+      }
+    });
+    // A five-day cycle must expose 20 distinct words — that is what the
+    // Memorization day reviews.
+    for (let d = 0; d + 4 <= vocabulary.length; d += 5) {
+      const cycle = vocabulary.slice(d, d + 4).flatMap((v) => v.words.map((w) => w.word));
+      if (new Set(cycle).size !== 20) {
+        throw new Error(`${level} cycle at day ${d}: expected 20 distinct words`);
+      }
+    }
     speakings.forEach((s, d) => { if (s.prompts.length !== 4) throw new Error(`${level} speaking ${d}: need 4 prompts`); });
 
+    // Curated (hand-written) pools, validated to the same standard.
+    const readingPool = curatedReadings(level);
+    const listeningPool = curatedListenings(level);
+    const speakingPool = curatedSpeaking(level);
+    readingPool.forEach((r, d) => {
+      if (!r.text || !r.textHe) throw new Error(`${level} curated reading ${d}: missing text`);
+      if (!Array.isArray(r.glossary) || r.glossary.length === 0) {
+        throw new Error(`${level} curated reading ${d}: empty glossary`);
+      }
+      r.questions.forEach((q, n) => validateQuestion(q, `${level} curated reading ${d} q${n}`));
+    });
+    listeningPool.forEach((l, d) => {
+      if (!l.transcript || !l.transcriptHe) {
+        throw new Error(`${level} curated listening ${d}: missing transcript`);
+      }
+      l.questions.forEach((q, n) => validateQuestion(q, `${level} curated listening ${d} q${n}`));
+    });
+    speakingPool.forEach((s, d) => {
+      if (s.prompts.length !== 4) throw new Error(`${level} curated speaking ${d}: need 4 prompts`);
+    });
+
     const lc = level.toLowerCase();
+    // Progressive (day-generated) content scales with DAYS, so it's still
+    // split into quarters (see Section C / #29) — a learner downloads one
+    // quarter, not a full year. Curated pools are small hand-written banks
+    // (tens of items, not hundreds) and stay as one file each; quartering
+    // them would just mean more round trips for no payload benefit.
     const vocabQuarters = splitIntoQuarters(vocabulary);
     const lessonQuarters = splitIntoQuarters(lessons);
     const quizQuarters = splitIntoQuarters(quizzes);
@@ -705,6 +806,9 @@ function main() {
       writeFileSync(join(OUT_DIR, `${lc}.listening.q${n}.json`), JSON.stringify(listeningQuarters[q], null, 0));
       writeFileSync(join(OUT_DIR, `${lc}.speaking.q${n}.json`), JSON.stringify(speakingQuarters[q], null, 0));
     }
+    writeFileSync(join(OUT_DIR, `${lc}.reading.curated.json`), JSON.stringify(readingPool, null, 0));
+    writeFileSync(join(OUT_DIR, `${lc}.listening.curated.json`), JSON.stringify(listeningPool, null, 0));
+    writeFileSync(join(OUT_DIR, `${lc}.speaking.curated.json`), JSON.stringify(speakingPool, null, 0));
 
     const distinctLessons = new Set(lessons.map((l) => JSON.stringify(l))).size;
     summary.push({
@@ -718,8 +822,13 @@ function main() {
       listeningPool: listenings.length,
       speakingPool: speakings.length,
       speakingSentences: SPEAKING_SENTENCES[level].length + merge(SPEAKING_ROUNDS, level).length,
+      curatedReadings: readingPool.length,
+      curatedListenings: listeningPool.length,
+      curatedSpeakingSets: speakingPool.length,
     });
   }
+  writeFileSync(join(OUT_DIR, "vocab-index.json"), JSON.stringify(vocabIndex, null, 0));
+
   console.table(summary);
   const total = summary.reduce(
     (s, r) => s + r.lessons + r.vocabSets + r.quizzes + DAYS * 3,

@@ -1,149 +1,220 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { DAILY_WORD_TARGET, useLingo } from "../store/useLingo";
 import { videoForToday, youtubeEmbedUrl } from "../data/videos";
-import type { Screen } from "../types";
+import { isOperationDone, OPERATIONS, type Operation } from "../data/operations";
+import { dayIndex } from "../utils/daily";
+import { cycleDay, CYCLE_DAYS, CYCLE_WORD_COUNT, isMemorizationDay } from "../utils/cycle";
+import type { DailyMissionFlag, Screen } from "../types";
 
-// Missions the user marks done manually — an external action the app can't
-// detect (watching a video, having a conversation somewhere).
-interface ManualMission {
-  id: "video" | "talk";
-  emoji: string;
-  title: string;
-  sub: string;
-}
-
-const MANUAL_MISSIONS: ManualMission[] = [
-  {
-    id: "video",
-    emoji: "🎬",
-    title: "צפו בסרטון באנגלית",
-    sub: "צפו בסרטון הקצר למטה (מותאם לרמה שלכם), ואז סמנו שהשלמתם.",
-  },
-  {
-    id: "talk",
-    emoji: "💬",
-    title: "שוחחו עם מאמן ה-AI באנגלית",
-    sub: "ניהלתם היום שיחה עם מאמן השיחה באנגלית? סמנו שהשלמתם.",
-  },
-];
-
-// Missions that auto-complete once their in-app action is done — practiced
-// from their own tab, so there's nothing to press here.
-interface AutoMission {
-  id: "reading" | "listening" | "speaking" | "grammar";
-  emoji: string;
-  title: string;
-  sub: string;
-  screen: Screen;
-  cta: string;
-}
-
-const AUTO_MISSIONS: AutoMission[] = [
-  {
-    id: "reading",
-    emoji: "📖",
-    title: "קראו מאמר באנגלית",
-    sub: "סיימו קטע וענו על שאלות ההבנה — המשימה מסתיימת אוטומטית.",
-    screen: "reading",
-    cta: "עברו לקריאה ←",
-  },
-  {
-    id: "listening",
-    emoji: "🎧",
-    title: "תרגלו האזנה",
-    sub: "הקשיבו לקטע וענו על שאלות ההבנה — המשימה מסתיימת אוטומטית.",
-    screen: "listening",
-    cta: "עברו להאזנה ←",
-  },
-  {
-    id: "speaking",
-    emoji: "🎤",
-    title: "תרגלו דיבור",
-    sub: "סיימו סט משפטי הגייה — המשימה מסתיימת אוטומטית.",
-    screen: "speaking",
-    cta: "עברו לדיבור ←",
-  },
-  {
-    id: "grammar",
-    emoji: "✏️",
-    title: "למדו נושא דקדוק אחד",
-    sub: "השלימו את השיעור היומי — המשימה מסתיימת אוטומטית.",
-    screen: "lesson",
-    cta: "עברו לשיעור ←",
-  },
-];
-
-const TOTAL_MISSIONS = MANUAL_MISSIONS.length + AUTO_MISSIONS.length + 1; // + the "5 words" mission
+// The daily board: five operations (see / listen / talk / read / understand)
+// plus the day's words — or, on the fifth day of the cycle, memorization
+// instead of new words. Every operation can be finished inside High5 or in
+// another app; the external path asks what the learner watched/listened to/
+// read so the day's log keeps a real title.
 
 function DoneBadge({ done }: { done: boolean }) {
   return done ? <span className="tag ok">✓ הושלם (+30)</span> : null;
 }
 
-function MissionDoneBar() {
+function MissionDoneBar({ note }: { note?: string }) {
   return (
     <div className="mission-done" role="status">
       <span className="mission-done-check">✓</span>
-      <span>בוצע</span>
+      {/* dir="auto" so an English title ("6 Minute English") isn't reordered
+          by the surrounding right-to-left layout. */}
+      <span dir="auto">{note ? note : "בוצע"}</span>
       <span className="mission-done-points">+30 נק׳</span>
     </div>
   );
 }
 
-function MissionAction({ done, actionLabel, onClick, secondary }: {
-  done: boolean;
-  actionLabel: string;
-  onClick: () => void;
-  secondary?: ReactNode;
+/** The "I did it in another app" path: quick links + what-did-you-do + mark. */
+function ExternalPanel({
+  op,
+  onComplete,
+}: {
+  op: Operation;
+  onComplete: (note: string) => void;
 }) {
-  if (done) return <MissionDoneBar />;
-  return (
-    <>
-      <button className="btn accent mt-2_5" onClick={onClick}>
-        {actionLabel}
+  const [open, setOpen] = useState(false);
+  const [note, setNote] = useState("");
+  const inputId = `external-${op.id}`;
+
+  if (!open) {
+    return (
+      <button className="btn ghost small mt-2" onClick={() => setOpen(true)}>
+        עשיתי את זה באפליקציה אחרת ↗
       </button>
-      {secondary}
-    </>
+    );
+  }
+
+  return (
+    <div className="external-panel">
+      {op.links.length > 0 && (
+        <div className="external-links">
+          {op.links.map((l) => (
+            <a
+              key={l.url}
+              className="external-link"
+              href={l.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {l.label} ↗
+            </a>
+          ))}
+        </div>
+      )}
+      <label className="external-label" htmlFor={inputId}>
+        {op.externalLabel}
+      </label>
+      <input
+        id={inputId}
+        className="input"
+        value={note}
+        placeholder={op.externalPlaceholder}
+        onChange={(e) => setNote(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") onComplete(note);
+        }}
+      />
+      <p className="muted mt-tight fs-13">
+        אפשר גם לסמן בלי לכתוב — השם רק עוזר לזכור מה עשיתם.
+      </p>
+      <div className="flex-row mt-2">
+        <button className="btn accent" onClick={() => onComplete(note)}>
+          סמנו כהושלם ✓
+        </button>
+        <button className="btn ghost" onClick={() => setOpen(false)}>
+          ביטול
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function MissionCard({
+  emoji,
+  title,
+  sub,
+  done,
+  note,
+  children,
+  extra,
+}: {
+  emoji: string;
+  title: string;
+  sub: string;
+  done: boolean;
+  note?: string;
+  children?: ReactNode;
+  extra?: ReactNode;
+}) {
+  return (
+    <div className={`card${done ? " mission-card-done" : ""}`}>
+      <div className="row-between">
+        <span className="emoji-lg">{emoji}</span>
+        <DoneBadge done={done} />
+      </div>
+      <h3 className="mission-title">{title}</h3>
+      <p className="muted mt-0">
+        {sub}
+      </p>
+      {extra}
+      {done ? <MissionDoneBar note={note} /> : children}
+    </div>
+  );
+}
+
+function OperationCard({
+  op,
+  done,
+  note,
+  go,
+  onComplete,
+  extra,
+}: {
+  op: Operation;
+  done: boolean;
+  note?: string;
+  go: (s: Screen) => void;
+  onComplete: (note: string) => void;
+  extra?: ReactNode;
+}) {
+  const altScreen = op.altScreen;
+  return (
+    <MissionCard emoji={op.emoji} title={op.title} sub={op.sub} done={done} note={note} extra={extra}>
+      <button
+        className="btn accent mt-2_5"
+        onClick={() => (op.screen === "missions" ? onComplete("") : go(op.screen))}
+      >
+        {op.cta}
+      </button>
+      {altScreen && op.altCta && (
+        <button className="btn ghost mt-2" onClick={() => go(altScreen)}>
+          {op.altCta}
+        </button>
+      )}
+      <ExternalPanel op={op} onComplete={onComplete} />
+    </MissionCard>
   );
 }
 
 export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
   const { dailyMissions, todayWordCount, completeMission, progress } = useLingo();
   const level = progress?.currentLevel ?? "A1";
+  const today = dayIndex();
+  const memorizationDay = isMemorizationDay(today);
   const todaysVideo = videoForToday(level);
 
+  const flags: Record<DailyMissionFlag, boolean> = {
+    video: dailyMissions.video,
+    talk: dailyMissions.talk,
+    words: dailyMissions.words,
+    reading: dailyMissions.reading,
+    listening: dailyMissions.listening,
+    speaking: dailyMissions.speaking,
+    grammar: dailyMissions.grammar,
+    memorization: dailyMissions.memorization,
+  };
+  const notes = dailyMissions.externalNotes ?? {};
+
+  const lastDone = memorizationDay ? flags.memorization : flags.words;
   const doneCount =
-    MANUAL_MISSIONS.filter((m) => dailyMissions[m.id]).length +
-    AUTO_MISSIONS.filter((m) => dailyMissions[m.id]).length +
-    (dailyMissions.words ? 1 : 0);
-  const allDone = doneCount === TOTAL_MISSIONS;
+    OPERATIONS.filter((op) => isOperationDone(op, flags)).length + (lastDone ? 1 : 0);
+  const total = OPERATIONS.length + 1;
+  const allDone = doneCount === total;
   const wordsProgress = Math.min(todayWordCount, DAILY_WORD_TARGET);
 
   return (
     <div>
       <div className="card center hero-card">
-        <h2 className="m-0">🎯 משימות יומיות</h2>
+        <h2 className="m-0">🎯 חמש ביום</h2>
         <p className="mt-tight">
-          {doneCount}/{TOTAL_MISSIONS} הושלמו היום
+          {doneCount}/{total} הושלמו · יום {cycleDay(today)} מתוך {CYCLE_DAYS} במחזור
         </p>
       </div>
+
+      {memorizationDay && (
+        <div className="banner">
+          🧩 היום יום שינון — אין מילים חדשות, רק חוזרים על {CYCLE_WORD_COUNT} מילות המחזור.
+        </div>
+      )}
 
       {allDone && (
         <div className="banner success">🎉 כל הכבוד! השלמתם את כל המשימות של היום.</div>
       )}
 
-      {MANUAL_MISSIONS.map((mission) => {
-        const done: boolean = dailyMissions[mission.id];
-        return (
-          <div className={`card${done ? " mission-card-done" : ""}`} key={mission.id}>
-            <div className="row-between">
-              <span className="emoji-lg">{mission.emoji}</span>
-              <DoneBadge done={done} />
-            </div>
-            <h3 className="mission-title">{mission.title}</h3>
-            <p className="muted mt-0">
-              {mission.sub}
-            </p>
-            {mission.id === "video" && (
+      {OPERATIONS.map((op) => (
+        <OperationCard
+          key={op.id}
+          op={op}
+          done={isOperationDone(op, flags)}
+          note={notes[op.flag]}
+          go={go}
+          onComplete={(note) => completeMission(op.flag, note)}
+          extra={
+            op.id === "see" ? (
               <div className="video-block">
                 <p className="video-title">
                   {todaysVideo.titleHe}
@@ -162,71 +233,49 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
                   />
                 </div>
               </div>
-            )}
-            <MissionAction
-              done={done}
-              actionLabel="סמן כהושלם"
-              onClick={() => completeMission(mission.id)}
-              secondary={
-                mission.id === "talk" ? (
-                  <button
-                    className="btn ghost mt-2"
-                    onClick={() => go("dialogue")}
-                  >
-                    עברו למאמן שיחה ←
-                  </button>
-                ) : undefined
-              }
-            />
-          </div>
-        );
-      })}
-
-      {AUTO_MISSIONS.map((mission) => {
-        const done: boolean = dailyMissions[mission.id];
-        return (
-          <div className={`card${done ? " mission-card-done" : ""}`} key={mission.id}>
-            <div className="row-between">
-              <span className="emoji-lg">{mission.emoji}</span>
-              <DoneBadge done={done} />
-            </div>
-            <h3 className="mission-title">{mission.title}</h3>
-            <p className="muted mt-0">
-              {mission.sub}
-            </p>
-            <MissionAction
-              done={done}
-              actionLabel={mission.cta}
-              onClick={() => go(mission.screen)}
-            />
-          </div>
-        );
-      })}
-
-      <div className={`card${dailyMissions.words ? " mission-card-done" : ""}`}>
-        <div className="row-between">
-          <span className="emoji-lg">📚</span>
-          <DoneBadge done={dailyMissions.words} />
-        </div>
-        <h3 className="mission-title">למדו {DAILY_WORD_TARGET} מילים חדשות</h3>
-        <p className="muted mt-0">
-          שמרו {DAILY_WORD_TARGET} מילים חדשות — המשימה מסתיימת אוטומטית.
-        </p>
-        <div className="mission-progress">
-          <div
-            className="progress-fill"
-            style={{ width: `${(wordsProgress / DAILY_WORD_TARGET) * 100}%` }}
-          />
-        </div>
-        <span className="muted">
-          {wordsProgress}/{DAILY_WORD_TARGET} מילים
-        </span>
-        <MissionAction
-          done={dailyMissions.words}
-          actionLabel="עברו לאוצר מילים ←"
-          onClick={() => go("vocabulary")}
+            ) : undefined
+          }
         />
-      </div>
+      ))}
+
+      {memorizationDay ? (
+        <MissionCard
+          emoji="🧩"
+          title="שננו את מילות המחזור"
+          sub={`חזרו על ${CYCLE_WORD_COUNT} המילים של ארבעת הימים האחרונים וענו על מבחן השינון.`}
+          done={flags.memorization}
+          note={notes.memorization}
+        >
+          <button className="btn accent mt-2_5" onClick={() => go("memorize")}>
+            לשינון ←
+          </button>
+        </MissionCard>
+      ) : (
+        <MissionCard
+          emoji="🃏"
+          title={`למדו ${DAILY_WORD_TARGET} מילים חדשות`}
+          sub={`שמרו ${DAILY_WORD_TARGET} מילים חדשות — המשימה מסתיימת אוטומטית.`}
+          done={flags.words}
+          note={notes.words}
+          extra={
+            <>
+              <div className="mission-progress">
+                <div
+                  className="progress-fill"
+                  style={{ width: `${(wordsProgress / DAILY_WORD_TARGET) * 100}%` }}
+                />
+              </div>
+              <span className="muted">
+                {wordsProgress}/{DAILY_WORD_TARGET} מילים
+              </span>
+            </>
+          }
+        >
+          <button className="btn accent mt-2_5" onClick={() => go("vocabulary")}>
+            עברו לאוצר מילים ←
+          </button>
+        </MissionCard>
+      )}
     </div>
   );
 }

@@ -3,12 +3,14 @@ import { useLingo } from "../store/useLingo";
 import { isAIReady } from "../services/ai";
 import { usePwaInstall } from "../services/pwa";
 import { getTodaysWords } from "../data/todays-words";
+import { cycleDay, CYCLE_DAYS, isMemorizationDay } from "../utils/cycle";
 import type { GemWord, Screen } from "../types";
 
 const TILES: { screen: Screen; emoji: string; title: string; sub: string }[] = [
   { screen: "lesson", emoji: "📚", title: "שיעור יומי", sub: "לימוד + תרגול" },
-  { screen: "missions", emoji: "🎯", title: "משימות יומיות", sub: "סרטון + שיחה" },
+  { screen: "missions", emoji: "🎯", title: "חמש ביום", sub: "5 פעולות + 5 מילים" },
   { screen: "vocabulary", emoji: "🃏", title: "אוצר מילים", sub: "כרטיסיות" },
+  { screen: "memorize", emoji: "🧩", title: "שינון", sub: "מילות המחזור" },
   { screen: "dialogue", emoji: "💬", title: "מאמן שיחה", sub: "תרגול דיבור" },
   { screen: "quiz", emoji: "🧠", title: "חידון", sub: "בחן את עצמך" },
   { screen: "review", emoji: "🔁", title: "חזרה יומית", sub: "זיכרון מרווח" },
@@ -39,6 +41,10 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
         <h2>שלום, {progress.userName}! 👋</h2>
         <p className="m-0">
           רמה {progress.currentLevel} · {progress.points} נק' · רצף {progress.streak} ימים 🔥
+        </p>
+        <p style={{ margin: "6px 0 0", opacity: 0.85, fontSize: 14 }}>
+          יום {cycleDay()} מתוך {CYCLE_DAYS} במחזור ·{" "}
+          {isMemorizationDay() ? "היום משננים 🧩" : "5 מילים + 5 פעולות"}
         </p>
       </div>
 

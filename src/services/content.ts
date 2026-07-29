@@ -17,10 +17,19 @@ import type {
 import { complete, isAIReady } from "./ai";
 import { getTodaysWords } from "../data/todays-words";
 import { dayIndex, loadOfflineContent, pickByDay } from "../data/offline";
-import { loadListenings, loadReadings, loadSpeakings } from "../data/extras";
+import { levelVocabulary } from "../data/level-vocabulary";
+import {
+  loadCuratedListenings,
+  loadCuratedReadings,
+  loadCuratedSpeakings,
+  loadListenings,
+  loadReadings,
+  loadSpeakings,
+} from "../data/extras";
 import { parseJson } from "../utils/json";
 import {
   contentUsesOnlyAllowedVocab,
+  findVocabSafeItem,
   lessonTexts,
   listeningTexts,
   pickVocabSafeItem,
@@ -44,13 +53,19 @@ export async function buildContentContext(
   day = dayIndex(),
 ): Promise<ContentContext> {
   const todaysWords = await getTodaysWords(level, day);
-  const allowed = buildAllowedVocabulary(level, learnedKeys, todaysWords);
+  const belowLevel = await levelVocabulary(level);
+  const allowed = buildAllowedVocabulary(level, learnedKeys, todaysWords, belowLevel);
   const todayWordList = todaysWords.map((w) => w.word).join(", ");
   return { allowed, todaysWords, todayWordList };
 }
 
 function vocabPromptBlock(ctx: ContentContext): string {
-  const allowedList = [...ctx.allowed].sort().slice(0, 200).join(", ");
+  // The allowed set is far larger than fits in a prompt, so send an evenly
+  // spread sample rather than the first 200 alphabetically — that used to hand
+  // the model nothing past the letter "c".
+  const all = [...ctx.allowed].sort();
+  const step = Math.max(1, Math.ceil(all.length / 200));
+  const allowedList = all.filter((_, i) => i % step === 0).join(", ");
   return `Today's 5 words (feature these): ${ctx.todayWordList}.
 ALLOWED English vocabulary (use ONLY these words; do not introduce new words): ${allowedList}
 (and common function words already implied: I, you, the, is, are, etc.)`;
@@ -82,14 +97,54 @@ function ensureListeningHebrew(listening: GemListening): GemListening {
   return listening;
 }
 
+// Curated content first: a hand-written passage is a far better read than the
+// generated word-of-the-day text, so it wins whenever the learner can handle
+// it. `findVocabSafeItem` returns null when nothing is within reach, and we
+// fall back to the progressive (always-safe) pool.
+//
+// How many new words count as "within reach" grows with the level, for two
+// reasons. A curated item is written *for* its CEFR level, so it is already
+// appropriate by construction. And the app's model of what a learner knows is
+// a bank of a few hundred content words — a fair picture at A1, a large
+// undercount by C1, where a real learner's vocabulary is many times that. So
+// the gate does its strictest work exactly where a wrong call hurts most (a
+// beginner facing academic prose) and relaxes as it becomes less informative.
+//
+// Per skill: Reading tolerates the most, because its glossary explains new
+// words on the spot; Speaking the least, since the learner has to pronounce
+// every word aloud.
+const CURATED_TOLERANCE: Record<Level, { reading: number; listening: number; speaking: number }> = {
+  A1: { reading: 3, listening: 2, speaking: 1 },
+  A2: { reading: 6, listening: 4, speaking: 2 },
+  B1: { reading: 10, listening: 6, speaking: 3 },
+  B2: { reading: 20, listening: 12, speaking: 5 },
+  C1: { reading: 30, listening: 18, speaking: 7 },
+  C2: { reading: 35, listening: 20, speaking: 8 },
+};
+
 async function pickOfflineReading(
   level: Level,
   allowed: Set<string>,
   day: number,
 ): Promise<GemReading> {
+  // Curated pools aren't quartered (see data/extras.ts), so they're indexed
+  // by the real day; the progressive pool is quartered, so it needs the
+  // quarter-local day `loadReadings` resolves.
+  const curated = await loadCuratedReadings(level);
+  const curatedHit = findVocabSafeItem(
+    curated.map((r) => ({ ...r, textsToCheck: readingTexts(r) })),
+    allowed,
+    day,
+    CURATED_TOLERANCE[level].reading,
+  );
   const { items, localDay } = await loadReadings(level, day);
-  const pool = items.map((r) => ({ ...r, textsToCheck: readingTexts(r) }));
-  const picked = pickVocabSafeItem(pool, allowed, localDay);
+  const picked =
+    curatedHit ??
+    pickVocabSafeItem(
+      items.map((r) => ({ ...r, textsToCheck: readingTexts(r) })),
+      allowed,
+      localDay,
+    );
   const { textsToCheck, ...reading } = picked;
   void textsToCheck;
   return reading;
@@ -100,9 +155,21 @@ async function pickOfflineListening(
   allowed: Set<string>,
   day: number,
 ): Promise<GemListening> {
+  const curated = await loadCuratedListenings(level);
+  const curatedHit = findVocabSafeItem(
+    curated.map((l) => ({ ...l, textsToCheck: listeningTexts(l) })),
+    allowed,
+    day,
+    CURATED_TOLERANCE[level].listening,
+  );
   const { items, localDay } = await loadListenings(level, day);
-  const pool = items.map((l) => ({ ...l, textsToCheck: listeningTexts(l) }));
-  const picked = pickVocabSafeItem(pool, allowed, localDay);
+  const picked =
+    curatedHit ??
+    pickVocabSafeItem(
+      items.map((l) => ({ ...l, textsToCheck: listeningTexts(l) })),
+      allowed,
+      localDay,
+    );
   const { textsToCheck, ...listening } = picked;
   void textsToCheck;
   return listening;
@@ -311,15 +378,29 @@ async function pickOfflineSpeaking(
   day: number,
 ): Promise<GemSpeaking> {
   const ctx = await buildContentContext(level, learnedKeys, day);
-  const { items, localDay } = await loadSpeakings(level, day);
   // Filtering individual prompts out of one day-picked set (the old approach)
   // could collapse a 4-sentence set down to just 1 for a new learner whose
   // allowed vocabulary is still small — that's the offline "only one
   // sentence" bug. Instead, pick a whole SET that best fits the allowed
   // vocabulary (same pattern as pickOfflineReading/pickOfflineListening),
-  // so the learner always gets a full round of 4.
-  const pool = items.map((s) => ({ ...s, textsToCheck: speakingTexts(s) }));
-  const picked = pickVocabSafeItem(pool, ctx.allowed, localDay);
+  // so the learner always gets a full round of 4. Curated sets first (not
+  // quartered, so indexed by the real day); progressive is quartered, so it
+  // needs the quarter-local day `loadSpeakings` resolves.
+  const curated = await loadCuratedSpeakings(level);
+  const curatedHit = findVocabSafeItem(
+    curated.map((s) => ({ ...s, textsToCheck: speakingTexts(s) })),
+    ctx.allowed,
+    day,
+    CURATED_TOLERANCE[level].speaking,
+  );
+  const { items, localDay } = await loadSpeakings(level, day);
+  const picked =
+    curatedHit ??
+    pickVocabSafeItem(
+      items.map((s) => ({ ...s, textsToCheck: speakingTexts(s) })),
+      ctx.allowed,
+      localDay,
+    );
   const { textsToCheck, ...speaking } = picked;
   void textsToCheck;
   return speaking;

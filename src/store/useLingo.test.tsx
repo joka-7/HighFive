@@ -86,6 +86,57 @@ describe("useLingo — points economy (A7: no unlimited farming)", () => {
   });
 });
 
+describe("useLingo — missions done in another app", () => {
+  it("marks the mission, awards points once, and keeps what the learner did", () => {
+    const result = renderRegisteredLingo();
+    const before = result.current.progress!.points;
+
+    act(() => {
+      result.current.completeMission("listening", "  Bohemian Rhapsody  ");
+    });
+
+    expect(result.current.dailyMissions.listening).toBe(true);
+    expect(result.current.dailyMissions.externalNotes?.listening).toBe("Bohemian Rhapsody");
+    expect(result.current.progress!.points).toBe(before + 30);
+
+    // A second mark for the same mission today is a no-op.
+    act(() => {
+      result.current.completeMission("listening", "another song");
+    });
+    expect(result.current.progress!.points).toBe(before + 30);
+    expect(result.current.dailyMissions.externalNotes?.listening).toBe("Bohemian Rhapsody");
+  });
+
+  it("writes the title into the calendar entry", () => {
+    const result = renderRegisteredLingo();
+    act(() => {
+      result.current.completeMission("reading", "BBC article about sleep");
+    });
+
+    const entry = result.current.missionLog.find((m) => m.kind === "reading");
+    expect(entry?.label).toContain("BBC article about sleep");
+  });
+
+  it("logs a plain label when nothing was written", () => {
+    const result = renderRegisteredLingo();
+    act(() => {
+      result.current.completeMission("video");
+    });
+
+    const entry = result.current.missionLog.find((m) => m.kind === "video");
+    expect(entry?.label).toBe("צפייה באנגלית");
+    expect(result.current.dailyMissions.externalNotes?.video).toBeUndefined();
+  });
+
+  it("caps a very long note", () => {
+    const result = renderRegisteredLingo();
+    act(() => {
+      result.current.completeMission("talk", "x".repeat(500));
+    });
+    expect(result.current.dailyMissions.externalNotes?.talk?.length).toBe(120);
+  });
+});
+
 describe("useLingo — bounded history (A6: Firestore doc can't grow forever)", () => {
   it("caps chat messages at 200, keeping the most recent", () => {
     const result = renderRegisteredLingo();

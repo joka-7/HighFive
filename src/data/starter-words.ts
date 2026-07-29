@@ -41,6 +41,66 @@ const CORE_STARTER = [
   "o'clock", "n't", "s", "d", "m", "re", "ve", "ll",
 ];
 
+// High-frequency English that no CEFR word bank teaches, because it isn't
+// "vocabulary" a lesson would ever be built around — yet it appears in every
+// natural sentence. Without these the guard called words like "people",
+// "most" or "while" unknown, which made every hand-written passage look
+// permanently out of reach and left learners reading only generated
+// word-of-the-day text.
+const COMMON_HIGH_FREQUENCY = [
+  "people", "person", "thing", "things", "way", "ways", "part", "parts", "place",
+  "places", "side", "end", "kind", "sort", "fact", "idea", "ideas", "life",
+  "lives", "reason", "reasons", "problem", "problems", "point", "points",
+  "question", "questions", "answer", "answers", "example", "group", "case",
+  "cases", "order", "plan", "plans", "result", "results", "line", "lines",
+  "example", "story", "stories", "moment", "moments", "hand", "hands", "head",
+  "eyes", "voice", "sound", "sounds", "text", "texts",
+  // quantity, degree and comparison
+  "most", "more", "less", "least", "better", "worse", "worst", "far", "further",
+  "few", "fewer", "several", "little", "lot", "lots", "plenty", "half", "whole",
+  "own", "same", "different", "similar", "simple", "real", "true", "sure",
+  "clear", "hard", "easy", "long", "short", "fast", "quick", "slow", "early",
+  "late", "high", "low", "big", "small", "large", "medium", "top", "main",
+  // time and sequence
+  "once", "twice", "often", "usually", "always", "never", "sometimes", "rarely",
+  "already", "yet", "still", "soon", "sooner", "later", "finally", "eventually",
+  "meanwhile", "afterwards", "beforehand", "recently", "lately", "nowadays",
+  "week", "weekend", "month", "year", "years", "hour", "hours", "minute",
+  "minutes", "morning", "evening", "night", "today", "tonight",
+  // pronouns and determiners
+  "myself", "yourself", "himself", "herself", "itself", "ourselves",
+  "themselves", "oneself", "everyone", "everybody", "everything", "someone",
+  "somebody", "something", "anyone", "anybody", "anything", "nobody", "nothing",
+  "none", "whose", "whoever", "whatever", "wherever", "whenever", "everywhere",
+  "somewhere", "anywhere", "nowhere",
+  // connectives and stance
+  "although", "though", "however", "therefore", "thus", "hence", "instead",
+  "rather", "besides", "moreover", "otherwise", "whereas", "while", "since",
+  "until", "unless", "whether", "either", "neither", "despite", "regardless",
+  "actually", "really", "simply", "clearly", "exactly", "especially",
+  "probably", "possibly", "perhaps", "almost", "nearly", "quite", "enough",
+  "mainly", "mostly", "partly", "indeed", "anyway", "instead", "generally",
+  "particularly", "obviously", "apparently", "surprisingly", "interestingly",
+  "according", "example", "including", "such", "each", "per", "via",
+  // common prepositions/positions not already in the core list
+  "toward", "towards", "upon", "within", "across", "along", "around", "behind",
+  "below", "above", "beside", "beyond", "inside", "among", "against", "onto",
+  "throughout", "alongside",
+  // ultra-common verbs beyond the core list
+  "become", "becomes", "became", "seem", "seems", "seemed", "mean", "means",
+  "meant", "happen", "happens", "happened", "change", "changes", "changed",
+  "choose", "chooses", "chose", "choice", "decide", "decides", "decided",
+  "believe", "believes", "believed", "understand", "understands", "understood",
+  "remember", "remembers", "remembered", "forget", "forgets", "forgot",
+  "explain", "explains", "explained", "describe", "notice", "notices",
+  "noticed", "follow", "follows", "followed", "continue", "continues",
+  "continued", "remain", "remains", "remained", "include", "includes",
+  "included", "allow", "allows", "allowed", "appear", "appears", "appeared",
+  "leave", "leaves", "left", "bring", "brought", "hold", "holds", "held",
+  "spend", "spends", "spent", "show", "shows", "showed", "shown", "tend",
+  "tends", "tended", "matter", "matters", "mattered",
+];
+
 const STARTER_BY_LEVEL: Record<Level, string[]> = {
   A1: [],
   A2: ["already", "ago", "enough", "quite", "rather", "something", "anything"],
@@ -50,7 +110,7 @@ const STARTER_BY_LEVEL: Record<Level, string[]> = {
   C2: ["quintessential", "ubiquitous", "tenuous"],
 };
 
-const coreSet = new Set(CORE_STARTER);
+const coreSet = new Set([...CORE_STARTER, ...COMMON_HIGH_FREQUENCY]);
 
 /** Tokens always permitted regardless of learned-vocabulary progress. */
 export function starterWords(level: Level): Set<string> {

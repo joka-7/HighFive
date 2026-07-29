@@ -138,7 +138,8 @@ export type MissionKind =
   | "review"
   | "dialogue"
   | "video"
-  | "words";
+  | "words"
+  | "memorize";
 
 export interface MissionLog {
   id: string;
@@ -149,24 +150,47 @@ export interface MissionLog {
   total?: number;
 }
 
-// Daily Missions — a small daily checklist ("watch a video in English",
-// "talk with the AI coach in English"). The user marks each mission done for
-// the day and earns points; `date` gates re-claiming and resets the missions
-// each new day (mirrors dailyLessonCompletedText's date-key pattern).
+/**
+ * The individual day-scoped flags behind the daily checklist. Each one is
+ * either auto-completed by finishing the matching in-app activity, or marked
+ * done by hand when the learner did it in another app (see
+ * `DailyMissionsState.externalNotes`).
+ */
+export type DailyMissionFlag =
+  | "video"
+  | "talk"
+  | "words"
+  | "reading"
+  | "listening"
+  | "speaking"
+  | "grammar"
+  | "memorization";
+
+// Daily Missions — the daily checklist behind the five operations (see /
+// listen / talk / read / understand) plus the day's words. The user marks a
+// mission done for the day and earns points; `date` gates re-claiming and
+// resets the missions each new day (mirrors dailyLessonCompletedText's
+// date-key pattern).
 export interface DailyMissionsState {
   date: string;
-  video: boolean;
+  video: boolean; // "see" — auto only when done outside; marked by hand
   talk: boolean;
   words: boolean; // auto-completes once 5 words are saved that day
   reading: boolean; // auto-completes on finishing a Reading Lab article
   listening: boolean; // auto-completes on finishing a Listening quiz
   speaking: boolean; // auto-completes on finishing a Speaking practice set
   grammar: boolean; // auto-completes on finishing the Daily Lesson
+  memorization: boolean; // auto-completes on finishing a Memorization round
   // Number of Speaking-practice attempts scored today. Optional so state
   // persisted before this field existed still loads; treated as 0 when
   // absent. Drives diminishing points after the first full round so re-
   // recording the same sentence can't be farmed for unlimited points.
   speakingCount?: number;
+  // What the learner did in another app, per mission — e.g. the song they
+  // listened to on Spotify or the video they watched on YouTube. Set only for
+  // missions completed outside High5; shown on the mission card and written
+  // into the calendar entry so the day's log says *what* was done.
+  externalNotes?: Partial<Record<DailyMissionFlag, string>>;
 }
 
 export type Screen =
@@ -184,4 +208,5 @@ export type Screen =
   | "listening"
   | "speaking"
   | "calendar"
-  | "missions";
+  | "missions"
+  | "memorize";

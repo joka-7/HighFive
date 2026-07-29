@@ -4,6 +4,7 @@ import {
   buildAllowedVocabulary,
   contentUsesOnlyAllowedVocab,
   findUnknownWords,
+  findVocabSafeItem,
   pickVocabSafeItem,
 } from "./vocabulary";
 
@@ -31,6 +32,21 @@ describe("vocabulary utils", () => {
   it("contentUsesOnlyAllowedVocab validates multiple strings", () => {
     const allowed = starterWords("A1");
     expect(contentUsesOnlyAllowedVocab(["I go to you.", "She is at the."], allowed)).toBe(true);
+  });
+
+  it("accepts inflected forms of a known word", () => {
+    const allowed = new Set(["street", "carry", "run", "make", "quick"]);
+    expect(findUnknownWords("streets carried running making quickly", allowed)).toEqual([]);
+    expect(findUnknownWords("streetlight", allowed)).toEqual(["streetlight"]);
+  });
+
+  it("findVocabSafeItem returns null when nothing is within tolerance", () => {
+    const allowed = starterWords("A1");
+    const items = [{ textsToCheck: ["A zebra and an elephant."], id: 0 }];
+    expect(findVocabSafeItem(items, allowed, 0)).toBeNull();
+    // Two unknown words ("zebra", "elephant") — allowed once tolerance is 2.
+    expect(findVocabSafeItem(items, allowed, 0, 1)).toBeNull();
+    expect(findVocabSafeItem(items, allowed, 0, 2)?.id).toBe(0);
   });
 
   it("pickVocabSafeItem prefers day-indexed valid item", () => {
