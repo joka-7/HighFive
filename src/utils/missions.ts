@@ -1,4 +1,10 @@
-import type { MissionKind, MissionLog, QuizHistory, UserProgress } from "../types";
+import type {
+  DailyMissionFlag,
+  MissionKind,
+  MissionLog,
+  QuizHistory,
+  UserProgress,
+} from "../types";
 
 export const MISSION_ICONS: Record<MissionKind, string> = {
   lesson: "📚",
@@ -10,6 +16,7 @@ export const MISSION_ICONS: Record<MissionKind, string> = {
   dialogue: "💬",
   video: "🎬",
   words: "🃏",
+  memorize: "🧩",
 };
 
 export function dateKeyFromTs(ts: number): string {
@@ -20,9 +27,13 @@ export function dateKeyFromTs(ts: number): string {
   return `${y}-${m}-${day}`;
 }
 
+/** Quiz topic used by the Memorization round (see screens/Memorize.tsx). */
+export const MEMORIZATION_TOPIC = "Memorization";
+
 export function kindFromQuizTopic(topic: string): MissionKind {
   if (topic === "Reading") return "reading";
   if (topic === "Listening") return "listening";
+  if (topic === MEMORIZATION_TOPIC) return "memorize";
   return "quiz";
 }
 
@@ -33,7 +44,9 @@ export function quizToMission(q: QuizHistory): MissionLog {
       ? DAILY_CHECKLIST_LABELS.reading.label
       : q.topic === "Listening"
         ? "האזנה"
-        : q.topic;
+        : q.topic === MEMORIZATION_TOPIC
+          ? DAILY_CHECKLIST_LABELS.memorization.label
+          : q.topic;
   return {
     id: q.id,
     kind,
@@ -46,15 +59,29 @@ export function quizToMission(q: QuizHistory): MissionLog {
 
 /** Labels for daily checklist missions logged to the calendar. */
 export const DAILY_CHECKLIST_LABELS: Record<
-  "video" | "talk" | "words" | "reading" | "grammar",
+  DailyMissionFlag,
   { kind: MissionKind; label: string }
 > = {
-  video: { kind: "video", label: "צפייה בסרטון באנגלית" },
-  talk: { kind: "dialogue", label: "שיחה עם מאמן AI" },
+  video: { kind: "video", label: "צפייה באנגלית" },
+  talk: { kind: "dialogue", label: "שיחה באנגלית" },
   words: { kind: "words", label: "למידת 5 מילים" },
   reading: { kind: "reading", label: "קריאת מאמר" },
+  listening: { kind: "listening", label: "האזנה באנגלית" },
+  speaking: { kind: "speaking", label: "תרגול דיבור" },
   grammar: { kind: "lesson", label: "שיעור דקדוק" },
+  memorization: { kind: "memorize", label: "שינון מילות המחזור" },
 };
+
+/**
+ * Calendar label for a mission the learner completed outside High5 — the
+ * checklist label plus what they actually watched/listened to/read, so the
+ * day's log says more than "watched something in English".
+ */
+export function externalMissionLabel(flag: DailyMissionFlag, note: string): string {
+  const base = DAILY_CHECKLIST_LABELS[flag].label;
+  const clean = note.trim();
+  return clean ? `${base} — ${clean}` : base;
+}
 
 /** Merge persisted mission log with legacy quiz rows and today's lesson flag. */
 export function allMissions(

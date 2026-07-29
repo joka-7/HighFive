@@ -10,6 +10,7 @@ import {
 } from "react";
 import type {
   ChatMessage,
+  DailyMissionFlag,
   DailyMissionsState,
   GemWord,
   LearnedWordEntry,
@@ -26,7 +27,12 @@ import {
   isWordAtOrBelowLevel,
   promotionTarget,
 } from "../utils/levelProgress";
-import { DAILY_CHECKLIST_LABELS, dateKeyFromTs } from "../utils/missions";
+import {
+  DAILY_CHECKLIST_LABELS,
+  dateKeyFromTs,
+  externalMissionLabel,
+  MEMORIZATION_TOPIC,
+} from "../utils/missions";
 import { clearAllDailyCaches } from "../utils/dailyCache";
 import { parseProgressBackup, type ProgressBackup } from "../utils/backup";
 import { reportError } from "../services/errors";
@@ -69,14 +75,9 @@ function load<T>(key: string, fallback: T): T {
 
 const MISSION_POINTS = 30;
 export const DAILY_WORD_TARGET = 5;
-type MissionFlag =
-  | "video"
-  | "talk"
-  | "words"
-  | "reading"
-  | "listening"
-  | "speaking"
-  | "grammar";
+// Longest "what did you watch/listen to/read?" note we keep, so a pasted wall
+// of text can't bloat localStorage or the synced Firestore document.
+const MAX_EXTERNAL_NOTE = 120;
 
 const EMPTY_MISSIONS: DailyMissionsState = {
   date: "",
@@ -87,7 +88,9 @@ const EMPTY_MISSIONS: DailyMissionsState = {
   listening: false,
   speaking: false,
   grammar: false,
+  memorization: false,
   speakingCount: 0,
+  externalNotes: {},
 };
 
 // Missions from a previous day don't carry over — a new day starts blank.
@@ -100,7 +103,9 @@ function todaysMissions(m: DailyMissionsState, today: string): DailyMissionsStat
     ...m,
     listening: m.listening ?? false,
     speaking: m.speaking ?? false,
+    memorization: m.memorization ?? false,
     speakingCount: m.speakingCount ?? 0,
+    externalNotes: m.externalNotes ?? {},
   };
 }
 
@@ -170,7 +175,10 @@ interface LingoContextValue {
   logMission: (kind: MissionKind, label: string, score?: number, total?: number) => void;
   dailyMissions: DailyMissionsState;
   todayWordCount: number;
-  completeMission: (id: "video" | "talk") => void;
+  // Mark a daily mission done by hand. `note` records what the learner did in
+  // another app (a song, a video, an article) — it is kept with the day and
+  // written into the calendar entry.
+  completeMission: (id: DailyMissionFlag, note?: string) => void;
   addChatMessage: (msg: Omit<ChatMessage, "id" | "timestamp">) => void;
   clearChat: (scenario: string, level: Level) => void;
   resetAll: () => void;
@@ -470,13 +478,18 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     setLearnedWords((prev) => {
       const next = { ...prev };
       const now = Date.now();
+      let added = false;
       for (const w of words) {
         const key = w.word.toLowerCase();
         if (!next[key]) {
           next[key] = { word: w.word, translation: w.translation, level, firstSeenAt: now };
+          added = true;
         }
       }
-      return next;
+      // Keep the same object when nothing is new — re-marking words already
+      // learned (the Memorization screen does this on every visit) shouldn't
+      // churn every consumer of `learnedWords`.
+      return added ? next : prev;
     });
   }, []);
 
@@ -641,33 +654,44 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   // Missions from a prior day are dropped first, so yesterday's checkmarks
   // never carry over or block today's points. Shared by the manual "mark as
   // done" missions and the auto-detected ones below.
-  const awardMission = useCallback((id: MissionFlag) => {
+  // `note` is set only when the learner did the activity in another app.
+  const awardMission = useCallback((id: DailyMissionFlag, note?: string) => {
     const today = dateKeyFromTs(Date.now());
+    const trimmed = note?.trim().slice(0, MAX_EXTERNAL_NOTE) ?? "";
     setDailyMissions((prev) => {
       const current = todaysMissions(prev, today);
       if (current[id]) return current;
       setProgress((p) => (p ? { ...p, points: p.points + MISSION_POINTS } : p));
 
-      // Log checklist missions that are not tracked elsewhere (video, talk, words).
-      if (id === "video" || id === "talk" || id === "words") {
-        const meta = DAILY_CHECKLIST_LABELS[id];
+      // Log missions that aren't already tracked elsewhere: the checklist-only
+      // ones (video, talk, words) and anything done outside the app — an
+      // in-app Reading/Listening/Speaking round writes its own entry.
+      const meta = DAILY_CHECKLIST_LABELS[id];
+      if (id === "video" || id === "talk" || id === "words" || trimmed) {
+        const label = trimmed ? externalMissionLabel(id, trimmed) : meta.label;
         setMissionLog((ml) => {
           if (ml.some((m) => m.kind === meta.kind && dateKeyFromTs(m.timestamp) === today)) {
             return ml;
           }
           return capMissionLog([
-            { id: uid(), kind: meta.kind, label: meta.label, timestamp: Date.now() },
+            { id: uid(), kind: meta.kind, label, timestamp: Date.now() },
             ...ml,
           ]);
         });
       }
 
-      return { ...current, [id]: true };
+      return {
+        ...current,
+        [id]: true,
+        externalNotes: trimmed
+          ? { ...current.externalNotes, [id]: trimmed }
+          : current.externalNotes,
+      };
     });
   }, []);
 
   const completeMission = useCallback(
-    (id: "video" | "talk") => awardMission(id),
+    (id: DailyMissionFlag, note?: string) => awardMission(id, note),
     [awardMission],
   );
 
@@ -716,6 +740,16 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       (h) => h.topic === "Listening" && dateKeyFromTs(h.timestamp) === today,
     );
     if (done) awardMission("listening");
+  }, [quizHistory, awardMission]);
+
+  // Auto-complete the Memorization mission once today's memorization round is
+  // finished (Memorize.tsx logs it via completeQuiz).
+  useEffect(() => {
+    const today = dateKeyFromTs(Date.now());
+    const done = quizHistory.some(
+      (h) => h.topic === MEMORIZATION_TOPIC && dateKeyFromTs(h.timestamp) === today,
+    );
+    if (done) awardMission("memorization");
   }, [quizHistory, awardMission]);
 
   // Auto-complete Speaking once a speaking practice set is finished today

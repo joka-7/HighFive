@@ -24,6 +24,16 @@ quizzes / speaking can use AI when a key is set (else bundled offline JSON).
 Reading and Listening always use bundled offline content. Only the Dialogue
 Coach *requires* a live key.
 
+Above those pillars sits the **daily contract**: five new words and five
+operations on the language (see / listen / talk / read / understand), tracked
+on the "חמש ביום" screen. Each operation maps to one pillar *and* to an
+external path — the learner can do it in another app (YouTube, Spotify, a news
+site, an AI assistant) and mark it done with the title of what they used, which
+is stored in `DailyMissionsState.externalNotes` and shown on the calendar.
+Days run in five-day cycles: four learning days followed by a **Memorization
+day**, which replaces new words with recall practice over the cycle's 20 words
+(`utils/cycle.ts`, `screens/Memorize.tsx`).
+
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
 │                              Browser (SPA, RTL)                        │
