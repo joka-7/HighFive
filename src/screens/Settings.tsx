@@ -19,6 +19,7 @@ import {
   requestReminderPermission,
 } from "../services/reminders";
 import { usePwaInstall, canShare, shareApp } from "../services/pwa";
+import { enablePushReminders, isPushSupported, pushPermission } from "../services/push";
 import { speak, ttsSupported } from "../services/tts";
 import { LEVELS, type Level } from "../types";
 
@@ -51,6 +52,27 @@ export default function Settings() {
 
   const [prefs, setPrefs] = useState(() => loadPrefs());
   const { canInstall, installed, install } = usePwaInstall();
+
+  const [pushBusy, setPushBusy] = useState(false);
+  const [pushError, setPushError] = useState("");
+  const [pushEnabled, setPushEnabled] = useState(pushPermission() === "granted");
+
+  async function handleEnablePush() {
+    if (!user) return;
+    setPushError("");
+    setPushBusy(true);
+    const result = await enablePushReminders(user.uid);
+    if (result.ok) {
+      setPushEnabled(true);
+    } else {
+      setPushError(
+        result.error === "denied"
+          ? "לא ניתנה הרשאה להתראות. אפשר לשנות זאת בהגדרות הדפדפן."
+          : "הפעלת התזכורות נכשלה. נסה שוב מאוחר יותר.",
+      );
+    }
+    setPushBusy(false);
+  }
 
   function setTheme(dark: boolean) {
     const next = { ...prefs, theme: dark ? ("dark" as const) : ("light" as const) };
@@ -437,6 +459,33 @@ export default function Settings() {
           </>
         )}
       </div>
+
+      {user && (
+        <div className="card">
+          <h3>🔔 תזכורות יומיות</h3>
+          {!isPushSupported() ? (
+            <p className="muted">הדפדפן הזה לא תומך בהתראות דחיפה.</p>
+          ) : pushEnabled ? (
+            <p className="muted">
+              ✅ תזכורות פעילות. אם לא תיכנס/י ולא תשלים/י את המשימות היומיות, תישלח לך תזכורת.
+            </p>
+          ) : (
+            <>
+              <p className="muted">
+                קבל/י תזכורת אם לא נכנסת לאפליקציה ולא השלמת את המשימות היומיות שלך.
+              </p>
+              <button className="btn" disabled={pushBusy} onClick={handleEnablePush}>
+                {pushBusy ? "מפעיל…" : "הפעלת תזכורות"}
+              </button>
+              {pushError && (
+                <p className="muted" style={{ color: "var(--danger)" }}>
+                  {pushError}
+                </p>
+              )}
+            </>
+          )}
+        </div>
+      )}
 
       <div className="card">
         <h3>💾 גיבוי ושחזור</h3>

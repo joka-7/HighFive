@@ -31,7 +31,10 @@ import type {
 // against (and writes real user data into) whichever project's ID happened to
 // be baked into this file. Without the env vars set, isCloudConfigured() is
 // false and the app runs purely in Local mode, as documented in the README.
-const config = {
+//
+// Exported because the push-reminder service worker registration needs the
+// same config (see services/push.ts).
+export const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? "",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? "",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ?? "",
@@ -42,7 +45,9 @@ const config = {
 
 /** True only when the minimum Firebase config is present via env vars. */
 export function isCloudConfigured(): boolean {
-  return Boolean(config.apiKey && config.projectId && config.appId);
+  return Boolean(
+    firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.appId,
+  );
 }
 
 let initPromise: Promise<{ auth: Auth; db: Firestore }> | undefined;
@@ -57,7 +62,7 @@ function ensureInit(): Promise<{ auth: Auth; db: Firestore }> {
       const { initializeApp } = await import("firebase/app");
       const { getAuth } = await import("firebase/auth");
       const { getFirestore } = await import("firebase/firestore");
-      const app = initializeApp(config);
+      const app = initializeApp(firebaseConfig);
       return { auth: getAuth(app), db: getFirestore(app) };
     })();
   }
@@ -133,5 +138,21 @@ export async function loadCloud(uid: string): Promise<CloudData | null> {
 export async function saveCloud(uid: string, data: CloudData): Promise<void> {
   const { db } = await ensureInit();
   const { doc, setDoc } = await import("firebase/firestore");
-  await setDoc(doc(db, "users", uid), data);
+  // merge: true so this doesn't clobber fields written independently, like the
+  // push-reminder settings below.
+  await setDoc(doc(db, "users", uid), data, { merge: true });
+}
+
+/** Push-reminder opt-in: an FCM device token + the device's IANA timezone,
+ * saved separately from CloudData so enabling/disabling reminders doesn't
+ * depend on (or get overwritten by) the regular progress sync. Pass `null` for
+ * both to opt out. Read by the daily reminder job (api/mission-reminder.ts). */
+export async function savePushSettings(
+  uid: string,
+  pushToken: string | null,
+  timezone: string | null,
+): Promise<void> {
+  const { db } = await ensureInit();
+  const { doc, setDoc } = await import("firebase/firestore");
+  await setDoc(doc(db, "users", uid), { pushToken, timezone }, { merge: true });
 }

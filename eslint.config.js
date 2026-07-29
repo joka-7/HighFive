@@ -25,4 +25,11 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    // Vercel Serverless Functions run under Node.js, not the browser.
+    files: ["api/**/*.ts"],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 );
