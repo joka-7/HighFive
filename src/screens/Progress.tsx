@@ -39,7 +39,7 @@ export default function Progress() {
 
   return (
     <div>
-      <div className="stat-grid" style={{ marginBottom: 14 }}>
+      <div className="stat-grid mb-4">
         <div className="stat-box">
           <div className="num">{progress.points}</div>
           <div className="lbl">נקודות ✨</div>
@@ -80,12 +80,12 @@ export default function Progress() {
       {upcoming && (
         <div className="card">
           <h3>התקדמות לרמה {upcoming}</h3>
-          <p className="muted" style={{ marginBottom: 12 }}>
+          <p className="muted mb-3">
             מילים שנלמדו ברמה {level}: {learnedAtLevel}/{learnedGoal} · מילים שמורות בשליטה:{" "}
             {masteredAtLevel}/{masteredGoal}
           </p>
-          <div style={{ marginBottom: 8 }}>
-            <div className="muted" style={{ fontSize: 13, marginBottom: 4 }}>
+          <div className="mb-2">
+            <div className="muted fs-13 mb-1">
               מילים חדשות ברמה {level}
             </div>
             <div className="progress-bar">
@@ -96,7 +96,7 @@ export default function Progress() {
             </div>
           </div>
           <div>
-            <div className="muted" style={{ fontSize: 13, marginBottom: 4 }}>
+            <div className="muted fs-13 mb-1">
               מילים שמורות בשליטה
             </div>
             <div className="progress-bar">
@@ -115,7 +115,7 @@ export default function Progress() {
           <p className="muted">עדיין לא עשית חידונים.</p>
         ) : (
           quizHistory.slice(0, 10).map((h) => (
-            <div className="row-between" key={h.id} style={{ padding: "6px 0" }}>
+            <div className="row-between py-row" key={h.id}>
               <span>
                 {h.topic} · {h.level}
               </span>

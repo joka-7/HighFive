@@ -98,7 +98,7 @@ function MissionAction({ done, actionLabel, onClick, secondary }: {
   if (done) return <MissionDoneBar />;
   return (
     <>
-      <button className="btn accent" style={{ marginTop: 10 }} onClick={onClick}>
+      <button className="btn accent mt-2_5" onClick={onClick}>
         {actionLabel}
       </button>
       {secondary}
@@ -120,9 +120,9 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
 
   return (
     <div>
-      <div className="card center" style={{ background: "linear-gradient(135deg,#6c5ce7,#8e7bff)", color: "#fff" }}>
-        <h2 style={{ color: "#fff", margin: 0 }}>🎯 משימות יומיות</h2>
-        <p style={{ margin: "6px 0 0", opacity: 0.9 }}>
+      <div className="card center hero-card">
+        <h2 className="m-0">🎯 משימות יומיות</h2>
+        <p className="mt-tight">
           {doneCount}/{TOTAL_MISSIONS} הושלמו היום
         </p>
       </div>
@@ -136,18 +136,18 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
         return (
           <div className={`card${done ? " mission-card-done" : ""}`} key={mission.id}>
             <div className="row-between">
-              <span style={{ fontSize: 28 }}>{mission.emoji}</span>
+              <span className="emoji-lg">{mission.emoji}</span>
               <DoneBadge done={done} />
             </div>
-            <h3 style={{ margin: "8px 0 2px" }}>{mission.title}</h3>
-            <p className="muted" style={{ marginTop: 0 }}>
+            <h3 className="mission-title">{mission.title}</h3>
+            <p className="muted mt-0">
               {mission.sub}
             </p>
             {mission.id === "video" && (
-              <div style={{ marginTop: 10 }}>
-                <p style={{ margin: "0 0 8px", fontWeight: 600 }}>
+              <div className="video-block">
+                <p className="video-title">
                   {todaysVideo.titleHe}
-                  <span className="muted" style={{ fontWeight: 400 }}>
+                  <span className="muted fw-400">
                     {" "}
                     · {todaysVideo.title}
                   </span>
@@ -170,8 +170,7 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
               secondary={
                 mission.id === "talk" ? (
                   <button
-                    className="btn ghost"
-                    style={{ marginTop: 8 }}
+                    className="btn ghost mt-2"
                     onClick={() => go("dialogue")}
                   >
                     עברו למאמן שיחה ←
@@ -188,11 +187,11 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
         return (
           <div className={`card${done ? " mission-card-done" : ""}`} key={mission.id}>
             <div className="row-between">
-              <span style={{ fontSize: 28 }}>{mission.emoji}</span>
+              <span className="emoji-lg">{mission.emoji}</span>
               <DoneBadge done={done} />
             </div>
-            <h3 style={{ margin: "8px 0 2px" }}>{mission.title}</h3>
-            <p className="muted" style={{ marginTop: 0 }}>
+            <h3 className="mission-title">{mission.title}</h3>
+            <p className="muted mt-0">
               {mission.sub}
             </p>
             <MissionAction
@@ -206,30 +205,17 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
 
       <div className={`card${dailyMissions.words ? " mission-card-done" : ""}`}>
         <div className="row-between">
-          <span style={{ fontSize: 28 }}>📚</span>
+          <span className="emoji-lg">📚</span>
           <DoneBadge done={dailyMissions.words} />
         </div>
-        <h3 style={{ margin: "8px 0 2px" }}>למדו {DAILY_WORD_TARGET} מילים חדשות</h3>
-        <p className="muted" style={{ marginTop: 0 }}>
+        <h3 className="mission-title">למדו {DAILY_WORD_TARGET} מילים חדשות</h3>
+        <p className="muted mt-0">
           שמרו {DAILY_WORD_TARGET} מילים חדשות — המשימה מסתיימת אוטומטית.
         </p>
-        <div
-          style={{
-            height: 8,
-            borderRadius: 999,
-            background: "var(--surface-2, #eee)",
-            overflow: "hidden",
-            margin: "10px 0 4px",
-          }}
-        >
+        <div className="mission-progress">
           <div
-            style={{
-              height: "100%",
-              width: `${(wordsProgress / DAILY_WORD_TARGET) * 100}%`,
-              background: "var(--primary)",
-              borderRadius: 999,
-              transition: "width 0.2s ease",
-            }}
+            className="progress-fill"
+            style={{ width: `${(wordsProgress / DAILY_WORD_TARGET) * 100}%` }}
           />
         </div>
         <span className="muted">

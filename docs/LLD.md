@@ -5,40 +5,34 @@ Module-level detail to accompany `docs/HLD.md`.
 ## `src/main.tsx`
 
 Application entry point. Applies the saved theme *before* first paint
-(`applyTheme(loadPrefs().theme)`, to avoid a flash of the wrong theme), then
-mounts `<App>` inside `<LingoProvider>` within `<StrictMode>`.
+(`applyTheme(loadPrefs().theme)`), then mounts `<App>` inside `<LingoProvider>`
+wrapped by `<ErrorBoundary>` within `<StrictMode>`.
 
 ## `src/App.tsx`
 
-Shell + navigation (no router library):
+Shell + **hash routing** (`utils/routing.ts`):
 
-- Holds the active `Screen` in a single `useState` and switches on it in
-  `renderScreen()`.
-- **Onboarding gate:** while `progress` is `null`, renders `<Onboarding>`
-  full-screen and nothing else.
-- **Top bar:** on the dashboard shows `✋ High5`; on any other screen a back
-  button (`→ {Hebrew title}`) returning to the dashboard. The right side always
-  shows three chips: `✨ points`, `🔥 streak`, and the CEFR `level`.
-- **Bottom nav (`NAV`):** 5 tiles — `dashboard`, `lesson`, `vocabulary`,
-  `progress`, `settings`. The other 8 screens are reached from Dashboard tiles
-  or in-screen buttons via the `go(screen)` callback.
-- `TITLES` maps every `Screen` to its Hebrew title.
+- Active `Screen` is derived from `location.hash` (`#/missions`, `#/settings`,
+  …); `go(screen)` writes the hash so refresh/share/back work.
+- **Onboarding gate:** while `progress` is `null`, renders `<Onboarding>`.
+- **Top bar:** brand / back-to-home, points / streak / level chips (ARIA-labelled).
+- **Bottom nav:** `dashboard`, `lesson`, `missions`, `vocabulary`, `calendar`,
+  `settings` with `aria-current="page"`.
+- Offline banner when `navigator.onLine` is false; SW update banner when a new
+  worker is waiting.
+- Focus moves into `<main>` on screen change.
 
 ## `src/types.ts`
 
-Domain model, ported from the original Kotlin entities/response shapes:
+Domain model for CEFR content and persisted learner state:
 
-- `Level` — `"A1" | "A2" | "B1" | "B2" | "C1" | "C2"` (CEFR); `LEVELS` array.
-- **AI/content shapes** (mirrored exactly in the offline JSON): `GemWord` /
-  `GemWordList` / `GemQuestion` / `GemLesson` / `GemDialogueReply` / `GemQuiz` /
-  `GemReading` (title/text/glossary/questions) / `GemListening`
-  (transcript/questions) / `GemSpeaking` (`prompts: {text, translation}[]`) /
-  `OfflineLevelContent`.
-- **Persisted entities** (one interface per `localStorage`-backed "table",
-  replacing Room entities): `UserProgress`, `SavedWord` (with optional Leitner
-  fields `srsLevel` / `nextReviewAt` / `reviewCount`), `ChatMessage`,
-  `QuizHistory`.
-- `Screen` — the union of all 13 navigable screens; `App.tsx` switches on this.
+- `Level` — `"A1" | "A2" | "B1" | "B2" | "C1" | "C2"`; `LEVELS` array.
+- Content shapes: `GemWord` / `GemLesson` / `GemQuiz` / `GemReading` /
+  `GemListening` / `GemSpeaking` / `OfflineLevelContent`.
+- Persisted: `UserProgress`, `SavedWord` (Leitner fields), `ChatMessage`,
+  `QuizHistory`, `MissionLog`, `DailyMissionsState` (checklist flags +
+  `speakingCount`).
+- `Screen` — all navigable screens; `App.tsx` switches on this.
 
 ## `src/store/useLingo.tsx`
 
@@ -55,15 +49,17 @@ database. Exposes the `useLingo()` hook, which throws if used outside
   `useEffect` (this is also the offline cache in Account mode).
 - **Streak logic** runs once on mount: same calendar day → unchanged; exactly
   the next day → `streak + 1`; any larger gap → reset to `1`.
-- **Points** (ported verbatim from `LingoViewModel`):
+- **Points:**
   - `+10` — save a new word (`toggleSaveWord`).
   - `+5` — remembered a word in review (`reviewWord` with `remembered = true`).
-  - `+50` once/day + `20`/correct — daily lesson (`completeLesson`, guarded by
-    `dailyLessonCompletedText === today`).
-  - `25`/correct — practice quiz, and also Reading/Listening comprehension
-    (they route through `completeQuiz`).
-  - `+15` — each user dialogue turn (`addChatMessage`).
-  - up to `+20` scaled by accuracy — speaking (screen calls `addPoints`).
+  - `+50` once/day + `20`/correct — daily lesson (`completeLesson`).
+  - `25`/correct first time per topic/day (reduced on repeats) — `completeQuiz`
+    (practice quiz, Reading, Listening).
+  - `+15` — each user dialogue turn.
+  - Speaking: up to `+20` scaled by accuracy for the first round of the day,
+    then reduced (`awardSpeakingPoints`).
+  - `+30` once/day per daily-mission checklist item (`awardMission`).
+  - `+100` on CEFR auto-promotion.
 - **Spaced-repetition (Leitner):** `toggleSaveWord` inserts new words at box 0
   with `nextReviewAt = now` (immediately due). `dueWords()` returns non-mastered
   words whose review time has arrived. `reviewWord(id, remembered)` calls

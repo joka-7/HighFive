@@ -147,7 +147,7 @@ export default function App() {
               alt=""
               width={26}
               height={26}
-              style={{ borderRadius: 7, verticalAlign: "middle" }}
+              className="brand-logo"
             />{" "}
             High5
           </span>
@@ -206,9 +206,9 @@ export default function App() {
 
 function UpdateBanner({ onUpdate }: { onUpdate: () => void }) {
   return (
-    <div className="banner" role="status" style={{ display: "flex", alignItems: "center", gap: 10 }}>
-      <span style={{ flex: 1 }}>🔄 גרסה חדשה של האפליקציה מוכנה.</span>
-      <button className="btn small" style={{ width: "auto" }} onClick={onUpdate}>
+    <div className="banner banner-row" role="status">
+      <span>🔄 גרסה חדשה של האפליקציה מוכנה.</span>
+      <button className="btn small" onClick={onUpdate}>
         רענון
       </button>
     </div>

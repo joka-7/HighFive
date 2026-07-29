@@ -25,13 +25,9 @@ export default function Onboarding() {
               alt="High5"
               width={112}
               height={112}
-              style={{
-                borderRadius: 26,
-                boxShadow: "0 12px 30px -8px rgba(22,53,110,0.5)",
-                marginBottom: 8,
-              }}
+              className="onboarding-logo"
             />
-            <h1 style={{ margin: "4px 0" }}>High5</h1>
+            <h1 className="my-1">High5</h1>
             <p className="muted">לומדים אנגלית בכיף — שיעורים, אוצר מילים ושיחות עם AI</p>
           </div>
 
@@ -64,7 +60,7 @@ export default function Onboarding() {
           <button className="btn accent" onClick={() => setStep("test")}>
             🎯 מבחן מיון (6 שאלות)
           </button>
-          <div style={{ height: 10 }} />
+          <div className="spacer-sm" />
           <button className="btn secondary" onClick={() => setStep("manual")}>
             ✍️ אבחר רמה בעצמי
           </button>
