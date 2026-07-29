@@ -1217,3 +1217,32 @@ pre.explanation-text {
   transition: width 0.2s ease;
 }
 
+/* --- Sections / words box --- */
+/* Groups the hub's tiles and separates the words box from the five
+   operations, so neither grid reads as one undifferentiated wall. */
+.section-title {
+  margin: 22px 4px 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-soft);
+}
+/* The day's vocabulary: same card, marked as its own thing rather than a
+   sixth mission. */
+.words-box {
+  border-inline-start: 4px solid var(--accent);
+}
+.hero-today {
+  background: none;
+  border: 0;
+  padding: 0;
+  margin-top: 6px;
+  font: inherit;
+  font-size: 14px;
+  color: inherit;
+  opacity: 0.9;
+  text-align: start;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+

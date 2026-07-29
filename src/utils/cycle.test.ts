@@ -1,41 +1,56 @@
 import { describe, it, expect } from "vitest";
 import {
-  CYCLE_DAYS,
-  CYCLE_WORD_COUNT,
-  cycleDay,
-  cycleLearningDays,
-  cycleStart,
-  isMemorizationDay,
+  isReviewDay,
+  LEARNING_DAYS,
+  learningDayNumber,
+  WEEK_WORD_COUNT,
+  weekday,
+  weekLearningDays,
+  weekStart,
+  WORDS_PER_DAY,
 } from "./cycle";
+import { dayIndex } from "./daily";
 
-describe("five-day cycle", () => {
-  it("numbers the days 1..5 and wraps", () => {
-    expect(cycleDay(0)).toBe(1);
-    expect(cycleDay(3)).toBe(4);
-    expect(cycleDay(4)).toBe(5);
-    expect(cycleDay(5)).toBe(1);
-    expect(cycleDay(9)).toBe(5);
+// 2026-07-26 is a Sunday. Built with the local Date constructor (not Date.UTC)
+// so each timestamp is local midnight of that weekday wherever the tests run.
+const SUNDAY = new Date(2026, 6, 26).getTime();
+const at = (dayOffset: number) => new Date(2026, 6, 26 + dayOffset).getTime();
+const WEEK = [0, 1, 2, 3, 4, 5, 6];
+
+describe("the weekly rhythm", () => {
+  it("maps Sunday…Saturday onto 0…6", () => {
+    expect(WEEK.map((i) => weekday(at(i)))).toEqual([0, 1, 2, 3, 4, 5, 6]);
   });
 
-  it("marks every fifth day as a memorization day", () => {
-    const days = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(isMemorizationDay);
-    expect(days).toEqual([false, false, false, false, true, false, false, false, false, true]);
+  it("learns Sunday–Thursday and reviews Friday–Saturday", () => {
+    expect(WEEK.map((i) => isReviewDay(at(i)))).toEqual([
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+    ]);
   });
 
-  it("keeps exactly one memorization day per cycle", () => {
-    const flags = Array.from({ length: 50 }, (_, d) => isMemorizationDay(d));
-    expect(flags.filter(Boolean)).toHaveLength(50 / CYCLE_DAYS);
+  it("numbers the learning days 1..5, with none on a review day", () => {
+    expect(WEEK.map((i) => learningDayNumber(at(i)))).toEqual([1, 2, 3, 4, 5, null, null]);
   });
 
-  it("lists the four learning days of the current cycle", () => {
-    expect(cycleStart(7)).toBe(5);
-    expect(cycleLearningDays(7)).toEqual([5, 6, 7, 8]);
-    // On a memorization day the whole cycle is already behind the learner.
-    expect(cycleLearningDays(9)).toEqual([5, 6, 7, 8]);
-    expect(cycleLearningDays(9).every((d) => d < 9)).toBe(true);
+  it("resolves the same Sunday from every day of that week", () => {
+    const sunday = dayIndex(SUNDAY);
+    for (const i of WEEK) expect(weekStart(at(i))).toBe(sunday);
   });
 
-  it("covers 20 words per cycle (4 days × 5 words)", () => {
-    expect(CYCLE_WORD_COUNT).toBe(20);
+  it("returns the week's five learning days, stable all week", () => {
+    const sunday = dayIndex(SUNDAY);
+    const expected = [sunday, sunday + 1, sunday + 2, sunday + 3, sunday + 4];
+    for (const i of WEEK) expect(weekLearningDays(at(i))).toEqual(expected);
+  });
+
+  it("carries 25 words into a review day", () => {
+    expect(WEEK_WORD_COUNT).toBe(25);
+    expect(LEARNING_DAYS * WORDS_PER_DAY).toBe(WEEK_WORD_COUNT);
   });
 });

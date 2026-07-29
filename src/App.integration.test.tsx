@@ -28,7 +28,9 @@ describe("App onboarding-to-dashboard flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "B1" }));
 
     expect(screen.getByText(/שלום, Dana/)).toBeInTheDocument();
-    expect(screen.getByText(/רמה B1/)).toBeInTheDocument();
+    // The level lives in the top bar's status chips — the dashboard hero no
+    // longer repeats it.
+    expect(screen.getByLabelText("רמה B1")).toBeInTheDocument();
   });
 
   it("navigates from the dashboard to settings and back via the bottom nav", () => {

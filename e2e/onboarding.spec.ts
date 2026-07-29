@@ -11,7 +11,8 @@ async function onboard(page: Page, name: string, level: string) {
 
 test("a new user can register, land on the dashboard, and reach settings", async ({ page }) => {
   await onboard(page, "Dana", "B1");
-  await expect(page.getByText(/רמה B1/)).toBeVisible();
+  // The level is a top-bar status chip; the dashboard hero no longer repeats it.
+  await expect(page.getByLabel("רמה B1")).toBeVisible();
 
   await page.getByRole("navigation").getByRole("button", { name: /הגדרות/ }).click();
   await expect(page.getByText("🤖 הגדרות AI")).toBeVisible();
@@ -32,7 +33,9 @@ test("hash deep link opens settings after onboarding", async ({ page }) => {
 
 test("daily lesson loads and can start the practice quiz", async ({ page }) => {
   await onboard(page, "Lesson", "A1");
-  await page.getByRole("navigation").getByRole("button", { name: /שיעור/ }).click();
+  // The lesson is reached from the hub tile (and from חמש ביום); it is
+  // deliberately not in the bottom nav.
+  await page.getByRole("button", { name: /שיעור יומי/ }).click();
   await expect(page.getByRole("button", { name: /בוא נתרגל/ })).toBeVisible({
     timeout: 30_000,
   });

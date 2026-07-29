@@ -24,15 +24,19 @@ quizzes / speaking can use AI when a key is set (else bundled offline JSON).
 Reading and Listening always use bundled offline content. Only the Dialogue
 Coach *requires* a live key.
 
-Above those pillars sits the **daily contract**: five new words and five
-operations on the language (see / listen / talk / read / understand), tracked
-on the "חמש ביום" screen. Each operation maps to one pillar *and* to an
-external path — the learner can do it in another app (YouTube, Spotify, a news
-site, an AI assistant) and mark it done with the title of what they used, which
-is stored in `DailyMissionsState.externalNotes` and shown on the calendar.
-Days run in five-day cycles: four learning days followed by a **Memorization
-day**, which replaces new words with recall practice over the cycle's 20 words
-(`utils/cycle.ts`, `screens/Memorize.tsx`).
+Above those pillars sits the **daily contract**: five operations on the language
+(see / listen / talk / read / understand), tracked on the "חמש ביום" screen, plus
+the day's vocabulary in a box of its own above them — what the learner takes in,
+as opposed to the five ways of using the language. Each operation maps to one
+pillar *and* to an external path — the learner can do it in another app
+(YouTube, Spotify, a news site, an AI assistant) and mark it done with the title
+of what they used, which is stored in `DailyMissionsState.externalNotes` and
+shown on the calendar.
+
+The word rhythm is a **calendar week** (`utils/cycle.ts`): Sunday through
+Thursday are learning days, five new words each (25 for the week); Friday and
+Saturday are **review days**, where the whole week's 25 words come back for
+recall practice instead of new ones arriving (`screens/Memorize.tsx`).
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
@@ -73,7 +77,7 @@ day**, which replaces new words with recall practice over the cycle's 20 words
 | Component | Responsibility |
 |---|---|
 | `src/screens/*` | One React component per `Screen` — onboarding, dashboard, daily lesson, daily missions, vocabulary, dialogue coach, practice quiz, spaced-repetition review, reading, listening, speaking, saved words, progress, calendar, settings. |
-| `src/App.tsx` | Shell + hash routing (`#/missions`, etc.): gates on onboarding, switches on the active `Screen`, top bar (points/streak/level), 6-item bottom nav, offline banner, SW update prompt. |
+| `src/App.tsx` | Shell + hash routing (`#/missions`, etc.): gates on onboarding, switches on the active `Screen`, top bar (points/streak/level), 5-item bottom nav, offline banner, SW update prompt. |
 | `src/store/useLingo.tsx` | App state (`UserProgress`, saved words, chat, quizzes, mission log, daily missions checklist) as a React Context, persisted to `localStorage` and — in Account mode — mirrored to Firestore. Owns points, streak, SRS, mission auto-complete, export/import. |
 | `src/services/ai.ts` | Multi-provider AI client. Stores provider/key/model in `localStorage` and exposes `complete(prompt, systemInstruction)`. |
 | `src/services/content.ts` | Generators per pillar with vocabulary-safe offline fallbacks. Reading/Listening always pick bundled content; other pillars try AI then fall back. |
@@ -86,7 +90,7 @@ day**, which replaces new words with recall practice over the cycle's 20 words
 | `src/data/offline.ts` + `extras.ts` | Per-CEFR-level offline loaders (lessons/vocab/quizzes + reading/listening/speaking pools). |
 | `src/data/videos.ts` | Level-tagged curated YouTube list for the daily video mission. |
 | `src/data/placement.ts` / `topics.ts` | Placement test + rotating daily topics / dialogue scenarios. |
-| `src/utils/*` | Pure helpers: `json`, `srs`, `score`, `missions`, `levelProgress`, `routing`, `progressCharts`, `backup`, `dailyCache`. |
+| `src/utils/*` | Pure helpers: `json`, `srs`, `score`, `missions`, `cycle` (the Sun–Thu / Fri–Sat week), `levelProgress`, `routing`, `progressCharts`, `backup`, `dailyCache`. |
 | `scripts/generate-content.mjs` | Build-time generator for offline JSON banks. |
 
 ## Key design decisions
@@ -101,9 +105,9 @@ day**, which replaces new words with recall practice over the cycle's 20 words
   when `VITE_SENTRY_DSN` is set.
 - **Hash routing.** Screens are bookmarkable (`#/reading`) without a router
   library; browser back/forward follow the hash.
-- **Daily Missions + Calendar.** Checklist (video, talk, reading, listening,
-  speaking, grammar, words) with auto-complete where possible; calendar shows
-  completed mission history.
+- **Daily Missions + Calendar.** Five operations (video, talk, reading,
+  listening, speaking/grammar) as the checklist, with the words box outside it,
+  and auto-complete where possible; calendar shows completed mission history.
 - **Level progression.** Learned/mastered vocabulary thresholds can auto-promote
   CEFR level (`utils/levelProgress.ts`).
 - **Provider abstraction.** Five providers share one `complete()` entry point;
@@ -142,11 +146,14 @@ day**, which replaces new words with recall practice over the cycle's 20 words
 
 ## Daily Missions
 
-`DailyMissions` shows a seven-item checklist. Manual: video (embedded curated
-YouTube by level) and talk. Auto: reading / listening (via `quizHistory` topics),
-speaking (via `missionLog`), grammar (`dailyLessonCompletedText`), words (5
-saves today). Each awards +30 once per day. `Calendar` aggregates `missionLog`
-+ quiz history by local `dateKeyFromTs`.
+`DailyMissions` shows a **five-item** checklist — the operations from
+`data/operations.ts` — with the day's vocabulary in a separate box above it, so
+"חמש ביום" really is five. Manual: video (embedded curated YouTube by level) and
+talk. Auto: reading / listening (via `quizHistory` topics), speaking (via
+`missionLog`), grammar (`dailyLessonCompletedText`). The words box is auto too —
+5 saves today on a learning day, the memorization round on a review day — and
+still awards +30 like the five, it just isn't one of them. `Calendar` aggregates
+`missionLog` + quiz history by local `dateKeyFromTs`.
 
 ## Data flow (Account mode sync)
 
