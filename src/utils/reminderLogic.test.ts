@@ -15,6 +15,8 @@ function baseUser(overrides: Partial<ReminderUserData> = {}): ReminderUserData {
       talk: false,
       words: false,
       reading: false,
+      listening: false,
+      speaking: false,
       grammar: false,
     },
     ...overrides,
@@ -29,6 +31,8 @@ describe("missionsCompleteToday", () => {
       talk: true,
       words: true,
       reading: true,
+      listening: true,
+      speaking: true,
       grammar: true,
     };
     expect(missionsCompleteToday(missions, "2026-07-23")).toBe(false);
@@ -53,6 +57,8 @@ describe("missionsCompleteToday", () => {
       talk: true,
       words: true,
       reading: true,
+      listening: true,
+      speaking: true,
       grammar: true,
     };
     expect(missionsCompleteToday(missions, "2026-07-23")).toBe(true);
@@ -89,6 +95,8 @@ describe("shouldSendReminder", () => {
         talk: true,
         words: true,
         reading: true,
+        listening: true,
+        speaking: true,
         grammar: true,
       },
     });

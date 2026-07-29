@@ -16,6 +16,8 @@ type Phase = "reading" | "quiz" | "done";
 export default function DailyLesson() {
   const { progress, completeLesson, learnedWords } = useLingo();
   const [lesson, setLesson] = useState<GemLesson | null>(null);
+  const [error, setError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const [phase, setPhase] = useState<Phase>("reading");
   const [earned, setEarned] = useState(0);
 
@@ -23,6 +25,8 @@ export default function DailyLesson() {
   // switches) so the user doesn't lose their place mid-lesson.
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
+    setError(false);
     const level = progress?.currentLevel ?? "A1";
     const cached = loadDailyCache<GemLesson>(CACHE_KEY, level);
     if (cached) {
@@ -33,16 +37,37 @@ export default function DailyLesson() {
       level,
       topicForTodayByLevel(LESSON_TOPICS_BY_LEVEL, level),
       Object.keys(learnedWords),
-    ).then((l) => {
-      if (active) {
-        setLesson(l);
-        saveDailyCache(CACHE_KEY, level, l);
-      }
-    });
+      undefined,
+      controller.signal,
+    )
+      .then((l) => {
+        if (active) {
+          setLesson(l);
+          saveDailyCache(CACHE_KEY, level, l);
+        }
+      })
+      .catch(() => {
+        // Content failed to load (e.g. a chunk-load failure fetching the
+        // level's offline bundle) — surface a retry instead of leaving the
+        // spinner up forever.
+        if (active) setError(true);
+      });
     return () => {
       active = false;
+      controller.abort();
     };
-  }, [progress?.currentLevel, learnedWords]);
+  }, [progress?.currentLevel, learnedWords, reloadKey]);
+
+  if (error) {
+    return (
+      <div className="card center">
+        <h2>לא הצלחנו לטעון את השיעור</h2>
+        <button className="btn mt-3" onClick={() => setReloadKey((k) => k + 1)}>
+          נסו שוב 🔄
+        </button>
+      </div>
+    );
+  }
 
   if (!lesson) return <Spinner label="מכין שיעור..." />;
 
@@ -76,9 +101,13 @@ export default function DailyLesson() {
     <div>
       <div className="card">
         <div className="row-between">
-          <h2 style={{ margin: 0 }}>{lesson.title}</h2>
-          <button className="icon-btn" onClick={() => speak(lesson.title)}>
-            🔊
+          <h2 className="m-0">{lesson.title}</h2>
+          <button
+            className="icon-btn"
+            aria-label="השמע את כותרת השיעור"
+            onClick={() => speak(lesson.title)}
+          >
+            <span aria-hidden="true">🔊</span>
           </button>
         </div>
       </div>

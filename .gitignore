@@ -11,6 +11,9 @@ test-results/
 playwright-report/
 playwright/.cache/
 
+# Vitest coverage
+coverage/
+
 # Local env files (never commit real API keys)
 .env
 .env.local

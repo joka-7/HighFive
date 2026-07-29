@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { DAILY_WORD_TARGET, useLingo } from "../store/useLingo";
+import { videoForToday, youtubeEmbedUrl } from "../data/videos";
 import type { Screen } from "../types";
 
 // Missions the user marks done manually — an external action the app can't
@@ -16,7 +17,7 @@ const MANUAL_MISSIONS: ManualMission[] = [
     id: "video",
     emoji: "🎬",
     title: "צפו בסרטון באנגלית",
-    sub: "צפיתם היום בסרטון קצר באנגלית? סמנו שהשלמתם.",
+    sub: "צפו בסרטון הקצר למטה (מותאם לרמה שלכם), ואז סמנו שהשלמתם.",
   },
   {
     id: "talk",
@@ -29,7 +30,7 @@ const MANUAL_MISSIONS: ManualMission[] = [
 // Missions that auto-complete once their in-app action is done — practiced
 // from their own tab, so there's nothing to press here.
 interface AutoMission {
-  id: "reading" | "grammar";
+  id: "reading" | "listening" | "speaking" | "grammar";
   emoji: string;
   title: string;
   sub: string;
@@ -45,6 +46,22 @@ const AUTO_MISSIONS: AutoMission[] = [
     sub: "סיימו קטע וענו על שאלות ההבנה — המשימה מסתיימת אוטומטית.",
     screen: "reading",
     cta: "עברו לקריאה ←",
+  },
+  {
+    id: "listening",
+    emoji: "🎧",
+    title: "תרגלו האזנה",
+    sub: "הקשיבו לקטע וענו על שאלות ההבנה — המשימה מסתיימת אוטומטית.",
+    screen: "listening",
+    cta: "עברו להאזנה ←",
+  },
+  {
+    id: "speaking",
+    emoji: "🎤",
+    title: "תרגלו דיבור",
+    sub: "סיימו סט משפטי הגייה — המשימה מסתיימת אוטומטית.",
+    screen: "speaking",
+    cta: "עברו לדיבור ←",
   },
   {
     id: "grammar",
@@ -81,7 +98,7 @@ function MissionAction({ done, actionLabel, onClick, secondary }: {
   if (done) return <MissionDoneBar />;
   return (
     <>
-      <button className="btn accent" style={{ marginTop: 10 }} onClick={onClick}>
+      <button className="btn accent mt-2_5" onClick={onClick}>
         {actionLabel}
       </button>
       {secondary}
@@ -90,7 +107,9 @@ function MissionAction({ done, actionLabel, onClick, secondary }: {
 }
 
 export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
-  const { dailyMissions, todayWordCount, completeMission } = useLingo();
+  const { dailyMissions, todayWordCount, completeMission, progress } = useLingo();
+  const level = progress?.currentLevel ?? "A1";
+  const todaysVideo = videoForToday(level);
 
   const doneCount =
     MANUAL_MISSIONS.filter((m) => dailyMissions[m.id]).length +
@@ -101,9 +120,9 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
 
   return (
     <div>
-      <div className="card center" style={{ background: "linear-gradient(135deg,#6c5ce7,#8e7bff)", color: "#fff" }}>
-        <h2 style={{ color: "#fff", margin: 0 }}>🎯 משימות יומיות</h2>
-        <p style={{ margin: "6px 0 0", opacity: 0.9 }}>
+      <div className="card center hero-card">
+        <h2 className="m-0">🎯 משימות יומיות</h2>
+        <p className="mt-tight">
           {doneCount}/{TOTAL_MISSIONS} הושלמו היום
         </p>
       </div>
@@ -117,13 +136,33 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
         return (
           <div className={`card${done ? " mission-card-done" : ""}`} key={mission.id}>
             <div className="row-between">
-              <span style={{ fontSize: 28 }}>{mission.emoji}</span>
+              <span className="emoji-lg">{mission.emoji}</span>
               <DoneBadge done={done} />
             </div>
-            <h3 style={{ margin: "8px 0 2px" }}>{mission.title}</h3>
-            <p className="muted" style={{ marginTop: 0 }}>
+            <h3 className="mission-title">{mission.title}</h3>
+            <p className="muted mt-0">
               {mission.sub}
             </p>
+            {mission.id === "video" && (
+              <div className="video-block">
+                <p className="video-title">
+                  {todaysVideo.titleHe}
+                  <span className="muted fw-400">
+                    {" "}
+                    · {todaysVideo.title}
+                  </span>
+                </p>
+                <div className="video-embed">
+                  <iframe
+                    title={todaysVideo.title}
+                    src={youtubeEmbedUrl(todaysVideo.youtubeId)}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+            )}
             <MissionAction
               done={done}
               actionLabel="סמן כהושלם"
@@ -131,8 +170,7 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
               secondary={
                 mission.id === "talk" ? (
                   <button
-                    className="btn ghost"
-                    style={{ marginTop: 8 }}
+                    className="btn ghost mt-2"
                     onClick={() => go("dialogue")}
                   >
                     עברו למאמן שיחה ←
@@ -149,11 +187,11 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
         return (
           <div className={`card${done ? " mission-card-done" : ""}`} key={mission.id}>
             <div className="row-between">
-              <span style={{ fontSize: 28 }}>{mission.emoji}</span>
+              <span className="emoji-lg">{mission.emoji}</span>
               <DoneBadge done={done} />
             </div>
-            <h3 style={{ margin: "8px 0 2px" }}>{mission.title}</h3>
-            <p className="muted" style={{ marginTop: 0 }}>
+            <h3 className="mission-title">{mission.title}</h3>
+            <p className="muted mt-0">
               {mission.sub}
             </p>
             <MissionAction
@@ -167,30 +205,17 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
 
       <div className={`card${dailyMissions.words ? " mission-card-done" : ""}`}>
         <div className="row-between">
-          <span style={{ fontSize: 28 }}>📚</span>
+          <span className="emoji-lg">📚</span>
           <DoneBadge done={dailyMissions.words} />
         </div>
-        <h3 style={{ margin: "8px 0 2px" }}>למדו {DAILY_WORD_TARGET} מילים חדשות</h3>
-        <p className="muted" style={{ marginTop: 0 }}>
+        <h3 className="mission-title">למדו {DAILY_WORD_TARGET} מילים חדשות</h3>
+        <p className="muted mt-0">
           שמרו {DAILY_WORD_TARGET} מילים חדשות — המשימה מסתיימת אוטומטית.
         </p>
-        <div
-          style={{
-            height: 8,
-            borderRadius: 999,
-            background: "var(--surface-2, #eee)",
-            overflow: "hidden",
-            margin: "10px 0 4px",
-          }}
-        >
+        <div className="mission-progress">
           <div
-            style={{
-              height: "100%",
-              width: `${(wordsProgress / DAILY_WORD_TARGET) * 100}%`,
-              background: "var(--primary)",
-              borderRadius: 999,
-              transition: "width 0.2s ease",
-            }}
+            className="progress-fill"
+            style={{ width: `${(wordsProgress / DAILY_WORD_TARGET) * 100}%` }}
           />
         </div>
         <span className="muted">

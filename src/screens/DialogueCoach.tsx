@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { generateDialogueReply } from "../services/content";
 import { isAIReady } from "../services/ai";
@@ -13,6 +13,11 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
+  // Cancel an in-flight reply if the user navigates away mid-request instead
+  // of letting it finish in the background for a screen nobody's looking at.
+  useEffect(() => () => abortRef.current?.abort(), []);
 
   const level = progress?.currentLevel ?? "A1";
   const scenarios = dialogueScenariosForLevel(level);
@@ -46,8 +51,7 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
         {scenarios.map((s) => (
           <button
             key={s.id}
-            className="btn secondary"
-            style={{ marginBottom: 10 }}
+            className="btn secondary mb-2_5"
             onClick={() => setScenarioId(s.id)}
           >
             {s.label}
@@ -70,6 +74,8 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
       scenario: scenario.id,
     });
     setBusy(true);
+    const controller = new AbortController();
+    abortRef.current = controller;
     try {
       const reply = await generateDialogueReply(
         level,
@@ -77,6 +83,7 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
         messages,
         message,
         Object.keys(learnedWords),
+        controller.signal,
       );
       addChatMessage({
         role: "assistant",
@@ -95,7 +102,7 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
 
   return (
     <div>
-      <div className="row-between" style={{ marginBottom: 10 }}>
+      <div className="row-between mb-2_5">
         <button className="back-link" onClick={() => setScenarioId(null)}>
           → תרחישים
         </button>
@@ -124,8 +131,7 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
 
       <div className="chat-input">
         <input
-          className="input"
-          style={{ direction: "ltr", textAlign: "left" }}
+          className="input input-ltr"
           placeholder="Type in English..."
           value={text}
           onChange={(e) => setText(e.target.value)}

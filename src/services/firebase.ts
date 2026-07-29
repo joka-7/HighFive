@@ -25,26 +25,25 @@ import type {
 
 // Firebase web config is a public client identifier (safe to ship in the
 // client); access is controlled by Firestore security rules + Authentication
-// authorized domains. Env vars override these defaults when provided.
+// authorized domains. It comes ONLY from env vars — there is deliberately no
+// hardcoded fallback project here. A hardcoded fallback would mean every fork,
+// preview deploy, or local `npm run dev` without a .env silently authenticates
+// against (and writes real user data into) whichever project's ID happened to
+// be baked into this file. Without the env vars set, isCloudConfigured() is
+// false and the app runs purely in Local mode, as documented in the README.
+//
+// Exported because the push-reminder service worker registration needs the
+// same config (see services/push.ts).
 export const firebaseConfig = {
-  apiKey:
-    import.meta.env.VITE_FIREBASE_API_KEY ??
-    "AIzaSyC2QFzkRvddsWSpizDXJpHdwcegs7Ze63c",
-  authDomain:
-    import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ??
-    "high-five-86991.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ?? "high-five-86991",
-  storageBucket:
-    import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ??
-    "high-five-86991.firebasestorage.app",
-  messagingSenderId:
-    import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID ?? "885173121360",
-  appId:
-    import.meta.env.VITE_FIREBASE_APP_ID ??
-    "1:885173121360:web:dca31d6f26f3433b66fc55",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? "",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? "",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ?? "",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ?? "",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID ?? "",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID ?? "",
 };
 
-/** True only when the minimum Firebase config is present. */
+/** True only when the minimum Firebase config is present via env vars. */
 export function isCloudConfigured(): boolean {
   return Boolean(
     firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.appId,

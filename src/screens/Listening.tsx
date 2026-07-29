@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { generateListening } from "../services/content";
-import { topicForTodayByLevel, LISTENING_TOPICS_BY_LEVEL } from "../data/topics";
 import type { GemListening } from "../types";
 import QuizRunner from "../components/QuizRunner";
 import Spinner from "../components/Spinner";
@@ -40,7 +39,6 @@ export default function Listening() {
       let active = true;
       generateListening(
         level,
-        topicForTodayByLevel(LISTENING_TOPICS_BY_LEVEL, level),
         learnedKey ? learnedKey.split(",") : [],
       )
         .then((c) => {
@@ -73,7 +71,7 @@ export default function Listening() {
     return (
       <div className="card center">
         <h2>לא הצלחנו לטעון תרגיל האזנה</h2>
-        <button className="btn" onClick={() => load(true)} style={{ marginTop: 12 }}>
+        <button className="btn mt-3" onClick={() => load(true)}>
           נסו שוב 🔄
         </button>
       </div>
@@ -85,18 +83,18 @@ export default function Listening() {
       <div className="celebrate">
         <div className="big">🎧</div>
         <h2>כל הכבוד!</h2>
-        <div className="card" style={{ marginTop: 12 }}>
+        <div className="card mt-3">
           <span className="tag">התמלול המלא</span>
-          <pre className="explanation-text" style={{ direction: "ltr", textAlign: "left", marginTop: 8 }}>
+          <pre className="explanation-text ltr mt-2">
             {clip.transcript}
           </pre>
           {clip.transcriptHe && (
-            <pre className="explanation-text" style={{ marginTop: 8 }}>
+            <pre className="explanation-text mt-2">
               {clip.transcriptHe}
             </pre>
           )}
         </div>
-        <button className="btn accent" onClick={() => load(true)} style={{ marginTop: 12 }}>
+        <button className="btn accent mt-3" onClick={() => load(true)}>
           תרגיל חדש 🔄
         </button>
       </div>
@@ -118,13 +116,13 @@ export default function Listening() {
   return (
     <div>
       <div className="card center">
-        <div style={{ fontSize: 48 }}>🎧</div>
+        <div className="emoji-xl">🎧</div>
         <h3>הקשיבו היטב</h3>
         <p className="muted">נגנו את הקטע (אפשר לחזור), ונסו להבין לפני שתענו.</p>
         {!ttsSupported() && (
           <div className="banner">הדפדפן הזה לא תומך בהשמעה קולית.</div>
         )}
-        <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+        <div className="icon-row mt-2">
           <button className="btn" onClick={() => speak(clip.transcript)}>
             ▶️ נגן
           </button>
@@ -133,19 +131,18 @@ export default function Listening() {
           </button>
         </div>
         <button
-          className="btn ghost small"
-          style={{ marginTop: 10 }}
+          className="btn ghost small mt-2_5"
           onClick={() => setShowText((s) => !s)}
         >
           {showText ? "הסתר תמלול" : "הצג תמלול (לא חובה)"}
         </button>
         {showText && (
           <>
-            <pre className="explanation-text" style={{ direction: "ltr", textAlign: "left", marginTop: 8 }}>
+            <pre className="explanation-text ltr mt-2">
               {clip.transcript}
             </pre>
             {clip.transcriptHe && (
-              <pre className="explanation-text" style={{ marginTop: 8 }}>
+              <pre className="explanation-text mt-2">
                 {clip.transcriptHe}
               </pre>
             )}

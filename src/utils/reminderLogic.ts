@@ -2,12 +2,17 @@
 // Shared between the Vercel cron endpoint (api/mission-reminder.ts) and its
 // tests — kept dependency-free so it needs no Firebase Admin/Vercel types.
 
+// Mirrors DailyMissionsState's flags. Optional because a document written by
+// an older client won't carry the newer ones — a missing flag counts as "not
+// done", so the reminder still fires rather than silently going quiet.
 export interface ReminderDailyMissions {
   date: string;
   video: boolean;
   talk: boolean;
   words: boolean;
   reading: boolean;
+  listening?: boolean;
+  speaking?: boolean;
   grammar: boolean;
 }
 
@@ -43,7 +48,13 @@ export function missionsCompleteToday(
 ): boolean {
   if (!missions || missions.date !== todayKey) return false;
   return Boolean(
-    missions.video && missions.talk && missions.words && missions.reading && missions.grammar,
+    missions.video &&
+      missions.talk &&
+      missions.words &&
+      missions.reading &&
+      missions.listening &&
+      missions.speaking &&
+      missions.grammar,
   );
 }
 

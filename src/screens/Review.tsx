@@ -25,7 +25,7 @@ export default function Review() {
   if (queue.length === 0) {
     return (
       <div className="card center">
-        <div style={{ fontSize: 48 }}>🌱</div>
+        <div className="emoji-xl">🌱</div>
         <h2>אין מילים לחזרה כרגע</h2>
         <p className="muted">
           שמור מילים חדשות ממסך אוצר המילים, או חזור מאוחר יותר — נזכיר לך כשמילים
@@ -69,31 +69,31 @@ export default function Review() {
         <span className="tag">
           חזרה {index + 1}/{queue.length}
         </span>
-        <div className="word-en" style={{ margin: "16px 0 4px" }}>
+        <div className="word-en my-word-en">
           {word.word}
         </div>
         <div className="pos">{word.partOfSpeech}</div>
         <button
-          className="icon-btn"
+          className="icon-btn mx-block"
           title="השמע"
-          style={{ margin: "10px auto" }}
+          aria-label={`השמע את המילה ${word.word}`}
           onClick={() => speak(word.word)}
         >
-          🔊
+          <span aria-hidden="true">🔊</span>
         </button>
 
         {revealed ? (
           <>
-            <p style={{ margin: "8px 0 0" }}>
+            <p className="mt-word">
               <strong>תרגום:</strong> {word.translation}
             </p>
-            <p className="muted" style={{ margin: "4px 0" }}>
+            <p className="muted my-tight">
               {word.definition}
             </p>
             <div className="word-example" onClick={() => speak(word.example)}>
               💬 {word.example}
             </div>
-            <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+            <div className="icon-row mt-3">
               <button className="btn secondary" onClick={() => grade(false)}>
                 לא זכרתי 🔁
               </button>
@@ -103,7 +103,7 @@ export default function Review() {
             </div>
           </>
         ) : (
-          <button className="btn" style={{ marginTop: 12 }} onClick={() => setRevealed(true)}>
+          <button className="btn mt-3" onClick={() => setRevealed(true)}>
             הצג תרגום 👁️
           </button>
         )}

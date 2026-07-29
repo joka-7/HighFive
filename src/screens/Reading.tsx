@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { generateReading } from "../services/content";
-import { topicForTodayByLevel, READING_TOPICS_BY_LEVEL } from "../data/topics";
 import type { GemReading } from "../types";
 import QuizRunner from "../components/QuizRunner";
 import Spinner from "../components/Spinner";
@@ -13,6 +12,15 @@ const CACHE_KEY = "high5.reading_today.v5";
 export default function Reading() {
   const { progress, isWordSaved, toggleSaveWord, completeQuiz, learnedWords } = useLingo();
   const level = progress?.currentLevel ?? "A1";
+  // A stable string key rather than depending on the `learnedWords` object
+  // directly — that object gets a new identity every time a word is saved
+  // (e.g. from this screen's own glossary), which used to re-run `load()`
+  // below and reset the reading mid-article (phase/open glossary/showHe all
+  // snapped back). Same pattern already used in Listening.tsx/Speaking.tsx.
+  const learnedKey = useMemo(
+    () => Object.keys(learnedWords).sort().join(","),
+    [learnedWords],
+  );
   const [reading, setReading] = useState<GemReading | null>(null);
   const [loading, setLoading] = useState(false);
   const [phase, setPhase] = useState<"read" | "quiz" | "done">("read");
@@ -35,23 +43,34 @@ export default function Reading() {
       }
       generateReading(
         level,
-        topicForTodayByLevel(READING_TOPICS_BY_LEVEL, level),
-        Object.keys(learnedWords),
+        learnedKey ? learnedKey.split(",") : [],
       )
         .then((r) => {
           setReading(r);
           saveDailyCache(CACHE_KEY, level, r);
         })
+        .catch(() => setReading(null))
         .finally(() => setLoading(false));
     },
-    [level, learnedWords],
+    [level, learnedKey],
   );
 
   useEffect(() => {
     load();
   }, [load]);
 
-  if (!reading || loading) return <Spinner label="טוען קטע קריאה..." />;
+  if (loading) return <Spinner label="טוען קטע קריאה..." />;
+
+  if (!reading) {
+    return (
+      <div className="card center">
+        <h2>לא הצלחנו לטעון קטע קריאה</h2>
+        <button className="btn mt-3" onClick={() => load(true)}>
+          נסו שוב 🔄
+        </button>
+      </div>
+    );
+  }
 
   if (phase === "done") {
     return (
@@ -59,7 +78,7 @@ export default function Reading() {
         <div className="big">📖</div>
         <h2>כל הכבוד!</h2>
         <p className="muted">סיימת את קטע הקריאה.</p>
-        <button className="btn accent" onClick={() => load(true)} style={{ marginTop: 12 }}>
+        <button className="btn accent mt-3" onClick={() => load(true)}>
           קטע חדש 🔄
         </button>
       </div>
@@ -82,38 +101,42 @@ export default function Reading() {
     <div>
       <div className="card">
         <div className="row-between">
-          <h3 style={{ margin: 0 }}>{reading.title}</h3>
-          <button className="icon-btn" title="הקראה" onClick={() => speak(reading.text)}>
-            🔊
+          <h3 className="m-0">{reading.title}</h3>
+          <button
+            className="icon-btn"
+            title="הקראה"
+            aria-label="הקרא את הקטע"
+            onClick={() => speak(reading.text)}
+          >
+            <span aria-hidden="true">🔊</span>
           </button>
         </div>
-        <pre className="explanation-text" style={{ direction: "ltr", textAlign: "left", marginTop: 10 }}>
+        <pre className="explanation-text ltr mt-2_5">
           {reading.text}
         </pre>
         {reading.textHe ? (
           <>
-            <button className="btn ghost small" style={{ marginTop: 8 }} onClick={() => setShowHe((s) => !s)}>
+            <button className="btn ghost small mt-2" onClick={() => setShowHe((s) => !s)}>
               {showHe ? "הסתר תרגום מלא" : "הצג תרגום מלא"}
             </button>
             {showHe && (
-              <pre className="explanation-text" style={{ marginTop: 8 }}>
+              <pre className="explanation-text mt-2">
                 {reading.textHe}
               </pre>
             )}
           </>
         ) : (
-          <p className="muted" style={{ marginTop: 8 }}>תרגום מלא לא זמין לקטע זה.</p>
+          <p className="muted mt-2">תרגום מלא לא זמין לקטע זה.</p>
         )}
       </div>
 
       <div className="card">
         <span className="tag">מילים חשובות — לחצו לתרגום</span>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 }}>
+        <div className="chip-row mt-2_5">
           {reading.glossary.map((w) => (
             <button
               key={w.word}
-              className="level-pill"
-              style={{ direction: "ltr" }}
+              className="level-pill ltr-only"
               onClick={() => setOpen(open === w.word ? null : w.word)}
             >
               {w.word}
@@ -125,16 +148,20 @@ export default function Reading() {
             const w = reading.glossary.find((g) => g.word === open);
             if (!w) return null;
             return (
-              <div className="explanation" style={{ marginTop: 12 }}>
+              <div className="explanation mt-3">
                 <div className="row-between">
-                  <strong style={{ direction: "ltr" }}>
+                  <strong className="ltr-only">
                     {w.word} <span className="pos">{w.partOfSpeech}</span>
                   </strong>
-                  <button className="icon-btn" onClick={() => speak(w.word)}>
-                    🔊
+                  <button
+                    className="icon-btn"
+                    aria-label={`השמע את המילה ${w.word}`}
+                    onClick={() => speak(w.word)}
+                  >
+                    <span aria-hidden="true">🔊</span>
                   </button>
                 </div>
-                <p style={{ margin: "6px 0" }}>
+                <p className="my-sm">
                   <strong>תרגום:</strong> {w.translation} — {w.definition}
                 </p>
                 <button

@@ -1,11 +1,10 @@
-// Domain model — ported from High5's Kotlin entities (LingoEntities.kt) and
-// Gemini response shapes (GeminiResponses.kt).
+// Domain model for High5 — CEFR content shapes and persisted learner state.
 
 export type Level = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
 
 export const LEVELS: Level[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
-// --- Gemini / content shapes (GeminiResponses.kt) ---
+// --- AI / content shapes ---
 
 export interface GemWord {
   word: string;
@@ -73,7 +72,7 @@ export interface OfflineLevelContent {
   quizzes: GemQuiz[];
 }
 
-// --- Persisted entities (LingoEntities.kt → localStorage) ---
+// --- Persisted entities (localStorage / optional Firestore) ---
 
 export interface UserProgress {
   currentLevel: Level;
@@ -160,7 +159,14 @@ export interface DailyMissionsState {
   talk: boolean;
   words: boolean; // auto-completes once 5 words are saved that day
   reading: boolean; // auto-completes on finishing a Reading Lab article
+  listening: boolean; // auto-completes on finishing a Listening quiz
+  speaking: boolean; // auto-completes on finishing a Speaking practice set
   grammar: boolean; // auto-completes on finishing the Daily Lesson
+  // Number of Speaking-practice attempts scored today. Optional so state
+  // persisted before this field existed still loads; treated as 0 when
+  // absent. Drives diminishing points after the first full round so re-
+  // recording the same sentence can't be farmed for unlimited points.
+  speakingCount?: number;
 }
 
 export type Screen =

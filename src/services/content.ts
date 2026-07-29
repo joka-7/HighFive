@@ -1,6 +1,6 @@
-// English-learning content generation — ported from High5's LingoRepository.kt.
-// Falls back to bundled offline content on any failure or when no provider key
-// is configured. Content is day-aligned and vocabulary-safe (progressive unlock).
+// English-learning content generation. Falls back to bundled offline content
+// on any failure or when no provider key is configured. Content is day-aligned
+// and vocabulary-safe (progressive unlock).
 
 import type {
   ChatMessage,
@@ -8,7 +8,6 @@ import type {
   GemLesson,
   GemListening,
   GemQuiz,
-  GemQuestion,
   GemReading,
   GemSpeaking,
   GemWord,
@@ -18,7 +17,7 @@ import type {
 import { complete, isAIReady } from "./ai";
 import { getTodaysWords } from "../data/todays-words";
 import { dayIndex, loadOfflineContent, pickByDay } from "../data/offline";
-import { LISTENINGS, READINGS, SPEAKINGS } from "../data/extras";
+import { loadListenings, loadReadings, loadSpeakings } from "../data/extras";
 import { parseJson } from "../utils/json";
 import {
   contentUsesOnlyAllowedVocab,
@@ -66,37 +65,21 @@ function validateOrThrow(texts: string[], allowed: Set<string>, label: string): 
   }
 }
 function ensureQuizHebrew(quiz: GemQuiz): GemQuiz {
-  return { questions: quiz.questions.map((q) => sanitizeEnglishMcq(q)) };
+  return quiz;
 }
 
 function ensureLessonHebrew(lesson: GemLesson): GemLesson {
-  return {
-    ...lesson,
-    questions: lesson.questions.map((q) => sanitizeEnglishMcq(q)),
-  };
+  return lesson;
 }
 
 function ensureReadingHebrew(reading: GemReading): GemReading {
   if (!reading.textHe) throw new Error("reading: missing textHe");
-  const questions = reading.questions.map((q) => sanitizeEnglishMcq(q));
-  return { ...reading, questions };
+  return reading;
 }
 
 function ensureListeningHebrew(listening: GemListening): GemListening {
   if (!listening.transcriptHe) throw new Error("listening: missing transcriptHe");
-  const questions = listening.questions.map((q) => sanitizeEnglishMcq(q));
-  return { ...listening, questions };
-}
-
-/**
- * Keep MCQ face English-only; real Hebrew lives in questionHe/optionsHe.
- * Deliberately does NOT fall back to `explanation` when questionHe is
- * missing — explanation reveals the correct answer, and the "show
- * translation" toggle is available before the user has answered, so using
- * it as a stand-in translation would leak the answer.
- */
-function sanitizeEnglishMcq(q: GemQuestion): GemQuestion {
-  return q;
+  return listening;
 }
 
 async function pickOfflineReading(
@@ -104,9 +87,9 @@ async function pickOfflineReading(
   allowed: Set<string>,
   day: number,
 ): Promise<GemReading> {
-  const items = await READINGS[level]();
+  const { items, localDay } = await loadReadings(level, day);
   const pool = items.map((r) => ({ ...r, textsToCheck: readingTexts(r) }));
-  const picked = pickVocabSafeItem(pool, allowed, day);
+  const picked = pickVocabSafeItem(pool, allowed, localDay);
   const { textsToCheck, ...reading } = picked;
   void textsToCheck;
   return reading;
@@ -117,9 +100,9 @@ async function pickOfflineListening(
   allowed: Set<string>,
   day: number,
 ): Promise<GemListening> {
-  const items = await LISTENINGS[level]();
+  const { items, localDay } = await loadListenings(level, day);
   const pool = items.map((l) => ({ ...l, textsToCheck: listeningTexts(l) }));
-  const picked = pickVocabSafeItem(pool, allowed, day);
+  const picked = pickVocabSafeItem(pool, allowed, localDay);
   const { textsToCheck, ...listening } = picked;
   void textsToCheck;
   return listening;
@@ -130,9 +113,10 @@ async function pickOfflineListening(
 export async function generateLevelAdaptiveWords(
   level: Level,
   day = dayIndex(),
+  signal?: AbortSignal,
 ): Promise<GemWordList> {
-  const bundle = await loadOfflineContent(level);
-  const list = pickByDay(bundle.vocabulary, day);
+  const { content, localDay } = await loadOfflineContent(level, day);
+  const list = pickByDay(content.vocabulary, localDay);
 
   if (!isAIReady()) return list;
 
@@ -155,7 +139,7 @@ Return JSON with EXACTLY 5 words in the array (not 1 — one entry per word of t
     "You are High5's expert English-Hebrew lexicographer. Design vocabulary lists adapted to CEFR levels with Hebrew explanations for native Hebrew speakers.";
 
   try {
-    const result = parseJson<GemWordList>(await complete(prompt, systemInstruction));
+    const result = parseJson<GemWordList>(await complete(prompt, systemInstruction, signal));
     // Same schema-bias risk as Speaking: a model can truncate the array to a
     // single word even when told to provide 5. Fall back rather than show a
     // near-empty word list.
@@ -179,13 +163,14 @@ export async function generateDailyLesson(
   topic: string,
   learnedKeys: Iterable<string>,
   day = dayIndex(),
+  signal?: AbortSignal,
 ): Promise<GemLesson> {
-  const bundle = await loadOfflineContent(level);
+  const { content: bundle, localDay } = await loadOfflineContent(level, day);
   const offlinePool = bundle.lessons.map((l) => ({ ...l, textsToCheck: lessonTexts(l) }));
   const ctx = await buildContentContext(level, learnedKeys, day);
 
   if (!isAIReady()) {
-    return ensureLessonHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, day));
+    return ensureLessonHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, localDay));
   }
 
   const prompt = `Create an interactive daily English lesson matching CEFR level ${level} on: "${topic}".
@@ -202,7 +187,9 @@ Return as JSON with questionHe and optionsHe on every question.`;
     "You are High5's English-Hebrew tutor. Write lessons with quizzes. All instructions and explanations must be in Hebrew for Israeli students.";
 
   try {
-    const result = ensureLessonHebrew(parseJson<GemLesson>(await complete(prompt, systemInstruction)));
+    const result = ensureLessonHebrew(
+      parseJson<GemLesson>(await complete(prompt, systemInstruction, signal)),
+    );
     // Same defensive count check as Speaking/Vocabulary: an AI response with
     // too few questions is safer to reject than to show as-is.
     if (!result.questions || result.questions.length < 2) {
@@ -211,7 +198,7 @@ Return as JSON with questionHe and optionsHe on every question.`;
     validateOrThrow(lessonTexts(result), ctx.allowed, "lesson");
     return result;
   } catch {
-    return ensureLessonHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, day));
+    return ensureLessonHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, localDay));
   }
 }
 
@@ -222,6 +209,7 @@ export async function generateDialogueReply(
   history: ChatMessage[],
   newText: string,
   learnedKeys: Iterable<string>,
+  signal?: AbortSignal,
 ): Promise<GemDialogueReply> {
   if (!isAIReady()) throw new Error("Dialogue Coach requires an AI provider key.");
 
@@ -249,7 +237,7 @@ Return as JSON:
   const systemInstruction =
     "You are High5's English dialogue partner. Roleplay in English and explain grammar corrections in Hebrew.";
 
-  const result = parseJson<GemDialogueReply>(await complete(prompt, systemInstruction));
+  const result = parseJson<GemDialogueReply>(await complete(prompt, systemInstruction, signal));
   validateOrThrow([result.reply, newText], ctx.allowed, "dialogue");
   return result;
 }
@@ -260,13 +248,14 @@ export async function generatePracticeQuiz(
   topic: string,
   learnedKeys: Iterable<string>,
   day = dayIndex(),
+  signal?: AbortSignal,
 ): Promise<GemQuiz> {
-  const bundle = await loadOfflineContent(level);
+  const { content: bundle, localDay } = await loadOfflineContent(level, day);
   const offlinePool = bundle.quizzes.map((q) => ({ ...q, textsToCheck: quizTexts(q) }));
   const ctx = await buildContentContext(level, learnedKeys, day);
 
   if (!isAIReady()) {
-    return ensureQuizHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, day));
+    return ensureQuizHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, localDay));
   }
 
   const prompt = `Generate 5 multiple choice questions for CEFR level ${level} on "${topic}".
@@ -280,7 +269,9 @@ Return as JSON.`;
     "You are High5's assessment evaluator. Compose accurate multiple-choice tests for English learners. All explanations in Hebrew.";
 
   try {
-    const result = ensureQuizHebrew(parseJson<GemQuiz>(await complete(prompt, systemInstruction)));
+    const result = ensureQuizHebrew(
+      parseJson<GemQuiz>(await complete(prompt, systemInstruction, signal)),
+    );
     // Same defensive count check as Speaking/Vocabulary: an AI response with
     // too few questions is safer to reject than to show as-is.
     if (!result.questions || result.questions.length < 3) {
@@ -289,14 +280,13 @@ Return as JSON.`;
     validateOrThrow(quizTexts(result), ctx.allowed, "quiz");
     return result;
   } catch {
-    return ensureQuizHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, day));
+    return ensureQuizHebrew(pickVocabSafeItem(offlinePool, ctx.allowed, localDay));
   }
 }
 
 // --- Reading Lab ---
 export async function generateReading(
   level: Level,
-  _topic: string,
   learnedKeys: Iterable<string>,
   day = dayIndex(),
 ): Promise<GemReading> {
@@ -307,7 +297,6 @@ export async function generateReading(
 // --- Listening practice ---
 export async function generateListening(
   level: Level,
-  _topic: string,
   learnedKeys: Iterable<string>,
   day = dayIndex(),
 ): Promise<GemListening> {
@@ -316,15 +305,13 @@ export async function generateListening(
 }
 
 // --- Speaking practice ---
-const SPEAKING_AI_TIMEOUT_MS = 12_000;
-
 async function pickOfflineSpeaking(
   level: Level,
   learnedKeys: Iterable<string>,
   day: number,
 ): Promise<GemSpeaking> {
   const ctx = await buildContentContext(level, learnedKeys, day);
-  const items = await SPEAKINGS[level]();
+  const { items, localDay } = await loadSpeakings(level, day);
   // Filtering individual prompts out of one day-picked set (the old approach)
   // could collapse a 4-sentence set down to just 1 for a new learner whose
   // allowed vocabulary is still small — that's the offline "only one
@@ -332,7 +319,7 @@ async function pickOfflineSpeaking(
   // vocabulary (same pattern as pickOfflineReading/pickOfflineListening),
   // so the learner always gets a full round of 4.
   const pool = items.map((s) => ({ ...s, textsToCheck: speakingTexts(s) }));
-  const picked = pickVocabSafeItem(pool, ctx.allowed, day);
+  const picked = pickVocabSafeItem(pool, ctx.allowed, localDay);
   const { textsToCheck, ...speaking } = picked;
   void textsToCheck;
   return speaking;
@@ -343,6 +330,7 @@ export async function generateSpeaking(
   topic: string,
   learnedKeys: Iterable<string>,
   day = dayIndex(),
+  signal?: AbortSignal,
 ): Promise<GemSpeaking> {
   const offline = () => pickOfflineSpeaking(level, learnedKeys, day);
 
@@ -370,12 +358,9 @@ Return as JSON with EXACTLY 4 sentences in the array (not 1 — keep adding entr
     "You are High5's pronunciation coach. Provide practical English sentences with Hebrew translations for Israeli learners.";
 
   try {
-    const raw = await Promise.race([
-      complete(prompt, systemInstruction),
-      new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("speaking AI timeout")), SPEAKING_AI_TIMEOUT_MS),
-      ),
-    ]);
+    // complete() applies its own timeout/retry/cancellation now — no need
+    // for the bespoke Promise.race this used to have.
+    const raw = await complete(prompt, systemInstruction, signal);
     const result = parseJson<GemSpeaking>(raw);
     // A smaller/faster model can collapse the array down to a single entry
     // even when told to provide 4 — this is what caused "only one sentence"
@@ -405,6 +390,7 @@ export interface GemQuestionTranslation {
 export async function translateQuestion(
   question: string,
   options: string[],
+  signal?: AbortSignal,
 ): Promise<GemQuestionTranslation> {
   if (!isAIReady()) throw new Error("Translation requires an AI provider key.");
 
@@ -422,7 +408,7 @@ Return as JSON, preserving the exact same number of options in the same order:
   const systemInstruction =
     "You are a professional English-to-Hebrew translator for Israeli English learners. Translate naturally and return only the requested JSON.";
 
-  return parseJson<GemQuestionTranslation>(await complete(prompt, systemInstruction));
+  return parseJson<GemQuestionTranslation>(await complete(prompt, systemInstruction, signal));
 }
 
 /** Export helper for screens that need today's words synchronously from cache. */

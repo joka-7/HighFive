@@ -1,5 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLingo } from "./store/useLingo";
+import { useServiceWorkerUpdate } from "./services/pwa";
+import { useOnlineStatus } from "./hooks/useOnlineStatus";
+import { useLocalReminder } from "./hooks/useLocalReminder";
+import { navigateHash, screenFromHash } from "./utils/routing";
 import type { Screen } from "./types";
 import Onboarding from "./screens/Onboarding";
 import Dashboard from "./screens/Dashboard";
@@ -46,27 +50,39 @@ const NAV: { screen: Screen; ico: string; label: string }[] = [
 
 export default function App() {
   const { progress } = useLingo();
-  const [screen, setScreen] = useState<Screen>("dashboard");
+  const [screen, setScreen] = useState<Screen>(() => screenFromHash());
+  const { needRefresh, applyUpdate } = useServiceWorkerUpdate();
+  const online = useOnlineStatus();
+  const mainRef = useRef<HTMLElement>(null);
+  useLocalReminder();
 
-  // Push a history entry on every in-app navigation so the mobile back
-  // button/gesture steps back through screens instead of exiting the app —
-  // without this, the browser has no in-app history to pop and closes
-  // straight out on the first back press.
+  // Hash routing: refresh-safe, shareable deep links; browser back/forward
+  // follow hash history instead of exiting the PWA.
   useEffect(() => {
-    history.replaceState({ screen: "dashboard" }, "");
-  }, []);
+    if (!window.location.hash) navigateHash("dashboard", true);
 
-  useEffect(() => {
-    function onPopState(e: PopStateEvent) {
-      setScreen((e.state?.screen as Screen | undefined) ?? "dashboard");
+    function onHashChange() {
+      setScreen(screenFromHash());
     }
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
+
+  // Move keyboard/screen-reader focus into the new screen content on navigate.
+  useEffect(() => {
+    if (!progress) return;
+    mainRef.current?.focus();
+  }, [screen, progress]);
 
   if (!progress) {
     return (
       <div className="app">
+        {needRefresh && <UpdateBanner onUpdate={applyUpdate} />}
+        {!online && (
+          <div className="banner" role="status">
+            📡 אין חיבור לאינטרנט — אפשר להמשיך עם התוכן Offline.
+          </div>
+        )}
         <Onboarding />
       </div>
     );
@@ -74,8 +90,9 @@ export default function App() {
 
   const go = (s: Screen) => {
     if (s === screen) return;
+    navigateHash(s);
+    // hashchange will setScreen; set eagerly so UI feels instant
     setScreen(s);
-    history.pushState({ screen: s }, "");
   };
 
   function renderScreen() {
@@ -115,6 +132,13 @@ export default function App() {
 
   return (
     <div className="app">
+      {needRefresh && <UpdateBanner onUpdate={applyUpdate} />}
+      {!online && (
+        <div className="banner" role="status">
+          📡 אין חיבור לאינטרנט — תוכן Offline זמין, אבל מאמן השיחה וסנכרון הענן
+          לא יעבדו עד שהחיבור יחזור.
+        </div>
+      )}
       <header className="topbar">
         {screen === "dashboard" ? (
           <span className="brand">
@@ -123,36 +147,70 @@ export default function App() {
               alt=""
               width={26}
               height={26}
-              style={{ borderRadius: 7, verticalAlign: "middle" }}
+              className="brand-logo"
             />{" "}
             High5
           </span>
         ) : (
-          <button className="brand" onClick={() => go("dashboard")}>
+          <button
+            className="brand"
+            onClick={() => go("dashboard")}
+            aria-label={`חזרה לדף הבית — ${TITLES[screen]}`}
+          >
             → {TITLES[screen]}
           </button>
         )}
-        <div className="stats">
-          <span className="chip">✨ {progress.points}</span>
-          <span className="chip">🔥 {progress.streak}</span>
-          <span className="chip level">{progress.currentLevel}</span>
+        <div className="stats" aria-label="סטטוס">
+          <span className="chip" aria-label={`${progress.points} נקודות`}>
+            ✨ {progress.points}
+          </span>
+          <span className="chip" aria-label={`רצף של ${progress.streak} ימים`}>
+            🔥 {progress.streak}
+          </span>
+          <span className="chip level" aria-label={`רמה ${progress.currentLevel}`}>
+            {progress.currentLevel}
+          </span>
         </div>
       </header>
 
-      <main className="screen">{renderScreen()}</main>
+      <main
+        className="screen"
+        ref={mainRef}
+        tabIndex={-1}
+        aria-label={TITLES[screen]}
+      >
+        {renderScreen()}
+      </main>
 
-      <nav className="bottom-nav">
-        {NAV.map((n) => (
-          <button
-            key={n.screen}
-            className={`nav-item ${screen === n.screen ? "active" : ""}`}
-            onClick={() => go(n.screen)}
-          >
-            <span className="ico">{n.ico}</span>
-            <span>{n.label}</span>
-          </button>
-        ))}
+      <nav className="bottom-nav" aria-label="ניווט ראשי">
+        {NAV.map((n) => {
+          const active = screen === n.screen;
+          return (
+            <button
+              key={n.screen}
+              className={`nav-item ${active ? "active" : ""}`}
+              onClick={() => go(n.screen)}
+              aria-current={active ? "page" : undefined}
+            >
+              <span className="ico" aria-hidden="true">
+                {n.ico}
+              </span>
+              <span>{n.label}</span>
+            </button>
+          );
+        })}
       </nav>
+    </div>
+  );
+}
+
+function UpdateBanner({ onUpdate }: { onUpdate: () => void }) {
+  return (
+    <div className="banner banner-row" role="status">
+      <span>🔄 גרסה חדשה של האפליקציה מוכנה.</span>
+      <button className="btn small" onClick={onUpdate}>
+        רענון
+      </button>
     </div>
   );
 }

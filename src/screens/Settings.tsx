@@ -14,6 +14,10 @@ import {
   applyTheme,
   type SpeechSpeed,
 } from "../services/prefs";
+import {
+  notificationsSupported,
+  requestReminderPermission,
+} from "../services/reminders";
 import { usePwaInstall, canShare, shareApp } from "../services/pwa";
 import { enablePushReminders, isPushSupported, pushPermission } from "../services/push";
 import { speak, ttsSupported } from "../services/tts";
@@ -28,10 +32,23 @@ const SPEECH_LABELS: { id: SpeechSpeed; label: string }[] = [
 // API key / provider settings — mirrors JobFlowTracker's APIKeySettings:
 // pick a provider, paste a key (or Ollama URL), optional model override, save.
 export default function Settings() {
-  const { resetAll, cloudConfigured, user, authReady, signIn, signOut, progress, updateLevel } =
-    useLingo();
+  const {
+    resetAll,
+    cloudConfigured,
+    user,
+    authReady,
+    cloudSyncError,
+    retryCloudSync,
+    signIn,
+    signOut,
+    progress,
+    updateLevel,
+    exportProgress,
+    importProgress,
+  } = useLingo();
   const [authBusy, setAuthBusy] = useState(false);
   const [authError, setAuthError] = useState("");
+  const [backupMsg, setBackupMsg] = useState("");
 
   const [prefs, setPrefs] = useState(() => loadPrefs());
   const { canInstall, installed, install } = usePwaInstall();
@@ -71,6 +88,29 @@ export default function Settings() {
     if (ttsSupported()) speak("This is the playback speed.");
   }
 
+  async function setRemindersEnabled(enabled: boolean) {
+    if (enabled) {
+      if (!notificationsSupported()) {
+        setBackupMsg("הדפדפן לא תומך בהתראות.");
+        return;
+      }
+      const perm = await requestReminderPermission();
+      if (perm !== "granted") {
+        setBackupMsg("יש לאשר התראות בהגדרות הדפדפן.");
+        return;
+      }
+    }
+    const next = { ...prefs, remindersEnabled: enabled };
+    setPrefs(next);
+    savePrefs(next);
+  }
+
+  function setReminderHour(hour: number) {
+    const next = { ...prefs, reminderHour: hour };
+    setPrefs(next);
+    savePrefs(next);
+  }
+
   async function handleSignIn() {
     setAuthError("");
     setAuthBusy(true);
@@ -84,12 +124,57 @@ export default function Settings() {
   }
 
   async function handleSignOut() {
+    // Signing out clears this device's local learner data too (so the next
+    // person, or the next Google account, on a shared device doesn't inherit
+    // it) — the account's real progress stays safe in the cloud.
+    if (
+      !confirm(
+        "להתנתק? נתוני הלמידה שנשמרו במכשיר הזה יימחקו. ההתקדמות שלך נשארת בענן ותחזור בהתחברות הבאה.",
+      )
+    ) {
+      return;
+    }
     setAuthBusy(true);
     try {
       await signOut();
     } finally {
       setAuthBusy(false);
     }
+  }
+
+  function handleExport() {
+    const data = exportProgress();
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `high5-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setBackupMsg("הקובץ הורד.");
+  }
+
+  function handleImportFile(file: File) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result));
+        if (
+          !confirm(
+            "לייבא את הקובץ? הנתונים הנוכחיים במכשיר יוחלפו בתוכן הקובץ.",
+          )
+        ) {
+          return;
+        }
+        importProgress(parsed);
+        setBackupMsg("הייבוא הצליח.");
+      } catch {
+        setBackupMsg("הייבוא נכשל — הקובץ אינו תקין.");
+      }
+    };
+    reader.readAsText(file);
   }
 
   const initial = loadAIConfig();
@@ -142,17 +227,16 @@ export default function Settings() {
         <label className="field">
           <span>ספק AI</span>
         </label>
-        <div className="menu-grid" style={{ marginBottom: 14 }}>
+        <div className="menu-grid mb-4">
           {Object.values(PROVIDERS).map((p) => (
             <button
               key={p.id}
-              className={`level-pill ${provider === p.id ? "active" : ""}`}
-              style={{ width: "100%", justifyContent: "center", position: "relative" }}
+              className={`level-pill provider-pill ${provider === p.id ? "active" : ""}`}
               onClick={() => setProvider(p.id)}
             >
               {p.name}
               {p.free && (
-                <span className="tag ok" style={{ marginInlineStart: 6 }}>
+                <span className="tag ok ms-1">
                   חינם
                 </span>
               )}
@@ -164,8 +248,7 @@ export default function Settings() {
           <label className="field">
             <span>כתובת Ollama</span>
             <input
-              className="input"
-              style={{ direction: "ltr", textAlign: "left" }}
+              className="input input-ltr"
               value={ollamaUrl}
               placeholder={info.placeholder}
               onChange={(e) => setOllamaUrl(e.target.value)}
@@ -174,17 +257,21 @@ export default function Settings() {
         ) : (
           <label className="field">
             <span>מפתח API</span>
-            <div style={{ display: "flex", gap: 8 }}>
+            <div className="icon-row">
               <input
-                className="input"
-                style={{ direction: "ltr", textAlign: "left" }}
+                className="input input-ltr"
                 type={showKey ? "text" : "password"}
                 value={apiKey}
                 placeholder={info.placeholder}
                 onChange={(e) => setApiKeyState(e.target.value)}
               />
-              <button className="icon-btn" onClick={() => setShowKey((s) => !s)}>
-                {showKey ? "🙈" : "👁️"}
+              <button
+                className="icon-btn"
+                aria-label={showKey ? "הסתר מפתח API" : "הצג מפתח API"}
+                aria-pressed={showKey}
+                onClick={() => setShowKey((s) => !s)}
+              >
+                <span aria-hidden="true">{showKey ? "🙈" : "👁️"}</span>
               </button>
             </div>
           </label>
@@ -193,15 +280,14 @@ export default function Settings() {
         <label className="field">
           <span>מודל (אופציונלי)</span>
           <input
-            className="input"
-            style={{ direction: "ltr", textAlign: "left" }}
+            className="input input-ltr"
             value={model}
             placeholder={info.defaultModel}
             onChange={(e) => setModel(e.target.value)}
           />
         </label>
 
-        <p className="muted" style={{ fontSize: 13 }}>
+        <p className="muted fs-13">
           <a href={info.infoUrl} target="_blank" rel="noreferrer">
             {info.infoText}
           </a>
@@ -210,7 +296,7 @@ export default function Settings() {
         <button className="btn" onClick={save}>
           {saved ? "נשמר ✓" : "שמירה"}
         </button>
-        <div style={{ height: 10 }} />
+        <div className="spacer-sm" />
         <button className="btn ghost" onClick={clearAll}>
           מחיקת הגדרות AI
         </button>
@@ -219,14 +305,13 @@ export default function Settings() {
       <div className="card">
         <h2>⚙️ העדפות</h2>
 
-        <div className="row-between" style={{ marginBottom: 16 }}>
+        <div className="row-between mb-5">
           <div>
-            <div style={{ fontWeight: 700 }}>🌙 מצב כהה</div>
-            <div className="muted" style={{ fontSize: 13 }}>נוח יותר לעיניים בלילה</div>
+            <div className="fw-700">🌙 מצב כהה</div>
+            <div className="muted fs-13">נוח יותר לעיניים בלילה</div>
           </div>
           <button
-            className={`level-pill ${prefs.theme === "dark" ? "active" : ""}`}
-            style={{ minWidth: 64 }}
+            className={`level-pill min-w-64 ${prefs.theme === "dark" ? "active" : ""}`}
             onClick={() => setTheme(prefs.theme !== "dark")}
           >
             {prefs.theme === "dark" ? "פעיל" : "כבוי"}
@@ -236,7 +321,7 @@ export default function Settings() {
         <label className="field">
           <span>🔊 מהירות הקראה</span>
         </label>
-        <div className="level-row" style={{ marginBottom: 16 }}>
+        <div className="level-row mb-5">
           {SPEECH_LABELS.map((s) => (
             <button
               key={s.id}
@@ -266,6 +351,37 @@ export default function Settings() {
             </div>
           </>
         )}
+
+        <div className="row-between my-prefs">
+          <div>
+            <div className="fw-700">🔔 תזכורת משימות</div>
+            <div className="muted fs-13">
+              התראה מקומית כשהאפליקציה פתוחה אחרי השעה שנבחרה ומשימות לא הושלמו.
+            </div>
+          </div>
+          <button
+            className={`level-pill min-w-64 ${prefs.remindersEnabled ? "active" : ""}`}
+            onClick={() => setRemindersEnabled(!prefs.remindersEnabled)}
+          >
+            {prefs.remindersEnabled ? "פעיל" : "כבוי"}
+          </button>
+        </div>
+        {prefs.remindersEnabled && (
+          <label className="field">
+            <span>שעת תזכורת</span>
+            <select
+              className="input"
+              value={prefs.reminderHour}
+              onChange={(e) => setReminderHour(Number(e.target.value))}
+            >
+              {Array.from({ length: 24 }, (_, h) => (
+                <option key={h} value={h}>
+                  {String(h).padStart(2, "0")}:00
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
       </div>
 
       <div className="card">
@@ -286,7 +402,7 @@ export default function Settings() {
         )}
         {canShare() && (
           <>
-            <div style={{ height: 10 }} />
+            <div className="spacer-sm" />
             <button className="btn secondary" onClick={() => shareApp()}>
               🔗 שיתוף האפליקציה
             </button>
@@ -305,6 +421,20 @@ export default function Settings() {
           <p className="muted">טוען…</p>
         ) : user ? (
           <>
+            {cloudSyncError && (
+              <div className="banner mb-2_5">
+                ⚠️ הסנכרון לענן נכשל — ההתקדמות שלך נשארת מקומית בינתיים ולא
+                תידרס. בדוק חיבור לאינטרנט ונסה שוב.
+                <div>
+                  <button
+                    className="btn ghost small mt-1_5"
+                    onClick={retryCloudSync}
+                  >
+                    נסה סנכרון שוב
+                  </button>
+                </div>
+              </div>
+            )}
             <p className="muted">
               מחובר כ-<strong>{user.email ?? user.displayName ?? "משתמש Google"}</strong>.
               ההתקדמות מסונכרנת בין המכשירים שלך.
@@ -322,7 +452,7 @@ export default function Settings() {
               {authBusy ? "מתחבר…" : "התחברות עם Google"}
             </button>
             {authError && (
-              <p className="muted" style={{ color: "var(--danger)" }}>
+              <p className="muted text-danger">
                 {authError}
               </p>
             )}
@@ -358,11 +488,43 @@ export default function Settings() {
       )}
 
       <div className="card">
+        <h3>💾 גיבוי ושחזור</h3>
+        <p className="muted">
+          הורידו קובץ JSON של ההתקדמות, או ייבאו קובץ ממכשיר אחר — בלי חשבון
+          Google. מפתח ה-AI והעדפות הממשק לא נכללים בגיבוי.
+        </p>
+        <button className="btn" onClick={handleExport}>
+          ייצוא התקדמות
+        </button>
+        <div className="spacer-sm" />
+        <label className="btn secondary block-center">
+          ייבוא מקובץ…
+          <input
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleImportFile(file);
+              e.target.value = "";
+            }}
+          />
+        </label>
+        {backupMsg && (
+          <p className="muted mt-2" role="status">
+            {backupMsg}
+          </p>
+        )}
+      </div>
+
+      <div className="card">
         <h3>איפוס נתונים</h3>
-        <p className="muted">מחיקת כל ההתקדמות, המילים השמורות והשיחות.</p>
+        <p className="muted">
+          מחיקת כל ההתקדמות, המילים השמורות והשיחות. מפתח ה-AI וההעדפות (ערכת
+          נושא, מהירות הקראה) יישארו כפי שהם.
+        </p>
         <button
-          className="btn"
-          style={{ background: "var(--danger)" }}
+          className="btn btn-danger"
           onClick={() => {
             if (confirm("לאפס את כל הנתונים? פעולה זו אינה הפיכה.")) resetAll();
           }}
@@ -371,7 +533,7 @@ export default function Settings() {
         </button>
       </div>
 
-      <p className="center muted" style={{ fontSize: 12 }}>
+      <p className="center muted fs-12">
         High5 · גרסת ווב · נבנה באהבה ✋
       </p>
     </div>

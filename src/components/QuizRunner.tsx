@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { GemQuestion } from "../types";
 import { speak } from "../services/tts";
 import { isAIReady } from "../services/ai";
@@ -27,6 +27,11 @@ export default function QuizRunner({ questions, onFinish }: Props) {
   const [aiTranslation, setAiTranslation] = useState<GemQuestionTranslation | null>(null);
   const [translating, setTranslating] = useState(false);
   const [translateError, setTranslateError] = useState<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
+  // Cancel an in-flight translation request if the quiz moves on (new
+  // question, finished) or unmounts before it resolves.
+  useEffect(() => () => abortRef.current?.abort(), []);
 
   const q = questions[index];
   const isLast = index === questions.length - 1;
@@ -46,8 +51,10 @@ export default function QuizRunner({ questions, onFinish }: Props) {
   const revealQuestionHe = showHe;
   const revealOptionsHe = selected !== null;
 
-  // A new question invalidates any cached AI translation for the previous one.
+  // A new question invalidates any cached AI translation for the previous
+  // one, and cancels a still-in-flight translation request for it.
   useEffect(() => {
+    abortRef.current?.abort();
     setAiTranslation(null);
     setShowHe(false);
     setTranslateError(null);
@@ -83,8 +90,10 @@ export default function QuizRunner({ questions, onFinish }: Props) {
     }
     setTranslateError(null);
     setTranslating(true);
+    const controller = new AbortController();
+    abortRef.current = controller;
     try {
-      const t = await translateQuestion(q.question, q.options);
+      const t = await translateQuestion(q.question, q.options, controller.signal);
       setAiTranslation(t);
       setShowHe(true);
     } catch {
@@ -110,7 +119,7 @@ export default function QuizRunner({ questions, onFinish }: Props) {
           <span className="tag">
             שאלה {index + 1}/{questions.length}
           </span>
-          <div style={{ display: "flex", gap: 4 }}>
+          <div className="flex-row gap-1">
             <button
               className="btn ghost small"
               disabled={translating}
@@ -121,18 +130,19 @@ export default function QuizRunner({ questions, onFinish }: Props) {
             <button
               className="icon-btn"
               title="השמע"
+              aria-label="השמע את השאלה"
               onClick={() => speak(q.question)}
             >
-              🔊
+              <span aria-hidden="true">🔊</span>
             </button>
           </div>
         </div>
-        <h3 style={{ direction: "ltr", textAlign: "left" }}>{q.question}</h3>
+        <h3 className="ltr">{q.question}</h3>
         {revealQuestionHe && questionHe && (
-          <p className="muted" style={{ margin: "4px 0 12px" }}>{questionHe}</p>
+          <p className="muted my-quiz-he">{questionHe}</p>
         )}
         {translateError && (
-          <p className="muted" style={{ margin: "4px 0 12px" }}>{translateError}</p>
+          <p className="muted my-quiz-he">{translateError}</p>
         )}
 
         {q.options.map((opt, i) => {
@@ -144,14 +154,13 @@ export default function QuizRunner({ questions, onFinish }: Props) {
           return (
             <button
               key={i}
-              className={cls}
+              className={`${cls} ltr`}
               disabled={selected !== null}
               onClick={() => choose(i)}
-              style={{ direction: "ltr", textAlign: "left" }}
             >
               {opt}
               {revealOptionsHe && optionsHe?.[i] && (
-                <span className="muted" style={{ display: "block", fontSize: "0.85em", marginTop: 2 }}>
+                <span className="muted opt-he">
                   {optionsHe[i]}
                 </span>
               )}
@@ -161,7 +170,7 @@ export default function QuizRunner({ questions, onFinish }: Props) {
 
         {selected !== null && (
           <>
-            <div className="explanation">
+            <div className="explanation" role="status" aria-live="polite">
               {selected === q.correctIndex ? "✅ נכון! " : "❌ לא מדויק. "}
               {q.explanation}
             </div>
