@@ -36,7 +36,7 @@ export default function PracticeQuiz() {
     return (
       <div className="card center">
         <h2>לא הצלחנו לטעון את החידון</h2>
-        <button className="btn" onClick={() => setReloadKey((k) => k + 1)} style={{ marginTop: 12 }}>
+        <button className="btn mt-3" onClick={() => setReloadKey((k) => k + 1)}>
           נסו שוב 🔄
         </button>
       </div>

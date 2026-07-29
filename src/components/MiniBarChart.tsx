@@ -29,7 +29,7 @@ export default function MiniBarChart({ title, series, maxValue, unit }: Props) {
             width="100%"
             role="img"
             aria-label={title}
-            style={{ display: "block", marginTop: 8 }}
+            className="block-center mt-2"
           >
             {series.map((s, i) => {
               const bh = (s.value / peak) * (h - 28);
@@ -64,7 +64,7 @@ export default function MiniBarChart({ title, series, maxValue, unit }: Props) {
               );
             })}
           </svg>
-          <p className="muted" style={{ fontSize: 12, marginTop: 4 }}>
+          <p className="muted fs-12 mt-1">
             14 הימים האחרונים
             {unit ? ` · ${unit}` : ""}
           </p>

@@ -54,7 +54,7 @@ export default function Vocabulary() {
     return (
       <div className="card center">
         <h2>לא הצלחנו לטעון מילים</h2>
-        <button className="btn" onClick={() => setDayOffset((o) => o + 1)} style={{ marginTop: 12 }}>
+        <button className="btn mt-3" onClick={() => setDayOffset((o) => o + 1)}>
           נסו שוב 🔄
         </button>
       </div>
@@ -63,7 +63,7 @@ export default function Vocabulary() {
 
   return (
     <div>
-      <div className="row-between" style={{ marginBottom: 12 }}>
+      <div className="row-between mb-3">
         <span className="tag">מילות היום · רמה {level}</span>
         <button className="btn small accent" onClick={() => setDayOffset((o) => o + 1)}>
           🔄 רענן

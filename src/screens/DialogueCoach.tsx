@@ -51,8 +51,7 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
         {scenarios.map((s) => (
           <button
             key={s.id}
-            className="btn secondary"
-            style={{ marginBottom: 10 }}
+            className="btn secondary mb-2_5"
             onClick={() => setScenarioId(s.id)}
           >
             {s.label}
@@ -103,7 +102,7 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
 
   return (
     <div>
-      <div className="row-between" style={{ marginBottom: 10 }}>
+      <div className="row-between mb-2_5">
         <button className="back-link" onClick={() => setScenarioId(null)}>
           → תרחישים
         </button>
@@ -132,8 +131,7 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
 
       <div className="chat-input">
         <input
-          className="input"
-          style={{ direction: "ltr", textAlign: "left" }}
+          className="input input-ltr"
           placeholder="Type in English..."
           value={text}
           onChange={(e) => setText(e.target.value)}
