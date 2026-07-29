@@ -18,7 +18,7 @@
   "dependencies": {
     "@sentry/browser": "^10.68.0",
     "firebase": "^12.16.0",
-    "firebase-admin": "^13.5.0",
+    "firebase-admin": "^14.2.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
