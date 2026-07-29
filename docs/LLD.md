@@ -5,28 +5,26 @@ Module-level detail to accompany `docs/HLD.md`.
 ## `src/main.tsx`
 
 Application entry point. Applies the saved theme *before* first paint
-(`applyTheme(loadPrefs().theme)`, to avoid a flash of the wrong theme), then
-mounts `<App>` inside `<LingoProvider>` within `<StrictMode>`.
+(`applyTheme(loadPrefs().theme)`), then mounts `<App>` inside `<LingoProvider>`
+wrapped by `<ErrorBoundary>` within `<StrictMode>`.
 
 ## `src/App.tsx`
 
-Shell + navigation (no router library):
+Shell + **hash routing** (`utils/routing.ts`):
 
-- Holds the active `Screen` in a single `useState` and switches on it in
-  `renderScreen()`.
-- **Onboarding gate:** while `progress` is `null`, renders `<Onboarding>`
-  full-screen and nothing else.
-- **Top bar:** on the dashboard shows `✋ High5`; on any other screen a back
-  button (`→ {Hebrew title}`) returning to the dashboard. The right side always
-  shows three chips: `✨ points`, `🔥 streak`, and the CEFR `level`.
-- **Bottom nav (`NAV`):** 5 tiles — `dashboard`, `lesson`, `vocabulary`,
-  `progress`, `settings`. The other 8 screens are reached from Dashboard tiles
-  or in-screen buttons via the `go(screen)` callback.
-- `TITLES` maps every `Screen` to its Hebrew title.
+- Active `Screen` is derived from `location.hash` (`#/missions`, `#/settings`,
+  …); `go(screen)` writes the hash so refresh/share/back work.
+- **Onboarding gate:** while `progress` is `null`, renders `<Onboarding>`.
+- **Top bar:** brand / back-to-home, points / streak / level chips (ARIA-labelled).
+- **Bottom nav:** `dashboard`, `lesson`, `missions`, `vocabulary`, `calendar`,
+  `settings` with `aria-current="page"`.
+- Offline banner when `navigator.onLine` is false; SW update banner when a new
+  worker is waiting.
+- Focus moves into `<main>` on screen change.
 
 ## `src/types.ts`
 
-Domain model, ported from the original Kotlin entities/response shapes:
+Domain model for CEFR content and persisted learner state:
 
 - `Level` — `"A1" | "A2" | "B1" | "B2" | "C1" | "C2"` (CEFR); `LEVELS` array.
 - **AI/content shapes** (mirrored exactly in the offline JSON): `GemWord` /
@@ -59,15 +57,17 @@ database. Exposes the `useLingo()` hook, which throws if used outside
   `useEffect` (this is also the offline cache in Account mode).
 - **Streak logic** runs once on mount: same calendar day → unchanged; exactly
   the next day → `streak + 1`; any larger gap → reset to `1`.
-- **Points** (ported verbatim from `LingoViewModel`):
+- **Points:**
   - `+10` — save a new word (`toggleSaveWord`).
   - `+5` — remembered a word in review (`reviewWord` with `remembered = true`).
-  - `+50` once/day + `20`/correct — daily lesson (`completeLesson`, guarded by
-    `dailyLessonCompletedText === today`).
-  - `25`/correct — practice quiz, and also Reading/Listening comprehension
-    (they route through `completeQuiz`).
-  - `+15` — each user dialogue turn (`addChatMessage`).
-  - up to `+20` scaled by accuracy — speaking (screen calls `addPoints`).
+  - `+50` once/day + `20`/correct — daily lesson (`completeLesson`).
+  - `25`/correct first time per topic/day (reduced on repeats) — `completeQuiz`
+    (practice quiz, Reading, Listening).
+  - `+15` — each user dialogue turn.
+  - Speaking: up to `+20` scaled by accuracy for the first round of the day,
+    then reduced (`awardSpeakingPoints`).
+  - `+30` once/day per daily-mission checklist item (`awardMission`).
+  - `+100` on CEFR auto-promotion.
 - **Spaced-repetition (Leitner):** `toggleSaveWord` inserts new words at box 0
   with `nextReviewAt = now` (immediately due). `dueWords()` returns non-mastered
   words whose review time has arrived. `reviewWord(id, remembered)` calls
@@ -149,14 +149,17 @@ try {
 The first three fall back to `loadOfflineContent(level).{vocabulary,lessons,
 quizzes}`. Reading/Listening/Speaking pick from two bundled pools, in order:
 
-1. **Curated** (`CURATED_READINGS | CURATED_LISTENINGS | CURATED_SPEAKINGS`) —
-   hand-written passages/clips/sentence sets. `findVocabSafeItem` returns one
-   only if its unknown-word count is within `CURATED_TOLERANCE[level][skill]`,
-   and `null` otherwise.
-2. **Progressive** (`READINGS | LISTENINGS | SPEAKINGS`) — the day-aligned item
-   generated from today's five words, which is always safe. `pickVocabSafeItem`
-   walks from the day index and, in the worst case, returns the item with the
-   fewest unknown words.
+1. **Curated** (`loadCuratedReadings | loadCuratedListenings |
+   loadCuratedSpeakings` in `data/extras.ts`) — hand-written passages/clips/
+   sentence sets, one small file per level (not quartered). `findVocabSafeItem`
+   returns one only if its unknown-word count is within
+   `CURATED_TOLERANCE[level][skill]`, and `null` otherwise.
+2. **Progressive** (`loadReadings | loadListenings | loadSpeakings`) — the
+   day-aligned item generated from today's five words, which is always safe.
+   These pools are quarter-split (see the `offline.ts`/`extras.ts` section
+   below), so the loader resolves `day` to a quarter file plus a
+   quarter-local index before `pickVocabSafeItem` walks from there and, in
+   the worst case, returns the item with the fewest unknown words.
 
 The tolerance widens with the CEFR level: a curated item is written *for* its
 level, and the tracked bank (a few hundred content words) is a fair model of an
@@ -249,22 +252,34 @@ trivially unit-testable):
 
 ## `src/data/offline.ts` + `src/data/extras.ts` + `src/data/offline/*.json`
 
-- `offline.ts` — `LOADERS: Record<Level, () => Promise<OfflineLevelContent>>`
-  using dynamic `import("./offline/a1.json")` etc., so each ~1 MB level chunk is
-  code-split and downloaded on demand; results are memoised in a `Map`.
-  `loadOfflineContent(level)` returns the level bundle; `pickRandom(list)` picks
-  one entry so repeated offline use doesn't always show the same content.
-- `extras.ts` — the same lazy-loader pattern for the three "real-use" pillars
-  (`READING_LOADERS` / `LISTENING_LOADERS` / `SPEAKING_LOADERS`, one import per
-  level per type). `pickExtra(loaders, level)` returns a random item, **falling
-  back to the nearest level with content** so the offline path never breaks.
+Bundled content is a full year (365 days) per level, but a learner only ever
+needs the ~90 days around today — so the progressive pools are **quarter-split**
+(`resolveQuarter(day)` in `utils/daily.ts` maps a day index to a quarter 1-4
+plus a quarter-local index) and only the current quarter is downloaded.
+
+- `offline.ts` — `LOADERS: Record<Level, (quarter) => Promise<OfflineLevelContent>>`
+  using dynamic `import("./offline/a1.q${quarter}.json")` etc., so each ~600 KB
+  quarter chunk is code-split and downloaded on demand; results are memoised
+  per `(level, quarter)` in a `Map`. `loadOfflineContent(level, day)` returns
+  `{ content, localDay }` — the quarter's bundle plus the day's index within it.
+- `extras.ts` — the same quarter-loader pattern for the three "real-use"
+  pillars (`loadReadings` / `loadListenings` / `loadSpeakings`, each returning
+  `{ items, localDay }`), plus a **second, unquartered** set of loaders for the
+  curated pools (`loadCuratedReadings` / `loadCuratedListenings` /
+  `loadCuratedSpeakings`) — curated banks are tens of items, not hundreds, so
+  quartering them would just add round trips for no payload benefit. See
+  `services/content.ts`'s curated-then-progressive selection above.
 - `offline/*.json` — generated by `scripts/generate-content.mjs` (`npm run
-  content`): `a1.json … c2.json` (`{vocabulary, lessons, quizzes}`, a full year
-  each) plus `*.reading.json` / `*.listening.json` / `*.speaking.json` per level
-  (progressive, 365 items each) and `*.reading.curated.json` /
-  `*.listening.curated.json` / `*.speaking.curated.json` (hand-written, small).
-  A curated reading/listening item is only emitted if it is fully bilingual
-  (`textHe`/`transcriptHe` + `questionHe` on every question). These are build
+  content`): `a1.q1.json … c2.q4.json` (`{vocabulary, lessons, quizzes}`, one
+  quarter each) plus `*.reading.q{1-4}.json` / `*.listening.q{1-4}.json` /
+  `*.speaking.q{1-4}.json` per level (progressive, 365 items/level split across
+  4 files) and `*.reading.curated.json` / `*.listening.curated.json` /
+  `*.speaking.curated.json` (hand-written, small, one file each). A curated
+  reading/listening item is only emitted if it is fully bilingual
+  (`textHe`/`transcriptHe` + `questionHe` on every question). There's also a
+  single `vocab-index.json` — every bank word at or below each level, used by
+  `data/level-vocabulary.ts` to widen the curated-content vocabulary gate.
+  These are build
   artifacts and must be generated before build/tests.
 
 ## `src/data/placement.ts`

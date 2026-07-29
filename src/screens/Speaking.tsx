@@ -47,7 +47,8 @@ export default function Speaking() {
       }
 
       let active = true;
-      generateSpeaking(level, topic, learnedKey ? learnedKey.split(",") : [])
+      const controller = new AbortController();
+      generateSpeaking(level, topic, learnedKey ? learnedKey.split(",") : [], undefined, controller.signal)
         .then((set) => {
           if (!active) return;
           setSpeakingSet(set);
@@ -64,6 +65,7 @@ export default function Speaking() {
 
       return () => {
         active = false;
+        controller.abort();
       };
     },
     [level, topic, learnedKey],
@@ -87,7 +89,7 @@ export default function Speaking() {
       <div className="card center">
         <h2>לא הצלחנו לטעון תרגול דיבור</h2>
         <p className="muted">נסו שוב בעוד רגע.</p>
-        <button className="btn" onClick={() => fetchSpeaking(true)} style={{ marginTop: 12 }}>
+        <button className="btn mt-3" onClick={() => fetchSpeaking(true)}>
           נסו שוב 🔄
         </button>
       </div>
@@ -141,9 +143,9 @@ export default function Speaking() {
         <span className="tag">
           משפט {index + 1}/{speakingSet.prompts.length}
         </span>
-        <h3 style={{ direction: "ltr", margin: "12px 0 4px" }}>{prompt.text}</h3>
+        <h3 className="ltr-only my-speak-prompt">{prompt.text}</h3>
         <p className="muted">{prompt.translation}</p>
-        <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 8 }}>
+        <div className="icon-row center mt-2">
           <button className="btn secondary" onClick={() => speak(prompt.text)}>
             🔊 שמעו אותי
           </button>
@@ -154,18 +156,18 @@ export default function Speaking() {
           )}
         </div>
 
-        {error && <div className="banner" style={{ marginTop: 12 }}>{error}</div>}
+        {error && <div className="banner mt-3">{error}</div>}
 
         {result && (
-          <div className="explanation" style={{ marginTop: 12 }}>
-            <div style={{ fontSize: 28, fontWeight: 900, color: "var(--primary)" }}>
+          <div className="explanation mt-3">
+            <div className="score-xl">
               {result.score}%
             </div>
-            <p style={{ margin: "4px 0", direction: "ltr" }}>
+            <p className="my-tight ltr-only">
               <strong>שמענו:</strong> {result.heard || "—"}
             </p>
             {result.missed.length > 0 ? (
-              <p className="muted" style={{ direction: "ltr" }}>
+              <p className="muted ltr-only">
                 מילים שכדאי לחזק: {result.missed.join(", ")}
               </p>
             ) : (

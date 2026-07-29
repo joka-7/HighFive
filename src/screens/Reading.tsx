@@ -65,7 +65,7 @@ export default function Reading() {
     return (
       <div className="card center">
         <h2>לא הצלחנו לטעון קטע קריאה</h2>
-        <button className="btn" onClick={() => load(true)} style={{ marginTop: 12 }}>
+        <button className="btn mt-3" onClick={() => load(true)}>
           נסו שוב 🔄
         </button>
       </div>
@@ -78,7 +78,7 @@ export default function Reading() {
         <div className="big">📖</div>
         <h2>כל הכבוד!</h2>
         <p className="muted">סיימת את קטע הקריאה.</p>
-        <button className="btn accent" onClick={() => load(true)} style={{ marginTop: 12 }}>
+        <button className="btn accent mt-3" onClick={() => load(true)}>
           קטע חדש 🔄
         </button>
       </div>
@@ -101,7 +101,7 @@ export default function Reading() {
     <div>
       <div className="card">
         <div className="row-between">
-          <h3 style={{ margin: 0 }}>{reading.title}</h3>
+          <h3 className="m-0">{reading.title}</h3>
           <button
             className="icon-btn"
             title="הקראה"
@@ -111,33 +111,32 @@ export default function Reading() {
             <span aria-hidden="true">🔊</span>
           </button>
         </div>
-        <pre className="explanation-text" style={{ direction: "ltr", textAlign: "left", marginTop: 10 }}>
+        <pre className="explanation-text ltr mt-2_5">
           {reading.text}
         </pre>
         {reading.textHe ? (
           <>
-            <button className="btn ghost small" style={{ marginTop: 8 }} onClick={() => setShowHe((s) => !s)}>
+            <button className="btn ghost small mt-2" onClick={() => setShowHe((s) => !s)}>
               {showHe ? "הסתר תרגום מלא" : "הצג תרגום מלא"}
             </button>
             {showHe && (
-              <pre className="explanation-text" style={{ marginTop: 8 }}>
+              <pre className="explanation-text mt-2">
                 {reading.textHe}
               </pre>
             )}
           </>
         ) : (
-          <p className="muted" style={{ marginTop: 8 }}>תרגום מלא לא זמין לקטע זה.</p>
+          <p className="muted mt-2">תרגום מלא לא זמין לקטע זה.</p>
         )}
       </div>
 
       <div className="card">
         <span className="tag">מילים חשובות — לחצו לתרגום</span>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 }}>
+        <div className="chip-row mt-2_5">
           {reading.glossary.map((w) => (
             <button
               key={w.word}
-              className="level-pill"
-              style={{ direction: "ltr" }}
+              className="level-pill ltr-only"
               onClick={() => setOpen(open === w.word ? null : w.word)}
             >
               {w.word}
@@ -149,9 +148,9 @@ export default function Reading() {
             const w = reading.glossary.find((g) => g.word === open);
             if (!w) return null;
             return (
-              <div className="explanation" style={{ marginTop: 12 }}>
+              <div className="explanation mt-3">
                 <div className="row-between">
-                  <strong style={{ direction: "ltr" }}>
+                  <strong className="ltr-only">
                     {w.word} <span className="pos">{w.partOfSpeech}</span>
                   </strong>
                   <button
@@ -162,7 +161,7 @@ export default function Reading() {
                     <span aria-hidden="true">🔊</span>
                   </button>
                 </div>
-                <p style={{ margin: "6px 0" }}>
+                <p className="my-sm">
                   <strong>תרגום:</strong> {w.translation} — {w.definition}
                 </p>
                 <button

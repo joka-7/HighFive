@@ -47,7 +47,7 @@ export default function Calendar() {
             <div className="calendar-summary-num">{monthDone}</div>
             <div className="muted">ימים עם משימות החודש</div>
           </div>
-          <div style={{ textAlign: "end" }}>
+          <div className="text-end">
             <div className="calendar-summary-num">{missions.length}</div>
             <div className="muted">סה״כ משימות</div>
           </div>
@@ -59,7 +59,7 @@ export default function Calendar() {
           <button type="button" className="btn ghost small" onClick={() => shiftMonth(-1)}>
             →
           </button>
-          <h3 style={{ margin: 0 }}>
+          <h3 className="m-0">
             {HEBREW_MONTHS[view.month]} {view.year}
           </h3>
           <button type="button" className="btn ghost small" onClick={() => shiftMonth(1)}>
@@ -103,7 +103,7 @@ export default function Calendar() {
       </div>
 
       <div className="card">
-        <h3 style={{ marginTop: 0 }}>
+        <h3 className="mt-0">
           {selected === todayKey ? "היום" : selected.split("-").reverse().join(".")}
         </h3>
         {selectedMissions.length === 0 ? (

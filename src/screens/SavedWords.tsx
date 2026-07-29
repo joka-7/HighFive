@@ -44,7 +44,7 @@ export default function SavedWords() {
   if (savedWords.length === 0) {
     return (
       <div className="card center">
-        <div style={{ fontSize: 48 }}>⭐</div>
+        <div className="emoji-xl">⭐</div>
         <h2>אין מילים שמורות עדיין</h2>
         <p className="muted">
           שמור מילים ממסך אוצר המילים כדי לחזור עליהן כאן.
@@ -68,7 +68,7 @@ export default function SavedWords() {
             aria-label="חיפוש במילים שמורות"
           />
         </label>
-        <div className="level-row" style={{ marginBottom: 8 }} role="group" aria-label="סינון">
+        <div className="level-row mb-2" role="group" aria-label="סינון">
           {(
             [
               ["all", "הכל"],
@@ -113,7 +113,7 @@ export default function SavedWords() {
         </div>
       ) : (
         visible.map((w) => (
-          <div className="card" key={w.id} style={{ opacity: w.isMastered ? 0.6 : 1 }}>
+          <div className={`card${w.isMastered ? " dimmed" : ""}`} key={w.id}>
             <div className="word-head">
               <div>
                 <div className="word-en">{w.word}</div>
@@ -121,7 +121,7 @@ export default function SavedWords() {
                   {w.partOfSpeech} · {w.level}
                 </div>
               </div>
-              <div style={{ display: "flex", gap: 8 }}>
+              <div className="icon-row">
                 <button
                   className="icon-btn"
                   aria-label={`השמע את המילה ${w.word}`}
@@ -159,7 +159,7 @@ export default function SavedWords() {
                 </button>
               </div>
             </div>
-            <p style={{ margin: "8px 0 0" }}>
+            <p className="mt-word">
               <strong>תרגום:</strong> {w.translation}
             </p>
             <div className="word-example">💬 {w.example}</div>

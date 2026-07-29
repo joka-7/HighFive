@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
+import { reportError } from "../services/errors";
 
 interface Props {
   children: ReactNode;
@@ -18,7 +19,7 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error("Unhandled render error:", error, info.componentStack);
+    reportError(error, `render${info.componentStack ?? ""}`);
   }
 
   private retry = () => {
@@ -31,10 +32,10 @@ export default class ErrorBoundary extends Component<Props, State> {
         <div className="app">
           <main className="screen">
             <div className="card center" role="alert">
-              <div style={{ fontSize: 48 }}>⚠️</div>
+              <div className="emoji-xl">⚠️</div>
               <h2>משהו השתבש</h2>
               <p className="muted">אירעה שגיאה בלתי צפויה. אפשר לנסות שוב.</p>
-              <button className="btn" onClick={this.retry} style={{ marginTop: 12 }}>
+              <button className="btn mt-3" onClick={this.retry}>
                 נסו שוב 🔄
               </button>
             </div>

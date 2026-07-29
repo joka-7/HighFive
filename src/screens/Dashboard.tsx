@@ -37,9 +37,9 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
 
   return (
     <div>
-      <div className="card" style={{ background: "linear-gradient(135deg,#6c5ce7,#8e7bff)", color: "#fff" }}>
-        <h2 style={{ color: "#fff" }}>שלום, {progress.userName}! 👋</h2>
-        <p style={{ margin: 0, opacity: 0.9 }}>
+      <div className="card hero-card">
+        <h2>שלום, {progress.userName}! 👋</h2>
+        <p className="m-0">
           רמה {progress.currentLevel} · {progress.points} נק' · רצף {progress.streak} ימים 🔥
         </p>
         <p style={{ margin: "6px 0 0", opacity: 0.85, fontSize: 14 }}>
@@ -49,36 +49,27 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
       </div>
 
       {levelUpNotice && (
-        <div
-          className="banner"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            background: "linear-gradient(135deg,#00b894,#55efc4)",
-            color: "#fff",
-          }}
-        >
-          <span style={{ flex: 1 }}>
+        <div className="banner banner-levelup">
+          <span>
             🎉 עלית לרמה {levelUpNotice}! +100 נקודות. תוכן חדש מחכה לך.
           </span>
-          <button className="btn small" style={{ background: "#fff", color: "#00b894" }} onClick={clearLevelUpNotice}>
+          <button className="btn small btn-on-banner" onClick={clearLevelUpNotice}>
             מעולה!
           </button>
         </div>
       )}
 
       {todaysWords.length > 0 && (
-        <div className="card" style={{ marginBottom: 12 }}>
+        <div className="card mb-3">
           <div className="row-between">
             <span className="tag">מילות היום</span>
             <button className="btn ghost small" onClick={() => go("vocabulary")}>
               לכרטיסיות ←
             </button>
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 }}>
+          <div className="chip-row mt-2_5">
             {todaysWords.map((w) => (
-              <span key={w.word} className="level-pill" style={{ direction: "ltr" }}>
+              <span key={w.word} className="level-pill ltr-only">
                 {w.word} <span className="muted">({w.translation})</span>
               </span>
             ))}
@@ -91,8 +82,7 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
           💡 בלי מפתח AI, האפליקציה פועלת עם תוכן מובנה (לא מקוון). כדי לקבל
           שיעורים ושיחות AI חיות, הוסיפו מפתח ב
           <button
-            className="btn ghost small"
-            style={{ padding: 0, display: "inline" }}
+            className="btn ghost small inline-link"
             onClick={() => go("settings")}
           >
             הגדרות
@@ -102,9 +92,9 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
       )}
 
       {canInstall && (
-        <div className="banner" style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ flex: 1 }}>📲 התקן את High5 במסך הבית לגישה מהירה וגם ללא אינטרנט.</span>
-          <button className="btn small" style={{ width: "auto" }} onClick={() => install()}>
+        <div className="banner banner-row">
+          <span>📲 התקן את High5 במסך הבית לגישה מהירה וגם ללא אינטרנט.</span>
+          <button className="btn small" onClick={() => install()}>
             התקנה
           </button>
         </div>
@@ -116,27 +106,9 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
             key={t.screen}
             className={`menu-tile skill-${t.screen}`}
             onClick={() => go(t.screen)}
-            style={{ position: "relative" }}
           >
             {t.screen === "review" && due > 0 && (
-              <span
-                style={{
-                  position: "absolute",
-                  top: 8,
-                  insetInlineEnd: 8,
-                  background: "var(--danger)",
-                  color: "#fff",
-                  borderRadius: 999,
-                  fontSize: 12,
-                  fontWeight: 800,
-                  minWidth: 22,
-                  height: 22,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "0 6px",
-                }}
-              >
+              <span className="tile-badge">
                 {due}
               </span>
             )}

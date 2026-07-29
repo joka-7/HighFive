@@ -24,9 +24,13 @@ export default function Vocabulary() {
 
   useEffect(() => {
     let active = true;
+    // Cancels the in-flight request if the level/day changes again or the
+    // screen unmounts before it resolves, instead of letting an abandoned
+    // fetch keep running in the background for no reason.
+    const controller = new AbortController();
     setLoading(true);
     setError(false);
-    generateLevelAdaptiveWords(level, dayIndex() + dayOffset)
+    generateLevelAdaptiveWords(level, dayIndex() + dayOffset, controller.signal)
       .then((list) => {
         if (!active) return;
         setWords(list.words);
@@ -40,6 +44,7 @@ export default function Vocabulary() {
       });
     return () => {
       active = false;
+      controller.abort();
     };
   }, [level, dayOffset, markWordsLearned]);
 
@@ -49,7 +54,7 @@ export default function Vocabulary() {
     return (
       <div className="card center">
         <h2>לא הצלחנו לטעון מילים</h2>
-        <button className="btn" onClick={() => setDayOffset((o) => o + 1)} style={{ marginTop: 12 }}>
+        <button className="btn mt-3" onClick={() => setDayOffset((o) => o + 1)}>
           נסו שוב 🔄
         </button>
       </div>
@@ -58,7 +63,7 @@ export default function Vocabulary() {
 
   return (
     <div>
-      <div className="row-between" style={{ marginBottom: 12 }}>
+      <div className="row-between mb-3">
         <span className="tag">מילות היום · רמה {level}</span>
         <button className="btn small accent" onClick={() => setDayOffset((o) => o + 1)}>
           🔄 רענן

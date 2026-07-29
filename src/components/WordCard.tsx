@@ -15,7 +15,7 @@ export default function WordCard({ word, saved, onToggleSave }: Props) {
           <div className="word-en">{word.word}</div>
           <div className="pos">{word.partOfSpeech}</div>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div className="icon-row">
           <button
             className="icon-btn"
             title="השמע"
@@ -36,10 +36,10 @@ export default function WordCard({ word, saved, onToggleSave }: Props) {
         </div>
       </div>
 
-      <p style={{ margin: "8px 0 0" }}>
+      <p className="mt-word">
         <strong>תרגום:</strong> {word.translation}
       </p>
-      <p className="muted" style={{ margin: "4px 0" }}>
+      <p className="muted my-tight">
         {word.definition}
       </p>
       <div className="word-example" onClick={() => speak(word.example)}>

@@ -17,8 +17,9 @@ export default function PracticeQuiz() {
 
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
     setError(false);
-    generatePracticeQuiz(level, topic, Object.keys(learnedWords))
+    generatePracticeQuiz(level, topic, Object.keys(learnedWords), undefined, controller.signal)
       .then((q) => {
         if (active) setQuiz(q);
       })
@@ -27,6 +28,7 @@ export default function PracticeQuiz() {
       });
     return () => {
       active = false;
+      controller.abort();
     };
   }, [level, topic, learnedWords, reloadKey]);
 
@@ -34,7 +36,7 @@ export default function PracticeQuiz() {
     return (
       <div className="card center">
         <h2>לא הצלחנו לטעון את החידון</h2>
-        <button className="btn" onClick={() => setReloadKey((k) => k + 1)} style={{ marginTop: 12 }}>
+        <button className="btn mt-3" onClick={() => setReloadKey((k) => k + 1)}>
           נסו שוב 🔄
         </button>
       </div>

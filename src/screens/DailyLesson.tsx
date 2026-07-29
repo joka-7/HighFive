@@ -25,6 +25,7 @@ export default function DailyLesson() {
   // switches) so the user doesn't lose their place mid-lesson.
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
     setError(false);
     const level = progress?.currentLevel ?? "A1";
     const cached = loadDailyCache<GemLesson>(CACHE_KEY, level);
@@ -36,6 +37,8 @@ export default function DailyLesson() {
       level,
       topicForTodayByLevel(LESSON_TOPICS_BY_LEVEL, level),
       Object.keys(learnedWords),
+      undefined,
+      controller.signal,
     )
       .then((l) => {
         if (active) {
@@ -51,6 +54,7 @@ export default function DailyLesson() {
       });
     return () => {
       active = false;
+      controller.abort();
     };
   }, [progress?.currentLevel, learnedWords, reloadKey]);
 
@@ -58,7 +62,7 @@ export default function DailyLesson() {
     return (
       <div className="card center">
         <h2>לא הצלחנו לטעון את השיעור</h2>
-        <button className="btn" onClick={() => setReloadKey((k) => k + 1)} style={{ marginTop: 12 }}>
+        <button className="btn mt-3" onClick={() => setReloadKey((k) => k + 1)}>
           נסו שוב 🔄
         </button>
       </div>
@@ -97,7 +101,7 @@ export default function DailyLesson() {
     <div>
       <div className="card">
         <div className="row-between">
-          <h2 style={{ margin: 0 }}>{lesson.title}</h2>
+          <h2 className="m-0">{lesson.title}</h2>
           <button
             className="icon-btn"
             aria-label="השמע את כותרת השיעור"

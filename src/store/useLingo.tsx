@@ -35,6 +35,7 @@ import {
 } from "../utils/missions";
 import { clearAllDailyCaches } from "../utils/dailyCache";
 import { parseProgressBackup, type ProgressBackup } from "../utils/backup";
+import { reportError } from "../services/errors";
 import {
   isCloudConfigured,
   loadCloud,
@@ -333,12 +334,13 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       setCloudSyncError(false);
       try {
         await applyCloudLoad(u.uid);
-      } catch {
+      } catch (err) {
         // Network/permission issue → stay on local data, and deliberately do
         // NOT mark cloudLoaded — the debounced upload effect below stays off
         // until a retry succeeds, so a transient failure here can never
         // silently overwrite the user's real cloud progress with stale local
         // data. Surfaced via cloudSyncError so the UI can offer a retry.
+        reportError(err, "cloud.load");
         setCloudSyncError(true);
       }
     });
@@ -348,7 +350,10 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   const retryCloudSync = useCallback(() => {
     if (!user) return;
     setCloudSyncError(false);
-    applyCloudLoad(user.uid).catch(() => setCloudSyncError(true));
+    applyCloudLoad(user.uid).catch((err) => {
+      reportError(err, "cloud.retry");
+      setCloudSyncError(true);
+    });
   }, [user, applyCloudLoad]);
 
   // Only restore a session (and load Firebase) on startup for users who were
@@ -376,7 +381,10 @@ export function LingoProvider({ children }: { children: ReactNode }) {
         quizHistory,
         missionLog,
         dailyMissions,
-      }).catch(() => setCloudSyncError(true));
+      }).catch((err) => {
+        reportError(err, "cloud.save");
+        setCloudSyncError(true);
+      });
     }, 800);
     return () => clearTimeout(t);
   }, [

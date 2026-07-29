@@ -4,9 +4,11 @@ A playful **English-learning web app for Hebrew speakers** — daily lessons,
 vocabulary flashcards, quizzes, and an AI Dialogue Coach. Built with React +
 Vite + TypeScript.
 
-It works out of the box with bundled offline content (CEFR levels A1–C2), and
-gets AI-generated lessons and live conversation practice when you add a provider
-key.
+It works out of the box with bundled offline content (CEFR levels A1–C2). A
+service worker precaches the app shell so a cold start still boots offline once
+you've visited online; per-level content chunks cache the first time you open
+that level. Add a provider key for AI-generated lessons/vocab/quizzes and live
+Dialogue Coach conversations.
 
 ## The daily rhythm — 5 words, 5 operations, 5-day cycle
 
@@ -53,8 +55,11 @@ as a self-test list and a mixed recall quiz (English→Hebrew and Hebrew→Engli
   mixed recall quiz in both directions.
 - **Practice quiz** — 5 multiple-choice questions with Hebrew explanations.
 - **Saved words** — bookmark words, mark them mastered, review later.
-- **Progress** — points, daily streaks, and a placement test.
-- **Hebrew RTL, mobile-first UI.**
+- **Progress** — points, daily streaks, 14-day activity charts, and a placement
+  test during onboarding.
+- **Export / import** — download a JSON backup of local progress (or restore one)
+  from Settings, without needing Google sync.
+- **Hebrew RTL, mobile-first UI** with hash deep links (`#/missions`, etc.).
 
 > The Reading, Listening and Speaking pillars were added to move beyond
 > tap-the-answer drills toward *real language use* — reading, listening to
@@ -149,23 +154,59 @@ Without these variables the app simply stays in Local mode. The Firebase web
 config is safe to expose in the client — access is enforced by the Firestore
 rules.
 
+## Daily missions reminder (optional, requires Cloud sync)
+
+Signed-in users can opt into a push notification that fires if they haven't
+opened the app and haven't finished today's Daily Missions by the evening.
+Enable it from **Settings → 🔔 תזכורות יומיות**.
+
+This has three parts:
+
+1. **Web Push (client)** — needs a VAPID key: Firebase console → **Project
+   settings → Cloud Messaging → Web Push certificates → generate a key pair**.
+   Add it as `VITE_FIREBASE_VAPID_KEY` alongside your other Firebase env vars
+   (see [`.env.example`](./.env.example)), both locally and in Vercel.
+2. **The check itself (`api/mission-reminder.ts`)** — a Vercel serverless
+   function, kept outside the Vite build. It needs two *server-only* Vercel
+   environment variables (Project → Settings → Environment Variables — do not
+   put these in `.env`/`VITE_*`):
+   - `FIREBASE_SERVICE_ACCOUNT` — the full JSON of a service account key
+     (Firebase console → Project settings → Service accounts → Generate new
+     private key), pasted as a single-line string.
+   - `CRON_SECRET` — any random string; it authorizes calls to this endpoint.
+3. **The schedule (`.github/workflows/mission-reminder.yml`)** — calls that
+   endpoint every hour. Vercel's free Hobby plan only allows once-a-day cron,
+   which can't respect each user's own timezone, so the trigger lives in
+   GitHub Actions instead (free) and the endpoint decides per-user whether
+   it's actually their reminder hour. Add these repo secrets (**Settings →
+   Secrets and variables → Actions**):
+   - `REMINDER_ENDPOINT_URL` — `https://<your-vercel-domain>/api/mission-reminder`
+   - `CRON_SECRET` — the same value set in Vercel
+
+Everything here is free-tier: Firestore reads/writes and FCM sends have no
+cost at this scale, and GitHub Actions cron is free for a once-an-hour job.
+
 ## Testing
 
 ```bash
-npm test          # unit + integration tests (Vitest + React Testing Library)
-npm run test:e2e  # end-to-end tests (Playwright)
+npm test            # unit + integration tests (Vitest + React Testing Library)
+npm run test:coverage  # same + coverage floors on store/services/utils
+npm run test:e2e    # end-to-end tests (Playwright: desktop + mobile)
 npm run lint
 npm run typecheck
 ```
 
-CI runs lint, type-check, tests, a production-dependency security audit, and the
-build on every push and pull request.
+CI runs lint, type-check, unit tests with coverage, a production-dependency
+security audit, a shell-bundle size gate, the build, and Playwright E2E on every
+push and pull request.
 
 ## Deploy (Vercel)
 
 1. Import the repo at <https://vercel.com/new> — Vercel auto-detects Vite.
 2. **Root Directory** must be the repo root (leave it empty).
-3. No environment variables needed — users add their own AI key in-app.
+3. Optional environment variables (see [`.env.example`](./.env.example)):
+   - `VITE_FIREBASE_*` — enable Google cloud sync
+   - `VITE_SENTRY_DSN` — optional error monitoring (Sentry)
 4. `vercel.json` applies hardened HTTP security headers automatically.
 
 ## Security

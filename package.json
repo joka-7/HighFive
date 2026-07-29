@@ -12,12 +12,15 @@
     "typecheck": "tsc -b --noEmit",
     "content": "node scripts/generate-content.mjs",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "firebase": "^12.15.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "@sentry/browser": "^10.68.0",
+    "firebase": "^12.16.0",
+    "firebase-admin": "^13.5.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
@@ -25,9 +28,10 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
+    "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.26",
