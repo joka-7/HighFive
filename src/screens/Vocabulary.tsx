@@ -24,9 +24,13 @@ export default function Vocabulary() {
 
   useEffect(() => {
     let active = true;
+    // Cancels the in-flight request if the level/day changes again or the
+    // screen unmounts before it resolves, instead of letting an abandoned
+    // fetch keep running in the background for no reason.
+    const controller = new AbortController();
     setLoading(true);
     setError(false);
-    generateLevelAdaptiveWords(level, dayIndex() + dayOffset)
+    generateLevelAdaptiveWords(level, dayIndex() + dayOffset, controller.signal)
       .then((list) => {
         if (!active) return;
         setWords(list.words);
@@ -40,6 +44,7 @@ export default function Vocabulary() {
       });
     return () => {
       active = false;
+      controller.abort();
     };
   }, [level, dayOffset, markWordsLearned]);
 
