@@ -18,7 +18,17 @@ export default tseslint.config(
       "react-refresh": reactRefresh,
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
+      // eslint-plugin-react-hooks v7's "recommended" bundles a large set of
+      // new rules (purity, set-state-in-effect, immutability, refs, globals,
+      // static-components, …) that assume code will run through the React
+      // Compiler. This app targets plain React 18 without the compiler, and
+      // those rules flag long-standing, correct patterns throughout the
+      // codebase (setState synchronously in an effect, reading a ref during
+      // render, etc.) as errors. Keep only the two rules that matter without
+      // the compiler — rules-of-hooks (correctness) and exhaustive-deps (deps
+      // hygiene) — same effective rule set as v5's recommended config.
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },
