@@ -11,6 +11,7 @@ const incomplete: DailyMissionsState = {
   listening: false,
   speaking: false,
   grammar: false,
+  memorization: false,
 };
 
 afterEach(() => {

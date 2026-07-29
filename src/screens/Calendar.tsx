@@ -113,7 +113,12 @@ export default function Calendar() {
             {selectedMissions.map((m) => (
               <li key={m.id} className="mission-row">
                 <span className="mission-ico">{MISSION_ICONS[m.kind]}</span>
-                <span className="mission-label">{m.label}</span>
+                {/* Labels can carry an English title the learner typed in
+                    ("האזנה באנגלית — Bohemian Rhapsody") — let the browser
+                    resolve the direction per run instead of forcing RTL. */}
+                <span className="mission-label" dir="auto">
+                  {m.label}
+                </span>
                 {m.score !== undefined && m.total !== undefined && (
                   <span className="mission-score">
                     {m.score}/{m.total}

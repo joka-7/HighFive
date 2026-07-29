@@ -8,6 +8,28 @@ It works out of the box with bundled offline content (CEFR levels A1–C2), and
 gets AI-generated lessons and live conversation practice when you add a provider
 key.
 
+## The daily rhythm — 5 words, 5 operations, 5-day cycle
+
+High5 asks for the same small thing every day: **five new words** and **five
+operations** on the language.
+
+| Operation | In the app | Or anywhere else |
+| --- | --- | --- |
+| 👀 **See** (לראות) | the day's short video, embedded | any video/series — mark it done and name it |
+| 🎧 **Listen** (להקשיב) | a listening clip + comprehension questions | a song or podcast — mark it done and name it |
+| 🗣️ **Talk** (לדבר) | sentences to read aloud, or the AI Dialogue Coach | a conversation anywhere (including with an AI assistant) |
+| 📖 **Read** (לקרוא) | a level-adapted passage with a tap-to-translate glossary | an article on any site |
+| 🧠 **Understand** (להבין) | the daily grammar lesson | a grammar explanation from any source |
+
+Anything done inside the app completes its mission automatically. Anything done
+elsewhere is marked by hand — and the app asks **what** you watched, listened
+to or read, so the calendar keeps the title (`האזנה באנגלית — Bohemian
+Rhapsody`) and not just a checkmark. Each mission is worth 30 points.
+
+Days run in a **five-day cycle**: days 1–4 add five new words each, and **day 5
+is a Memorization day (שינון)** — no new words, just the cycle's 20 words back
+as a self-test list and a mixed recall quiz (English→Hebrew and Hebrew→English).
+
 ## Features
 
 - **Daily lesson** — a Hebrew explanation plus a 3-question practice quiz.
@@ -24,12 +46,11 @@ key.
   score via the browser's speech recognition.
 - **Dialogue Coach** — roleplay scenarios where the AI replies in English and
   corrects your mistakes in Hebrew. *(Requires an AI key.)*
-- **Daily Missions** — a daily checklist: watch a video in English, talk with
-  the AI coach in English, read an article, practice Listening, practice
-  Speaking, learn one grammar topic (Daily Lesson), and save 5 new vocabulary
-  words. All except the video (and optionally the talk mark) complete
-  automatically as you use those features. Earn points per mission; missions
-  reset every day.
+- **חמש ביום (Five a day)** — the daily board described above: the five
+  operations plus the day's words (or the Memorization round on day 5). Every
+  mission can be completed in the app or in another app.
+- **Memorization (שינון)** — the cycle's 20 words as a self-test list, then a
+  mixed recall quiz in both directions.
 - **Practice quiz** — 5 multiple-choice questions with Hebrew explanations.
 - **Saved words** — bookmark words, mark them mastered, review later.
 - **Progress** — points, daily streaks, and a placement test.
@@ -41,6 +62,29 @@ key.
 > offline content (level-adapted passages and clips). Speaking uses bundled
 > prompts by default and can generate fresh practice sets when a provider key
 > is set. Only the Dialogue Coach *requires* a key.
+
+### Bundled content
+
+`npm run content` (or `node scripts/generate-content.mjs`) expands the curated
+banks in `scripts/content/` into a year of daily content per CEFR level, written
+to `src/data/offline/`. Two kinds of content come out of it:
+
+- **Progressive** (`a1.reading.json`, …) — built from the learner's five words
+  of the day, so it is always inside their vocabulary. 365 items per level.
+- **Curated** (`a1.reading.curated.json`, …) — hand-written passages, clips and
+  sentence sets. The app prefers a curated item whenever it is within the
+  learner's reach, and falls back to the progressive one otherwise. "Within
+  reach" allows a few new words — that's what the tap-to-translate glossary is
+  for — and widens with the CEFR level, since a curated item is written *for*
+  its level and the tracked word bank increasingly undercounts what a C-level
+  learner actually knows.
+
+To add curated content, append a round to `scripts/content/` and register it in
+the generator's `*_ROUNDS` arrays. A reading or listening item only reaches the
+curated pool if it is **fully bilingual** — `textHe`/`transcriptHe` plus
+`questionHe` on every question (see `passages-extra9.mjs` for the shape); the
+generator filters out anything that isn't and fails the build on a malformed
+item.
 
 ## Getting started
 

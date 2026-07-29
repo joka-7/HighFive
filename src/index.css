@@ -913,3 +913,83 @@ pre.explanation-text {
   border: 0;
 }
 
+
+/* --- "I did it in another app" panel on the five daily operations --------- */
+.external-panel {
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.external-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.external-link {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  color: var(--primary-strong);
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.external-link:hover,
+.external-link:focus-visible {
+  border-color: var(--primary);
+}
+
+.external-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* --- Memorization day: the cycle's words as self-test rows ---------------- */
+.memorize-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.memorize-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-soft);
+  padding: 4px 0;
+}
+
+.memorize-row:last-child {
+  border-bottom: 0;
+}
+
+.memorize-word {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 8px;
+  background: none;
+  border: 0;
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 700;
+  color: inherit;
+  cursor: pointer;
+  text-align: start;
+}
+
+.memorize-word:hover {
+  background: var(--surface-2);
+}
