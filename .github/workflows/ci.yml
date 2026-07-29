@@ -35,6 +35,19 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: App-shell bundle size gate
+        # The per-level-per-quarter offline content chunks (dist/assets/content/)
+        # scale with content, not app code, so they're excluded here — this
+        # only guards the JS every visitor downloads regardless of level.
+        run: |
+          total=$(find dist/assets -maxdepth 1 -name "*.js" -exec du -cb {} + | tail -1 | cut -f1)
+          limit=$((1024 * 1024))
+          echo "App-shell JS total: ${total} bytes (limit: ${limit} bytes)"
+          if [ "$total" -gt "$limit" ]; then
+            echo "::error::App-shell JS bundle grew past ${limit} bytes (was ${total}). Check for an un-code-split dependency or accidental import."
+            exit 1
+          fi
+
   e2e:
     runs-on: ubuntu-latest
     needs: lint-and-build

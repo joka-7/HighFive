@@ -4,6 +4,6 @@ import { loadOfflineContent } from "./offline";
 
 /** Today's 5 vocabulary words for the given CEFR level. */
 export async function getTodaysWords(level: Level, day = dayIndex()): Promise<GemWord[]> {
-  const bundle = await loadOfflineContent(level);
-  return pickByDay(bundle.vocabulary, day).words;
+  const { content, localDay } = await loadOfflineContent(level, day);
+  return pickByDay(content.vocabulary, localDay).words;
 }
