@@ -1172,6 +1172,14 @@ pre.explanation-text {
 .mission-title {
   margin: 8px 0 2px;
 }
+/* Numbers the five operations. Isolated so "1." keeps its digit-then-dot order
+   inside the right-to-left heading. */
+.mission-num {
+  unicode-bidi: isolate;
+  margin-inline-end: 5px;
+  color: var(--primary);
+  font-weight: 800;
+}
 .video-title {
   margin: 0 0 8px;
   font-weight: 600;

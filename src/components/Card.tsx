@@ -48,6 +48,7 @@ export function MissionCard({
   done,
   note,
   className,
+  number,
   children,
   extra,
 }: {
@@ -57,6 +58,8 @@ export function MissionCard({
   done: boolean;
   note?: string;
   className?: string;
+  /** Position in the five operations, shown before the title. */
+  number?: number;
   children?: ReactNode;
   extra?: ReactNode;
 }) {
@@ -66,7 +69,12 @@ export function MissionCard({
         <span className="emoji-lg">{emoji}</span>
         <DoneBadge done={done} />
       </div>
-      <h3 className="mission-title">{title}</h3>
+      <h3 className="mission-title">
+        {/* Own element with `unicode-bidi: isolate` so the digit and its dot
+            aren't reordered by the surrounding right-to-left heading. */}
+        {number !== undefined && <span className="mission-num">{number}.</span>}{" "}
+        {title}
+      </h3>
       <p className="muted mt-0">{sub}</p>
       {extra}
       {done ? <MissionDoneBar note={note} /> : children}

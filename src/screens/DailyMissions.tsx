@@ -88,6 +88,7 @@ function ExternalPanel({
 
 function OperationCard({
   op,
+  number,
   done,
   note,
   go,
@@ -95,6 +96,7 @@ function OperationCard({
   extra,
 }: {
   op: Operation;
+  number: number;
   done: boolean;
   note?: string;
   go: (s: Screen) => void;
@@ -103,7 +105,15 @@ function OperationCard({
 }) {
   const altScreen = op.altScreen;
   return (
-    <MissionCard emoji={op.emoji} title={op.title} sub={op.sub} done={done} note={note} extra={extra}>
+    <MissionCard
+      emoji={op.emoji}
+      title={op.title}
+      number={number}
+      sub={op.sub}
+      done={done}
+      note={note}
+      extra={extra}
+    >
       <button
         className="btn accent mt-2_5"
         onClick={() => (op.screen === "missions" ? onComplete("") : go(op.screen))}
@@ -239,10 +249,11 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
 
       <h3 className="section-title">חמש הפעולות</h3>
 
-      {OPERATIONS.map((op) => (
+      {OPERATIONS.map((op, i) => (
         <OperationCard
           key={op.id}
           op={op}
+          number={i + 1}
           done={isOperationDone(op, flags)}
           note={notes[op.flag]}
           go={go}

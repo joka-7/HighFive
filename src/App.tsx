@@ -47,7 +47,7 @@ const TITLES: Record<Screen, string> = {
 const NAV: { screen: Screen; ico: string; label: string }[] = [
   { screen: "dashboard", ico: "🏠", label: "בית" },
   { screen: "missions", ico: "🎯", label: "חמש ביום" },
-  { screen: "vocabulary", ico: "🃏", label: "מילים" },
+  { screen: "vocabulary", ico: "🃏", label: "5 מילים" },
   { screen: "calendar", ico: "📅", label: "לוח שנה" },
   { screen: "settings", ico: "⚙️", label: "הגדרות" },
 ];

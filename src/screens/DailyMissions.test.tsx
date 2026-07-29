@@ -52,11 +52,13 @@ afterEach(() => {
 });
 
 describe("the five daily operations", () => {
-  it("counts five missions, with the day's words in their own box", () => {
+  it("counts five missions, numbered 1..5, with the day's words in their own box", () => {
     renderMissions();
-    for (const op of OPERATIONS) {
-      expect(screen.getByRole("heading", { name: op.title })).toBeInTheDocument();
-    }
+    OPERATIONS.forEach((op, i) => {
+      expect(
+        screen.getByRole("heading", { name: `${i + 1}. ${op.title}` }),
+      ).toBeInTheDocument();
+    });
     // The words box is present but outside the checklist count.
     expect(screen.getByRole("heading", { name: /למדו 5 מילים חדשות/ })).toBeInTheDocument();
     expect(screen.getByText(/0\/5 הושלמו/)).toBeInTheDocument();
@@ -65,7 +67,7 @@ describe("the five daily operations", () => {
   it("completes an operation done in another app, with what was listened to", () => {
     renderMissions();
 
-    const listenCard = screen.getByRole("heading", { name: "להקשיב" }).closest(".card")!;
+    const listenCard = screen.getByRole("heading", { name: "2. להקשיב" }).closest(".card")!;
     fireEvent.click(within(listenCard as HTMLElement).getByRole("button", { name: /אפליקציה אחרת/ }));
 
     fireEvent.change(within(listenCard as HTMLElement).getByLabelText("למה הקשבתם?"), {
@@ -79,7 +81,7 @@ describe("the five daily operations", () => {
 
   it("offers links out to other apps for each operation", () => {
     renderMissions();
-    const seeCard = screen.getByRole("heading", { name: "לראות" }).closest(".card")!;
+    const seeCard = screen.getByRole("heading", { name: "1. לראות" }).closest(".card")!;
     fireEvent.click(within(seeCard as HTMLElement).getByRole("button", { name: /אפליקציה אחרת/ }));
 
     const link = within(seeCard as HTMLElement).getByRole("link", { name: /YouTube/ });
