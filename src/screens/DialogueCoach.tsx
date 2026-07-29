@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { generateDialogueReply } from "../services/content";
 import { isAIReady } from "../services/ai";
@@ -13,6 +13,11 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
+  // Cancel an in-flight reply if the user navigates away mid-request instead
+  // of letting it finish in the background for a screen nobody's looking at.
+  useEffect(() => () => abortRef.current?.abort(), []);
 
   const level = progress?.currentLevel ?? "A1";
   const scenarios = dialogueScenariosForLevel(level);
@@ -69,6 +74,8 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
       scenario: scenario.id,
     });
     setBusy(true);
+    const controller = new AbortController();
+    abortRef.current = controller;
     try {
       const reply = await generateDialogueReply(
         level,
@@ -76,6 +83,7 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
         messages,
         message,
         Object.keys(learnedWords),
+        controller.signal,
       );
       addChatMessage({
         role: "assistant",

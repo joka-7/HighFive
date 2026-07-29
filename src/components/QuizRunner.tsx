@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { GemQuestion } from "../types";
 import { speak } from "../services/tts";
 import { isAIReady } from "../services/ai";
@@ -27,6 +27,11 @@ export default function QuizRunner({ questions, onFinish }: Props) {
   const [aiTranslation, setAiTranslation] = useState<GemQuestionTranslation | null>(null);
   const [translating, setTranslating] = useState(false);
   const [translateError, setTranslateError] = useState<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
+  // Cancel an in-flight translation request if the quiz moves on (new
+  // question, finished) or unmounts before it resolves.
+  useEffect(() => () => abortRef.current?.abort(), []);
 
   const q = questions[index];
   const isLast = index === questions.length - 1;
@@ -46,8 +51,10 @@ export default function QuizRunner({ questions, onFinish }: Props) {
   const revealQuestionHe = showHe;
   const revealOptionsHe = selected !== null;
 
-  // A new question invalidates any cached AI translation for the previous one.
+  // A new question invalidates any cached AI translation for the previous
+  // one, and cancels a still-in-flight translation request for it.
   useEffect(() => {
+    abortRef.current?.abort();
     setAiTranslation(null);
     setShowHe(false);
     setTranslateError(null);
@@ -83,8 +90,10 @@ export default function QuizRunner({ questions, onFinish }: Props) {
     }
     setTranslateError(null);
     setTranslating(true);
+    const controller = new AbortController();
+    abortRef.current = controller;
     try {
-      const t = await translateQuestion(q.question, q.options);
+      const t = await translateQuestion(q.question, q.options, controller.signal);
       setAiTranslation(t);
       setShowHe(true);
     } catch {
