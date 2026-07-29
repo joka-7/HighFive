@@ -47,7 +47,8 @@ export default function Speaking() {
       }
 
       let active = true;
-      generateSpeaking(level, topic, learnedKey ? learnedKey.split(",") : [])
+      const controller = new AbortController();
+      generateSpeaking(level, topic, learnedKey ? learnedKey.split(",") : [], undefined, controller.signal)
         .then((set) => {
           if (!active) return;
           setSpeakingSet(set);
@@ -64,6 +65,7 @@ export default function Speaking() {
 
       return () => {
         active = false;
+        controller.abort();
       };
     },
     [level, topic, learnedKey],

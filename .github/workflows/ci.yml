@@ -35,27 +35,18 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Bundle size gate (app shell JS, excluding content chunks)
+      - name: App-shell bundle size gate
+        # The per-level-per-quarter offline content chunks (dist/assets/content/)
+        # scale with content, not app code, so they're excluded here — this
+        # only guards the JS every visitor downloads regardless of level.
         run: |
-          # Fail if any non-content JS chunk exceeds 600 KB (uncompressed).
-          # Content offline packs live under assets/content/ and are gated
-          # separately by the PWA precache ignore list.
-          node -e "
-            const fs = require('fs');
-            const path = require('path');
-            const limit = 600 * 1024;
-            const root = 'dist/assets';
-            const files = fs.readdirSync(root).filter((f) => f.endsWith('.js'));
-            const oversized = files
-              .map((f) => ({ f, size: fs.statSync(path.join(root, f)).size }))
-              .filter((x) => x.size > limit);
-            if (oversized.length) {
-              console.error('Bundle size gate failed:');
-              for (const x of oversized) console.error(' ', x.f, (x.size/1024).toFixed(1) + ' KB');
-              process.exit(1);
-            }
-            console.log('Bundle size gate OK (' + files.length + ' shell JS files under 600 KB)');
-          "
+          total=$(find dist/assets -maxdepth 1 -name "*.js" -exec du -cb {} + | tail -1 | cut -f1)
+          limit=$((1024 * 1024))
+          echo "App-shell JS total: ${total} bytes (limit: ${limit} bytes)"
+          if [ "$total" -gt "$limit" ]; then
+            echo "::error::App-shell JS bundle grew past ${limit} bytes (was ${total}). Check for an un-code-split dependency or accidental import."
+            exit 1
+          fi
 
   e2e:
     runs-on: ubuntu-latest

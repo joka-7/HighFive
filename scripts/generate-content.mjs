@@ -55,6 +55,31 @@ const OUT_DIR = join(__dirname, "..", "src", "data", "offline");
 const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 const DAYS = 365; // one full year per level
 
+// Output is split into 4 quarter files per level/category instead of one
+// ~365-entry file, so a learner only downloads roughly a season's worth of
+// content instead of a full year. MUST match QUARTER_SIZES in
+// src/utils/daily.ts exactly (kept as a plain duplicate rather than a
+// cross-language import, since this is a plain Node script, not part of the
+// TS/Vite build).
+const QUARTER_SIZES = [92, 91, 91, 91];
+if (QUARTER_SIZES.reduce((a, b) => a + b, 0) !== DAYS) {
+  throw new Error("QUARTER_SIZES must sum to DAYS");
+}
+
+/** Split a DAYS-length array into 4 quarter-sized chunks. */
+function splitIntoQuarters(items) {
+  if (items.length !== DAYS) {
+    throw new Error(`splitIntoQuarters: expected ${DAYS} items, got ${items.length}`);
+  }
+  const quarters = [];
+  let offset = 0;
+  for (const size of QUARTER_SIZES) {
+    quarters.push(items.slice(offset, offset + size));
+    offset += size;
+  }
+  return quarters;
+}
+
 // --- Deterministic RNG (mulberry32) ------------------------------------------
 function rngFrom(seedStr) {
   let h = 1779033703 ^ seedStr.length;
@@ -659,10 +684,27 @@ function main() {
     speakings.forEach((s, d) => { if (s.prompts.length !== 4) throw new Error(`${level} speaking ${d}: need 4 prompts`); });
 
     const lc = level.toLowerCase();
-    writeFileSync(join(OUT_DIR, `${lc}.json`), JSON.stringify({ vocabulary, lessons, quizzes }, null, 0));
-    writeFileSync(join(OUT_DIR, `${lc}.reading.json`), JSON.stringify(readings, null, 0));
-    writeFileSync(join(OUT_DIR, `${lc}.listening.json`), JSON.stringify(listenings, null, 0));
-    writeFileSync(join(OUT_DIR, `${lc}.speaking.json`), JSON.stringify(speakings, null, 0));
+    const vocabQuarters = splitIntoQuarters(vocabulary);
+    const lessonQuarters = splitIntoQuarters(lessons);
+    const quizQuarters = splitIntoQuarters(quizzes);
+    const readingQuarters = splitIntoQuarters(readings);
+    const listeningQuarters = splitIntoQuarters(listenings);
+    const speakingQuarters = splitIntoQuarters(speakings);
+
+    for (let q = 0; q < QUARTER_SIZES.length; q++) {
+      const n = q + 1;
+      writeFileSync(
+        join(OUT_DIR, `${lc}.q${n}.json`),
+        JSON.stringify(
+          { vocabulary: vocabQuarters[q], lessons: lessonQuarters[q], quizzes: quizQuarters[q] },
+          null,
+          0,
+        ),
+      );
+      writeFileSync(join(OUT_DIR, `${lc}.reading.q${n}.json`), JSON.stringify(readingQuarters[q], null, 0));
+      writeFileSync(join(OUT_DIR, `${lc}.listening.q${n}.json`), JSON.stringify(listeningQuarters[q], null, 0));
+      writeFileSync(join(OUT_DIR, `${lc}.speaking.q${n}.json`), JSON.stringify(speakingQuarters[q], null, 0));
+    }
 
     const distinctLessons = new Set(lessons.map((l) => JSON.stringify(l))).size;
     summary.push({
