@@ -41,11 +41,13 @@ const TITLES: Record<Screen, string> = {
   memorize: "שינון",
 };
 
+// The app's top-level areas — deliberately *not* a copy of the hub's tiles.
+// The daily lesson isn't here: it is one of the five operations on חמש ביום and
+// has its own tile under "היום", so a third entry point would just be noise.
 const NAV: { screen: Screen; ico: string; label: string }[] = [
   { screen: "dashboard", ico: "🏠", label: "בית" },
-  { screen: "lesson", ico: "📚", label: "שיעור" },
-  { screen: "missions", ico: "🎯", label: "משימות" },
-  { screen: "vocabulary", ico: "🃏", label: "מילים" },
+  { screen: "missions", ico: "🎯", label: "חמש ביום" },
+  { screen: "vocabulary", ico: "🃏", label: "5 מילים" },
   { screen: "calendar", ico: "📅", label: "לוח שנה" },
   { screen: "settings", ico: "⚙️", label: "הגדרות" },
 ];

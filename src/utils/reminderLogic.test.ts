@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { missionsCompleteToday, shouldSendReminder, type ReminderUserData } from "./reminderLogic";
+import {
+  isReviewDateKey,
+  missionsCompleteToday,
+  shouldSendReminder,
+  type ReminderUserData,
+} from "./reminderLogic";
 
 const TARGET_HOUR = 18;
 const NOW = new Date("2026-07-23T18:30:00Z"); // 18:xx UTC
@@ -62,6 +67,47 @@ describe("missionsCompleteToday", () => {
       grammar: true,
     };
     expect(missionsCompleteToday(missions, "2026-07-23")).toBe(true);
+  });
+
+  // 2026-07-23 is a Thursday (a learning day); 2026-07-24 is a Friday.
+  it("wants the week's review, not new words, on a review day", () => {
+    const done = {
+      video: true,
+      talk: true,
+      reading: true,
+      listening: true,
+      speaking: true,
+      grammar: true,
+    };
+    // Friday: the memorization round is what completes the vocabulary slot.
+    expect(
+      missionsCompleteToday(
+        { date: "2026-07-24", words: false, memorization: true, ...done },
+        "2026-07-24",
+      ),
+    ).toBe(true);
+    expect(
+      missionsCompleteToday(
+        { date: "2026-07-24", words: true, memorization: false, ...done },
+        "2026-07-24",
+      ),
+    ).toBe(false);
+    // Thursday: new words, and a memorization round doesn't stand in for them.
+    expect(
+      missionsCompleteToday(
+        { date: "2026-07-23", words: false, memorization: true, ...done },
+        "2026-07-23",
+      ),
+    ).toBe(false);
+  });
+});
+
+describe("isReviewDateKey", () => {
+  it("marks Friday and Saturday as review days", () => {
+    // 2026-07-26 is a Sunday, so 07-31 is Friday and 08-01 is Saturday.
+    expect(["2026-07-26", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30"].map(isReviewDateKey))
+      .toEqual([false, false, false, false, false]);
+    expect(["2026-07-31", "2026-08-01"].map(isReviewDateKey)).toEqual([true, true]);
   });
 });
 

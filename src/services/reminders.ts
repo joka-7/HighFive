@@ -1,8 +1,7 @@
 import { loadPrefs } from "../services/prefs";
 import { dateKeyFromTs } from "../utils/missions";
 import { isOperationDone, OPERATIONS } from "../data/operations";
-import { dayIndex } from "../utils/daily";
-import { isMemorizationDay } from "../utils/cycle";
+import { isReviewDay } from "../utils/cycle";
 import type { DailyMissionFlag, DailyMissionsState } from "../types";
 
 const NOTIFIED_KEY = "high5.reminder_notified";
@@ -34,9 +33,9 @@ function markNotified(today: string): void {
   }
 }
 
-// The day is complete when all five operations are done plus the day's words
-// — or, on a Memorization day, the memorization round instead of new words.
-function missionsIncomplete(m: DailyMissionsState, day: number): boolean {
+// The day is complete when all five operations are done plus the words box —
+// new words on a learning day, the week's review round on Friday/Saturday.
+function missionsIncomplete(m: DailyMissionsState, now: number): boolean {
   const flags: Record<DailyMissionFlag, boolean> = {
     video: Boolean(m.video),
     talk: Boolean(m.talk),
@@ -47,7 +46,7 @@ function missionsIncomplete(m: DailyMissionsState, day: number): boolean {
     grammar: Boolean(m.grammar),
     memorization: Boolean(m.memorization),
   };
-  const daily = isMemorizationDay(day) ? flags.memorization : flags.words;
+  const daily = isReviewDay(now) ? flags.memorization : flags.words;
   return !(daily && OPERATIONS.every((op) => isOperationDone(op, flags)));
 }
 
@@ -68,7 +67,7 @@ export function maybeNotifyIncompleteMissions(
   const today = dateKeyFromTs(now.getTime());
   if (alreadyNotifiedToday(today)) return false;
   if (now.getHours() < prefs.reminderHour) return false;
-  if (!missionsIncomplete(dailyMissions, dayIndex(now.getTime()))) return false;
+  if (!missionsIncomplete(dailyMissions, now.getTime())) return false;
 
   try {
     new Notification("High5 — חמש ביום", {

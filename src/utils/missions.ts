@@ -69,7 +69,7 @@ export const DAILY_CHECKLIST_LABELS: Record<
   listening: { kind: "listening", label: "האזנה באנגלית" },
   speaking: { kind: "speaking", label: "תרגול דיבור" },
   grammar: { kind: "lesson", label: "שיעור דקדוק" },
-  memorization: { kind: "memorize", label: "שינון מילות המחזור" },
+  memorization: { kind: "memorize", label: "שינון מילות השבוע" },
 };
 
 /**

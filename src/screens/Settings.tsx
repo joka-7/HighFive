@@ -21,7 +21,7 @@ import {
 import { usePwaInstall, canShare, shareApp } from "../services/pwa";
 import { enablePushReminders, isPushSupported, pushPermission } from "../services/push";
 import { speak, ttsSupported } from "../services/tts";
-import { LEVELS, type Level } from "../types";
+import { navigateHash } from "../utils/routing";
 
 const SPEECH_LABELS: { id: SpeechSpeed; label: string }[] = [
   { id: "slow", label: "🐢 איטי" },
@@ -42,7 +42,6 @@ export default function Settings() {
     signIn,
     signOut,
     progress,
-    updateLevel,
     exportProgress,
     importProgress,
   } = useLingo();
@@ -333,23 +332,20 @@ export default function Settings() {
           ))}
         </div>
 
+        {/* The level switcher lives on ההתקדמות שלי, next to the thresholds that
+            explain what moving a level means — one home instead of two. */}
         {progress && (
-          <>
-            <label className="field">
-              <span>🎯 רמת לימוד</span>
-            </label>
-            <div className="level-row">
-              {LEVELS.map((lvl: Level) => (
-                <button
-                  key={lvl}
-                  className={`level-pill ${progress.currentLevel === lvl ? "active" : ""}`}
-                  onClick={() => updateLevel(lvl)}
-                >
-                  {lvl}
-                </button>
-              ))}
+          <div className="row-between my-prefs">
+            <div>
+              <div className="fw-700">🎯 רמת לימוד</div>
+              <div className="muted fs-13">
+                משנים את הרמה במסך ההתקדמות, שם רואים גם מה נשאר כדי לעלות.
+              </div>
             </div>
-          </>
+            <button className="btn ghost small" onClick={() => navigateHash("progress")}>
+              רמה {progress.currentLevel} ←
+            </button>
+          </div>
         )}
 
         <div className="row-between my-prefs">

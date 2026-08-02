@@ -16,8 +16,10 @@ Shell + **hash routing** (`utils/routing.ts`):
   …); `go(screen)` writes the hash so refresh/share/back work.
 - **Onboarding gate:** while `progress` is `null`, renders `<Onboarding>`.
 - **Top bar:** brand / back-to-home, points / streak / level chips (ARIA-labelled).
-- **Bottom nav:** `dashboard`, `lesson`, `missions`, `vocabulary`, `calendar`,
-  `settings` with `aria-current="page"`.
+- **Bottom nav:** `dashboard`, `missions`, `vocabulary`, `calendar`, `settings`
+  with `aria-current="page"` — the app's top-level areas, deliberately not a
+  copy of the hub's tiles. `lesson` isn't here: it is one of the five operations
+  and has a hub tile, so a third entry point would only be noise.
 - Offline banner when `navigator.onLine` is false; SW update banner when a new
   worker is waiting.
 - Focus moves into `<main>` on screen change.
@@ -242,6 +244,22 @@ trivially unit-testable):
 - `isDue(nextReviewAt, now?)` — `true` when the review time has arrived (never
   scheduled ⇒ due immediately).
 
+## `src/utils/cycle.ts`
+
+The weekly word rhythm, pure and clock-injectable (`now = Date.now()`) so tests
+can pin a weekday:
+
+- `WORDS_PER_DAY = 5`, `LEARNING_DAYS = 5` (Sun–Thu), `WEEK_WORD_COUNT = 25`.
+- `weekday(now)` — local `0..6`, Sunday-first. `isReviewDay(now)` — Friday or
+  Saturday. `learningDayNumber(now)` — `1..5`, or `null` on a review day.
+- `weekStart(now)` / `weekLearningDays(now)` — the week's Sunday as a **day
+  index**, and the five learning-day indices, so they feed straight into
+  `getTodaysWords(level, day)` / `pickByDay`.
+- `weekday` is local while `dayIndex` counts UTC epoch days; `weekStart`
+  subtracts one from the other, the same local/UTC mix `dateKeyFromTs` already
+  lives with. A week boundary can land an hour off far from UTC, which nothing
+  here depends on.
+
 ## `src/utils/score.ts`
 
 - `normalizeWords(text)` — lowercases, strips punctuation (keeps letters/
@@ -303,18 +321,27 @@ plus a quarter-local index) and only the current quarter is downloaded.
 
 - **Shared:** `QuizRunner` (MCQ engine — dot progress, reveal correct/wrong +
   Hebrew explanation, `onFinish(score)`), `WordCard` (TTS + save toggle),
+  `Card` (`Card` / `MissionCard` / `DoneBadge` / `MissionDoneBar` — the `.card`
+  container and the "one thing to do today" composition, shared by the missions
+  board and the words box), `Tile` (one hub tile, described by a `TileSpec`),
   `Spinner`.
 - **`Onboarding`** — multi-step flow: enter name, then take the 6-question
   placement test or pick a level manually; calls `registerUser`.
-- **`Dashboard`** — tile grid routing to every feature; greeting card (with the
-  day's position in the five-day cycle); "no AI key" banner (→ Settings); PWA
-  install banner; a due-count badge on the Review tile from `dueWords()`.
+- **`Dashboard`** — the hub. Tiles are declared as `DASHBOARD_SECTIONS` and
+  rendered in four labelled groups (היום / תרגול / המילים שלי / מעקב) via the
+  shared `Tile`. Greeting card with one line pointing at today (→ `missions`);
+  "no AI key" banner (→ Settings); PWA install banner; a due-count badge on the
+  Review tile from `dueWords()`. It deliberately does *not* repeat
+  points/streak/level (the top bar owns those) or the day's words (the words box
+  on חמש ביום owns those), and שינון has no tile — it is reached from that box.
 - **`DailyMissions`** ("חמש ביום") — the five operations from
-  `data/operations.ts` plus the day's words, or the Memorization card on the
-  cycle's fifth day. Each operation card offers its in-app path *and* an
+  `data/operations.ts`, and *only* those five in the `x/5` count. Above them sits
+  the words box: five new words on a learning day, the week's 25-word review on
+  Friday/Saturday (`utils/cycle.ts`), tracked by the `words` / `memorization`
+  flags respectively. Each operation card offers its in-app path *and* an
   external one: quick links to other apps, a "what did you do?" field, and a
   mark-as-done button that calls `completeMission(flag, note)`.
-- **`Memorize`** ("שינון") — loads the words of the current cycle's learning
+- **`Memorize`** ("שינון") — loads the words of the current week's learning
   days (`utils/cycle.ts`), shows them as a tap-to-reveal self-test list, then
   runs `buildMemorizationQuiz` (`utils/memorize.ts`) through `QuizRunner` and
   scores it as the `Memorization` quiz topic, which completes the mission.
@@ -340,7 +367,9 @@ plus a quarter-local index) and only the current quarter is downloaded.
 - **`Progress`** — stat grid (points, streak, saved, mastered), CEFR level
   switcher (`updateLevel`), last-10 quiz history.
 - **`Settings`** — AI provider/key/model form (Ollama-URL variant + show/hide
-  key), theme toggle, speech speed, learning level, PWA install/share, Google
+  key), theme toggle, speech speed, a link out to the level switcher on
+  ההתקדמות שלי (which owns it, next to the thresholds that explain it),
+  PWA install/share, Google
   cloud sign-in/out, and a "reset all" danger zone (`resetAll` behind a
   `confirm()`).
 

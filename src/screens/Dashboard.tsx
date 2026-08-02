@@ -1,36 +1,53 @@
-import { useEffect, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { isAIReady } from "../services/ai";
 import { usePwaInstall } from "../services/pwa";
-import { getTodaysWords } from "../data/todays-words";
-import { cycleDay, CYCLE_DAYS, isMemorizationDay } from "../utils/cycle";
-import type { GemWord, Screen } from "../types";
+import { isReviewDay, WEEK_WORD_COUNT, WORDS_PER_DAY } from "../utils/cycle";
+import Tile, { type TileSpec } from "../components/Tile";
+import type { Screen } from "../types";
 
-const TILES: { screen: Screen; emoji: string; title: string; sub: string }[] = [
-  { screen: "lesson", emoji: "📚", title: "שיעור יומי", sub: "לימוד + תרגול" },
-  { screen: "missions", emoji: "🎯", title: "חמש ביום", sub: "5 פעולות + 5 מילים" },
-  { screen: "vocabulary", emoji: "🃏", title: "אוצר מילים", sub: "כרטיסיות" },
-  { screen: "memorize", emoji: "🧩", title: "שינון", sub: "מילות המחזור" },
-  { screen: "dialogue", emoji: "💬", title: "מאמן שיחה", sub: "תרגול דיבור" },
-  { screen: "quiz", emoji: "🧠", title: "חידון", sub: "בחן את עצמך" },
-  { screen: "review", emoji: "🔁", title: "חזרה יומית", sub: "זיכרון מרווח" },
-  { screen: "reading", emoji: "📖", title: "קריאה", sub: "טקסטים אמיתיים" },
-  { screen: "listening", emoji: "🎧", title: "האזנה", sub: "הבנת הנשמע" },
-  { screen: "speaking", emoji: "🎤", title: "דיבור", sub: "תרגול הגייה" },
-  { screen: "saved", emoji: "⭐", title: "מילים שמורות", sub: "לחזרה" },
-  { screen: "progress", emoji: "📈", title: "ההתקדמות שלי", sub: "נקודות ורצף" },
-  { screen: "calendar", emoji: "📅", title: "לוח שנה", sub: "משימות שהושלמו" },
+// The hub. Tiles are grouped so the grid reads as four intents instead of one
+// flat wall of thirteen, and nothing here repeats what another surface already
+// owns: points/streak/level live in the top bar, the day's words live in the
+// words box on חמש ביום, and שינון is reached from that box.
+
+const DASHBOARD_SECTIONS: { title: string; tiles: TileSpec[] }[] = [
+  {
+    title: "היום",
+    tiles: [
+      { screen: "missions", emoji: "🎯", title: "חמש ביום", sub: "5 פעולות + מילים" },
+      { screen: "lesson", emoji: "📚", title: "שיעור יומי", sub: "לימוד + תרגול" },
+    ],
+  },
+  {
+    title: "תרגול",
+    tiles: [
+      { screen: "reading", emoji: "📖", title: "קריאה", sub: "טקסטים אמיתיים" },
+      { screen: "listening", emoji: "🎧", title: "האזנה", sub: "הבנת הנשמע" },
+      { screen: "speaking", emoji: "🎤", title: "דיבור", sub: "תרגול הגייה" },
+      { screen: "dialogue", emoji: "💬", title: "מאמן שיחה", sub: "תרגול דיבור" },
+      { screen: "quiz", emoji: "🧠", title: "חידון", sub: "בחן את עצמך" },
+    ],
+  },
+  {
+    title: "המילים שלי",
+    tiles: [
+      { screen: "vocabulary", emoji: "🃏", title: "אוצר מילים", sub: "מילות היום" },
+      { screen: "saved", emoji: "⭐", title: "מילים שמורות", sub: "הרשימה שלי" },
+      { screen: "review", emoji: "🔁", title: "חזרה יומית", sub: "זיכרון מרווח" },
+    ],
+  },
+  {
+    title: "מעקב",
+    tiles: [
+      { screen: "progress", emoji: "📈", title: "ההתקדמות שלי", sub: "נקודות ורצף" },
+      { screen: "calendar", emoji: "📅", title: "לוח שנה", sub: "משימות שהושלמו" },
+    ],
+  },
 ];
 
 export default function Dashboard({ go }: { go: (s: Screen) => void }) {
   const { progress, dueWords, levelUpNotice, clearLevelUpNotice } = useLingo();
   const { canInstall, install } = usePwaInstall();
-  const [todaysWords, setTodaysWords] = useState<GemWord[]>([]);
-
-  useEffect(() => {
-    if (!progress) return;
-    getTodaysWords(progress.currentLevel).then(setTodaysWords).catch(() => setTodaysWords([]));
-  }, [progress?.currentLevel]);
 
   if (!progress) return null;
   const due = dueWords().length;
@@ -39,13 +56,12 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
     <div>
       <div className="card hero-card">
         <h2>שלום, {progress.userName}! 👋</h2>
-        <p className="m-0">
-          רמה {progress.currentLevel} · {progress.points} נק' · רצף {progress.streak} ימים 🔥
-        </p>
-        <p style={{ margin: "6px 0 0", opacity: 0.85, fontSize: 14 }}>
-          יום {cycleDay()} מתוך {CYCLE_DAYS} במחזור ·{" "}
-          {isMemorizationDay() ? "היום משננים 🧩" : "5 מילים + 5 פעולות"}
-        </p>
+        <button className="hero-today" onClick={() => go("missions")}>
+          {isReviewDay()
+            ? `סוף שבוע — חוזרים על ${WEEK_WORD_COUNT} מילות השבוע`
+            : `היום: ${WORDS_PER_DAY} מילים חדשות + 5 פעולות`}{" "}
+          ←
+        </button>
       </div>
 
       {levelUpNotice && (
@@ -56,24 +72,6 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
           <button className="btn small btn-on-banner" onClick={clearLevelUpNotice}>
             מעולה!
           </button>
-        </div>
-      )}
-
-      {todaysWords.length > 0 && (
-        <div className="card mb-3">
-          <div className="row-between">
-            <span className="tag">מילות היום</span>
-            <button className="btn ghost small" onClick={() => go("vocabulary")}>
-              לכרטיסיות ←
-            </button>
-          </div>
-          <div className="chip-row mt-2_5">
-            {todaysWords.map((w) => (
-              <span key={w.word} className="level-pill ltr-only">
-                {w.word} <span className="muted">({w.translation})</span>
-              </span>
-            ))}
-          </div>
         </div>
       )}
 
@@ -100,24 +98,21 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
         </div>
       )}
 
-      <div className="menu-grid">
-        {TILES.map((t) => (
-          <button
-            key={t.screen}
-            className={`menu-tile skill-${t.screen}`}
-            onClick={() => go(t.screen)}
-          >
-            {t.screen === "review" && due > 0 && (
-              <span className="tile-badge">
-                {due}
-              </span>
-            )}
-            <span className="emoji">{t.emoji}</span>
-            <span className="title">{t.title}</span>
-            <span className="sub">{t.sub}</span>
-          </button>
-        ))}
-      </div>
+      {DASHBOARD_SECTIONS.map((section) => (
+        <section key={section.title}>
+          <h3 className="section-title">{section.title}</h3>
+          <div className="menu-grid">
+            {section.tiles.map((t) => (
+              <Tile
+                key={t.screen}
+                tile={t}
+                onClick={() => go(t.screen)}
+                badge={t.screen === "review" ? due : undefined}
+              />
+            ))}
+          </div>
+        </section>
+      ))}
     </div>
   );
 }

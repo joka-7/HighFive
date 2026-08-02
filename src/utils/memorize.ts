@@ -1,10 +1,10 @@
 import type { GemQuestion, GemWord } from "../types";
 
-// Memorization day (the cycle's fifth day) turns the 20 words met on days 1–4
+// A review day (Friday/Saturday) turns the 25 words met on Sunday–Thursday
 // into a mixed recall quiz: half English→Hebrew, half Hebrew→English, so the
 // learner has to produce the word and not only recognise it.
 
-export const MEMORIZE_QUESTIONS = 6;
+export const MEMORIZE_QUESTIONS = 10;
 /** A question needs one answer plus three distractors. */
 const MIN_WORDS = 4;
 

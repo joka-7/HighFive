@@ -2,31 +2,24 @@ import { useState, type ReactNode } from "react";
 import { DAILY_WORD_TARGET, useLingo } from "../store/useLingo";
 import { videoForToday, youtubeEmbedUrl } from "../data/videos";
 import { isOperationDone, OPERATIONS, type Operation } from "../data/operations";
-import { dayIndex } from "../utils/daily";
-import { cycleDay, CYCLE_DAYS, CYCLE_WORD_COUNT, isMemorizationDay } from "../utils/cycle";
+import {
+  isReviewDay,
+  LEARNING_DAYS,
+  learningDayNumber,
+  WEEK_WORD_COUNT,
+} from "../utils/cycle";
+import { MissionCard } from "../components/Card";
 import type { DailyMissionFlag, Screen } from "../types";
 
-// The daily board: five operations (see / listen / talk / read / understand)
-// plus the day's words — or, on the fifth day of the cycle, memorization
-// instead of new words. Every operation can be finished inside High5 or in
-// another app; the external path asks what the learner watched/listened to/
-// read so the day's log keeps a real title.
-
-function DoneBadge({ done }: { done: boolean }) {
-  return done ? <span className="tag ok">✓ הושלם (+30)</span> : null;
-}
-
-function MissionDoneBar({ note }: { note?: string }) {
-  return (
-    <div className="mission-done" role="status">
-      <span className="mission-done-check">✓</span>
-      {/* dir="auto" so an English title ("6 Minute English") isn't reordered
-          by the surrounding right-to-left layout. */}
-      <span dir="auto">{note ? note : "בוצע"}</span>
-      <span className="mission-done-points">+30 נק׳</span>
-    </div>
-  );
-}
+// The daily board: the five operations (see / listen / talk / read /
+// understand), each of which can be finished inside High5 or in another app —
+// the external path asks what the learner watched/listened to/read so the day's
+// log keeps a real title.
+//
+// The day's vocabulary sits in its own box *above* the five, because it is a
+// different kind of thing: what the learner takes in, not one of the five ways
+// to use the language. Sunday–Thursday it is five new words; Friday–Saturday it
+// turns into recall practice over the week's 25 (see utils/cycle.ts).
 
 /** The "I did it in another app" path: quick links + what-did-you-do + mark. */
 function ExternalPanel({
@@ -93,41 +86,9 @@ function ExternalPanel({
   );
 }
 
-function MissionCard({
-  emoji,
-  title,
-  sub,
-  done,
-  note,
-  children,
-  extra,
-}: {
-  emoji: string;
-  title: string;
-  sub: string;
-  done: boolean;
-  note?: string;
-  children?: ReactNode;
-  extra?: ReactNode;
-}) {
-  return (
-    <div className={`card${done ? " mission-card-done" : ""}`}>
-      <div className="row-between">
-        <span className="emoji-lg">{emoji}</span>
-        <DoneBadge done={done} />
-      </div>
-      <h3 className="mission-title">{title}</h3>
-      <p className="muted mt-0">
-        {sub}
-      </p>
-      {extra}
-      {done ? <MissionDoneBar note={note} /> : children}
-    </div>
-  );
-}
-
 function OperationCard({
   op,
+  number,
   done,
   note,
   go,
@@ -135,6 +96,7 @@ function OperationCard({
   extra,
 }: {
   op: Operation;
+  number: number;
   done: boolean;
   note?: string;
   go: (s: Screen) => void;
@@ -143,7 +105,15 @@ function OperationCard({
 }) {
   const altScreen = op.altScreen;
   return (
-    <MissionCard emoji={op.emoji} title={op.title} sub={op.sub} done={done} note={note} extra={extra}>
+    <MissionCard
+      emoji={op.emoji}
+      title={op.title}
+      number={number}
+      sub={op.sub}
+      done={done}
+      note={note}
+      extra={extra}
+    >
       <button
         className="btn accent mt-2_5"
         onClick={() => (op.screen === "missions" ? onComplete("") : go(op.screen))}
@@ -160,11 +130,78 @@ function OperationCard({
   );
 }
 
+/**
+ * The day's vocabulary — its own box, outside the five missions. It still earns
+ * points like a mission (the store awards them automatically), it just isn't
+ * one of the five operations.
+ */
+function WordsBox({
+  reviewDay,
+  wordsDone,
+  reviewDone,
+  note,
+  todayWordCount,
+  go,
+}: {
+  reviewDay: boolean;
+  wordsDone: boolean;
+  reviewDone: boolean;
+  note?: string;
+  todayWordCount: number;
+  go: (s: Screen) => void;
+}) {
+  if (reviewDay) {
+    return (
+      <MissionCard
+        emoji="🧩"
+        title={`חזרו על ${WEEK_WORD_COUNT} מילות השבוע`}
+        sub={`סוף שבוע — בלי מילים חדשות. חזרו על ${WEEK_WORD_COUNT} המילים של ימי הלמידה וענו על מבחן השינון.`}
+        done={reviewDone}
+        note={note}
+        className="words-box"
+      >
+        <button className="btn accent mt-2_5" onClick={() => go("memorize")}>
+          לשינון ←
+        </button>
+      </MissionCard>
+    );
+  }
+
+  const progress = Math.min(todayWordCount, DAILY_WORD_TARGET);
+  return (
+    <MissionCard
+      emoji="🃏"
+      title={`למדו ${DAILY_WORD_TARGET} מילים חדשות`}
+      sub={`שמרו ${DAILY_WORD_TARGET} מילים חדשות — המשימה מסתיימת אוטומטית.`}
+      done={wordsDone}
+      note={note}
+      className="words-box"
+      extra={
+        <>
+          <div className="mission-progress">
+            <div
+              className="progress-fill"
+              style={{ width: `${(progress / DAILY_WORD_TARGET) * 100}%` }}
+            />
+          </div>
+          <span className="muted">
+            {progress}/{DAILY_WORD_TARGET} מילים
+          </span>
+        </>
+      }
+    >
+      <button className="btn accent mt-2_5" onClick={() => go("vocabulary")}>
+        עברו לאוצר מילים ←
+      </button>
+    </MissionCard>
+  );
+}
+
 export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
   const { dailyMissions, todayWordCount, completeMission, progress } = useLingo();
   const level = progress?.currentLevel ?? "A1";
-  const today = dayIndex();
-  const memorizationDay = isMemorizationDay(today);
+  const reviewDay = isReviewDay();
+  const learningDay = learningDayNumber();
   const todaysVideo = videoForToday(level);
 
   const flags: Record<DailyMissionFlag, boolean> = {
@@ -179,36 +216,44 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
   };
   const notes = dailyMissions.externalNotes ?? {};
 
-  const lastDone = memorizationDay ? flags.memorization : flags.words;
-  const doneCount =
-    OPERATIONS.filter((op) => isOperationDone(op, flags)).length + (lastDone ? 1 : 0);
-  const total = OPERATIONS.length + 1;
-  const allDone = doneCount === total;
-  const wordsProgress = Math.min(todayWordCount, DAILY_WORD_TARGET);
+  // The five operations are the checklist; the words box tracks itself.
+  const doneCount = OPERATIONS.filter((op) => isOperationDone(op, flags)).length;
+  const total = OPERATIONS.length;
+  const wordsDone = reviewDay ? flags.memorization : flags.words;
+  const allDone = doneCount === total && wordsDone;
 
   return (
     <div>
       <div className="card center hero-card">
         <h2 className="m-0">🎯 חמש ביום</h2>
         <p className="mt-tight">
-          {doneCount}/{total} הושלמו · יום {cycleDay(today)} מתוך {CYCLE_DAYS} במחזור
+          {doneCount}/{total} הושלמו ·{" "}
+          {reviewDay
+            ? `סוף שבוע — חוזרים על ${WEEK_WORD_COUNT} מילות השבוע`
+            : `יום ${learningDay} מתוך ${LEARNING_DAYS} · ${DAILY_WORD_TARGET} מילים חדשות`}
         </p>
       </div>
-
-      {memorizationDay && (
-        <div className="banner">
-          🧩 היום יום שינון — אין מילים חדשות, רק חוזרים על {CYCLE_WORD_COUNT} מילות המחזור.
-        </div>
-      )}
 
       {allDone && (
         <div className="banner success">🎉 כל הכבוד! השלמתם את כל המשימות של היום.</div>
       )}
 
-      {OPERATIONS.map((op) => (
+      <WordsBox
+        reviewDay={reviewDay}
+        wordsDone={flags.words}
+        reviewDone={flags.memorization}
+        note={reviewDay ? notes.memorization : notes.words}
+        todayWordCount={todayWordCount}
+        go={go}
+      />
+
+      <h3 className="section-title">חמש הפעולות</h3>
+
+      {OPERATIONS.map((op, i) => (
         <OperationCard
           key={op.id}
           op={op}
+          number={i + 1}
           done={isOperationDone(op, flags)}
           note={notes[op.flag]}
           go={go}
@@ -237,45 +282,6 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
           }
         />
       ))}
-
-      {memorizationDay ? (
-        <MissionCard
-          emoji="🧩"
-          title="שננו את מילות המחזור"
-          sub={`חזרו על ${CYCLE_WORD_COUNT} המילים של ארבעת הימים האחרונים וענו על מבחן השינון.`}
-          done={flags.memorization}
-          note={notes.memorization}
-        >
-          <button className="btn accent mt-2_5" onClick={() => go("memorize")}>
-            לשינון ←
-          </button>
-        </MissionCard>
-      ) : (
-        <MissionCard
-          emoji="🃏"
-          title={`למדו ${DAILY_WORD_TARGET} מילים חדשות`}
-          sub={`שמרו ${DAILY_WORD_TARGET} מילים חדשות — המשימה מסתיימת אוטומטית.`}
-          done={flags.words}
-          note={notes.words}
-          extra={
-            <>
-              <div className="mission-progress">
-                <div
-                  className="progress-fill"
-                  style={{ width: `${(wordsProgress / DAILY_WORD_TARGET) * 100}%` }}
-                />
-              </div>
-              <span className="muted">
-                {wordsProgress}/{DAILY_WORD_TARGET} מילים
-              </span>
-            </>
-          }
-        >
-          <button className="btn accent mt-2_5" onClick={() => go("vocabulary")}>
-            עברו לאוצר מילים ←
-          </button>
-        </MissionCard>
-      )}
     </div>
   );
 }

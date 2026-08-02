@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, screen, fireEvent, within } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { LingoProvider, useLingo } from "../store/useLingo";
@@ -16,6 +16,11 @@ vi.mock("../services/firebase", () => ({
   signInWithGoogle: vi.fn(),
   signOut: vi.fn(),
 }));
+
+// 2026-07-26 is a Sunday (a learning day), 2026-07-31 a Friday (a review day).
+// Built with the local Date constructor so the weekday holds in any timezone.
+const SUNDAY = new Date(2026, 6, 26, 9);
+const FRIDAY = new Date(2026, 6, 31, 9);
 
 function Register({ children }: { children: ReactNode }) {
   const { progress, registerUser } = useLingo();
@@ -38,21 +43,31 @@ function renderMissions() {
 
 beforeEach(() => {
   localStorage.clear();
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  vi.setSystemTime(SUNDAY);
+});
+
+afterEach(() => {
+  vi.useRealTimers();
 });
 
 describe("the five daily operations", () => {
-  it("shows all five operations plus the day's words", () => {
+  it("counts five missions, numbered 1..5, with the day's words in their own box", () => {
     renderMissions();
-    for (const op of OPERATIONS) {
-      expect(screen.getByRole("heading", { name: op.title })).toBeInTheDocument();
-    }
-    expect(screen.getByText(/0\/6 הושלמו/)).toBeInTheDocument();
+    OPERATIONS.forEach((op, i) => {
+      expect(
+        screen.getByRole("heading", { name: `${i + 1}. ${op.title}` }),
+      ).toBeInTheDocument();
+    });
+    // The words box is present but outside the checklist count.
+    expect(screen.getByRole("heading", { name: /למדו 5 מילים חדשות/ })).toBeInTheDocument();
+    expect(screen.getByText(/0\/5 הושלמו/)).toBeInTheDocument();
   });
 
   it("completes an operation done in another app, with what was listened to", () => {
     renderMissions();
 
-    const listenCard = screen.getByRole("heading", { name: "להקשיב" }).closest(".card")!;
+    const listenCard = screen.getByRole("heading", { name: "2. להקשיב" }).closest(".card")!;
     fireEvent.click(within(listenCard as HTMLElement).getByRole("button", { name: /אפליקציה אחרת/ }));
 
     fireEvent.change(within(listenCard as HTMLElement).getByLabelText("למה הקשבתם?"), {
@@ -61,16 +76,36 @@ describe("the five daily operations", () => {
     fireEvent.click(within(listenCard as HTMLElement).getByRole("button", { name: /סמנו כהושלם/ }));
 
     expect(screen.getByText("6 Minute English")).toBeInTheDocument();
-    expect(screen.getByText(/1\/6 הושלמו/)).toBeInTheDocument();
+    expect(screen.getByText(/1\/5 הושלמו/)).toBeInTheDocument();
   });
 
   it("offers links out to other apps for each operation", () => {
     renderMissions();
-    const seeCard = screen.getByRole("heading", { name: "לראות" }).closest(".card")!;
+    const seeCard = screen.getByRole("heading", { name: "1. לראות" }).closest(".card")!;
     fireEvent.click(within(seeCard as HTMLElement).getByRole("button", { name: /אפליקציה אחרת/ }));
 
     const link = within(seeCard as HTMLElement).getByRole("link", { name: /YouTube/ });
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", expect.stringContaining("noopener"));
+  });
+});
+
+describe("the words box", () => {
+  it("offers the day's new words on a learning day", () => {
+    renderMissions();
+    expect(screen.getByRole("heading", { name: /למדו 5 מילים חדשות/ })).toBeInTheDocument();
+    expect(screen.getByText("0/5 מילים")).toBeInTheDocument();
+    expect(screen.getByText(/יום 1 מתוך 5/)).toBeInTheDocument();
+  });
+
+  it("turns into the week's 25-word review on Friday", () => {
+    vi.setSystemTime(FRIDAY);
+    renderMissions();
+
+    expect(screen.getByRole("heading", { name: /חזרו על 25 מילות השבוע/ })).toBeInTheDocument();
+    expect(screen.queryByText("0/5 מילים")).not.toBeInTheDocument();
+    expect(screen.getByText(/סוף שבוע — חוזרים על 25 מילות השבוע/)).toBeInTheDocument();
+    // Still exactly five missions in the checklist.
+    expect(screen.getByText(/0\/5 הושלמו/)).toBeInTheDocument();
   });
 });

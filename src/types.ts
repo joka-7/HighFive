@@ -167,7 +167,8 @@ export type DailyMissionFlag =
   | "memorization";
 
 // Daily Missions — the daily checklist behind the five operations (see /
-// listen / talk / read / understand) plus the day's words. The user marks a
+// listen / talk / read / understand) plus the words box, which sits outside
+// the five and holds either the day's new words or the week's review. The user marks a
 // mission done for the day and earns points; `date` gates re-claiming and
 // resets the missions each new day (mirrors dailyLessonCompletedText's
 // date-key pattern).
@@ -180,7 +181,9 @@ export interface DailyMissionsState {
   listening: boolean; // auto-completes on finishing a Listening quiz
   speaking: boolean; // auto-completes on finishing a Speaking practice set
   grammar: boolean; // auto-completes on finishing the Daily Lesson
-  memorization: boolean; // auto-completes on finishing a Memorization round
+  // Auto-completes on finishing a Memorization round — the week's 25-word
+  // review, which is what the words box offers on Friday/Saturday.
+  memorization: boolean;
   // Number of Speaking-practice attempts scored today. Optional so state
   // persisted before this field existed still loads; treated as 0 when
   // absent. Drives diminishing points after the first full round so re-

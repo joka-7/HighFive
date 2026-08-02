@@ -14,6 +14,7 @@ export interface ReminderDailyMissions {
   listening?: boolean;
   speaking?: boolean;
   grammar: boolean;
+  memorization?: boolean;
 }
 
 export interface ReminderUserData {
@@ -40,6 +41,17 @@ export function localHour(timeZone: string, date: Date): number {
   );
 }
 
+/**
+ * Friday and Saturday are review days (see utils/cycle.ts): the vocabulary slot
+ * is the week's memorization round then, not five new words — so requiring
+ * `words` on those days would nag a learner who finished everything. Derived
+ * from the date key rather than the clock, so it follows the *user's* timezone
+ * and not the server's.
+ */
+export function isReviewDateKey(todayKey: string): boolean {
+  return new Date(`${todayKey}T12:00:00Z`).getUTCDay() >= 5;
+}
+
 /** Missions reset daily (see DailyMissionsState) — a stale `date` means none
  * of today's missions have started yet. */
 export function missionsCompleteToday(
@@ -47,10 +59,11 @@ export function missionsCompleteToday(
   todayKey: string,
 ): boolean {
   if (!missions || missions.date !== todayKey) return false;
+  const vocabulary = isReviewDateKey(todayKey) ? missions.memorization : missions.words;
   return Boolean(
     missions.video &&
       missions.talk &&
-      missions.words &&
+      vocabulary &&
       missions.reading &&
       missions.listening &&
       missions.speaking &&
