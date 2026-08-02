@@ -1,6 +1,9 @@
 {
   "name": "highfive",
   "private": true,
+  "engines": {
+    "node": ">=22.22.2"
+  },
   "version": "1.0.0",
   "type": "module",
   "description": "High5 — an interactive, playful English learning assistant for Hebrew speakers. Web app supporting multiple AI providers.",
