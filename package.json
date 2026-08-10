@@ -14,6 +14,7 @@
     "lint": "eslint .",
     "typecheck": "tsc -b --noEmit",
     "content": "node scripts/generate-content.mjs",
+    "content:report": "node scripts/content-report.mjs",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test"
