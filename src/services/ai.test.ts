@@ -59,20 +59,20 @@ function jsonResponse(status: number, body: unknown): Response {
 }
 
 describe("complete() — request resilience", () => {
-  const originalFetch = global.fetch;
+  const originalFetch = globalThis.fetch;
 
   beforeEach(() => {
     saveAIConfig({ provider: "groq", apiKey: "gsk_test", model: "test-model" });
   });
 
   afterEach(() => {
-    global.fetch = originalFetch;
+    globalThis.fetch = originalFetch;
     vi.useRealTimers();
   });
 
   it("retries once on a 429 and succeeds on the second attempt", async () => {
     let calls = 0;
-    global.fetch = vi.fn(async () => {
+    globalThis.fetch = vi.fn(async () => {
       calls += 1;
       if (calls === 1) return jsonResponse(429, { error: { message: "rate limited" } });
       return jsonResponse(200, { choices: [{ message: { content: "ok" } }] });
@@ -85,7 +85,7 @@ describe("complete() — request resilience", () => {
 
   it("does not retry a second time — fails after one retry on persistent 5xx", async () => {
     let calls = 0;
-    global.fetch = vi.fn(async () => {
+    globalThis.fetch = vi.fn(async () => {
       calls += 1;
       return jsonResponse(503, { error: { message: "unavailable" } });
     });
@@ -96,7 +96,7 @@ describe("complete() — request resilience", () => {
 
   it("does not retry a caller-initiated cancellation", async () => {
     let calls = 0;
-    global.fetch = vi.fn((_url: string | URL | Request, init?: RequestInit) => {
+    globalThis.fetch = vi.fn((_url: string | URL | Request, init?: RequestInit) => {
       calls += 1;
       return new Promise<Response>((_resolve, reject) => {
         init?.signal?.addEventListener("abort", () => {
