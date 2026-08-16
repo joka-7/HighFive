@@ -2,6 +2,8 @@
 
 Every word, sentence, passage and link the app can show, by CEFR level, and — for words, reading, listening and speaking — the place to edit them. See **How editing works** below before changing anything.
 
+Editing content? Check **[LEVEL-AUDIT.md](./LEVEL-AUDIT.md)** first — it flags specific words and passages that are already miscalibrated for their level, so a fix doesn't just add to the pile.
+
 ## Totals
 
 | Level | Words | Reading passages | Listening clips | Speaking sentences | Page |

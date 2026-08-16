@@ -414,6 +414,12 @@ for (const level of LEVELS) {
       "before changing anything.",
   );
   md.push("");
+  md.push(
+    "Editing content? Check **[LEVEL-AUDIT.md](./LEVEL-AUDIT.md)** first — it flags specific " +
+      "words and passages that are already miscalibrated for their level, so a fix doesn't just " +
+      "add to the pile.",
+  );
+  md.push("");
 
   md.push("## Totals");
   md.push("");
