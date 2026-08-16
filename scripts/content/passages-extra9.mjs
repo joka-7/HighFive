@@ -45,7 +45,7 @@ export const MORE_READINGS9 = {
       ],
     ),
     R(
-      "My New Shoes (הנעליים החדשות שלי)",
+      "Shopping for New Shoes (קניית נעליים חדשות)",
       "My mother buys me new shoes. They are blue and very nice. I wear them to school. My friend says they are good shoes.",
       "אמא שלי קונה לי נעליים חדשות. הן כחולות ומאוד יפות. אני נועל אותן לבית הספר. החבר שלי אומר שאלה נעליים טובות.",
       [
@@ -161,7 +161,7 @@ export const MORE_READINGS9 = {
       ],
     ),
     R(
-      "The Quiet Carriage (הקרון השקט)",
+      "Rules of the Quiet Carriage (חוקי הקרון השקט)",
       "Some trains have a carriage where phone calls are not allowed. At first it sounds like a small detail, but for many travellers it is the only quiet hour of the day. Interestingly, passengers there rarely need to enforce the rule — the shared expectation does the work. It is a good example of how a simple agreement can change behaviour without any punishment.",
       "בחלק מהרכבות יש קרון שבו אסור לדבר בטלפון. בהתחלה זה נשמע כמו פרט קטן, אבל עבור נוסעים רבים זו השעה השקטה היחידה ביום. מעניין שהנוסעים שם כמעט אף פעם לא צריכים לאכוף את הכלל — הציפייה המשותפת עושה את העבודה. זו דוגמה טובה לאיך הסכמה פשוטה יכולה לשנות התנהגות בלי שום ענישה.",
       [
@@ -191,7 +191,7 @@ export const MORE_READINGS9 = {
   ],
   B2: [
     R(
-      "The Myth of Multitasking (המיתוס של ריבוי משימות)",
+      "Why Multitasking Fails Us (למה ריבוי משימות מאכזב)",
       "Research consistently shows that what we call multitasking is really rapid switching between tasks, and every switch carries a cost. The brain needs time to reload the context it just abandoned, so a person answering messages while writing a report finishes both more slowly and less accurately. Organisations that protect blocks of uninterrupted time tend to report better output with fewer hours. The implication is uncomfortable: availability and productivity often pull in opposite directions.",
       "מחקרים מראים באופן עקבי שמה שאנחנו מכנים ריבוי משימות הוא למעשה מעבר מהיר בין משימות, ולכל מעבר יש מחיר. המוח זקוק לזמן כדי לטעון מחדש את ההקשר שזה עתה נטש, ולכן אדם שעונה להודעות בזמן כתיבת דוח מסיים את שניהם לאט יותר ובדיוק נמוך יותר. ארגונים ששומרים על מקטעי זמן ללא הפרעה נוטים לדווח על תפוקה טובה יותר בפחות שעות. המסקנה לא נוחה: זמינות ופרודוקטיביות מושכות לרוב לכיוונים מנוגדים.",
       [
@@ -219,7 +219,7 @@ export const MORE_READINGS9 = {
       ],
     ),
     R(
-      "The Value of Boredom (הערך של השעמום)",
+      "In Praise of Boredom (בשבח השעמום)",
       "Boredom has a bad reputation, yet psychologists increasingly treat it as a productive state rather than a failure of entertainment. When nothing external demands attention, the mind drifts and begins to connect ideas that focused work keeps apart. Filling every empty moment with a screen removes precisely the conditions under which original thinking appears. Protecting a little boredom may be one of the cheapest creative investments available.",
       "לשעמום יש מוניטין רע, ובכל זאת פסיכולוגים רואים בו יותר ויותר מצב פורה ולא כישלון של בידור. כשדבר חיצוני אינו דורש תשומת לב, המחשבה נודדת ומתחילה לחבר רעיונות שעבודה ממוקדת מפרידה ביניהם. מילוי כל רגע ריק במסך מבטל בדיוק את התנאים שבהם מופיעה חשיבה מקורית. שמירה על מעט שעמום היא אולי אחת ההשקעות היצירתיות הזולות ביותר.",
       [
@@ -249,7 +249,7 @@ export const MORE_READINGS9 = {
   ],
   C1: [
     R(
-      "The Tyranny of Metrics (עריצות המדדים)",
+      "The Cost of What We Measure (המחיר של מה שאנחנו מודדים)",
       "Once a measure becomes a target, it tends to stop measuring anything useful. Hospitals judged on waiting times learn to reclassify patients; schools judged on averages quietly discourage weaker candidates from sitting exams. None of this requires dishonesty — it emerges naturally wherever a single number carries disproportionate weight. The remedy is rarely a better metric but a willingness to hold several imperfect ones in view at once.",
       "ברגע שמדד הופך ליעד, הוא נוטה להפסיק למדוד משהו מועיל. בתי חולים שנשפטים לפי זמני המתנה לומדים לסווג מחדש מטופלים; בתי ספר שנשפטים לפי ממוצעים מרתיעים בשקט מועמדים חלשים מלגשת לבחינות. שום דבר מזה אינו מחייב חוסר יושר — הוא מתהווה באופן טבעי בכל מקום שבו מספר יחיד נושא משקל בלתי מידתי. התרופה היא רק לעיתים רחוקות מדד טוב יותר, אלא נכונות להחזיק כמה מדדים לא מושלמים בו זמנית.",
       [

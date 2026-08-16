@@ -21,6 +21,8 @@ import {
   IRREGULAR_PLURALS,
   COUNT_NOUNS,
   MODAL_ITEMS,
+  INVERSION_ITEMS,
+  CONDITIONAL_ITEMS,
 } from "./content/banks.mjs";
 // Vocabulary / reading / listening / speaking come from here, not from the
 // hand-written banks directly. This file is written by content-import.mjs
@@ -514,6 +516,20 @@ const GEN = {
       optionHe: (opt) => opt,
     });
   },
+  inversion(rng, ctx) {
+    const i = pick(rng, ctx.inversions);
+    return mcq(rng, `${i.before}___${i.after}`, i.correct, i.wrong, i.he, [], {
+      questionHe: `${i.before}___${i.after}`,
+      optionHe: (opt) => opt,
+    });
+  },
+  conditionals(rng, ctx) {
+    const c = pick(rng, ctx.conditionals);
+    return mcq(rng, `${c.before}___${c.after}`, c.correct, c.wrong, c.he, [], {
+      questionHe: `${c.before}___${c.after}`,
+      optionHe: (opt) => opt,
+    });
+  },
   vocabMeaning(rng, ctx) {
     const w = pick(rng, ctx.words);
     const others = shuffle(
@@ -540,9 +556,29 @@ const GEN = {
 // --- Per-level curriculum: rotating grammar/vocab topics ----------------------
 // Each topic has a Hebrew explanation (shown in the lesson) and a generator key.
 function curriculum(levelIdx) {
+  // PREP_ITEMS unlocks its dependent-preposition items (lvl 2) starting at
+  // B1 (see banks.mjs), so this topic's own explanation needs to match what
+  // it can actually generate at each level rather than staying fixed on the
+  // basic locative/time description — otherwise a B1+ learner sees "It
+  // depends on the weather" under an explanation that never mentions
+  // dependent prepositions at all.
+  const prepositionsTopic =
+    levelIdx >= 2
+      ? {
+          key: "prepositions",
+          title: "Dependent Prepositions (מילות יחס קבועות)",
+          explanation:
+            "פעלים ושמות תואר רבים מתחברים למילת יחס קבועה: good at, wait for, depend on, interested in. כדאי ללמוד את הצירוף כולו כיחידה אחת.",
+        }
+      : {
+          key: "prepositions",
+          title: "Prepositions (מילות יחס)",
+          explanation:
+            "מילות יחס (in, on, at, to, for) מחברות בין מילים ומציינות מקום, זמן או כיוון. שימו לב: 'in' לערים ולתקופות, 'on' למשטחים ולימים, 'at' לשעה מדויקת ולמקום נקודתי.",
+        };
   const base = [
     { key: "vocabMeaning", title: "Vocabulary in Context (אוצר מילים בהקשר)", explanation: "בשיעור זה נתרגל מילים שימושיות ברמה שלך. לכל מילה יש תרגום, הגדרה ומשפט דוגמה. נסו לזכור לא רק את התרגום אלא גם איך משתמשים במילה במשפט." },
-    { key: "prepositions", title: "Prepositions (מילות יחס)", explanation: "מילות יחס (in, on, at, to, for) מחברות בין מילים ומציינות מקום, זמן או כיוון. שימו לב: 'in' לערים ולתקופות, 'on' למשטחים ולימים, 'at' לשעה מדויקת ולמקום נקודתי." },
+    prepositionsTopic,
   ];
   const byLevel = [
     // A1
@@ -559,19 +595,16 @@ function curriculum(levelIdx) {
       { key: "comparatives", title: "Comparatives (יחסת השוואה)", explanation: "להשוואה בין שניים: שם תואר קצר מקבל -er (bigger), שם תואר ארוך מקבל 'more' לפניו (more expensive). יש חריגים: good→better, bad→worse." },
       { key: "quantifier", title: "Much / Many (כמת)", explanation: "עם שמות עצם שאינם נספרים משתמשים ב-'much' (much water), ועם שמות עצם נספרים ברבים ב-'many' (many books)." },
       { key: "presentSimple3rd", title: "Present Simple Review (חזרה על הווה פשוט)", explanation: "תזכורת: עם he/she/it הפועל מקבל -s/-es. שאלות ושלילה נבנות עם do/does." },
-      { key: "prepositions", title: "Prepositions of Time & Place (מילות יחס)", explanation: "'in' לערים, חודשים ושנים; 'on' לימים ולמשטחים; 'at' לשעה מדויקת ולמקום נקודתי." },
     ],
     // B1
     [
       { key: "pastParticiple", title: "Present Perfect (הווה מושלם)", explanation: "הווה מושלם (have/has + V3) מתאר פעולה מהעבר עם קשר להווה. ה-past participle של פעלים חריגים שונה מהעבר הפשוט: see→saw→seen, write→wrote→written." },
       { key: "comparatives", title: "Comparatives & Superlatives (השוואה והפלגה)", explanation: "השוואה בין שניים: -er / more. הפלגה (הטוב ביותר מכולם): -est / most, עם 'the': the biggest, the most important." },
       { key: "modals", title: "Modal Verbs (פעלים מודאליים)", explanation: "פעלי עזר מודאליים משנים את משמעות הפועל: can (יכולת), should (המלצה), must (הכרח), might (אפשרות), mustn't (איסור)." },
-      { key: "prepositions", title: "Dependent Prepositions (מילות יחס קבועות)", explanation: "פעלים ושמות תואר רבים מתחברים למילת יחס קבועה: good at, wait for, depend on, interested in. כדאי ללמוד את הצירוף כולו כיחידה אחת." },
     ],
     // B2
     [
       { key: "pastParticiple", title: "Perfect Tenses (זמני Perfect)", explanation: "זמני ה-Perfect מחברים בין נקודות זמן. שליטה ב-past participle של פעלים חריגים היא הבסיס לבנייתם הנכונה." },
-      { key: "prepositions", title: "Dependent Prepositions (מילות יחס קבועות)", explanation: "פעלים ושמות תואר רבים מתחברים למילת יחס קבועה: good at, wait for, depend on. כדאי ללמוד את הצירוף כולו כיחידה אחת." },
       { key: "modals", title: "Modals of Deduction & Advice (מודאליים)", explanation: "מודאליים מביעים גם הסקה והמלצה: must (בטוח), might (ייתכן), should (כדאי), mustn't (אסור). שימו לב להבדל ביניהם." },
       { key: "vocabMeaning", title: "Academic Vocabulary (אוצר מילים אקדמי)", explanation: "ברמה זו נכנסות מילים מופשטות ונפוצות בכתיבה רשמית: significant, establish, demonstrate, framework. למדו אותן בהקשר." },
     ],
@@ -579,10 +612,12 @@ function curriculum(levelIdx) {
     [
       { key: "vocabMeaning", title: "Advanced Lexis (אוצר מילים מתקדם)", explanation: "ברמה זו הדגש הוא על דיוק ועל גוון (nuance). מילים כמו 'mitigate' או 'inherent' מאפשרות להביע רעיונות מורכבים בקצרה ובדייקנות." },
       { key: "vocabMeaning", title: "Connectors & Register (מילות קישור ומשלב)", explanation: "מילים כמו nevertheless, albeit, notwithstanding מעלות את המשלב של הטקסט. שליטה בהן מבדילה כתיבה שוטפת מכתיבה מתקדמת." },
+      { key: "inversion", title: "Inversion (מבנה הפוך)", explanation: "אחרי מילות שלילה/הגבלה בתחילת משפט (Rarely, Never, Not only, No sooner) בא היפוך: עזר לפני נושא, כמו בשאלה. זהו מבנה כתיבה רשמי ומודגש." },
     ],
     // C2
     [
       { key: "vocabMeaning", title: "Precision & Nuance (דיוק וגוון)", explanation: "ברמת C2 ההבדל הוא בין מילה נכונה למילה מדויקת. שליטה במילים כמו 'ubiquitous' או 'tenuous' מעידה על שליטה כמעט-ילידית." },
+      { key: "conditionals", title: "Third & Mixed Conditionals (תנאי שלישי ומעורב)", explanation: "תנאי שלישי מתאר עבר היפותטי: if + had + פועל שלישי, would have + פועל שלישי. תנאי מעורב מחבר תנאי בעבר לתוצאה בהווה (or להפך), ומשלב את שני הזמנים באותו משפט." },
       { key: "vocabMeaning", title: "Idiomatic & Formal Lexis (אוצר מילים גבוה)", explanation: "ברמה הגבוהה ביותר משלבים מילים נדירות ומדויקות כמו 'quintessential' או 'cogent' באופן טבעי וללא מאמץ ניכר." },
     ],
   ];
@@ -596,10 +631,12 @@ function buildLevel(level, levelIdx) {
     verbs: VERBS.filter((v) => v.lvl <= levelIdx),
     adjs: ADJECTIVES.filter((a) => a.lvl <= levelIdx),
     nouns: ARTICLE_NOUNS,
-    preps: PREP_ITEMS,
+    preps: PREP_ITEMS.filter((p) => p.lvl <= levelIdx),
     plurals: IRREGULAR_PLURALS,
     countNouns: COUNT_NOUNS,
     modals: MODAL_ITEMS,
+    inversions: INVERSION_ITEMS,
+    conditionals: CONDITIONAL_ITEMS,
     words: allWords,
   };
   const topics = curriculum(levelIdx);

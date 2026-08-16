@@ -4,11 +4,11 @@
 // Markdown and run `npm run content:import`, then `npm run content`.
 //
 //   A1: 412 words, 36 readings, 36 listenings, 42 speaking
-//   A2: 319 words, 36 readings, 36 listenings, 42 speaking
-//   B1: 326 words, 36 readings, 36 listenings, 42 speaking
-//   B2: 263 words, 30 readings, 30 listenings, 42 speaking
-//   C1: 245 words, 30 readings, 30 listenings, 42 speaking
-//   C2: 237 words, 30 readings, 30 listenings, 42 speaking
+//   A2: 278 words, 36 readings, 36 listenings, 42 speaking
+//   B1: 313 words, 36 readings, 36 listenings, 42 speaking
+//   B2: 245 words, 35 readings, 30 listenings, 42 speaking
+//   C1: 260 words, 30 readings, 30 listenings, 42 speaking
+//   C2: 236 words, 30 readings, 30 listenings, 42 speaking
 
 export const WORDS_BY_LEVEL = {
   "A1": [
@@ -2987,13 +2987,6 @@ export const WORDS_BY_LEVEL = {
       "translation": "עסוק"
     },
     {
-      "word": "money",
-      "partOfSpeech": "noun",
-      "definition": "מטבעות ושטרות שמשלמים בהם",
-      "example": "He saved a lot of money.",
-      "translation": "כסף"
-    },
-    {
       "word": "early",
       "partOfSpeech": "adverb",
       "definition": "לפני הזמן הרגיל",
@@ -3013,13 +3006,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "לרכוש ידע או מיומנות",
       "example": "I want to learn English.",
       "translation": "ללמוד"
-    },
-    {
-      "word": "always",
-      "partOfSpeech": "adverb",
-      "definition": "בכל פעם, תמיד",
-      "example": "She is always on time.",
-      "translation": "תמיד"
     },
     {
       "word": "problem",
@@ -3106,13 +3092,6 @@ export const WORDS_BY_LEVEL = {
       "translation": "לחוץ/עצבני"
     },
     {
-      "word": "afraid",
-      "partOfSpeech": "adjective",
-      "definition": "מפחד ממשהו",
-      "example": "She is afraid of dogs.",
-      "translation": "מפחד"
-    },
-    {
       "word": "patient",
       "partOfSpeech": "adjective",
       "definition": "סבלני, לא ממהר",
@@ -3127,32 +3106,11 @@ export const WORDS_BY_LEVEL = {
       "translation": "טרי"
     },
     {
-      "word": "cheap",
-      "partOfSpeech": "adjective",
-      "definition": "עולה מעט כסף",
-      "example": "This shop is cheap.",
-      "translation": "זול"
-    },
-    {
-      "word": "quiet",
-      "partOfSpeech": "adjective",
-      "definition": "ללא רעש; שקט",
-      "example": "The library is quiet.",
-      "translation": "שקט"
-    },
-    {
       "word": "borrow",
       "partOfSpeech": "verb",
       "definition": "לקחת משהו לזמן מה ולהחזיר",
       "example": "Can I borrow your pen?",
       "translation": "לשאול/ללוות"
-    },
-    {
-      "word": "ticket",
-      "partOfSpeech": "noun",
-      "definition": "כרטיס שמאפשר כניסה או נסיעה",
-      "example": "I bought a train ticket.",
-      "translation": "כרטיס"
     },
     {
       "word": "plan",
@@ -3183,27 +3141,6 @@ export const WORDS_BY_LEVEL = {
       "translation": "להגיע"
     },
     {
-      "word": "airport",
-      "partOfSpeech": "noun",
-      "definition": "מקום שבו ממריאים מטוסים",
-      "example": "The airport is far.",
-      "translation": "שדה תעופה"
-    },
-    {
-      "word": "holiday",
-      "partOfSpeech": "noun",
-      "definition": "ימי חופש מהעבודה או מהלימודים",
-      "example": "We're on holiday in Spain.",
-      "translation": "חופשה"
-    },
-    {
-      "word": "restaurant",
-      "partOfSpeech": "noun",
-      "definition": "מקום שבו אוכלים בתשלום",
-      "example": "Let's go to a restaurant.",
-      "translation": "מסעדה"
-    },
-    {
       "word": "menu",
       "partOfSpeech": "noun",
       "definition": "רשימת המאכלים במסעדה",
@@ -3223,13 +3160,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "החשבון לתשלום",
       "example": "Can we have the bill?",
       "translation": "חשבון"
-    },
-    {
-      "word": "station",
-      "partOfSpeech": "noun",
-      "definition": "מקום שבו עוצרות רכבות",
-      "example": "The train left the station.",
-      "translation": "תחנה"
     },
     {
       "word": "suitcase",
@@ -3253,25 +3183,11 @@ export const WORDS_BY_LEVEL = {
       "translation": "תייר"
     },
     {
-      "word": "beach",
-      "partOfSpeech": "noun",
-      "definition": "חוף ים עם חול",
-      "example": "We swam at the beach.",
-      "translation": "חוף"
-    },
-    {
       "word": "mountain",
       "partOfSpeech": "noun",
       "definition": "הר גבוה",
       "example": "They climbed the mountain.",
       "translation": "הר"
-    },
-    {
-      "word": "river",
-      "partOfSpeech": "noun",
-      "definition": "זרם מים גדול",
-      "example": "The river is deep.",
-      "translation": "נהר"
     },
     {
       "word": "forest",
@@ -3286,13 +3202,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "פעילות שעושים להנאה",
       "example": "My hobby is painting.",
       "translation": "תחביב"
-    },
-    {
-      "word": "healthy",
-      "partOfSpeech": "adjective",
-      "definition": "בריא; טוב לבריאות",
-      "example": "Eat healthy food.",
-      "translation": "בריא"
     },
     {
       "word": "dangerous",
@@ -3342,20 +3251,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "מרגש; גורם להתרגשות",
       "example": "It was an exciting game.",
       "translation": "מרגש"
-    },
-    {
-      "word": "surprised",
-      "partOfSpeech": "adjective",
-      "definition": "מופתע; חש פליאה",
-      "example": "I was surprised to see her.",
-      "translation": "מופתע"
-    },
-    {
-      "word": "worried",
-      "partOfSpeech": "adjective",
-      "definition": "מודאג; חושש שמשהו רע יקרה",
-      "example": "She looked worried.",
-      "translation": "מודאג"
     },
     {
       "word": "invite",
@@ -3477,32 +3372,11 @@ export const WORDS_BY_LEVEL = {
       "translation": "בלתי אפשרי"
     },
     {
-      "word": "free",
-      "partOfSpeech": "adjective",
-      "definition": "חופשי, או ללא תשלום",
-      "example": "Entry is free.",
-      "translation": "חופשי/חינם"
-    },
-    {
-      "word": "full",
-      "partOfSpeech": "adjective",
-      "definition": "מלא, אין מקום פנוי",
-      "example": "The glass is full.",
-      "translation": "מלא"
-    },
-    {
       "word": "empty",
       "partOfSpeech": "adjective",
       "definition": "ריק, ללא תוכן",
       "example": "The room was empty.",
       "translation": "ריק"
-    },
-    {
-      "word": "heavy",
-      "partOfSpeech": "adjective",
-      "definition": "כבד, קשה להרים",
-      "example": "This box is heavy.",
-      "translation": "כבד"
     },
     {
       "word": "light",
@@ -3531,13 +3405,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "רועש, בקול חזק",
       "example": "The music is too loud.",
       "translation": "רועש"
-    },
-    {
-      "word": "strong",
-      "partOfSpeech": "adjective",
-      "definition": "חזק, בעל כוח",
-      "example": "He is very strong.",
-      "translation": "חזק"
     },
     {
       "word": "weak",
@@ -3589,13 +3456,6 @@ export const WORDS_BY_LEVEL = {
       "translation": "לפני (זמן)"
     },
     {
-      "word": "together",
-      "partOfSpeech": "adverb",
-      "definition": "ביחד, יחדיו",
-      "example": "We work together.",
-      "translation": "ביחד"
-    },
-    {
       "word": "lucky",
       "partOfSpeech": "adjective",
       "definition": "בר מזל, שיש לו מזל טוב",
@@ -3603,60 +3463,11 @@ export const WORDS_BY_LEVEL = {
       "translation": "בר מזל"
     },
     {
-      "word": "angry",
-      "partOfSpeech": "adjective",
-      "definition": "כועס",
-      "example": "Don't be angry with me.",
-      "translation": "כועס"
-    },
-    {
-      "word": "bored",
-      "partOfSpeech": "adjective",
-      "definition": "משועמם, חסר עניין",
-      "example": "The kids are bored.",
-      "translation": "משועמם"
-    },
-    {
-      "word": "excited",
-      "partOfSpeech": "adjective",
-      "definition": "נרגש, מלא ציפייה",
-      "example": "I'm excited about the trip.",
-      "translation": "נרגש"
-    },
-    {
-      "word": "hungry",
-      "partOfSpeech": "adjective",
-      "definition": "רעב, רוצה לאכול",
-      "example": "I'm hungry.",
-      "translation": "רעב"
-    },
-    {
-      "word": "thirsty",
-      "partOfSpeech": "adjective",
-      "definition": "צמא, רוצה לשתות",
-      "example": "Are you thirsty?",
-      "translation": "צמא"
-    },
-    {
-      "word": "sick",
-      "partOfSpeech": "adjective",
-      "definition": "חולה, לא מרגיש טוב",
-      "example": "She is sick today.",
-      "translation": "חולה"
-    },
-    {
       "word": "famous",
       "partOfSpeech": "adjective",
       "definition": "מפורסם, מוכר לרבים",
       "example": "A famous singer.",
       "translation": "מפורסם"
-    },
-    {
-      "word": "favourite",
-      "partOfSpeech": "adjective",
-      "definition": "האהוב ביותר",
-      "example": "My favourite book.",
-      "translation": "אהוב/מועדף"
     },
     {
       "word": "enjoy",
@@ -3694,25 +3505,11 @@ export const WORDS_BY_LEVEL = {
       "translation": "לשכוח"
     },
     {
-      "word": "lose",
-      "partOfSpeech": "verb",
-      "definition": "לאבד או להפסיד",
-      "example": "Don't lose the ticket.",
-      "translation": "לאבד/להפסיד"
-    },
-    {
       "word": "break",
       "partOfSpeech": "verb",
       "definition": "לשבור",
       "example": "Be careful not to break it.",
       "translation": "לשבור"
-    },
-    {
-      "word": "throw",
-      "partOfSpeech": "verb",
-      "definition": "לזרוק",
-      "example": "Throw the ball to me.",
-      "translation": "לזרוק"
     },
     {
       "word": "catch",
@@ -3741,20 +3538,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "לדחוף",
       "example": "Push the button.",
       "translation": "לדחוף"
-    },
-    {
-      "word": "carry",
-      "partOfSpeech": "verb",
-      "definition": "לשאת משהו",
-      "example": "Carry the bag for me.",
-      "translation": "לשאת"
-    },
-    {
-      "word": "drop",
-      "partOfSpeech": "verb",
-      "definition": "להפיל בטעות",
-      "example": "Don't drop the plate.",
-      "translation": "להפיל"
     },
     {
       "word": "cut",
@@ -3834,13 +3617,6 @@ export const WORDS_BY_LEVEL = {
       "translation": "רציני"
     },
     {
-      "word": "funny",
-      "partOfSpeech": "adjective",
-      "definition": "מצחיק",
-      "example": "A funny joke.",
-      "translation": "מצחיק"
-    },
-    {
       "word": "terrible",
       "partOfSpeech": "adjective",
       "definition": "נורא, גרוע מאוד",
@@ -3904,13 +3680,6 @@ export const WORDS_BY_LEVEL = {
       "translation": "בטוח/מסוים"
     },
     {
-      "word": "proud",
-      "partOfSpeech": "adjective",
-      "definition": "גאה",
-      "example": "I'm proud of you.",
-      "translation": "גאה"
-    },
-    {
       "word": "asleep",
       "partOfSpeech": "adjective",
       "definition": "ישן, במצב שינה",
@@ -3951,13 +3720,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "לסגור",
       "example": "Close the window.",
       "translation": "לסגור"
-    },
-    {
-      "word": "cook",
-      "partOfSpeech": "verb",
-      "definition": "להכין אוכל",
-      "example": "I cook every evening.",
-      "translation": "לבשל"
     },
     {
       "word": "cross",
@@ -4042,13 +3804,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "לקפוץ",
       "example": "The cat jumped up.",
       "translation": "לקפוץ"
-    },
-    {
-      "word": "laugh",
-      "partOfSpeech": "verb",
-      "definition": "לצחוק",
-      "example": "We laughed a lot.",
-      "translation": "לצחוק"
     },
     {
       "word": "listen",
@@ -4175,20 +3930,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "להבטיח",
       "example": "I promise to come.",
       "translation": "להבטיח"
-    },
-    {
-      "word": "rest",
-      "partOfSpeech": "verb",
-      "definition": "לנוח",
-      "example": "You should rest.",
-      "translation": "לנוח"
-    },
-    {
-      "word": "share",
-      "partOfSpeech": "verb",
-      "definition": "לחלוק עם אחרים",
-      "example": "Share the cake.",
-      "translation": "לחלוק"
     },
     {
       "word": "spell",
@@ -4455,13 +4196,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "להכות, לפגוע",
       "example": "The ball hit the window.",
       "translation": "להכות/לפגוע"
-    },
-    {
-      "word": "hug",
-      "partOfSpeech": "verb",
-      "definition": "לחבק",
-      "example": "She hugged her friend.",
-      "translation": "לחבק"
     },
     {
       "word": "kick",
@@ -4751,13 +4485,6 @@ export const WORDS_BY_LEVEL = {
       "translation": "צפוף"
     },
     {
-      "word": "delicious",
-      "partOfSpeech": "adjective",
-      "definition": "טעים מאוד",
-      "example": "A delicious meal.",
-      "translation": "טעים"
-    },
-    {
       "word": "disgusting",
       "partOfSpeech": "adjective",
       "definition": "מגעיל ודוחה",
@@ -4786,13 +4513,6 @@ export const WORDS_BY_LEVEL = {
       "translation": "חמוץ"
     },
     {
-      "word": "sweet",
-      "partOfSpeech": "adjective",
-      "definition": "מתוק בטעם",
-      "example": "Sweet cake.",
-      "translation": "מתוק"
-    },
-    {
       "word": "fair",
       "partOfSpeech": "adjective",
       "definition": "הוגן וצודק",
@@ -4812,13 +4532,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "לשכור תמורת תשלום",
       "example": "Rent a car.",
       "translation": "לשכור"
-    },
-    {
-      "word": "book",
-      "partOfSpeech": "verb",
-      "definition": "להזמין מקום מראש",
-      "example": "Book a hotel.",
-      "translation": "להזמין (מקום)"
     },
     {
       "word": "reserve",
@@ -5184,25 +4897,11 @@ export const WORDS_BY_LEVEL = {
   ],
   "B1": [
     {
-      "word": "achieve",
-      "partOfSpeech": "verb",
-      "definition": "להשיג מטרה לאחר מאמץ ועבודה קשה",
-      "example": "She worked hard to achieve her goals.",
-      "translation": "להשיג"
-    },
-    {
       "word": "challenge",
       "partOfSpeech": "noun",
       "definition": "אתגר — משימה קשה שדורשת מאמץ",
       "example": "Learning a language is a real challenge.",
       "translation": "אתגר"
-    },
-    {
-      "word": "recommend",
-      "partOfSpeech": "verb",
-      "definition": "להמליץ — לייעץ לנסות משהו",
-      "example": "Can you recommend a good book?",
-      "translation": "להמליץ"
     },
     {
       "word": "however",
@@ -5217,20 +4916,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "ניסיון — ידע שנרכש מהחיים",
       "example": "She has years of experience.",
       "translation": "ניסיון/חוויה"
-    },
-    {
-      "word": "suggest",
-      "partOfSpeech": "verb",
-      "definition": "להציע רעיון או פעולה לשקול",
-      "example": "I suggest we leave early.",
-      "translation": "להציע"
-    },
-    {
-      "word": "improve",
-      "partOfSpeech": "verb",
-      "definition": "לשפר — לגרום למשהו להיות טוב יותר",
-      "example": "Reading will improve your vocabulary.",
-      "translation": "לשפר"
     },
     {
       "word": "although",
@@ -5380,13 +5065,6 @@ export const WORDS_BY_LEVEL = {
       "translation": "נפוץ/שכיח"
     },
     {
-      "word": "realize",
-      "partOfSpeech": "verb",
-      "definition": "להבין פתאום משהו",
-      "example": "I realized I was wrong.",
-      "translation": "להבין/לקלוט"
-    },
-    {
       "word": "responsible",
       "partOfSpeech": "adjective",
       "definition": "אחראי — מי שצריך לדאוג למשהו",
@@ -5413,13 +5091,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "להתכונן או להכין משהו",
       "example": "I prepared dinner for guests.",
       "translation": "להכין/להתכונן"
-    },
-    {
-      "word": "explain",
-      "partOfSpeech": "verb",
-      "definition": "להסביר — לעשות משהו ברור",
-      "example": "Can you explain the rule?",
-      "translation": "להסביר"
     },
     {
       "word": "result",
@@ -5660,20 +5331,6 @@ export const WORDS_BY_LEVEL = {
       "translation": "למנוע"
     },
     {
-      "word": "complain",
-      "partOfSpeech": "verb",
-      "definition": "להתלונן — להביע אי-שביעות רצון",
-      "example": "She complained about the noise.",
-      "translation": "להתלונן"
-    },
-    {
-      "word": "apologize",
-      "partOfSpeech": "verb",
-      "definition": "להתנצל — לבקש סליחה",
-      "example": "He apologized for the mistake.",
-      "translation": "להתנצל"
-    },
-    {
       "word": "achievement",
       "partOfSpeech": "noun",
       "definition": "הישג — משהו שהושג במאמץ",
@@ -5742,13 +5399,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "לטעון שמשהו נכון",
       "example": "He claims to be innocent.",
       "translation": "לטעון"
-    },
-    {
-      "word": "compare",
-      "partOfSpeech": "verb",
-      "definition": "להשוות בין דברים",
-      "example": "Compare the two plans.",
-      "translation": "להשוות"
     },
     {
       "word": "complete",
@@ -5940,13 +5590,6 @@ export const WORDS_BY_LEVEL = {
       "translation": "להזכיר"
     },
     {
-      "word": "notice",
-      "partOfSpeech": "verb",
-      "definition": "להבחין במשהו",
-      "example": "I didn't notice the sign.",
-      "translation": "להבחין"
-    },
-    {
       "word": "offer",
       "partOfSpeech": "verb",
       "definition": "להציע משהו",
@@ -6078,13 +5721,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "לגרום למשהו",
       "example": "Smoking causes disease.",
       "translation": "לגרום"
-    },
-    {
-      "word": "celebrate",
-      "partOfSpeech": "verb",
-      "definition": "לחגוג",
-      "example": "We celebrated her birthday.",
-      "translation": "לחגוג"
     },
     {
       "word": "combine",
@@ -6402,13 +6038,6 @@ export const WORDS_BY_LEVEL = {
       "translation": "לרפא"
     },
     {
-      "word": "decorate",
-      "partOfSpeech": "verb",
-      "definition": "לקשט",
-      "example": "Decorate the room.",
-      "translation": "לקשט"
-    },
-    {
       "word": "defend",
       "partOfSpeech": "verb",
       "definition": "להגן",
@@ -6442,13 +6071,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "להחליף",
       "example": "Exchange money at the bank.",
       "translation": "להחליף"
-    },
-    {
-      "word": "feed",
-      "partOfSpeech": "verb",
-      "definition": "להאכיל",
-      "example": "Feed the cat.",
-      "translation": "להאכיל"
     },
     {
       "word": "float",
@@ -7514,13 +7136,6 @@ export const WORDS_BY_LEVEL = {
       "translation": "לבסס/להקים"
     },
     {
-      "word": "consequence",
-      "partOfSpeech": "noun",
-      "definition": "תוצאה — מה שקורה בעקבות פעולה",
-      "example": "Every choice has consequences.",
-      "translation": "תוצאה/השלכה"
-    },
-    {
       "word": "demonstrate",
       "partOfSpeech": "verb",
       "definition": "להדגים או להוכיח בבירור",
@@ -8130,25 +7745,11 @@ export const WORDS_BY_LEVEL = {
       "translation": "להסיק"
     },
     {
-      "word": "diminish",
-      "partOfSpeech": "verb",
-      "definition": "להפחית או להתמעט",
-      "example": "Interest diminished over time.",
-      "translation": "להתמעט/להפחית"
-    },
-    {
       "word": "exceed",
       "partOfSpeech": "verb",
       "definition": "לעבור את הגבול או הכמות",
       "example": "Costs exceeded the budget.",
       "translation": "לחרוג/לעבור"
-    },
-    {
-      "word": "facilitate",
-      "partOfSpeech": "verb",
-      "definition": "להקל ולסייע לתהליך",
-      "example": "Tools that facilitate learning.",
-      "translation": "להקל/לאפשר"
     },
     {
       "word": "integrate",
@@ -8935,34 +8536,6 @@ export const WORDS_BY_LEVEL = {
       "translation": "לבטל/לשלול"
     },
     {
-      "word": "postulate",
-      "partOfSpeech": "verb",
-      "definition": "להניח הנחת יסוד",
-      "example": "He postulated a theory.",
-      "translation": "להניח (הנחת יסוד)"
-    },
-    {
-      "word": "refute",
-      "partOfSpeech": "verb",
-      "definition": "להפריך טענה",
-      "example": "Refute the claim.",
-      "translation": "להפריך"
-    },
-    {
-      "word": "stipulate",
-      "partOfSpeech": "verb",
-      "definition": "לקבוע במפורש בתנאי",
-      "example": "The contract stipulates a deadline.",
-      "translation": "לקבוע במפורש/להתנות"
-    },
-    {
-      "word": "supersede",
-      "partOfSpeech": "verb",
-      "definition": "להחליף ולדחוק מקום",
-      "example": "The new law supersedes the old one.",
-      "translation": "להחליף/לדחוק"
-    },
-    {
       "word": "warrant",
       "partOfSpeech": "verb",
       "definition": "להצדיק, לחייב",
@@ -8970,39 +8543,11 @@ export const WORDS_BY_LEVEL = {
       "translation": "להצדיק"
     },
     {
-      "word": "underpin",
-      "partOfSpeech": "verb",
-      "definition": "לבסס, לתמוך ביסוד",
-      "example": "Data underpins the claim.",
-      "translation": "לבסס/לתמוך ביסוד"
-    },
-    {
-      "word": "substantiate",
-      "partOfSpeech": "verb",
-      "definition": "לבסס בראיות",
-      "example": "Substantiate your argument.",
-      "translation": "לבסס/להוכיח"
-    },
-    {
       "word": "delegate",
       "partOfSpeech": "verb",
       "definition": "להאציל סמכות למישהו",
       "example": "Delegate the task.",
       "translation": "להאציל/לאצול"
-    },
-    {
-      "word": "optimize",
-      "partOfSpeech": "verb",
-      "definition": "לייעל למצב מיטבי",
-      "example": "Optimize performance.",
-      "translation": "לייעל/למטב"
-    },
-    {
-      "word": "streamline",
-      "partOfSpeech": "verb",
-      "definition": "לייעל ולפשט תהליך",
-      "example": "Streamline the process.",
-      "translation": "לייעל/לפשט"
     },
     {
       "word": "pinpoint",
@@ -9059,27 +8604,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "חיוני",
       "example": "A vital role.",
       "translation": "חיוני"
-    },
-    {
-      "word": "rigorous",
-      "partOfSpeech": "adjective",
-      "definition": "קפדני ומחמיר",
-      "example": "A rigorous test.",
-      "translation": "קפדני/מחמיר"
-    },
-    {
-      "word": "rationale",
-      "partOfSpeech": "noun",
-      "definition": "נימוק, הצדקה הגיונית",
-      "example": "The rationale behind the decision.",
-      "translation": "נימוק/הצדקה"
-    },
-    {
-      "word": "premise",
-      "partOfSpeech": "noun",
-      "definition": "הנחת יסוד לטיעון",
-      "example": "A false premise.",
-      "translation": "הנחת יסוד"
     },
     {
       "word": "correlation",
@@ -9145,13 +8669,6 @@ export const WORDS_BY_LEVEL = {
       "translation": "מטרה/יעד"
     },
     {
-      "word": "discourse",
-      "partOfSpeech": "noun",
-      "definition": "שיח או דיון",
-      "example": "Public discourse.",
-      "translation": "שיח/דיון"
-    },
-    {
       "word": "criterion",
       "partOfSpeech": "noun",
       "definition": "אמת מידה יחידה",
@@ -9181,14 +8698,6 @@ export const WORDS_BY_LEVEL = {
       "example": "That is a breach of contract.",
       "translation": "הפרה",
       "exampleHe": "זו הפרה של החוזה."
-    },
-    {
-      "word": "catalyst",
-      "partOfSpeech": "noun",
-      "definition": "גורם שמאיץ שינוי",
-      "example": "The report was a catalyst for change.",
-      "translation": "זרז",
-      "exampleHe": "הדוח היה זרז לשינוי."
     },
     {
       "word": "collaborate",
@@ -9295,14 +8804,6 @@ export const WORDS_BY_LEVEL = {
       "exampleHe": "אפשר להטמיע את הסרטון בעמוד."
     },
     {
-      "word": "envisage",
-      "partOfSpeech": "verb",
-      "definition": "לראות בעיני רוחו מצב עתידי",
-      "example": "I envisage a longer process.",
-      "translation": "לחזות/לדמיין",
-      "exampleHe": "אני צופה תהליך ארוך יותר."
-    },
-    {
       "word": "equate",
       "partOfSpeech": "verb",
       "definition": "להשוות בין שני דברים כשווים",
@@ -9349,14 +8850,6 @@ export const WORDS_BY_LEVEL = {
       "example": "The plan was flawed from its inception.",
       "translation": "ראשית",
       "exampleHe": "התוכנית הייתה פגומה מראשיתה."
-    },
-    {
-      "word": "iterate",
-      "partOfSpeech": "verb",
-      "definition": "לחזור על תהליך ולשפר בכל סבב",
-      "example": "We iterate until the design works.",
-      "translation": "לחזור ולשפר",
-      "exampleHe": "אנחנו חוזרים על התהליך עד שהעיצוב עובד."
     }
   ],
   "C1": [
@@ -9604,6 +9097,114 @@ export const WORDS_BY_LEVEL = {
       "definition": "בולט — חשוב ומוכר",
       "example": "A prominent scientist.",
       "translation": "בולט/נודע"
+    },
+    {
+      "word": "postulate",
+      "partOfSpeech": "verb",
+      "definition": "להניח הנחת יסוד",
+      "example": "He postulated a theory.",
+      "translation": "להניח (הנחת יסוד)"
+    },
+    {
+      "word": "refute",
+      "partOfSpeech": "verb",
+      "definition": "להפריך טענה",
+      "example": "Refute the claim.",
+      "translation": "להפריך"
+    },
+    {
+      "word": "stipulate",
+      "partOfSpeech": "verb",
+      "definition": "לקבוע במפורש בתנאי",
+      "example": "The contract stipulates a deadline.",
+      "translation": "לקבוע במפורש/להתנות"
+    },
+    {
+      "word": "supersede",
+      "partOfSpeech": "verb",
+      "definition": "להחליף ולדחוק מקום",
+      "example": "The new law supersedes the old one.",
+      "translation": "להחליף/לדחוק"
+    },
+    {
+      "word": "underpin",
+      "partOfSpeech": "verb",
+      "definition": "לבסס, לתמוך ביסוד",
+      "example": "Data underpins the claim.",
+      "translation": "לבסס/לתמוך ביסוד"
+    },
+    {
+      "word": "substantiate",
+      "partOfSpeech": "verb",
+      "definition": "לבסס בראיות",
+      "example": "Substantiate your argument.",
+      "translation": "לבסס/להוכיח"
+    },
+    {
+      "word": "optimize",
+      "partOfSpeech": "verb",
+      "definition": "לייעל למצב מיטבי",
+      "example": "Optimize performance.",
+      "translation": "לייעל/למטב"
+    },
+    {
+      "word": "streamline",
+      "partOfSpeech": "verb",
+      "definition": "לייעל ולפשט תהליך",
+      "example": "Streamline the process.",
+      "translation": "לייעל/לפשט"
+    },
+    {
+      "word": "rigorous",
+      "partOfSpeech": "adjective",
+      "definition": "קפדני ומחמיר",
+      "example": "A rigorous test.",
+      "translation": "קפדני/מחמיר"
+    },
+    {
+      "word": "rationale",
+      "partOfSpeech": "noun",
+      "definition": "נימוק, הצדקה הגיונית",
+      "example": "The rationale behind the decision.",
+      "translation": "נימוק/הצדקה"
+    },
+    {
+      "word": "premise",
+      "partOfSpeech": "noun",
+      "definition": "הנחת יסוד לטיעון",
+      "example": "A false premise.",
+      "translation": "הנחת יסוד"
+    },
+    {
+      "word": "discourse",
+      "partOfSpeech": "noun",
+      "definition": "שיח או דיון",
+      "example": "Public discourse.",
+      "translation": "שיח/דיון"
+    },
+    {
+      "word": "catalyst",
+      "partOfSpeech": "noun",
+      "definition": "גורם שמאיץ שינוי",
+      "example": "The report was a catalyst for change.",
+      "translation": "זרז",
+      "exampleHe": "הדוח היה זרז לשינוי."
+    },
+    {
+      "word": "envisage",
+      "partOfSpeech": "verb",
+      "definition": "לראות בעיני רוחו מצב עתידי",
+      "example": "I envisage a longer process.",
+      "translation": "לחזות/לדמיין",
+      "exampleHe": "אני צופה תהליך ארוך יותר."
+    },
+    {
+      "word": "iterate",
+      "partOfSpeech": "verb",
+      "definition": "לחזור על תהליך ולשפר בכל סבב",
+      "example": "We iterate until the design works.",
+      "translation": "לחזור ולשפר",
+      "exampleHe": "אנחנו חוזרים על התהליך עד שהעיצוב עובד."
     },
     {
       "word": "arbitrary",
@@ -11143,13 +10744,6 @@ export const WORDS_BY_LEVEL = {
       "definition": "אזוטרי — מובן רק למעטים",
       "example": "The lecture was rather esoteric.",
       "translation": "אזוטרי/נסתר"
-    },
-    {
-      "word": "pragmatic",
-      "partOfSpeech": "adjective",
-      "definition": "פרגמטי — מעשי ומכוון לתוצאות",
-      "example": "We need a pragmatic solution.",
-      "translation": "פרגמטי/מעשי"
     },
     {
       "word": "nuance",
@@ -14169,7 +13763,7 @@ export const READINGS_BY_LEVEL = {
       ]
     },
     {
-      "title": "My School Bag (התיק שלי)",
+      "title": "What's in My Bag Today (מה יש היום בתיק שלי)",
       "text": "I have a blue school bag. Inside there are books, pens and a small box for lunch. The bag is heavy on Mondays. I carry it on my back every day.",
       "glossary": [
         {
@@ -14556,7 +14150,7 @@ export const READINGS_BY_LEVEL = {
       ]
     },
     {
-      "title": "My New Shoes (הנעליים החדשות שלי)",
+      "title": "Shopping for New Shoes (קניית נעליים חדשות)",
       "text": "My mother buys me new shoes. They are blue and very nice. I wear them to school. My friend says they are good shoes.",
       "textHe": "אמא שלי קונה לי נעליים חדשות. הן כחולות ומאוד יפות. אני נועל אותן לבית הספר. החבר שלי אומר שאלה נעליים טובות.",
       "glossary": [
@@ -15659,7 +15253,7 @@ export const READINGS_BY_LEVEL = {
       ]
     },
     {
-      "title": "Learning to Swim (ללמוד לשחות)",
+      "title": "My First Swimming Lesson (שיעור השחייה הראשון שלי)",
       "text": "When I was a child, I was afraid of deep water. Last summer I finally took swimming lessons. At first I could only float near the wall. Now I can swim across the whole pool. I wish I had started sooner.",
       "glossary": [
         {
@@ -15965,7 +15559,7 @@ export const READINGS_BY_LEVEL = {
       ]
     },
     {
-      "title": "Learning to Cook (ללמוד לבשל)",
+      "title": "My First Time Cooking Alone (הפעם הראשונה שבישלתי לבד)",
       "text": "When I moved out, I could only make toast. I decided to learn one new dish each week. At first I burned the rice and oversalted the soup. Now my friends actually ask me to cook for them.",
       "glossary": [
         {
@@ -17659,7 +17253,7 @@ export const READINGS_BY_LEVEL = {
       ]
     },
     {
-      "title": "The Repair Café (בית הקפה לתיקונים)",
+      "title": "Fixing Things Together (מתקנים ביחד)",
       "text": "In our town there is a 'repair café' where volunteers fix broken things for free. Instead of throwing away a toaster or a torn coat, you bring it and learn to mend it yourself. It saves money, reduces waste, and brings neighbours together.",
       "glossary": [
         {
@@ -18352,7 +17946,7 @@ export const READINGS_BY_LEVEL = {
       ]
     },
     {
-      "title": "The Quiet Carriage (הקרון השקט)",
+      "title": "Rules of the Quiet Carriage (חוקי הקרון השקט)",
       "text": "Some trains have a carriage where phone calls are not allowed. At first it sounds like a small detail, but for many travellers it is the only quiet hour of the day. Interestingly, passengers there rarely need to enforce the rule — the shared expectation does the work. It is a good example of how a simple agreement can change behaviour without any punishment.",
       "textHe": "בחלק מהרכבות יש קרון שבו אסור לדבר בטלפון. בהתחלה זה נשמע כמו פרט קטן, אבל עבור נוסעים רבים זו השעה השקטה היחידה ביום. מעניין שהנוסעים שם כמעט אף פעם לא צריכים לאכוף את הכלל — הציפייה המשותפת עושה את העבודה. זו דוגמה טובה לאיך הסכמה פשוטה יכולה לשנות התנהגות בלי שום ענישה.",
       "glossary": [
@@ -18737,6 +18331,261 @@ export const READINGS_BY_LEVEL = {
           ],
           "correctIndex": 1,
           "explanation": "'Misreading these signals'."
+        }
+      ]
+    },
+    {
+      "title": "A Second Chance at the Café (הזדמנות שנייה לבית הקפה)",
+      "text": "When my aunt inherited the small café on the corner, everyone told her to sell it. The previous owner had let the place fall apart, and the regulars had mostly stopped coming. Instead, she spent three months repainting the walls herself, learning to bake from old family recipes, and slowly winning back the neighbours one cup of coffee at a time. It wasn't a dramatic transformation, just a steady one, and a year later the café was full again most mornings.",
+      "glossary": [
+        {
+          "word": "inherited",
+          "partOfSpeech": "verb",
+          "definition": "קיבל בירושה",
+          "example": "She inherited the house.",
+          "translation": "ירש"
+        },
+        {
+          "word": "regulars",
+          "partOfSpeech": "noun",
+          "definition": "לקוחות קבועים",
+          "example": "The regulars know the menu.",
+          "translation": "לקוחות קבועים"
+        },
+        {
+          "word": "gradual",
+          "partOfSpeech": "adjective",
+          "definition": "הדרגתי, לא פתאומי",
+          "example": "A gradual change.",
+          "translation": "הדרגתי"
+        }
+      ],
+      "questions": [
+        {
+          "question": "What did most people advise the aunt to do?",
+          "options": [
+            "Sell the café",
+            "Close it for good",
+            "Hire more staff",
+            "Move to a bigger space"
+          ],
+          "correctIndex": 0,
+          "explanation": "'everyone told her to sell it'."
+        },
+        {
+          "question": "How does the writer describe the change?",
+          "options": [
+            "Sudden and dramatic",
+            "Steady, not dramatic",
+            "It never really worked",
+            "Caused by luck"
+          ],
+          "correctIndex": 1,
+          "explanation": "'not a dramatic transformation, just a steady one'."
+        }
+      ]
+    },
+    {
+      "title": "The Night the Power Went Out (הלילה שהחשמל נכבה)",
+      "text": "The storm knocked out electricity across the whole street just after dinner. At first everyone stayed inside with candles, but within an hour most of the neighbours had gathered on the Levis' porch, since they had a gas stove and offered to make tea for anyone who wanted it. Two people who had lived on the street for years but never spoken properly ended up talking for hours. By the time the lights came back on, nobody was in a hurry for the evening to end.",
+      "glossary": [
+        {
+          "word": "knocked out",
+          "partOfSpeech": "phrase",
+          "definition": "גרם להפסקה/השבתה",
+          "example": "The storm knocked out the internet.",
+          "translation": "גרם להפסקה"
+        },
+        {
+          "word": "gathered",
+          "partOfSpeech": "verb",
+          "definition": "התאספו יחד",
+          "example": "They gathered on the porch.",
+          "translation": "התאספו"
+        },
+        {
+          "word": "in a hurry",
+          "partOfSpeech": "phrase",
+          "definition": "ממהר",
+          "example": "I'm not in a hurry.",
+          "translation": "ממהר"
+        }
+      ],
+      "questions": [
+        {
+          "question": "Where did the neighbours end up gathering?",
+          "options": [
+            "Inside their own homes",
+            "On the Levis' porch",
+            "At a café",
+            "In the street"
+          ],
+          "correctIndex": 1,
+          "explanation": "'gathered on the Levis' porch'."
+        },
+        {
+          "question": "What happened between two long-time neighbours?",
+          "options": [
+            "They argued",
+            "They finally talked properly",
+            "They left early",
+            "They called the electric company"
+          ],
+          "correctIndex": 1,
+          "explanation": "'ended up talking for hours'."
+        }
+      ]
+    },
+    {
+      "title": "My Grandfather's Watch (השעון של סבא שלי)",
+      "text": "The watch had stopped working years before my grandfather passed away, and it sat in a drawer until I finally took it to a repair shop last spring. The watchmaker, an elderly man who had clearly seen every kind of old mechanism, opened it carefully and pointed out a single worn part that needed replacing. It took him two weeks to find the right piece from an old supplier. When I wound it for the first time and heard it ticking again, it felt like getting a small piece of my grandfather back.",
+      "glossary": [
+        {
+          "word": "mechanism",
+          "partOfSpeech": "noun",
+          "definition": "מנגנון",
+          "example": "A complex mechanism.",
+          "translation": "מנגנון"
+        },
+        {
+          "word": "worn",
+          "partOfSpeech": "adjective",
+          "definition": "שחוק, פגום משימוש",
+          "example": "A worn part.",
+          "translation": "שחוק/בלוי"
+        },
+        {
+          "word": "wound",
+          "partOfSpeech": "verb",
+          "definition": "כיוון/מתח (שעון), עבר של wind",
+          "example": "I wound the clock.",
+          "translation": "כיוון (שעון)"
+        }
+      ],
+      "questions": [
+        {
+          "question": "Why had the watch stopped working?",
+          "options": [
+            "It was never used",
+            "A part was worn out",
+            "It got wet",
+            "It was too old to fix"
+          ],
+          "correctIndex": 1,
+          "explanation": "'a single worn part that needed replacing'."
+        },
+        {
+          "question": "How did the writer feel when the watch worked again?",
+          "options": [
+            "Disappointed",
+            "Like getting a piece of his grandfather back",
+            "Annoyed at the cost",
+            "Indifferent"
+          ],
+          "correctIndex": 1,
+          "explanation": "'it felt like getting a small piece of my grandfather back'."
+        }
+      ]
+    },
+    {
+      "title": "Changing Careers at Thirty (שינוי קריירה בגיל שלושים)",
+      "text": "After eight years as an accountant, Noa quit her job to train as a physiotherapist, a decision most of her friends thought was reckless. The first year of study was harder than she expected, and she went back to living on a student's budget while classmates ten years younger finished assignments twice as fast. What kept her going, she says now, was a single afternoon shadowing a physiotherapist at a clinic, watching a patient walk again after months of treatment. Three years later, she has never once regretted the change.",
+      "glossary": [
+        {
+          "word": "reckless",
+          "partOfSpeech": "adjective",
+          "definition": "פזיז, לא אחראי",
+          "example": "A reckless decision.",
+          "translation": "פזיז"
+        },
+        {
+          "word": "shadowing",
+          "partOfSpeech": "verb",
+          "definition": "ליווי מקצועי לצורך למידה",
+          "example": "She spent a day shadowing a doctor.",
+          "translation": "ליווי/צל (לצורכי למידה)"
+        },
+        {
+          "word": "regretted",
+          "partOfSpeech": "verb",
+          "definition": "התחרט על",
+          "example": "He never regretted it.",
+          "translation": "התחרט"
+        }
+      ],
+      "questions": [
+        {
+          "question": "What was Noa's job before she retrained?",
+          "options": [
+            "Physiotherapist",
+            "Accountant",
+            "Student",
+            "Clinic manager"
+          ],
+          "correctIndex": 1,
+          "explanation": "'After eight years as an accountant'."
+        },
+        {
+          "question": "What kept her motivated during the hard first year?",
+          "options": [
+            "A higher salary",
+            "Watching a patient recover during a shadowing day",
+            "Pressure from friends",
+            "A promise from her old job"
+          ],
+          "correctIndex": 1,
+          "explanation": "'watching a patient walk again after months of treatment'."
+        }
+      ]
+    },
+    {
+      "title": "The Marathon I Almost Quit (המרתון שכמעט פרשתי ממנו)",
+      "text": "By the twenty-eighth kilometre, my legs had stopped listening to me and I was walking rather than running. A stranger beside me, also struggling, suggested we just aim for the next lamppost instead of thinking about the finish line at all. We kept doing that, one lamppost at a time, for the rest of the race. I crossed the line nearly an hour slower than I had planned, but I have never been prouder of a finishing time in my life.",
+      "glossary": [
+        {
+          "word": "struggling",
+          "partOfSpeech": "verb",
+          "definition": "נאבק בקושי",
+          "example": "She was struggling to keep up.",
+          "translation": "נאבק"
+        },
+        {
+          "word": "aim for",
+          "partOfSpeech": "phrase",
+          "definition": "לשאוף ל-, לכוון ל-",
+          "example": "Aim for the door.",
+          "translation": "לכוון ל-/לשאוף ל-"
+        },
+        {
+          "word": "crossed the line",
+          "partOfSpeech": "phrase",
+          "definition": "חצה את קו הסיום",
+          "example": "She crossed the line first.",
+          "translation": "חצה את הקו"
+        }
+      ],
+      "questions": [
+        {
+          "question": "What strategy did the stranger suggest?",
+          "options": [
+            "Stop and rest",
+            "Focus on the next lamppost, not the finish line",
+            "Run faster",
+            "Quit together"
+          ],
+          "correctIndex": 1,
+          "explanation": "'aim for the next lamppost instead of thinking about the finish line'."
+        },
+        {
+          "question": "How does the writer feel about the final time?",
+          "options": [
+            "Disappointed by the slow time",
+            "Proud despite being slower than planned",
+            "Angry at the stranger",
+            "Indifferent"
+          ],
+          "correctIndex": 1,
+          "explanation": "'I have never been prouder of a finishing time in my life'."
         }
       ]
     },
@@ -19455,7 +19304,7 @@ export const READINGS_BY_LEVEL = {
       ]
     },
     {
-      "title": "The Myth of the Lone Genius (מיתוס הגאון הבודד)",
+      "title": "Behind Every Breakthrough (מאחורי כל פריצת דרך)",
       "text": "We love stories of solitary genius — the inventor in the garage, the artist in the attic. Yet look closely and you find a web of teachers, rivals, collaborators and lucky timing behind every breakthrough. Ideas are less a private spark than a social harvest.",
       "glossary": [
         {
@@ -19812,7 +19661,7 @@ export const READINGS_BY_LEVEL = {
       ]
     },
     {
-      "title": "The Myth of Multitasking (המיתוס של ריבוי משימות)",
+      "title": "Why Multitasking Fails Us (למה ריבוי משימות מאכזב)",
       "text": "Research consistently shows that what we call multitasking is really rapid switching between tasks, and every switch carries a cost. The brain needs time to reload the context it just abandoned, so a person answering messages while writing a report finishes both more slowly and less accurately. Organisations that protect blocks of uninterrupted time tend to report better output with fewer hours. The implication is uncomfortable: availability and productivity often pull in opposite directions.",
       "textHe": "מחקרים מראים באופן עקבי שמה שאנחנו מכנים ריבוי משימות הוא למעשה מעבר מהיר בין משימות, ולכל מעבר יש מחיר. המוח זקוק לזמן כדי לטעון מחדש את ההקשר שזה עתה נטש, ולכן אדם שעונה להודעות בזמן כתיבת דוח מסיים את שניהם לאט יותר ובדיוק נמוך יותר. ארגונים ששומרים על מקטעי זמן ללא הפרעה נוטים לדווח על תפוקה טובה יותר בפחות שעות. המסקנה לא נוחה: זמינות ופרודוקטיביות מושכות לרוב לכיוונים מנוגדים.",
       "glossary": [
@@ -19944,7 +19793,7 @@ export const READINGS_BY_LEVEL = {
       ]
     },
     {
-      "title": "The Value of Boredom (הערך של השעמום)",
+      "title": "In Praise of Boredom (בשבח השעמום)",
       "text": "Boredom has a bad reputation, yet psychologists increasingly treat it as a productive state rather than a failure of entertainment. When nothing external demands attention, the mind drifts and begins to connect ideas that focused work keeps apart. Filling every empty moment with a screen removes precisely the conditions under which original thinking appears. Protecting a little boredom may be one of the cheapest creative investments available.",
       "textHe": "לשעמום יש מוניטין רע, ובכל זאת פסיכולוגים רואים בו יותר ויותר מצב פורה ולא כישלון של בידור. כשדבר חיצוני אינו דורש תשומת לב, המחשבה נודדת ומתחילה לחבר רעיונות שעבודה ממוקדת מפרידה ביניהם. מילוי כל רגע ריק במסך מבטל בדיוק את התנאים שבהם מופיעה חשיבה מקורית. שמירה על מעט שעמום היא אולי אחת ההשקעות היצירתיות הזולות ביותר.",
       "glossary": [
@@ -20945,7 +20794,7 @@ export const READINGS_BY_LEVEL = {
       ]
     },
     {
-      "title": "The Tyranny of Metrics (עריצות המדדים)",
+      "title": "When Numbers Distort the Truth (כשמספרים מעוותים את האמת)",
       "text": "When a measure becomes a target, it ceases to be a good measure. Schools chase test scores, hospitals optimise waiting times, and the underlying goods — learning, health — quietly slip from view. What is counted comes to crowd out what actually counts.",
       "glossary": [
         {
@@ -21404,7 +21253,7 @@ export const READINGS_BY_LEVEL = {
       ]
     },
     {
-      "title": "The Tyranny of Metrics (עריצות המדדים)",
+      "title": "The Cost of What We Measure (המחיר של מה שאנחנו מודדים)",
       "text": "Once a measure becomes a target, it tends to stop measuring anything useful. Hospitals judged on waiting times learn to reclassify patients; schools judged on averages quietly discourage weaker candidates from sitting exams. None of this requires dishonesty — it emerges naturally wherever a single number carries disproportionate weight. The remedy is rarely a better metric but a willingness to hold several imperfect ones in view at once.",
       "textHe": "ברגע שמדד הופך ליעד, הוא נוטה להפסיק למדוד משהו מועיל. בתי חולים שנשפטים לפי זמני המתנה לומדים לסווג מחדש מטופלים; בתי ספר שנשפטים לפי ממוצעים מרתיעים בשקט מועמדים חלשים מלגשת לבחינות. שום דבר מזה אינו מחייב חוסר יושר — הוא מתהווה באופן טבעי בכל מקום שבו מספר יחיד נושא משקל בלתי מידתי. התרופה היא רק לעיתים רחוקות מדד טוב יותר, אלא נכונות להחזיק כמה מדדים לא מושלמים בו זמנית.",
       "glossary": [
@@ -22537,7 +22386,7 @@ export const READINGS_BY_LEVEL = {
       ]
     },
     {
-      "title": "The Aesthetics of Imperfection (אסתטיקת אי-השלמות)",
+      "title": "Finding Beauty in Flaws (למצוא יופי בפגמים)",
       "text": "Some traditions prize the cracked bowl over the flawless one, mending its fracture with gold so the wound becomes the most beautiful part. There is wisdom in this refusal of seamlessness: a life, like an object, earns its character precisely through the marks that a frictionless existence would never leave.",
       "glossary": [
         {

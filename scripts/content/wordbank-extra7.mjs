@@ -56,7 +56,6 @@ export const MORE_WORDS7 = {
     { word: "hang", partOfSpeech: "verb", definition: "לתלות", example: "Hang the picture.", translation: "לתלות" },
     { word: "hide", partOfSpeech: "verb", definition: "להחביא או להתחבא", example: "Hide behind the tree.", translation: "להחביא/להתחבא" },
     { word: "hit", partOfSpeech: "verb", definition: "להכות, לפגוע", example: "The ball hit the window.", translation: "להכות/לפגוע" },
-    { word: "hug", partOfSpeech: "verb", definition: "לחבק", example: "She hugged her friend.", translation: "לחבק" },
     { word: "kick", partOfSpeech: "verb", definition: "לבעוט", example: "Kick the ball.", translation: "לבעוט" },
     { word: "kiss", partOfSpeech: "verb", definition: "לנשק", example: "She kissed the baby.", translation: "לנשק" },
     { word: "melt", partOfSpeech: "verb", definition: "להמיס או להימס", example: "The ice melted.", translation: "להמיס/להימס" },

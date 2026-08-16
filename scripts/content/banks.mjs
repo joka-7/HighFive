@@ -113,21 +113,28 @@ export const ARTICLE_NOUNS = [
 
 // Preposition items: a sentence with a blank, the correct preposition, and
 // three distractors. Hand-written so each is unambiguous.
+// `lvl` follows the VERBS/ADJECTIVES pattern (level INDEX, A1=0…C2=5): basic
+// locative/time prepositions are lvl 0 (available from A1); dependent
+// verb/adjective + preposition collocations are lvl 2 (B1), matching the
+// curriculum's own "Dependent Prepositions" topic, which is introduced at
+// B1. See LEVEL-AUDIT.md finding #4 — this pool used to be unfiltered at
+// every level, so a C2 learner's "Prepositions" quiz could still ask
+// "The keys are ___ the table."
 export const PREP_ITEMS = [
-  { before: "The keys are ", after: " the table.", correct: "on", wrong: ["in", "at", "to"], he: "'on' = על (משטח)." },
-  { before: "She lives ", after: " London.", correct: "in", wrong: ["on", "at", "to"], he: "'in' לערים ומדינות." },
-  { before: "We meet ", after: " 8 o'clock.", correct: "at", wrong: ["in", "on", "by"], he: "'at' לשעה מדויקת." },
-  { before: "He is good ", after: " math.", correct: "at", wrong: ["in", "on", "for"], he: "'good at' = טוב ב־." },
-  { before: "I'm waiting ", after: " the bus.", correct: "for", wrong: ["to", "at", "on"], he: "'wait for' = לחכות ל־." },
-  { before: "They went ", after: " the beach.", correct: "to", wrong: ["at", "in", "on"], he: "'to' לכיוון/יעד." },
-  { before: "The picture is ", after: " the wall.", correct: "on", wrong: ["in", "at", "by"], he: "'on the wall' = על הקיר." },
-  { before: "She arrived ", after: " Monday.", correct: "on", wrong: ["in", "at", "to"], he: "'on' לימים ותאריכים." },
-  { before: "I was born ", after: " May.", correct: "in", wrong: ["on", "at", "of"], he: "'in' לחודשים ולשנים." },
-  { before: "He's afraid ", after: " spiders.", correct: "of", wrong: ["from", "to", "at"], he: "'afraid of' = מפחד מ־." },
-  { before: "This gift is ", after: " you.", correct: "for", wrong: ["to", "at", "of"], he: "'for' = עבור." },
-  { before: "We talked ", after: " the problem.", correct: "about", wrong: ["on", "of", "for"], he: "'talk about' = לדבר על." },
-  { before: "She's interested ", after: " art.", correct: "in", wrong: ["on", "at", "for"], he: "'interested in' = מתעניין ב־." },
-  { before: "It depends ", after: " the weather.", correct: "on", wrong: ["of", "in", "at"], he: "'depend on' = תלוי ב־." },
+  { before: "The keys are ", after: " the table.", correct: "on", wrong: ["in", "at", "to"], he: "'on' = על (משטח).", lvl: 0 },
+  { before: "She lives ", after: " London.", correct: "in", wrong: ["on", "at", "to"], he: "'in' לערים ומדינות.", lvl: 0 },
+  { before: "We meet ", after: " 8 o'clock.", correct: "at", wrong: ["in", "on", "by"], he: "'at' לשעה מדויקת.", lvl: 0 },
+  { before: "They went ", after: " the beach.", correct: "to", wrong: ["at", "in", "on"], he: "'to' לכיוון/יעד.", lvl: 0 },
+  { before: "The picture is ", after: " the wall.", correct: "on", wrong: ["in", "at", "by"], he: "'on the wall' = על הקיר.", lvl: 0 },
+  { before: "She arrived ", after: " Monday.", correct: "on", wrong: ["in", "at", "to"], he: "'on' לימים ותאריכים.", lvl: 0 },
+  { before: "I was born ", after: " May.", correct: "in", wrong: ["on", "at", "of"], he: "'in' לחודשים ולשנים.", lvl: 0 },
+  { before: "This gift is ", after: " you.", correct: "for", wrong: ["to", "at", "of"], he: "'for' = עבור.", lvl: 0 },
+  { before: "He is good ", after: " math.", correct: "at", wrong: ["in", "on", "for"], he: "'good at' = טוב ב־.", lvl: 2 },
+  { before: "I'm waiting ", after: " the bus.", correct: "for", wrong: ["to", "at", "on"], he: "'wait for' = לחכות ל־.", lvl: 2 },
+  { before: "He's afraid ", after: " spiders.", correct: "of", wrong: ["from", "to", "at"], he: "'afraid of' = מפחד מ־.", lvl: 2 },
+  { before: "We talked ", after: " the problem.", correct: "about", wrong: ["on", "of", "for"], he: "'talk about' = לדבר על.", lvl: 2 },
+  { before: "She's interested ", after: " art.", correct: "in", wrong: ["on", "at", "for"], he: "'interested in' = מתעניין ב־.", lvl: 2 },
+  { before: "It depends ", after: " the weather.", correct: "on", wrong: ["of", "in", "at"], he: "'depend on' = תלוי ב־.", lvl: 2 },
 ];
 
 // Irregular plurals for the plural-formation drill.
@@ -168,6 +175,37 @@ export const MODAL_ITEMS = [
   { before: "It ", after: " rain later, so take an umbrella.", correct: "might", wrong: ["must", "should", "can't"], he: "'might' = אפשרות." },
   { before: "She ", after: " speak three languages.", correct: "can", wrong: ["must", "should", "ought"], he: "'can' = יכולת בהווה." },
   { before: "We ", after: " hurry or we'll miss the train.", correct: "must", wrong: ["might", "could", "would"], he: "'must' = הכרח." },
+];
+
+// ---------------------------------------------------------------------------
+// Inversion after negative/restrictive adverbials — C1-only, introduced in
+// curriculum() at levelIdx 4. Filling LEVEL-AUDIT.md finding #3: C1 and C2
+// previously had no grammar topic of their own, only vocabulary lessons.
+// ---------------------------------------------------------------------------
+export const INVERSION_ITEMS = [
+  { before: "Rarely ", after: " such generosity in a stranger.", correct: "have I seen", wrong: ["I have seen", "have seen I", "I saw"], he: "אחרי 'Rarely' בתחילת המשפט בא היפוך: עזר + נושא (have I seen)." },
+  { before: "Never ", after: " so exhausted after a match.", correct: "have I felt", wrong: ["I have felt", "I felt", "did I feel"], he: "אחרי 'Never' בתחילת המשפט: have + נושא + פועל בהווה מושלם." },
+  { before: "Not only ", after: " late, but he also forgot the documents.", correct: "was he", wrong: ["he was", "was he not", "he is"], he: "'Not only' בתחילת המשפט דורש היפוך: was he (במקום he was)." },
+  { before: "Seldom ", after: " such an opportunity twice.", correct: "does one get", wrong: ["one gets", "one does get", "gets one"], he: "'Seldom' בתחילת המשפט: does/do + נושא + פועל בסיס." },
+  { before: "Only after the results arrived ", after: " how much work remained.", correct: "did we realize", wrong: ["we realized", "we did realize", "did realize we"], he: "'Only after...' בתחילת המשפט דורש היפוך: did we realize." },
+  { before: "No sooner ", after: " than it started to rain.", correct: "had we left", wrong: ["we had left", "we left", "did we leave"], he: "'No sooner' בתחילת המשפט: had + נושא + פועל בעבר מושלם (+ than)." },
+  { before: "Under no circumstances ", after: " this password with anyone.", correct: "should you share", wrong: ["you should share", "you shouldn't share", "should you not share"], he: "'Under no circumstances' בתחילת המשפט דורש היפוך: should you share." },
+  { before: "Little ", after: " that the meeting would be cancelled.", correct: "did she know", wrong: ["she knew", "she did know", "knew she"], he: "'Little' בתחילת המשפט (במובן 'בקושי ידעה'): did + נושא + פועל בסיס." },
+];
+
+// ---------------------------------------------------------------------------
+// Third & mixed conditionals — C2-only, introduced in curriculum() at
+// levelIdx 5. Same purpose as INVERSION_ITEMS above, at the top level.
+// ---------------------------------------------------------------------------
+export const CONDITIONAL_ITEMS = [
+  { before: "If she ", after: " earlier, she would have caught the train.", correct: "had left", wrong: ["left", "would leave", "has left"], he: "תנאי שלישי: if + past perfect (had left) בפינת התנאי." },
+  { before: "If she ", after: " harder at university, she would have a better job now.", correct: "had studied", wrong: ["studied", "would have studied", "has studied"], he: "תנאי מעורב: תנאי בעבר (had studied) + תוצאה בהווה (would have a better job now)." },
+  { before: "If we had left earlier, we ", after: " stuck in traffic now.", correct: "wouldn't be", wrong: ["wouldn't have been", "aren't", "won't be"], he: "תנאי מעורב: תנאי בעבר (had left) גורר תוצאה בהווה — wouldn't be (לא היינו תקועים עכשיו)." },
+  { before: "If you ", after: " me, I would have helped you.", correct: "had asked", wrong: ["asked", "would ask", "ask"], he: "תנאי שלישי: if + had asked (עבר מושלם)." },
+  { before: "She would have passed the exam if she ", after: " more.", correct: "had studied", wrong: ["studied", "would study", "studies"], he: "תנאי שלישי — סדר המשפט הפוך, אבל התנאי עדיין דורש had + פועל שלישי." },
+  { before: "If he ", after: " so stubborn, he would have listened to our advice.", correct: "weren't", wrong: ["wasn't", "hadn't been", "isn't"], he: "תנאי מעורב: תכונת אופי כללית ונכונה גם עכשיו — were/weren't (סובייקטיב), לא was/wasn't." },
+  { before: "If I ", after: " you, I would have taken the job.", correct: "were", wrong: ["was", "had been", "am"], he: "'If I were you' — צורת סובייקטיב קבועה, לא תלוית זמן." },
+  { before: "We wouldn't be in this mess if you ", after: " to me.", correct: "had listened", wrong: ["listened", "would listen", "listen"], he: "תנאי מעורב: תוצאה בהווה (wouldn't be) מתנאי בעבר — had listened." },
 ];
 
 // ---------------------------------------------------------------------------
@@ -223,11 +261,9 @@ export const WORD_BANKS = {
     { word: "enough", partOfSpeech: "adverb", definition: "בכמות מספקת", example: "We have enough food for everyone.", translation: "מספיק" },
     { word: "decide", partOfSpeech: "verb", definition: "לבחור מה לעשות", example: "She decided to study medicine.", translation: "להחליט" },
     { word: "busy", partOfSpeech: "adjective", definition: "עסוק, עם הרבה דברים לעשות", example: "I am busy this week.", translation: "עסוק" },
-    { word: "money", partOfSpeech: "noun", definition: "מטבעות ושטרות שמשלמים בהם", example: "He saved a lot of money.", translation: "כסף" },
     { word: "early", partOfSpeech: "adverb", definition: "לפני הזמן הרגיל", example: "I woke up early today.", translation: "מוקדם" },
     { word: "country", partOfSpeech: "noun", definition: "מדינה עם גבולות וממשלה", example: "Italy is a beautiful country.", translation: "מדינה" },
     { word: "learn", partOfSpeech: "verb", definition: "לרכוש ידע או מיומנות", example: "I want to learn English.", translation: "ללמוד" },
-    { word: "always", partOfSpeech: "adverb", definition: "בכל פעם, תמיד", example: "She is always on time.", translation: "תמיד" },
     { word: "problem", partOfSpeech: "noun", definition: "מצב קשה שצריך פתרון", example: "We solved the problem together.", translation: "בעיה" },
     { word: "help", partOfSpeech: "verb", definition: "לעזור למישהו", example: "Can you help me, please?", translation: "לעזור" },
     { word: "place", partOfSpeech: "noun", definition: "מקום מסוים", example: "This is a quiet place.", translation: "מקום" },
@@ -240,25 +276,17 @@ export const WORD_BANKS = {
     { word: "return", partOfSpeech: "verb", definition: "לחזור או להחזיר", example: "Please return the book.", translation: "לחזור/להחזיר" },
     { word: "journey", partOfSpeech: "noun", definition: "נסיעה ממקום אחד לאחר", example: "The journey took two hours.", translation: "מסע/נסיעה" },
     { word: "nervous", partOfSpeech: "adjective", definition: "מתוח, חושש", example: "I feel nervous before a test.", translation: "לחוץ/עצבני" },
-    { word: "afraid", partOfSpeech: "adjective", definition: "מפחד ממשהו", example: "She is afraid of dogs.", translation: "מפחד" },
     { word: "patient", partOfSpeech: "adjective", definition: "סבלני, לא ממהר", example: "A good teacher is patient.", translation: "סבלני" },
     { word: "fresh", partOfSpeech: "adjective", definition: "טרי, חדש ולא מקולקל", example: "I like fresh bread.", translation: "טרי" },
-    { word: "cheap", partOfSpeech: "adjective", definition: "עולה מעט כסף", example: "This shop is cheap.", translation: "זול" },
-    { word: "quiet", partOfSpeech: "adjective", definition: "ללא רעש; שקט", example: "The library is quiet.", translation: "שקט" },
     { word: "borrow", partOfSpeech: "verb", definition: "לקחת משהו לזמן מה ולהחזיר", example: "Can I borrow your pen?", translation: "לשאול/ללוות" },
-    { word: "ticket", partOfSpeech: "noun", definition: "כרטיס שמאפשר כניסה או נסיעה", example: "I bought a train ticket.", translation: "כרטיס" },
     { word: "plan", partOfSpeech: "noun", definition: "רעיון מסודר למה שעומדים לעשות", example: "What are your plans?", translation: "תוכנית" },
     { word: "fix", partOfSpeech: "verb", definition: "לתקן משהו שבור", example: "He fixed my bike.", translation: "לתקן" },
     { word: "wait", partOfSpeech: "verb", definition: "להישאר עד שמשהו יקרה", example: "Wait for me here.", translation: "לחכות" },
   ],
   B1: [
-    { word: "achieve", partOfSpeech: "verb", definition: "להשיג מטרה לאחר מאמץ ועבודה קשה", example: "She worked hard to achieve her goals.", translation: "להשיג" },
     { word: "challenge", partOfSpeech: "noun", definition: "אתגר — משימה קשה שדורשת מאמץ", example: "Learning a language is a real challenge.", translation: "אתגר" },
-    { word: "recommend", partOfSpeech: "verb", definition: "להמליץ — לייעץ לנסות משהו", example: "Can you recommend a good book?", translation: "להמליץ" },
     { word: "however", partOfSpeech: "adverb", definition: "עם זאת, אולם — מילת ניגוד", example: "It was late; however, we kept working.", translation: "עם זאת" },
     { word: "experience", partOfSpeech: "noun", definition: "ניסיון — ידע שנרכש מהחיים", example: "She has years of experience.", translation: "ניסיון/חוויה" },
-    { word: "suggest", partOfSpeech: "verb", definition: "להציע רעיון או פעולה לשקול", example: "I suggest we leave early.", translation: "להציע" },
-    { word: "improve", partOfSpeech: "verb", definition: "לשפר — לגרום למשהו להיות טוב יותר", example: "Reading will improve your vocabulary.", translation: "לשפר" },
     { word: "although", partOfSpeech: "conjunction", definition: "למרות ש — מציין ניגוד", example: "Although it rained, we went out.", translation: "למרות ש" },
     { word: "develop", partOfSpeech: "verb", definition: "לפתח — לגרום לצמיחה או הרחבה", example: "The company will develop a new app.", translation: "לפתח" },
     { word: "purpose", partOfSpeech: "noun", definition: "מטרה — הסיבה שעושים משהו", example: "The purpose of the meeting was clear.", translation: "מטרה" },
@@ -280,12 +308,10 @@ export const WORD_BANKS = {
     { word: "affect", partOfSpeech: "verb", definition: "להשפיע על משהו", example: "Noise can affect your sleep.", translation: "להשפיע על" },
     { word: "reduce", partOfSpeech: "verb", definition: "להקטין בכמות או במידה", example: "We need to reduce waste.", translation: "להפחית" },
     { word: "common", partOfSpeech: "adjective", definition: "נפוץ — קורה לעיתים קרובות", example: "It's a common mistake.", translation: "נפוץ/שכיח" },
-    { word: "realize", partOfSpeech: "verb", definition: "להבין פתאום משהו", example: "I realized I was wrong.", translation: "להבין/לקלוט" },
     { word: "responsible", partOfSpeech: "adjective", definition: "אחראי — מי שצריך לדאוג למשהו", example: "She is responsible for the budget.", translation: "אחראי" },
     { word: "social", partOfSpeech: "adjective", definition: "חברתי — הקשור ליחסים בין אנשים", example: "He has an active social life.", translation: "חברתי" },
     { word: "recent", partOfSpeech: "adjective", definition: "מהזמן האחרון", example: "In recent years, prices rose.", translation: "אחרון/לאחרונה" },
     { word: "prepare", partOfSpeech: "verb", definition: "להתכונן או להכין משהו", example: "I prepared dinner for guests.", translation: "להכין/להתכונן" },
-    { word: "explain", partOfSpeech: "verb", definition: "להסביר — לעשות משהו ברור", example: "Can you explain the rule?", translation: "להסביר" },
     { word: "result", partOfSpeech: "noun", definition: "תוצאה — מה שקורה בסוף", example: "The result was a success.", translation: "תוצאה" },
     { word: "situation", partOfSpeech: "noun", definition: "מצב — הנסיבות ברגע מסוים", example: "It was a difficult situation.", translation: "מצב" },
   ],
@@ -293,7 +319,6 @@ export const WORD_BANKS = {
     { word: "significant", partOfSpeech: "adjective", definition: "משמעותי — בעל חשיבות או השפעה ניכרת", example: "There was a significant change in sales.", translation: "משמעותי" },
     { word: "approach", partOfSpeech: "noun", definition: "גישה — דרך התמודדות עם בעיה", example: "We need a new approach.", translation: "גישה" },
     { word: "establish", partOfSpeech: "verb", definition: "לבסס או להקים משהו באופן יציב", example: "They established the company in 2005.", translation: "לבסס/להקים" },
-    { word: "consequence", partOfSpeech: "noun", definition: "תוצאה — מה שקורה בעקבות פעולה", example: "Every choice has consequences.", translation: "תוצאה/השלכה" },
     { word: "demonstrate", partOfSpeech: "verb", definition: "להדגים או להוכיח בבירור", example: "The study demonstrates a clear link.", translation: "להדגים/להוכיח" },
     { word: "appropriate", partOfSpeech: "adjective", definition: "מתאים — הולם את המצב", example: "Wear appropriate clothes for the interview.", translation: "מתאים/הולם" },
     { word: "obtain", partOfSpeech: "verb", definition: "להשיג או לקבל משהו", example: "You can obtain a permit online.", translation: "להשיג" },
@@ -363,6 +388,21 @@ export const WORD_BANKS = {
     { word: "endeavour", partOfSpeech: "noun", definition: "מאמץ או מיזם שאפתני", example: "A scientific endeavour.", translation: "מאמץ/מיזם" },
     { word: "discern", partOfSpeech: "verb", definition: "להבחין — לזהות בקושי או בדיוק", example: "It was hard to discern the truth.", translation: "להבחין/להבדיל" },
     { word: "prominent", partOfSpeech: "adjective", definition: "בולט — חשוב ומוכר", example: "A prominent scientist.", translation: "בולט/נודע" },
+    { word: "postulate", partOfSpeech: "verb", definition: "להניח הנחת יסוד", example: "He postulated a theory.", translation: "להניח (הנחת יסוד)" },
+    { word: "refute", partOfSpeech: "verb", definition: "להפריך טענה", example: "Refute the claim.", translation: "להפריך" },
+    { word: "stipulate", partOfSpeech: "verb", definition: "לקבוע במפורש בתנאי", example: "The contract stipulates a deadline.", translation: "לקבוע במפורש/להתנות" },
+    { word: "supersede", partOfSpeech: "verb", definition: "להחליף ולדחוק מקום", example: "The new law supersedes the old one.", translation: "להחליף/לדחוק" },
+    { word: "underpin", partOfSpeech: "verb", definition: "לבסס, לתמוך ביסוד", example: "Data underpins the claim.", translation: "לבסס/לתמוך ביסוד" },
+    { word: "substantiate", partOfSpeech: "verb", definition: "לבסס בראיות", example: "Substantiate your argument.", translation: "לבסס/להוכיח" },
+    { word: "optimize", partOfSpeech: "verb", definition: "לייעל למצב מיטבי", example: "Optimize performance.", translation: "לייעל/למטב" },
+    { word: "streamline", partOfSpeech: "verb", definition: "לייעל ולפשט תהליך", example: "Streamline the process.", translation: "לייעל/לפשט" },
+    { word: "rigorous", partOfSpeech: "adjective", definition: "קפדני ומחמיר", example: "A rigorous test.", translation: "קפדני/מחמיר" },
+    { word: "rationale", partOfSpeech: "noun", definition: "נימוק, הצדקה הגיונית", example: "The rationale behind the decision.", translation: "נימוק/הצדקה" },
+    { word: "premise", partOfSpeech: "noun", definition: "הנחת יסוד לטיעון", example: "A false premise.", translation: "הנחת יסוד" },
+    { word: "discourse", partOfSpeech: "noun", definition: "שיח או דיון", example: "Public discourse.", translation: "שיח/דיון" },
+    { word: "catalyst", partOfSpeech: "noun", definition: "גורם שמאיץ שינוי", example: "The report was a catalyst for change.", exampleHe: "הדוח היה זרז לשינוי.", translation: "זרז" },
+    { word: "envisage", partOfSpeech: "verb", definition: "לראות בעיני רוחו מצב עתידי", example: "I envisage a longer process.", exampleHe: "אני צופה תהליך ארוך יותר.", translation: "לחזות/לדמיין" },
+    { word: "iterate", partOfSpeech: "verb", definition: "לחזור על תהליך ולשפר בכל סבב", example: "We iterate until the design works.", exampleHe: "אנחנו חוזרים על התהליך עד שהעיצוב עובד.", translation: "לחזור ולשפר" },
   ],
   C2: [
     { word: "ubiquitous", partOfSpeech: "adjective", definition: "נמצא בכל מקום בו-זמנית", example: "Smartphones are now ubiquitous.", translation: "נמצא בכל מקום" },
@@ -371,7 +411,6 @@ export const WORD_BANKS = {
     { word: "paradigm", partOfSpeech: "noun", definition: "פרדיגמה — מודל או תפיסה מקובלת", example: "The discovery caused a paradigm shift.", translation: "פרדיגמה/מודל" },
     { word: "juxtapose", partOfSpeech: "verb", definition: "להציב זה לצד זה לשם השוואה", example: "The film juxtaposes wealth and poverty.", translation: "להציב זה לצד זה" },
     { word: "esoteric", partOfSpeech: "adjective", definition: "אזוטרי — מובן רק למעטים", example: "The lecture was rather esoteric.", translation: "אזוטרי/נסתר" },
-    { word: "pragmatic", partOfSpeech: "adjective", definition: "פרגמטי — מעשי ומכוון לתוצאות", example: "We need a pragmatic solution.", translation: "פרגמטי/מעשי" },
     { word: "nuance", partOfSpeech: "noun", definition: "ניואנס — הבדל דק במשמעות או בגוון", example: "He understood every nuance of the text.", translation: "ניואנס/גוון דק" },
     { word: "quintessential", partOfSpeech: "adjective", definition: "מובהק — הדוגמה המושלמת לסוגו", example: "It is the quintessential British novel.", translation: "מובהק/טיפוסי ביותר" },
     { word: "obfuscate", partOfSpeech: "verb", definition: "לטשטש — לעשות משהו לא ברור בכוונה", example: "The report obfuscates the real costs.", translation: "לטשטש/לערפל" },

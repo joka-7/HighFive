@@ -8,7 +8,7 @@ const L = (transcript, questions) => ({ transcript, questions });
 
 export const MORE_READINGS8 = {
   A1: [
-    R("My School Bag (התיק שלי)",
+    R("What's in My Bag Today (מה יש היום בתיק שלי)",
       "I have a blue school bag. Inside there are books, pens and a small box for lunch. The bag is heavy on Mondays. I carry it on my back every day.",
       [g("bag", "noun", "תיק", "A school bag.", "תיק"), g("heavy", "adjective", "כבד", "It is heavy.", "כבד"), g("carry", "verb", "לשאת, לסחוב", "I carry it.", "לשאת/לסחוב")],
       [q("What colour is the bag?", ["Red", "Blue", "Green", "Black"], 1, "'a blue school bag'."), q("When is the bag heavy?", ["On Fridays", "On Mondays", "On Sundays", "Every night"], 1, "'heavy on Mondays'.")]),

@@ -357,10 +357,15 @@ for (const level of LEVELS) {
   md.push(`## Prepositions (${banks.PREP_ITEMS.length})`);
   md.push("");
   md.push(
+    "`lvl` gates when an item becomes available (A1=0…C2=5), same as VERBS/ADJECTIVES — " +
+      "basic locative/time prepositions from A1, dependent-preposition collocations from B1.",
+  );
+  md.push("");
+  md.push(
     table(
-      ["Sentence", "Correct", "Distractors", "Note (He)"],
+      ["Sentence", "Correct", "Distractors", "Note (He)", "lvl"],
       banks.PREP_ITEMS.map((p) => [
-        `${p.before}___${p.after}`, p.correct, p.wrong.join(", "), p.he,
+        `${p.before}___${p.after}`, p.correct, p.wrong.join(", "), p.he, p.lvl,
       ]),
     ),
   );
@@ -393,6 +398,30 @@ for (const level of LEVELS) {
       ["Sentence", "Correct", "Distractors", "Note (He)"],
       banks.MODAL_ITEMS.map((m) => [
         `${m.before}___${m.after}`, m.correct, m.wrong.join(", "), m.he,
+      ]),
+    ),
+  );
+  md.push("");
+
+  md.push(`## Inversion — C1 only (${banks.INVERSION_ITEMS.length})`);
+  md.push("");
+  md.push(
+    table(
+      ["Sentence", "Correct", "Distractors", "Note (He)"],
+      banks.INVERSION_ITEMS.map((i) => [
+        `${i.before}___${i.after}`, i.correct, i.wrong.join(", "), i.he,
+      ]),
+    ),
+  );
+  md.push("");
+
+  md.push(`## Third & mixed conditionals — C2 only (${banks.CONDITIONAL_ITEMS.length})`);
+  md.push("");
+  md.push(
+    table(
+      ["Sentence", "Correct", "Distractors", "Note (He)"],
+      banks.CONDITIONAL_ITEMS.map((c) => [
+        `${c.before}___${c.after}`, c.correct, c.wrong.join(", "), c.he,
       ]),
     ),
   );
@@ -442,7 +471,7 @@ for (const level of LEVELS) {
         ["Daily videos", LEVELS.reduce((s, l) => s + (videos.VIDEOS_BY_LEVEL[l] ?? []).length, 0), "[links-and-media.md](./links-and-media.md)"],
         ["Dialogue scenarios", topics.DIALOGUE_SCENARIOS.length, "[links-and-media.md](./links-and-media.md)"],
         ["Placement questions", placement.PLACEMENT_QUESTIONS.length, "[links-and-media.md](./links-and-media.md)"],
-        ["Grammar bank rows", banks.VERBS.length + banks.ADJECTIVES.length + banks.ARTICLE_NOUNS.length + banks.PREP_ITEMS.length + banks.IRREGULAR_PLURALS.length + banks.COUNT_NOUNS.length + banks.MODAL_ITEMS.length, "[grammar-banks.md](./grammar-banks.md)"],
+        ["Grammar bank rows", banks.VERBS.length + banks.ADJECTIVES.length + banks.ARTICLE_NOUNS.length + banks.PREP_ITEMS.length + banks.IRREGULAR_PLURALS.length + banks.COUNT_NOUNS.length + banks.MODAL_ITEMS.length + banks.INVERSION_ITEMS.length + banks.CONDITIONAL_ITEMS.length, "[grammar-banks.md](./grammar-banks.md)"],
       ],
     ),
   );

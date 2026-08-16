@@ -100,22 +100,24 @@ The daily lesson and practice quiz questions are built *correct-by-construction*
 
 ## Prepositions (14)
 
-| Sentence | Correct | Distractors | Note (He) |
-|---|---|---|---|
-| The keys are ___ the table. | on | in, at, to | 'on' = על (משטח). |
-| She lives ___ London. | in | on, at, to | 'in' לערים ומדינות. |
-| We meet ___ 8 o'clock. | at | in, on, by | 'at' לשעה מדויקת. |
-| He is good ___ math. | at | in, on, for | 'good at' = טוב ב־. |
-| I'm waiting ___ the bus. | for | to, at, on | 'wait for' = לחכות ל־. |
-| They went ___ the beach. | to | at, in, on | 'to' לכיוון/יעד. |
-| The picture is ___ the wall. | on | in, at, by | 'on the wall' = על הקיר. |
-| She arrived ___ Monday. | on | in, at, to | 'on' לימים ותאריכים. |
-| I was born ___ May. | in | on, at, of | 'in' לחודשים ולשנים. |
-| He's afraid ___ spiders. | of | from, to, at | 'afraid of' = מפחד מ־. |
-| This gift is ___ you. | for | to, at, of | 'for' = עבור. |
-| We talked ___ the problem. | about | on, of, for | 'talk about' = לדבר על. |
-| She's interested ___ art. | in | on, at, for | 'interested in' = מתעניין ב־. |
-| It depends ___ the weather. | on | of, in, at | 'depend on' = תלוי ב־. |
+`lvl` gates when an item becomes available (A1=0…C2=5), same as VERBS/ADJECTIVES — basic locative/time prepositions from A1, dependent-preposition collocations from B1.
+
+| Sentence | Correct | Distractors | Note (He) | lvl |
+|---|---|---|---|---|
+| The keys are ___ the table. | on | in, at, to | 'on' = על (משטח). | 0 |
+| She lives ___ London. | in | on, at, to | 'in' לערים ומדינות. | 0 |
+| We meet ___ 8 o'clock. | at | in, on, by | 'at' לשעה מדויקת. | 0 |
+| They went ___ the beach. | to | at, in, on | 'to' לכיוון/יעד. | 0 |
+| The picture is ___ the wall. | on | in, at, by | 'on the wall' = על הקיר. | 0 |
+| She arrived ___ Monday. | on | in, at, to | 'on' לימים ותאריכים. | 0 |
+| I was born ___ May. | in | on, at, of | 'in' לחודשים ולשנים. | 0 |
+| This gift is ___ you. | for | to, at, of | 'for' = עבור. | 0 |
+| He is good ___ math. | at | in, on, for | 'good at' = טוב ב־. | 2 |
+| I'm waiting ___ the bus. | for | to, at, on | 'wait for' = לחכות ל־. | 2 |
+| He's afraid ___ spiders. | of | from, to, at | 'afraid of' = מפחד מ־. | 2 |
+| We talked ___ the problem. | about | on, of, for | 'talk about' = לדבר על. | 2 |
+| She's interested ___ art. | in | on, at, for | 'interested in' = מתעניין ב־. | 2 |
+| It depends ___ the weather. | on | of, in, at | 'depend on' = תלוי ב־. | 2 |
 
 ## Irregular plurals (10)
 
@@ -159,3 +161,29 @@ The daily lesson and practice quiz questions are built *correct-by-construction*
 | It ___ rain later, so take an umbrella. | might | must, should, can't | 'might' = אפשרות. |
 | She ___ speak three languages. | can | must, should, ought | 'can' = יכולת בהווה. |
 | We ___ hurry or we'll miss the train. | must | might, could, would | 'must' = הכרח. |
+
+## Inversion — C1 only (8)
+
+| Sentence | Correct | Distractors | Note (He) |
+|---|---|---|---|
+| Rarely ___ such generosity in a stranger. | have I seen | I have seen, have seen I, I saw | אחרי 'Rarely' בתחילת המשפט בא היפוך: עזר + נושא (have I seen). |
+| Never ___ so exhausted after a match. | have I felt | I have felt, I felt, did I feel | אחרי 'Never' בתחילת המשפט: have + נושא + פועל בהווה מושלם. |
+| Not only ___ late, but he also forgot the documents. | was he | he was, was he not, he is | 'Not only' בתחילת המשפט דורש היפוך: was he (במקום he was). |
+| Seldom ___ such an opportunity twice. | does one get | one gets, one does get, gets one | 'Seldom' בתחילת המשפט: does/do + נושא + פועל בסיס. |
+| Only after the results arrived ___ how much work remained. | did we realize | we realized, we did realize, did realize we | 'Only after...' בתחילת המשפט דורש היפוך: did we realize. |
+| No sooner ___ than it started to rain. | had we left | we had left, we left, did we leave | 'No sooner' בתחילת המשפט: had + נושא + פועל בעבר מושלם (+ than). |
+| Under no circumstances ___ this password with anyone. | should you share | you should share, you shouldn't share, should you not share | 'Under no circumstances' בתחילת המשפט דורש היפוך: should you share. |
+| Little ___ that the meeting would be cancelled. | did she know | she knew, she did know, knew she | 'Little' בתחילת המשפט (במובן 'בקושי ידעה'): did + נושא + פועל בסיס. |
+
+## Third & mixed conditionals — C2 only (8)
+
+| Sentence | Correct | Distractors | Note (He) |
+|---|---|---|---|
+| If she ___ earlier, she would have caught the train. | had left | left, would leave, has left | תנאי שלישי: if + past perfect (had left) בפינת התנאי. |
+| If she ___ harder at university, she would have a better job now. | had studied | studied, would have studied, has studied | תנאי מעורב: תנאי בעבר (had studied) + תוצאה בהווה (would have a better job now). |
+| If we had left earlier, we ___ stuck in traffic now. | wouldn't be | wouldn't have been, aren't, won't be | תנאי מעורב: תנאי בעבר (had left) גורר תוצאה בהווה — wouldn't be (לא היינו תקועים עכשיו). |
+| If you ___ me, I would have helped you. | had asked | asked, would ask, ask | תנאי שלישי: if + had asked (עבר מושלם). |
+| She would have passed the exam if she ___ more. | had studied | studied, would study, studies | תנאי שלישי — סדר המשפט הפוך, אבל התנאי עדיין דורש had + פועל שלישי. |
+| If he ___ so stubborn, he would have listened to our advice. | weren't | wasn't, hadn't been, isn't | תנאי מעורב: תכונת אופי כללית ונכונה גם עכשיו — were/weren't (סובייקטיב), לא was/wasn't. |
+| If I ___ you, I would have taken the job. | were | was, had been, am | 'If I were you' — צורת סובייקטיב קבועה, לא תלוית זמן. |
+| We wouldn't be in this mess if you ___ to me. | had listened | listened, would listen, listen | תנאי מעורב: תוצאה בהווה (wouldn't be) מתנאי בעבר — had listened. |

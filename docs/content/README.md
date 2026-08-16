@@ -9,12 +9,12 @@ Editing content? Check **[LEVEL-AUDIT.md](./LEVEL-AUDIT.md)** first — it flags
 | Level | Words | Reading passages | Listening clips | Speaking sentences | Page |
 |---|---|---|---|---|---|
 | A1 | 412 | 36 | 36 | 42 | [A1.md](./A1.md) |
-| A2 | 319 | 36 | 36 | 42 | [A2.md](./A2.md) |
-| B1 | 326 | 36 | 36 | 42 | [B1.md](./B1.md) |
-| B2 | 263 | 30 | 30 | 42 | [B2.md](./B2.md) |
-| C1 | 245 | 30 | 30 | 42 | [C1.md](./C1.md) |
-| C2 | 237 | 30 | 30 | 42 | [C2.md](./C2.md) |
-| **All** | 1802 | 198 | 198 | 252 |  |
+| A2 | 278 | 36 | 36 | 42 | [A2.md](./A2.md) |
+| B1 | 313 | 36 | 36 | 42 | [B1.md](./B1.md) |
+| B2 | 245 | 35 | 30 | 42 | [B2.md](./B2.md) |
+| C1 | 260 | 30 | 30 | 42 | [C1.md](./C1.md) |
+| C2 | 236 | 30 | 30 | 42 | [C2.md](./C2.md) |
+| **All** | 1744 | 203 | 198 | 252 |  |
 
 | Also | Items | Page |
 |---|---|---|
@@ -22,7 +22,7 @@ Editing content? Check **[LEVEL-AUDIT.md](./LEVEL-AUDIT.md)** first — it flags
 | Daily videos | 18 | [links-and-media.md](./links-and-media.md) |
 | Dialogue scenarios | 16 | [links-and-media.md](./links-and-media.md) |
 | Placement questions | 6 | [links-and-media.md](./links-and-media.md) |
-| Grammar bank rows | 121 | [grammar-banks.md](./grammar-banks.md) |
+| Grammar bank rows | 137 | [grammar-banks.md](./grammar-banks.md) |
 
 ## How editing works
 

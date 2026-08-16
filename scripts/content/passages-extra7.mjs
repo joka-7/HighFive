@@ -42,7 +42,7 @@ export const MORE_READINGS7 = {
       "The people upstairs play loud music late at night. For weeks I could not sleep well. Finally I went up and spoke to them politely. They were friendly and turned the music down. A small talk solved a big problem.",
       [g("loud", "adjective", "רועש, בקול רם", "Loud music.", "רועש"), g("politely", "adverb", "בנימוס", "Spoke politely.", "בנימוס"), g("solve", "verb", "לפתור", "Solve a problem.", "לפתור")],
       [q("What was the problem?", ["A leak", "Loud music at night", "A smell", "No heating"], 1, "'play loud music late at night'."), q("How did the writer fix it?", ["Called the police", "Spoke to them politely", "Moved out", "Wrote a note"], 1, "'I went up and spoke to them politely'.")]),
-    R("Learning to Cook (ללמוד לבשל)",
+    R("My First Time Cooking Alone (הפעם הראשונה שבישלתי לבד)",
       "When I moved out, I could only make toast. I decided to learn one new dish each week. At first I burned the rice and oversalted the soup. Now my friends actually ask me to cook for them.",
       [g("dish", "noun", "מנה, תבשיל", "A new dish.", "מנה/תבשיל"), g("burn", "verb", "לשרוף", "I burned the rice.", "לשרוף"), g("actually", "adverb", "באמת, למעשה", "They actually like it.", "באמת/למעשה")],
       [q("What could the writer make at first?", ["Soup", "Only toast", "Cakes", "Nothing"], 1, "'I could only make toast'."), q("What was the plan?", ["Eat out", "Learn one new dish each week", "Buy a book", "Take a class"], 1, "'learn one new dish each week'.")]),
