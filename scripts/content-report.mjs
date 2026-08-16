@@ -14,6 +14,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { register } from "node:module";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
+import { bankContent, LEVELS } from "./content/rounds.mjs";
 
 // Lets the src/data/*.ts imports below resolve their extensionless specifiers.
 register(new URL("./ts-extension-hook.mjs", import.meta.url));
@@ -22,8 +23,6 @@ const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
 const outDir = join(root, "docs", "content");
 const bank = (f) => join(here, "content", f);
-
-const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
 // --- loading -------------------------------------------------------------
 
@@ -48,54 +47,45 @@ function table(headers, rows) {
   return out.join("\n");
 }
 
-/** A multiple-choice question as a checklist, with the answer marked. */
+/**
+ * A multiple-choice question. Options go in a table rather than a checklist so
+ * an option and its Hebrew never need a separator inside one line — the
+ * importer has to read this back exactly, and an em dash inside an option
+ * would otherwise be indistinguishable from the one joining the two languages.
+ * Tick the ✓ column to move the correct answer.
+ */
 function questionBlock(q, n) {
-  const lines = [`**Q${n}.** ${q.question}`];
-  if (q.questionHe) lines.push(`> ${q.questionHe}`);
-  q.options.forEach((opt, i) => {
-    lines.push(`- [${i === q.correctIndex ? "x" : " "}] ${opt}${q.optionsHe?.[i] ? ` — ${q.optionsHe[i]}` : ""}`);
-  });
-  if (q.explanation) lines.push(`\n*${q.explanation}*`);
+  const lines = [`**Q${n}.** ${esc(q.question)}`];
+  if (q.questionHe) lines.push(`**Q${n} (He).** ${esc(q.questionHe)}`);
+  lines.push("");
+  lines.push(
+    table(
+      ["✓", "Option (En)", "Option (He)"],
+      q.options.map((opt, i) => [i === q.correctIndex ? "✓" : "", opt, q.optionsHe?.[i] ?? ""]),
+    ),
+  );
+  if (q.explanation) {
+    lines.push("");
+    lines.push(`*${esc(q.explanation)}*`);
+  }
   return lines.join("\n");
+}
+
+/** A labelled blockquote — labels keep English and Hebrew bodies unambiguous. */
+function quoted(label, text) {
+  return [`**${label}**`, "", `> ${String(text).replace(/\n/g, "\n> ")}`, ""];
 }
 
 // --- gather --------------------------------------------------------------
 
-const words = Object.fromEntries(LEVELS.map((l) => [l, []]));
-const readings = Object.fromEntries(LEVELS.map((l) => [l, []]));
-const listenings = Object.fromEntries(LEVELS.map((l) => [l, []]));
-const speaking = Object.fromEntries(LEVELS.map((l) => [l, []]));
+// Single source of truth for which bank exports feed which round, in
+// generator order — see rounds.mjs for why this can't be re-derived by
+// pattern-matching export names (round 2's speaking bank breaks the pattern).
+const { words, readings, listenings, speaking } = bankContent({ withSource: true });
 
-/** Collect a per-level bank, tagging every item with the file it came from. */
-function collect(target, byLevel, source) {
-  if (!byLevel) return;
-  for (const level of LEVELS) {
-    for (const item of byLevel[level] ?? []) target[level].push({ ...item, source });
-  }
-}
-
+// Grammar tables (VERBS, ADJECTIVES, …) aren't part of the word/passage
+// rounds above — loaded separately, only for the grammar-banks.md page.
 const banks = await load("banks.mjs");
-collect(words, banks.WORD_BANKS, "banks.mjs");
-
-for (let i = 1; i <= 10; i++) {
-  const file = i === 1 ? "wordbank-extra.mjs" : `wordbank-extra${i}.mjs`;
-  const mod = await load(file);
-  collect(words, mod[`MORE_WORDS${i === 1 ? "" : i}`], file);
-}
-
-const passages = await load("passages.mjs");
-collect(readings, passages.READINGS, "passages.mjs");
-collect(listenings, passages.LISTENINGS, "passages.mjs");
-collect(speaking, passages.SPEAKING_SENTENCES, "passages.mjs");
-
-for (let i = 1; i <= 9; i++) {
-  const file = i === 1 ? "passages-extra.mjs" : `passages-extra${i}.mjs`;
-  const mod = await load(file);
-  const s = i === 1 ? "" : i;
-  collect(readings, mod[`MORE_READINGS${s}`], file);
-  collect(listenings, mod[`MORE_LISTENINGS${s}`], file);
-  collect(speaking, mod[`MORE_SPEAKING${s}`], file);
-}
 
 const topics = await loadTs("src/data/topics.ts");
 const videos = await loadTs("src/data/videos.ts");
@@ -149,12 +139,14 @@ for (const level of LEVELS) {
 
   md.push("## Words");
   md.push("");
-  md.push(`${w.length} words. Edit in the listed bank file under \`scripts/content/\`.`);
+  md.push(`${w.length} words. Edit a cell directly; "Bank" is just where the word originated.`);
   md.push("");
   md.push(
     table(
-      ["#", "Word", "Part of speech", "Hebrew", "Definition (He)", "Example (En)", "Bank"],
-      w.map((x, i) => [i + 1, x.word, x.partOfSpeech, x.translation, x.definition, x.example, x.source]),
+      ["#", "Word", "Part of speech", "Hebrew", "Definition (He)", "Example (En)", "Example (He)", "Bank"],
+      w.map((x, i) => [
+        i + 1, x.word, x.partOfSpeech, x.translation, x.definition, x.example, x.exampleHe ?? "", x.source,
+      ]),
     ),
   );
   md.push("");
@@ -168,12 +160,8 @@ for (const level of LEVELS) {
     md.push("");
     md.push(`*Source: \`scripts/content/${item.source}\`*`);
     md.push("");
-    md.push(`> ${item.text.replace(/\n/g, "\n> ")}`);
-    md.push("");
-    if (item.textHe) {
-      md.push(`> ${item.textHe.replace(/\n/g, "\n> ")}`);
-      md.push("");
-    }
+    md.push(...quoted("Text (English)", item.text));
+    if (item.textHe) md.push(...quoted("Text (Hebrew)", item.textHe));
     if (item.glossary?.length) {
       md.push("**Glossary**");
       md.push("");
@@ -200,12 +188,8 @@ for (const level of LEVELS) {
     md.push("");
     md.push(`*Source: \`scripts/content/${item.source}\`*`);
     md.push("");
-    md.push(`> ${item.transcript.replace(/\n/g, "\n> ")}`);
-    md.push("");
-    if (item.transcriptHe) {
-      md.push(`> ${item.transcriptHe.replace(/\n/g, "\n> ")}`);
-      md.push("");
-    }
+    md.push(...quoted("Transcript (English)", item.transcript));
+    if (item.transcriptHe) md.push(...quoted("Transcript (Hebrew)", item.transcriptHe));
     item.questions?.forEach((q, n) => {
       md.push(questionBlock(q, n + 1));
       md.push("");
@@ -425,8 +409,9 @@ for (const level of LEVELS) {
   md.push("# High5 content inventory");
   md.push("");
   md.push(
-    "Every word, sentence, passage and link the app can show, by CEFR level. " +
-      "Generated by `npm run content:report` — re-run it after editing a bank so this stays accurate.",
+    "Every word, sentence, passage and link the app can show, by CEFR level, and — for words, " +
+      "reading, listening and speaking — the place to edit them. See **How editing works** below " +
+      "before changing anything.",
   );
   md.push("");
 
@@ -460,26 +445,42 @@ for (const level of LEVELS) {
   md.push("## How editing works");
   md.push("");
   md.push(
-    "**Editing these Markdown files changes nothing in the app.** They are a readable view, " +
-      "not the source. Each item here names the file it comes from — make the change there, then:",
+    "**Words, reading passages, listening clips and speaking sentences are edited right here, " +
+      "in these Markdown pages.** Change a translation, fix a sentence, add a row to a table — " +
+      "then run:",
   );
   md.push("");
   md.push("```bash");
-  md.push("npm run content         # regenerate src/data/offline/*.json from the banks");
-  md.push("npm run content:report  # regenerate these pages");
-  md.push("npm test                # offline.test.ts checks the generated corpus");
+  md.push("npm run content:import  # docs/content/*.md → scripts/content/from-markdown.generated.mjs");
+  md.push("npm run content          # → src/data/offline/*.json, what the app actually ships");
+  md.push("npm test                 # offline.test.ts checks the generated corpus");
   md.push("```");
+  md.push("");
+  md.push(
+    "Keep the table/heading structure intact — `content:import` parses these pages back into " +
+      "data, so a word needs its full table row (`| # | word | part of speech | Hebrew | " +
+      "definition | example (En) | example (He) | bank |`) and a question needs its ✓ column " +
+      "on the correct option. `content:import` prints how many items ended up differing from " +
+      "the original hand-written banks — that number growing is expected once you've made real " +
+      "edits, not a sign anything broke.",
+  );
+  md.push("");
+  md.push(
+    "⚠️ **Don't run `npm run content:report` after you've started editing.** It rebuilds every " +
+      "page from `scripts/content/*.mjs` — the *original* hand-written banks these pages were " +
+      "bootstrapped from — and would overwrite your edits with that original content. It's a " +
+      "reset button, not a refresh button.",
+  );
   md.push("");
   md.push(
     table(
       ["To change…", "Edit"],
       [
-        ["Vocabulary words", "`scripts/content/banks.mjs` (`WORD_BANKS`) and `wordbank-extra*.mjs` (`MORE_WORDS*`)"],
-        ["Reading passages", "`scripts/content/passages.mjs` (`READINGS`) and `passages-extra*.mjs` (`MORE_READINGS*`)"],
-        ["Listening clips", "`scripts/content/passages.mjs` (`LISTENINGS`) and `passages-extra*.mjs` (`MORE_LISTENINGS*`)"],
-        ["Speaking sentences", "`scripts/content/passages.mjs` (`SPEAKING_SENTENCES`) and `passages-extra*.mjs` (`MORE_SPEAKING*`)"],
-        ["Hebrew for example sentences", "`scripts/content/example-he.mjs` (`EXAMPLE_HE`)"],
-        ["Grammar question tables", "`scripts/content/banks.mjs`"],
+        ["Vocabulary words", "the **Words** table on the level's page"],
+        ["Reading passages", "the passage under **Reading passages**"],
+        ["Listening clips", "the transcript under **Listening clips**"],
+        ["Speaking sentences", "the **Speaking sentences** table"],
+        ["Grammar question tables", "`scripts/content/banks.mjs` — no Markdown page yet"],
         ["External links / operation copy", "`src/data/operations.ts`"],
         ["Daily videos", "`src/data/videos.ts`"],
         ["Topics and dialogue scenarios", "`src/data/topics.ts`"],

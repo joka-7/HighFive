@@ -1,6 +1,11 @@
 // Base passage banks for Reading, Listening and Speaking, per CEFR level.
 // Hand-written. The app picks randomly, so pool size = variety. Comprehension
 // questions are answerable purely from the text/transcript.
+//
+// This is the historical origin of that content, not where it's edited day to
+// day — see the note at the top of banks.mjs. Edit docs/content/{A1..C2}.md
+// instead; `npm run content:import` turns it back into the generated bank the
+// app actually reads.
 
 const R = (title, text, glossary, questions) => ({ title, text, glossary, questions });
 const g = (word, partOfSpeech, definition, example, translation) => ({ word, partOfSpeech, definition, example, translation });

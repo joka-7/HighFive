@@ -7,6 +7,13 @@
 // Vocabulary leveling follows the CEFR bands of the Oxford 3000/5000 and the
 // English Vocabulary Profile (applied from reference knowledge, not a fetched
 // copy). Hebrew is written for native Hebrew speakers.
+//
+// WORD_BANKS below is the historical origin of the vocabulary content, not
+// where it's edited day to day — the generator reads the words from
+// scripts/content/from-markdown.generated.mjs instead, which is derived from
+// docs/content/{A1..C2}.md. Edit the words there; see docs/content/README.md.
+// The grammar tables further down (VERBS, ADJECTIVES, …) have no Markdown
+// counterpart yet and are still edited directly in this file.
 
 // ---------------------------------------------------------------------------
 // Verb table — base / 3rd-person-singular / past / past-participle / -ing.

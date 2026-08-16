@@ -21,35 +21,18 @@ import {
   IRREGULAR_PLURALS,
   COUNT_NOUNS,
   MODAL_ITEMS,
-  WORD_BANKS,
 } from "./content/banks.mjs";
-import { READINGS, LISTENINGS, SPEAKING_SENTENCES } from "./content/passages.mjs";
-import { MORE_WORDS } from "./content/wordbank-extra.mjs";
-import { MORE_WORDS2 } from "./content/wordbank-extra2.mjs";
-import { MORE_WORDS3 } from "./content/wordbank-extra3.mjs";
-import { MORE_WORDS4 } from "./content/wordbank-extra4.mjs";
-import { MORE_WORDS5 } from "./content/wordbank-extra5.mjs";
-import { MORE_WORDS6 } from "./content/wordbank-extra6.mjs";
-import { MORE_WORDS7 } from "./content/wordbank-extra7.mjs";
-import { MORE_WORDS8 } from "./content/wordbank-extra8.mjs";
-import { MORE_WORDS9 } from "./content/wordbank-extra9.mjs";
-import { MORE_WORDS10 } from "./content/wordbank-extra10.mjs";
-import { MORE_READINGS, MORE_LISTENINGS } from "./content/passages-extra.mjs";
-import { MORE_READINGS2, MORE_LISTENINGS2, MORE_SPEAKING } from "./content/passages-extra2.mjs";
-import { MORE_READINGS3, MORE_LISTENINGS3, MORE_SPEAKING3 } from "./content/passages-extra3.mjs";
-import { MORE_READINGS4, MORE_LISTENINGS4, MORE_SPEAKING4 } from "./content/passages-extra4.mjs";
-import { MORE_READINGS5, MORE_LISTENINGS5, MORE_SPEAKING5 } from "./content/passages-extra5.mjs";
-import { MORE_READINGS6, MORE_LISTENINGS6, MORE_SPEAKING6 } from "./content/passages-extra6.mjs";
-import { MORE_READINGS7, MORE_LISTENINGS7, MORE_SPEAKING7 } from "./content/passages-extra7.mjs";
-import { MORE_READINGS8, MORE_LISTENINGS8, MORE_SPEAKING8 } from "./content/passages-extra8.mjs";
-import { MORE_READINGS9, MORE_LISTENINGS9, MORE_SPEAKING9 } from "./content/passages-extra9.mjs";
-
-// All extra vocabulary rounds, merged in order. Append new rounds here.
-const WORD_ROUNDS = [MORE_WORDS, MORE_WORDS2, MORE_WORDS3, MORE_WORDS4, MORE_WORDS5, MORE_WORDS6, MORE_WORDS7, MORE_WORDS8, MORE_WORDS9, MORE_WORDS10];
-const READING_ROUNDS = [MORE_READINGS, MORE_READINGS2, MORE_READINGS3, MORE_READINGS4, MORE_READINGS5, MORE_READINGS6, MORE_READINGS7, MORE_READINGS8, MORE_READINGS9];
-const LISTENING_ROUNDS = [MORE_LISTENINGS, MORE_LISTENINGS2, MORE_LISTENINGS3, MORE_LISTENINGS4, MORE_LISTENINGS5, MORE_LISTENINGS6, MORE_LISTENINGS7, MORE_LISTENINGS8, MORE_LISTENINGS9];
-const SPEAKING_ROUNDS = [MORE_SPEAKING, MORE_SPEAKING3, MORE_SPEAKING4, MORE_SPEAKING5, MORE_SPEAKING6, MORE_SPEAKING7, MORE_SPEAKING8, MORE_SPEAKING9];
-const merge = (rounds, level) => rounds.flatMap((r) => r[level] || []);
+// Vocabulary / reading / listening / speaking come from here, not from the
+// hand-written banks directly. This file is written by content-import.mjs
+// from docs/content/*.md, which is where that content is edited — see
+// docs/content/README.md. Grammar (above) has no Markdown editing path yet
+// and is still edited directly in banks.mjs.
+import {
+  WORDS_BY_LEVEL,
+  READINGS_BY_LEVEL,
+  LISTENINGS_BY_LEVEL,
+  SPEAKING_BY_LEVEL,
+} from "./content/from-markdown.generated.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = join(__dirname, "..", "src", "data", "offline");
@@ -366,20 +349,20 @@ function questionsAreBilingual(questions) {
 }
 
 function curatedReadings(level) {
-  return [...READINGS[level], ...merge(READING_ROUNDS, level)].filter(
+  return READINGS_BY_LEVEL[level].filter(
     (r) => r.textHe && questionsAreBilingual(r.questions),
   );
 }
 
 function curatedListenings(level) {
-  return [...LISTENINGS[level], ...merge(LISTENING_ROUNDS, level)].filter(
+  return LISTENINGS_BY_LEVEL[level].filter(
     (l) => l.transcriptHe && questionsAreBilingual(l.questions),
   );
 }
 
 /** Curated speaking sentences grouped into full rounds of 4. */
 function curatedSpeaking(level) {
-  const sentences = [...SPEAKING_SENTENCES[level], ...merge(SPEAKING_ROUNDS, level)].filter(
+  const sentences = SPEAKING_BY_LEVEL[level].filter(
     (s) => s && s.text && s.translation,
   );
   const sets = [];
@@ -608,7 +591,7 @@ function curriculum(levelIdx) {
 
 // --- Build everything for one level ------------------------------------------
 function buildLevel(level, levelIdx) {
-  const allWords = [...WORD_BANKS[level], ...merge(WORD_ROUNDS, level)];
+  const allWords = WORDS_BY_LEVEL[level];
   const ctx = {
     verbs: VERBS.filter((v) => v.lvl <= levelIdx),
     adjs: ADJECTIVES.filter((a) => a.lvl <= levelIdx),
@@ -703,7 +686,7 @@ function main() {
 
     // Sanity-check the merged source word bank: no duplicate words, no missing
     // fields (base + extra together).
-    const mergedBank = [...WORD_BANKS[level], ...merge(WORD_ROUNDS, level)];
+    const mergedBank = WORDS_BY_LEVEL[level];
     const bankWords = mergedBank.map((w) => w.word);
     const dup = bankWords.find((w, n) => bankWords.indexOf(w) !== n);
     if (dup) throw new Error(`${level} word bank has duplicate word: "${dup}"`);
@@ -821,7 +804,7 @@ function main() {
       readingPool: readings.length,
       listeningPool: listenings.length,
       speakingPool: speakings.length,
-      speakingSentences: SPEAKING_SENTENCES[level].length + merge(SPEAKING_ROUNDS, level).length,
+      speakingSentences: SPEAKING_BY_LEVEL[level].length,
       curatedReadings: readingPool.length,
       curatedListenings: listeningPool.length,
       curatedSpeakingSets: speakingPool.length,

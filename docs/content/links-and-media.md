@@ -133,49 +133,67 @@ One topic per day is picked from each pool. Edit in `src/data/topics.ts`.
 Six questions shown during onboarding; the score picks the starting level. Edit in `src/data/placement.ts`.
 
 **Q1.** She ___ to school every day.
-- [ ] go
-- [x] goes
-- [ ] going
-- [ ] gone
+
+| ✓ | Option (En) | Option (He) |
+|---|---|---|
+|  | go |  |
+| ✓ | goes |  |
+|  | going |  |
+|  | gone |  |
 
 *עם גוף שלישי יחיד (she) מוסיפים s לפועל בהווה פשוט: goes.*
 
 **Q2.** We ___ to Paris last summer.
-- [ ] go
-- [x] went
-- [ ] gone
-- [ ] are going
+
+| ✓ | Option (En) | Option (He) |
+|---|---|---|
+|  | go |  |
+| ✓ | went |  |
+|  | gone |  |
+|  | are going |  |
 
 *עבר פשוט של go הוא went. 'last summer' מציין עבר.*
 
 **Q3.** I ___ already finished my homework.
-- [x] have
-- [ ] has
-- [ ] am
-- [ ] did
+
+| ✓ | Option (En) | Option (He) |
+|---|---|---|
+| ✓ | have |  |
+|  | has |  |
+|  | am |  |
+|  | did |  |
 
 *Present Perfect עם I נבנה עם have + V3: I have finished.*
 
 **Q4.** If I ___ more time, I would travel the world.
-- [ ] have
-- [x] had
-- [ ] will have
-- [ ] having
+
+| ✓ | Option (En) | Option (He) |
+|---|---|---|
+|  | have |  |
+| ✓ | had |  |
+|  | will have |  |
+|  | having |  |
 
 *תנאי שני מתאר מצב דמיוני: If + past simple (had) + would.*
 
 **Q5.** Rarely ___ such a beautiful performance.
-- [ ] I have seen
-- [x] have I seen
-- [ ] I saw
-- [ ] did I have seen
+
+| ✓ | Option (En) | Option (He) |
+|---|---|---|
+|  | I have seen |  |
+| ✓ | have I seen |  |
+|  | I saw |  |
+|  | did I have seen |  |
 
 *אחרי ביטוי שלילי בתחילת משפט (Rarely) בא היפוך: have I seen.*
 
 **Q6.** ___ harder, he would have passed the exam.
-- [ ] If he studied
-- [x] Had he studied
-- [ ] He had studied
-- [ ] Did he study
+
+| ✓ | Option (En) | Option (He) |
+|---|---|---|
+|  | If he studied |  |
+| ✓ | Had he studied |  |
+|  | He had studied |  |
+|  | Did he study |  |
 
 *תנאי שלישי בהיפוך, ללא 'if': Had he studied = If he had studied.*

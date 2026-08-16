@@ -179,12 +179,32 @@ build → bundle gate, then Playwright E2E on Chromium (desktop + Pixel 5).
 ## Build-time content generation
 
 `src/data/offline/*.json` are generated artifacts, not hand-written. Running
-`node scripts/generate-content.mjs` expands the curated banks in
-`scripts/content/*` into a deterministic (seeded RNG) year of daily
-vocabulary / lessons / quizzes plus Reading / Listening / Speaking pools per
-CEFR level. Grammar questions are built correct-by-construction from verified
-conjugation/article/comparative tables, so every `correctIndex` is correct by
-construction. These files must exist for the build and `offline.test.ts` to
-pass.
+`node scripts/generate-content.mjs` (`npm run content`) expands the content
+banks into a deterministic (seeded RNG) year of daily vocabulary / lessons /
+quizzes plus Reading / Listening / Speaking pools per CEFR level. Grammar
+questions are built correct-by-construction from verified conjugation/
+article/comparative tables in `scripts/content/banks.mjs`, so every
+`correctIndex` is correct by construction. These files must exist for the
+build and `offline.test.ts` to pass.
+
+**Vocabulary, reading, listening and speaking content is edited as
+Markdown**, not as JS data: `docs/content/{A1..C2}.md` is the editable
+source, one page per CEFR level, human-readable and diffable. Edit a word, a
+passage or a question there, then
+
+```bash
+npm run content:import   # docs/content/*.md → scripts/content/from-markdown.generated.mjs
+npm run content           # → src/data/offline/*.json (what the app ships)
+```
+
+`scripts/content/{banks,passages,wordbank-extra*,passages-extra*}.mjs` are
+the *original* hand-written banks the Markdown was bootstrapped from
+(`npm run content:report`, `scripts/content-report.mjs`) — editing them
+directly no longer reaches the app for these four categories, since
+`generate-content.mjs` reads `from-markdown.generated.mjs` exclusively.
+Grammar (`VERBS`/`ADJECTIVES`/…, in `banks.mjs`) has no Markdown path and is
+still edited directly. `scripts/content-import.mjs --check` verifies the
+Markdown reproduces the original banks exactly (only meaningful before any
+edit — see `docs/content/README.md`).
 
 See `docs/LLD.md` for module-level detail.
