@@ -10,6 +10,15 @@ updates:
         dependency-type: production
       development:
         dependency-type: development
+    ignore:
+      # typescript-eslint (also in this repo) has never supported a
+      # TypeScript major release on day one — its peer range trails by
+      # months. Major-version PRs for typescript alone are proposed and
+      # closed unmergeable every scan until typescript-eslint catches up
+      # (see PRs #37, #41, #44). Re-enable once typescript-eslint's peer
+      # range covers the next TS major, then bump both together by hand.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"
