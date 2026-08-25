@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { EXTERNAL_CHAT_PROVIDERS } from "@joka-7/modeldispatcher-browser-agent";
 import { useLingo } from "../store/useLingo";
 import { generateDialogueReply } from "../services/content";
 import { isAIReady } from "../services/ai";
@@ -6,12 +7,18 @@ import { DIALOGUE_SCENARIOS, dialogueScenariosForLevel } from "../data/topics";
 import { speak } from "../services/tts";
 import type { Screen } from "../types";
 
+/** Best-effort clipboard copy — never throws (permissions/non-secure context). */
+function copyToClipboard(text: string): void {
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+
 export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
   const { progress, chatMessages, addChatMessage, clearChat, learnedWords } = useLingo();
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [failedText, setFailedText] = useState<string | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -65,6 +72,7 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
     const message = text.trim();
     if (!message || busy || !scenario) return;
     setError(null);
+    setFailedText(null);
     setText("");
     addChatMessage({
       role: "user",
@@ -95,6 +103,7 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
       setTimeout(() => logRef.current?.scrollTo(0, logRef.current.scrollHeight), 50);
     } catch (e) {
       setError(e instanceof Error ? e.message : "שגיאה בשליחת ההודעה");
+      setFailedText(message);
     } finally {
       setBusy(false);
     }
@@ -127,7 +136,31 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
         {busy && <div className="bubble assistant">…</div>}
       </div>
 
-      {error && <div className="banner">{error}</div>}
+      {error && (
+        <div className="banner">
+          {error}
+          {failedText && (
+            <div className="flex-wrap mb-2_5">
+              <span className="muted">אפשר גם לשאול ישירות:</span>
+              {Object.values(EXTERNAL_CHAT_PROVIDERS).map((provider) => {
+                const url = provider.buildUrl ? provider.buildUrl(failedText) : provider.homeUrl;
+                return (
+                  <a
+                    key={provider.id}
+                    href={url}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => copyToClipboard(failedText)}
+                    className="tag"
+                  >
+                    {provider.name}
+                  </a>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="chat-input">
         <input
