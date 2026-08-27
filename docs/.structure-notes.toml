@@ -1,0 +1,21 @@
+# Hand-written notes for docs/STRUCTURE.md's generated tree.
+# gen_tree.py derives a note from each file itself where it can (frontmatter,
+# heading, docstring); .ts/.tsx source files have none of those, so directory-
+# and file-level orientation lives here instead. Always overrides a derived note.
+
+[notes]
+"api" = "Vercel Serverless Functions — built independently of the Vite app (see tsconfig.json)"
+"api/mission-reminder.ts" = "Hourly push-reminder endpoint; actual per-user scheduling logic lives in reminderLogic.ts"
+"e2e" = "Playwright end-to-end specs, run via `npm run test:e2e`"
+"public" = "Static assets + PWA manifest/service worker, served as-is by Vite"
+"scripts" = "Content generation — `npm run content` rebuilds src/data/offline/*.json from these"
+"scripts/content" = "Source word banks/passages the content generator reads"
+"src" = "The Vite app: screens, components, state (useLingo), and content/offline services"
+"src/components" = "Shared UI: cards, quiz runner, error boundary"
+"src/data" = "Curriculum data (word banks, topics, videos) and the bundled offline content set"
+"src/data/offline" = "Bundled per-level (A1-C2) quiz/listening/reading/speaking content, used offline-first"
+"src/hooks" = "Small reusable React hooks (local reminders, online-status)"
+"src/screens" = "One file per app screen/route"
+"src/services" = "External integrations: AI provider, Firebase, TTS/ASR, push, prefs, PWA"
+"src/store" = "useLingo — the app's central state/context provider"
+"src/utils" = "Pure logic: spaced-repetition (SRS), scoring, cycles, missions, backup/restore"

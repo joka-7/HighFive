@@ -216,6 +216,39 @@ This is a client-side app: a key entered in the browser is stored in
 personal use. For a public deployment, proxy the AI calls through a backend and
 keep the key server-side.
 
+## Repo structure
+
+<!-- BEGIN GENERATED TREE (depth=1 entries=all) -->
+```text
+highfive/
+├── .github/
+├── api/              # Vercel Serverless Functions — built independently of the Vite app (see…
+├── docs/
+├── e2e/              # Playwright end-to-end specs, run via `npm run test:e2e`
+├── public/           # Static assets + PWA manifest/service worker, served as-is by Vite
+├── scripts/          # Content generation — `npm run content` rebuilds src/data/offline/*.json from…
+├── src/              # The Vite app: screens, components, state (useLingo), and content/offline…
+├── .env.example
+├── .gitignore
+├── .npmrc
+├── LICENSE
+├── README.md         # High5 ✋
+├── eslint.config.js
+├── firestore.rules
+├── index.html
+├── package-lock.json
+├── package.json
+├── playwright.config.ts
+├── stitch-prompt.md  # Google Stitch Prompt
+├── tsconfig.json
+├── vercel.json
+├── vite-env.d.ts
+└── vite.config.ts
+```
+<!-- END GENERATED TREE -->
+
+Full annotated tree: [`docs/STRUCTURE.md`](./docs/STRUCTURE.md).
+
 ## Design docs
 
 - [`docs/HLD.md`](./docs/HLD.md) — architecture and data flow.
