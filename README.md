@@ -10,6 +10,65 @@ you've visited online; per-level content chunks cache the first time you open
 that level. Add a provider key for AI-generated lessons/vocab/quizzes and live
 Dialogue Coach conversations.
 
+## Screenshots
+
+All screenshots below are the app's Hebrew RTL UI. After picking (or testing
+into) a CEFR level, everything below is one tap away from the home hub.
+
+**Onboarding** — pick your level yourself, or take a short placement test:
+
+![Onboarding — CEFR level picker](docs/screenshots/onboarding-level.png)
+
+**Home hub** — today's mission, and every practice mode, word list, and
+progress view grouped by intent:
+
+![Home hub with grouped tiles](docs/screenshots/dashboard.png)
+
+**חמש ביום (Five a day)** — the daily board: five operations (see, listen,
+talk, read, understand), each completable in-app or marked done from
+elsewhere, plus the day's five new words:
+
+![Daily missions board](docs/screenshots/daily-missions.png)
+
+**Daily lesson → practice quiz** — a short grammar explanation, then a
+multiple-choice check with Hebrew explanations:
+
+| Daily lesson | Practice quiz |
+| --- | --- |
+| ![Daily lesson](docs/screenshots/daily-lesson.png) | ![Practice quiz question](docs/screenshots/practice-quiz.png) |
+
+**Vocabulary flashcards** — level-adaptive words with Hebrew definitions,
+examples, and text-to-speech, one tap from being saved for spaced review:
+
+![Vocabulary flashcards](docs/screenshots/vocabulary.png)
+
+**Reading Lab** — a level-adapted passage with a tap-to-translate glossary
+(save a word straight into review) and a full-translation toggle:
+
+![Reading passage with glossary](docs/screenshots/reading.png)
+
+**Listening practice** — a natural spoken clip, with a slow-replay option,
+before comprehension questions:
+
+![Listening practice](docs/screenshots/listening.png)
+
+**Progress** — points, streak, level-up requirements, and daily activity,
+all in one place:
+
+![Progress screen with streak and level-up tracking](docs/screenshots/progress.png)
+
+**Settings — AI provider.** No environment variables: pick a provider, paste
+a key (or an Ollama URL), and every AI-backed feature switches on:
+
+![AI provider settings](docs/screenshots/settings.png)
+
+To regenerate these images locally:
+
+```bash
+npm run build && npm run preview -- --port 4173   # in another terminal
+npx playwright test e2e/screenshots.spec.ts
+```
+
 ## The daily rhythm — 5 words, 5 operations, 5-day cycle
 
 High5 asks for the same small thing every day: **five new words** and **five
