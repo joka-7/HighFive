@@ -79,7 +79,7 @@ recall practice instead of new ones arriving (`screens/Memorize.tsx`).
 | `src/screens/*` | One React component per `Screen` — onboarding, dashboard, daily lesson, daily missions, vocabulary, dialogue coach, practice quiz, spaced-repetition review, reading, listening, speaking, saved words, progress, calendar, settings. |
 | `src/App.tsx` | Shell + hash routing (`#/missions`, etc.): gates on onboarding, switches on the active `Screen`, top bar (points/streak/level), 5-item bottom nav, offline banner, SW update prompt. |
 | `src/store/useLingo.tsx` | App state (`UserProgress`, saved words, chat, quizzes, mission log, daily missions checklist) as a React Context, persisted to `localStorage` and — in Account mode — mirrored to Firestore. Owns points, streak, SRS, mission auto-complete, export/import. |
-| `src/services/ai.ts` | Multi-provider AI client. Stores provider/key/model in `localStorage` and exposes `complete(prompt, systemInstruction)`. |
+| `src/services/ai.ts` | Multi-provider AI client — a thin wrapper over the shared [`@joka-7/modeldispatcher-browser-agent`](https://github.com/joka-7/ModelDispatcher/tree/main/clients/browser-agent) package (also used by JobFlowTracker/KanDOne/StepByLearn). Stores provider/key/model in `localStorage` and exposes `complete(prompt, systemInstruction)`. |
 | `src/services/content.ts` | Generators per pillar with vocabulary-safe offline fallbacks. Reading/Listening always pick bundled content; other pillars try AI then fall back. |
 | `src/services/firebase.ts` | Optional Google sign-in + Firestore sync. Env-var config only (no hardcoded project). Lazy `import()`. |
 | `src/services/prefs.ts` | Theme, speech speed, and local reminder prefs. |

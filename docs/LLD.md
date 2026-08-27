@@ -90,37 +90,34 @@ database. Exposes the `useLingo()` hook, which throws if used outside
 
 ## `src/services/ai.ts`
 
-- `ProviderId = "gemini" | "groq" | "ollama" | "anthropic" | "openai"`.
-- `PROVIDERS: Record<ProviderId, ProviderInfo>` — static metadata per provider
-  (display name, `free` flag, `defaultModel`, input placeholder, key-signup
-  URL/text). `ollama.noKey = true` switches the Settings UI from an API-key
-  field to a local server URL field.
+A thin wrapper over [`@joka-7/modeldispatcher-browser-agent`](https://github.com/joka-7/ModelDispatcher/tree/main/clients/browser-agent),
+the shared browser-native AI core extracted from this file (and
+JobFlowTracker/KanDOne/StepByLearn, which had each independently built the
+same per-provider REST plumbing). This module exists only to keep every
+existing call site (`Settings.tsx`, `content.ts`, `QuizRunner.tsx`,
+`Dashboard.tsx`, `DialogueCoach.tsx`) and its own name/signature unchanged —
+no other file needed to change for the migration. The actual per-provider
+request/response handling (Gemini's `:generateContent`, Anthropic's
+`anthropic-dangerous-direct-browser-access` header, Ollama's URL validation,
+OpenAI/Groq's shared OpenAI-compatible shape) now lives in the shared package,
+not here.
+
+- `ProviderId = "gemini" | "groq" | "ollama" | "anthropic" | "openai"` and
+  `PROVIDERS: Record<ProviderId, ProviderInfo>` are re-exported from the
+  shared package as-is.
 - **localStorage keys:** `aiProvider`, `aiApiKey`, `aiModel`, `ollamaUrl` —
-  intentionally identical names to the JobFlowTracker app.
-- `loadAIConfig()` / `saveAIConfig(partial)` / `clearAIConfig()` — read/merge/
-  reset; `loadAIConfig` falls back to `PROVIDERS[provider].defaultModel` when no
-  model override is stored, and to `gemini` for an unknown provider.
-- `isAIReady()` — `true` if the provider is Ollama (no key required), else if an
-  API key is set.
-- `validateOllamaUrl(url)` — requires HTTPS unless the host is
-  localhost/127.0.0.1/::1, to avoid sending requests to an attacker-controlled
-  host if the stored value were ever corrupted.
-- `complete(prompt, systemInstruction?)` — single non-streaming entry point used
-  by every feature. Throws early if a key is required but missing, then switches
-  on `provider`:
-  - **gemini** — `:generateContent` REST endpoint; `responseMimeType:
-    "application/json"`; `systemInstruction` field.
-  - **anthropic** — `/v1/messages`, requires the
-    `anthropic-dangerous-direct-browser-access: true` header (browser calls are
-    otherwise blocked by Anthropic's CORS policy); optional `system` field.
-  - **ollama** — local `/api/generate` with `format: "json"`; the URL is
-    validated first, and `systemInstruction` is prepended to the prompt.
-  - **openai / groq** — both speak the OpenAI-compatible `/chat/completions`
-    shape with `response_format: { type: "json_object" }`, so they share one
-    code path with a different `baseUrl`.
-  - Every branch returns the raw text response; callers parse it as JSON.
-- `errorText(res)` builds a friendly `AI request failed: ...` message from the
-  provider's error body.
+  unchanged, via the shared package's default `ConfigKeys`.
+- `loadAIConfig()` / `saveAIConfig(partial)` / `clearAIConfig()` — thin
+  pass-throughs to the shared package's `loadConfig`/`saveConfig`/`clearConfig`.
+- `isAIReady()` — the shared package's `isConfigReady(loadConfig())`.
+- `complete(prompt, systemInstruction?, signal?)` — calls the shared package's
+  `complete(cfg, prompt, { systemInstruction, jsonMode: true, signal })`.
+  `jsonMode: true` is always requested, matching this file's previous
+  per-provider behaviour (every screen here needs structured JSON back,
+  unlike JobFlowTracker's streaming chat) — the shared package supports both
+  streaming and non-streaming, this wrapper only ever calls the latter.
+  `signal` optionally cancels the request independent of the shared package's
+  own request timeout, which always applies regardless.
 
 ## `src/services/content.ts`
 
@@ -351,7 +348,10 @@ plus a quarter-local index) and only the current quarter is downloaded.
   save/unsave via `toggleSaveWord`.
 - **`DialogueCoach`** — AI roleplay chat over 16 scenarios; requires a key
   (shows a CTA to Settings otherwise); filters chat by scenario+level; shows
-  Hebrew corrections; TTS on assistant replies.
+  Hebrew corrections; TTS on assistant replies. On a failed reply, offers the
+  shared package's `EXTERNAL_CHAT_PROVIDERS` (ChatGPT/Claude/Gemini/Groq) as
+  direct links pre-filled with the failed message — a free escape hatch that
+  needs no API key.
 - **`PracticeQuiz`** — 5-question quiz on today's quiz topic; result screen;
   `completeQuiz`.
 - **`Review`** — spaced-repetition session: snapshots the due queue on mount,
