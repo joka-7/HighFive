@@ -279,7 +279,7 @@ keep the key server-side.
 
 <!-- BEGIN GENERATED TREE (depth=1 entries=all) -->
 ```text
-HighFive/
+highfive/
 ├── .github/
 ├── api/              # Vercel Serverless Functions — built independently of the Vite app (see…
 ├── docs/
@@ -287,17 +287,11 @@ HighFive/
 ├── public/           # Static assets + PWA manifest/service worker, served as-is by Vite
 ├── scripts/          # Content generation — `npm run content` rebuilds src/data/offline/*.json from…
 ├── src/              # The Vite app: screens, components, state (useLingo), and content/offline…
-├── .ai               # Ogen-ai submodule — the shared source of rules, skills and the ai-sync…
 ├── .env.example
 ├── .gitignore
-├── .gitmodules
 ├── .npmrc
-├── AGENTS.md         # The compiled coding rules every AI assistant reads — generated, do not…
-├── CLAUDE.md         # Claude Code's copy of AGENTS.md (generated)
-├── GEMINI.md         # Gemini CLI's copy of AGENTS.md (generated)
 ├── LICENSE
 ├── README.md         # High5 ✋
-├── ai-config.toml    # Which rule fragments and target tools ai-sync compiles for this repo
 ├── eslint.config.js
 ├── firestore.rules
 ├── index.html
