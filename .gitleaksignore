@@ -13,4 +13,9 @@
 # as a fallback default and now reads env vars only, but the commit is still in
 # the pack. Rotating the key in the Firebase console would not remove it from
 # history, and there is nothing to protect by doing so.
+# Two fingerprints for the same value. gitleaks anchors a finding to the
+# commit its scan happens to attribute the blob to, and that differs between
+# versions: 8.18.4 (pinned in security.yml) reports 7c540fcb, 8.28.x reports
+# bc51f742. Both are recorded so bumping the scanner does not resurrect it.
+7c540fcb8ef183f83da54de18c40ee637076ea6c:src/services/firebase.ts:gcp-api-key:29
 bc51f7422403476928df378b8efc969fa8ec5675:src/services/firebase.ts:gcp-api-key:29
