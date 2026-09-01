@@ -1,0 +1,16 @@
+# Reviewed findings that are not secrets. A scan that always reports the same
+# thing stops being read, so each entry names what it is and why it is safe.
+#
+# The Firebase *web* config (apiKey, authDomain, projectId, storageBucket,
+# messagingSenderId, appId) is a public client identifier, not a credential. It
+# is compiled into the browser bundle by design and is visible to anyone who
+# loads the app. Access is controlled by firestore.rules and by Authentication
+# → Authorized domains, not by keeping these values private. gitleaks'
+# gcp-api-key rule matches the AIza… shape and cannot distinguish a Firebase
+# web key from a genuinely secret server-side GCP key.
+#
+# This particular hit is historical: src/services/firebase.ts carried the value
+# as a fallback default and now reads env vars only, but the commit is still in
+# the pack. Rotating the key in the Firebase console would not remove it from
+# history, and there is nothing to protect by doing so.
+bc51f7422403476928df378b8efc969fa8ec5675:src/services/firebase.ts:gcp-api-key:29
