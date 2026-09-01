@@ -40,12 +40,15 @@ jobs:
           node-version: "22"
           cache: "npm"
           cache-dependency-path: package-lock.json
+      # See ci.yml for why NODE_AUTH_TOKEN is needed.
       - run: npm ci
-      # Advisory until the backlog below is cleared, then drop
-      # continue-on-error so this blocks:
-      #   6 moderate, no high/critical
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+      # Blocking at high. Six moderate advisories remain, all reaching uuid@9
+      # through firebase-admin's own tree (see the fix(deps) commit for why
+      # neither npm's suggested downgrade nor an overrides bump was taken);
+      # they sit below this threshold rather than being silently tolerated.
       - name: npm audit
-        continue-on-error: true
         run: npm audit --audit-level=high
 
   trivy:
