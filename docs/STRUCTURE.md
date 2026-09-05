@@ -10,6 +10,7 @@ HighFive/
 ├── .github/
 │   ├── workflows/
 │   │   ├── ci.yml
+│   │   ├── docs.yml
 │   │   ├── mission-reminder.yml
 │   │   └── security.yml
 │   ├── copilot-instructions.md  # Copilot's copy of AGENTS.md (generated)
@@ -289,6 +290,7 @@ HighFive/
 ├── .ai                          # Ogen-ai submodule — the shared source of rules, skills and the ai-sync…
 ├── .env.example
 ├── .gitignore
+├── .gitleaksignore
 ├── .gitmodules
 ├── .npmrc
 ├── AGENTS.md                    # The compiled coding rules every AI assistant reads — generated, do not…
