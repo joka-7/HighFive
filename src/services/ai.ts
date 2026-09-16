@@ -32,7 +32,7 @@ export function loadAIConfig(): AIConfig {
   return loadConfig();
 }
 
-export function saveAIConfig(cfg: Partial<AIConfig>): void {
+export function saveAIConfig(cfg: AIConfig): void {
   saveConfig(cfg);
 }
 
