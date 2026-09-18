@@ -7,6 +7,10 @@ import {
   isAIReady,
   type ProviderId,
 } from "../services/ai";
+import { ModelPicker } from "@joka-7/modeldispatcher-react-ui";
+import "@joka-7/modeldispatcher-react-ui/styles.css";
+import { loadExternalChatFavorite, saveExternalChatFavorite } from "@joka-7/modeldispatcher-browser-agent";
+import { dispatcherFeatures } from "../modeldispatcher.config";
 import { useLingo } from "../store/useLingo";
 import {
   loadPrefs,
@@ -28,6 +32,186 @@ const SPEECH_LABELS: { id: SpeechSpeed; label: string }[] = [
   { id: "normal", label: "🚶 רגיל" },
   { id: "fast", label: "🐇 מהיר" },
 ];
+
+/** The shared <ModelPicker> AI settings card — add one or more providers
+ * with pooled keys, pick a favorite free AI app to hand off to. Live-saves
+ * on every change (ModelPicker's own convention), re-syncing ai.ts's
+ * localStorage-backed config so isAIReady()/loadAIConfig() see it
+ * immediately. */
+function NewAiSettingsCard() {
+  const [config, setConfig] = useState(loadAIConfig);
+  const [favorite, setFavorite] = useState(loadExternalChatFavorite);
+
+  function handleConfigChange(next: typeof config) {
+    setConfig(next);
+    saveAIConfig(next);
+  }
+
+  function handleFavoriteChange(next: Parameters<typeof saveExternalChatFavorite>[0]) {
+    setFavorite(next);
+    saveExternalChatFavorite(next);
+  }
+
+  return (
+    <div className="card">
+      <h2>🤖 הגדרות AI</h2>
+
+      <div className="banner">
+        🔒 המפתח נשמר אך ורק בדפדפן שלך (localStorage) ונשלח ישירות לספק שבחרת.
+        הוא לא נשמר בשום שרת. לפרסום ציבורי מומלץ פרוקסי בצד שרת.
+      </div>
+
+      {isAIReady() && (
+        <div className="banner success">
+          ✅ פעיל: {PROVIDERS[config.providers[0].provider].name}
+        </div>
+      )}
+
+      <ModelPicker
+        config={config}
+        onConfigChange={handleConfigChange}
+        externalChatFavorite={favorite}
+        onExternalChatFavoriteChange={handleFavoriteChange}
+      />
+    </div>
+  );
+}
+
+/** The app's original hand-built AI settings — single provider/key/model.
+ * Kept byte-for-byte in behavior as the fallback when
+ * `dispatcherFeatures.ui` is off (see modeldispatcher.config.ts). */
+function LegacyAiSettingsCard() {
+  const initial = loadAIConfig();
+  const initialCred = initial.providers[0];
+  const initialProvider: ProviderId = initialCred?.provider ?? "gemini";
+  const [provider, setProvider] = useState<ProviderId>(initialProvider);
+  const [apiKey, setApiKeyState] = useState(initialCred?.apiKeys[0] ?? "");
+  const [model, setModel] = useState(
+    initialCred && initialCred.model !== PROVIDERS[initialProvider].defaultModel ? initialCred.model : "",
+  );
+  const [ollamaUrl, setOllamaUrl] = useState(initial.ollamaUrl);
+  const [showKey, setShowKey] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const info = PROVIDERS[provider];
+
+  function save() {
+    saveAIConfig({
+      providers: [
+        {
+          provider,
+          model: model.trim() || info.defaultModel,
+          apiKeys: info.noKey ? [] : [apiKey],
+        },
+      ],
+      ollamaUrl,
+    });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 1500);
+  }
+
+  function clearAll() {
+    clearAIConfig();
+    setProvider("gemini");
+    setApiKeyState("");
+    setModel("");
+    setOllamaUrl("http://localhost:11434");
+  }
+
+  return (
+    <div className="card">
+      <h2>🤖 הגדרות AI</h2>
+
+      <div className="banner">
+        🔒 המפתח נשמר אך ורק בדפדפן שלך (localStorage) ונשלח ישירות לספק שבחרת.
+        הוא לא נשמר בשום שרת. לפרסום ציבורי מומלץ פרוקסי בצד שרת.
+      </div>
+
+      {isAIReady() && (
+        <div className="banner success">
+          ✅ פעיל: {PROVIDERS[loadAIConfig().providers[0].provider].name}
+        </div>
+      )}
+
+      <label className="field">
+        <span>ספק AI</span>
+      </label>
+      <div className="menu-grid mb-4">
+        {Object.values(PROVIDERS).map((p) => (
+          <button
+            key={p.id}
+            className={`level-pill provider-pill ${provider === p.id ? "active" : ""}`}
+            onClick={() => setProvider(p.id)}
+          >
+            {p.name}
+            {p.free && (
+              <span className="tag ok ms-1">
+                חינם
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {info.noKey ? (
+        <label className="field">
+          <span>כתובת Ollama</span>
+          <input
+            className="input input-ltr"
+            value={ollamaUrl}
+            placeholder={info.placeholder}
+            onChange={(e) => setOllamaUrl(e.target.value)}
+          />
+        </label>
+      ) : (
+        <label className="field">
+          <span>מפתח API</span>
+          <div className="icon-row">
+            <input
+              className="input input-ltr"
+              type={showKey ? "text" : "password"}
+              value={apiKey}
+              placeholder={info.placeholder}
+              onChange={(e) => setApiKeyState(e.target.value)}
+            />
+            <button
+              className="icon-btn"
+              aria-label={showKey ? "הסתר מפתח API" : "הצג מפתח API"}
+              aria-pressed={showKey}
+              onClick={() => setShowKey((s) => !s)}
+            >
+              <span aria-hidden="true">{showKey ? "🙈" : "👁️"}</span>
+            </button>
+          </div>
+        </label>
+      )}
+
+      <label className="field">
+        <span>מודל (אופציונלי)</span>
+        <input
+          className="input input-ltr"
+          value={model}
+          placeholder={info.defaultModel}
+          onChange={(e) => setModel(e.target.value)}
+        />
+      </label>
+
+      <p className="muted fs-13">
+        <a href={info.infoUrl} target="_blank" rel="noreferrer">
+          {info.infoText}
+        </a>
+      </p>
+
+      <button className="btn" onClick={save}>
+        {saved ? "נשמר ✓" : "שמירה"}
+      </button>
+      <div className="spacer-sm" />
+      <button className="btn ghost" onClick={clearAll}>
+        מחיקת הגדרות AI
+      </button>
+    </div>
+  );
+}
 
 // API key / provider settings — mirrors JobFlowTracker's APIKeySettings:
 // pick a provider, paste a key (or Ollama URL), optional model override, save.
@@ -176,130 +360,9 @@ export default function Settings() {
     reader.readAsText(file);
   }
 
-  const initial = loadAIConfig();
-  const [provider, setProvider] = useState<ProviderId>(initial.provider);
-  const [apiKey, setApiKeyState] = useState(initial.apiKey);
-  const [model, setModel] = useState(
-    initial.model === PROVIDERS[initial.provider].defaultModel ? "" : initial.model,
-  );
-  const [ollamaUrl, setOllamaUrl] = useState(initial.ollamaUrl);
-  const [showKey, setShowKey] = useState(false);
-  const [saved, setSaved] = useState(false);
-
-  const info = PROVIDERS[provider];
-
-  function save() {
-    saveAIConfig({
-      provider,
-      apiKey: info.noKey ? "" : apiKey,
-      model: model.trim() || info.defaultModel,
-      ollamaUrl,
-    });
-    setSaved(true);
-    setTimeout(() => setSaved(false), 1500);
-  }
-
-  function clearAll() {
-    clearAIConfig();
-    setProvider("gemini");
-    setApiKeyState("");
-    setModel("");
-    setOllamaUrl("http://localhost:11434");
-  }
-
   return (
     <div>
-      <div className="card">
-        <h2>🤖 הגדרות AI</h2>
-
-        <div className="banner">
-          🔒 המפתח נשמר אך ורק בדפדפן שלך (localStorage) ונשלח ישירות לספק שבחרת.
-          הוא לא נשמר בשום שרת. לפרסום ציבורי מומלץ פרוקסי בצד שרת.
-        </div>
-
-        {isAIReady() && (
-          <div className="banner success">
-            ✅ פעיל: {PROVIDERS[loadAIConfig().provider].name}
-          </div>
-        )}
-
-        <label className="field">
-          <span>ספק AI</span>
-        </label>
-        <div className="menu-grid mb-4">
-          {Object.values(PROVIDERS).map((p) => (
-            <button
-              key={p.id}
-              className={`level-pill provider-pill ${provider === p.id ? "active" : ""}`}
-              onClick={() => setProvider(p.id)}
-            >
-              {p.name}
-              {p.free && (
-                <span className="tag ok ms-1">
-                  חינם
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {info.noKey ? (
-          <label className="field">
-            <span>כתובת Ollama</span>
-            <input
-              className="input input-ltr"
-              value={ollamaUrl}
-              placeholder={info.placeholder}
-              onChange={(e) => setOllamaUrl(e.target.value)}
-            />
-          </label>
-        ) : (
-          <label className="field">
-            <span>מפתח API</span>
-            <div className="icon-row">
-              <input
-                className="input input-ltr"
-                type={showKey ? "text" : "password"}
-                value={apiKey}
-                placeholder={info.placeholder}
-                onChange={(e) => setApiKeyState(e.target.value)}
-              />
-              <button
-                className="icon-btn"
-                aria-label={showKey ? "הסתר מפתח API" : "הצג מפתח API"}
-                aria-pressed={showKey}
-                onClick={() => setShowKey((s) => !s)}
-              >
-                <span aria-hidden="true">{showKey ? "🙈" : "👁️"}</span>
-              </button>
-            </div>
-          </label>
-        )}
-
-        <label className="field">
-          <span>מודל (אופציונלי)</span>
-          <input
-            className="input input-ltr"
-            value={model}
-            placeholder={info.defaultModel}
-            onChange={(e) => setModel(e.target.value)}
-          />
-        </label>
-
-        <p className="muted fs-13">
-          <a href={info.infoUrl} target="_blank" rel="noreferrer">
-            {info.infoText}
-          </a>
-        </p>
-
-        <button className="btn" onClick={save}>
-          {saved ? "נשמר ✓" : "שמירה"}
-        </button>
-        <div className="spacer-sm" />
-        <button className="btn ghost" onClick={clearAll}>
-          מחיקת הגדרות AI
-        </button>
-      </div>
+      {dispatcherFeatures.ui ? <NewAiSettingsCard /> : <LegacyAiSettingsCard />}
 
       <div className="card">
         <h2>⚙️ העדפות</h2>

@@ -13,37 +13,35 @@ beforeEach(() => {
 });
 
 describe("AI config", () => {
-  it("defaults to gemini with its default model and no key", () => {
+  it("defaults to an empty provider list", () => {
     const cfg = loadAIConfig();
-    expect(cfg.provider).toBe("gemini");
-    expect(cfg.model).toBe(PROVIDERS.gemini.defaultModel);
-    expect(cfg.apiKey).toBe("");
+    expect(cfg.providers).toEqual([]);
     expect(isAIReady()).toBe(false);
   });
 
   it("round-trips a saved provider, key, and model", () => {
-    saveAIConfig({ provider: "groq", apiKey: "gsk_test", model: "custom-model" });
+    saveAIConfig({ providers: [{ provider: "groq", apiKeys: ["gsk_test"], model: "custom-model" }], ollamaUrl: "http://localhost:11434" });
     const cfg = loadAIConfig();
-    expect(cfg.provider).toBe("groq");
-    expect(cfg.apiKey).toBe("gsk_test");
-    expect(cfg.model).toBe("custom-model");
+    expect(cfg.providers[0]?.provider).toBe("groq");
+    expect(cfg.providers[0]?.apiKeys).toEqual(["gsk_test"]);
+    expect(cfg.providers[0]?.model).toBe("custom-model");
     expect(isAIReady()).toBe(true);
   });
 
   it("falls back to the provider default model when none is stored", () => {
-    saveAIConfig({ provider: "openai", apiKey: "sk-test" });
-    expect(loadAIConfig().model).toBe(PROVIDERS.openai.defaultModel);
+    saveAIConfig({ providers: [{ provider: "openai", apiKeys: ["sk-test"], model: "" }], ollamaUrl: "http://localhost:11434" });
+    expect(loadAIConfig().providers[0]?.model).toBe(PROVIDERS.openai.defaultModel);
   });
 
   it("treats Ollama as ready without a key", () => {
-    saveAIConfig({ provider: "ollama", apiKey: "" });
+    saveAIConfig({ providers: [{ provider: "ollama", apiKeys: [], model: PROVIDERS.ollama.defaultModel }], ollamaUrl: "http://localhost:11434" });
     expect(isAIReady()).toBe(true);
   });
 
   it("clears all stored config", () => {
-    saveAIConfig({ provider: "anthropic", apiKey: "sk-ant-test" });
+    saveAIConfig({ providers: [{ provider: "anthropic", apiKeys: ["sk-ant-test"], model: PROVIDERS.anthropic.defaultModel }], ollamaUrl: "http://localhost:11434" });
     clearAIConfig();
-    expect(loadAIConfig().provider).toBe("gemini");
+    expect(loadAIConfig().providers).toEqual([]);
     expect(isAIReady()).toBe(false);
   });
 });
@@ -62,7 +60,7 @@ describe("complete() — request resilience", () => {
   const originalFetch = globalThis.fetch;
 
   beforeEach(() => {
-    saveAIConfig({ provider: "groq", apiKey: "gsk_test", model: "test-model" });
+    saveAIConfig({ providers: [{ provider: "groq", apiKeys: ["gsk_test"], model: "test-model" }], ollamaUrl: "http://localhost:11434" });
   });
 
   afterEach(() => {
@@ -109,7 +107,10 @@ describe("complete() — request resilience", () => {
     const pending = complete("prompt", undefined, controller.signal);
     controller.abort();
 
-    await expect(pending).rejects.toMatchObject({ name: "AbortError" });
+    // The shared package wraps every candidate's failure — abort included —
+    // in AllProvidersExhaustedError; with only one provider configured here,
+    // what matters is that the abort short-circuits without a second fetch.
+    await expect(pending).rejects.toMatchObject({ name: "AllProvidersExhaustedError" });
     expect(calls).toBe(1);
   });
 });

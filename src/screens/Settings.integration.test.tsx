@@ -1,8 +1,12 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { LingoProvider } from "../store/useLingo";
 import { loadAIConfig } from "../services/ai";
 import Settings from "./Settings";
+
+// Scopes this file to the legacy hand-built AI settings — see
+// Settings.modelPicker.test.tsx for the shared <ModelPicker> path.
+vi.mock("../modeldispatcher.config", () => ({ dispatcherFeatures: { ui: false } }));
 
 function renderSettings() {
   return render(
@@ -27,8 +31,8 @@ describe("Settings screen", () => {
     fireEvent.click(screen.getByRole("button", { name: "שמירה" }));
 
     const cfg = loadAIConfig();
-    expect(cfg.provider).toBe("groq");
-    expect(cfg.apiKey).toBe("gsk_integration_test");
+    expect(cfg.providers[0]?.provider).toBe("groq");
+    expect(cfg.providers[0]?.apiKeys).toEqual(["gsk_integration_test"]);
   });
 
   it("shows the active provider banner once a config is saved", () => {
@@ -52,7 +56,6 @@ describe("Settings screen", () => {
     fireEvent.click(screen.getByRole("button", { name: "מחיקת הגדרות AI" }));
 
     const cfg = loadAIConfig();
-    expect(cfg.provider).toBe("gemini");
-    expect(cfg.apiKey).toBe("");
+    expect(cfg.providers).toEqual([]);
   });
 });
