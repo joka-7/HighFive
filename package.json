@@ -20,11 +20,11 @@
   },
   "dependencies": {
     "@joka-7/modeldispatcher-browser-agent": "^0.3.0",
-    "@sentry/browser": "^10.68.0",
-    "firebase": "^12.16.0",
-    "firebase-admin": "^14.2.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "@sentry/browser": "^10.74.0",
+    "firebase": "^12.19.0",
+    "firebase-admin": "^14.4.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -32,8 +32,8 @@
     "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.3",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.0.5",
     "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^10.8.1",
