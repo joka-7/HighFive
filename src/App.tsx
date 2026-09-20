@@ -21,6 +21,7 @@ import Listening from "./screens/Listening";
 import Speaking from "./screens/Speaking";
 import Calendar from "./screens/Calendar";
 import Memorize from "./screens/Memorize";
+import FooterLinks from "./components/FooterLinks";
 
 const TITLES: Record<Screen, string> = {
   onboarding: "ברוכים הבאים",
@@ -88,6 +89,7 @@ export default function App() {
           </div>
         )}
         <Onboarding />
+        <FooterLinks />
       </div>
     );
   }
@@ -206,6 +208,7 @@ export default function App() {
           );
         })}
       </nav>
+      <FooterLinks />
     </div>
   );
 }
