@@ -1254,3 +1254,24 @@ pre.explanation-text {
   text-underline-offset: 3px;
 }
 
+.footer-links {
+  /* Sits just above the fixed bottom-nav rather than overlapping it or the
+     topbar's brand/stats row, which both already use the full header width. */
+  position: fixed;
+  bottom: 62px;
+  left: 8px;
+  z-index: 20;
+  display: flex;
+  gap: 8px;
+  font-size: 16px;
+}
+
+.footer-links a {
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
+
+.footer-links a:hover {
+  opacity: 1;
+}
+
