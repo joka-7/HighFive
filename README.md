@@ -290,6 +290,7 @@ HighFive/
 ├── .ai               # Ogen-ai submodule — the shared source of rules, skills and the ai-sync…
 ├── .env.example
 ├── .gitignore
+├── .gitleaksignore
 ├── .gitmodules
 ├── .npmrc
 ├── AGENTS.md         # The compiled coding rules every AI assistant reads — generated, do not…
