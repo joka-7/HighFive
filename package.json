@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@joka-7/modeldispatcher-browser-agent": "^0.3.0",
-    "@sentry/browser": "^10.74.0",
+    "@sentry/browser": "^10.75.0",
     "firebase": "^12.19.0",
     "firebase-admin": "^14.4.0",
     "react": "^19.3.0",
