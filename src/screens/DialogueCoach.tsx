@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { EXTERNAL_CHAT_PROVIDERS } from "@joka-7/modeldispatcher-browser-agent";
+import { EXTERNAL_CHAT_PROVIDERS } from "modeldispatcher-browser-agent";
 import { useLingo } from "../store/useLingo";
 import { generateDialogueReply } from "../services/content";
 import { isAIReady } from "../services/ai";

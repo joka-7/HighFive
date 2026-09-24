@@ -7,9 +7,9 @@ import {
   isAIReady,
   type ProviderId,
 } from "../services/ai";
-import { ModelPicker } from "@joka-7/modeldispatcher-react-ui";
-import "@joka-7/modeldispatcher-react-ui/styles.css";
-import { loadExternalChatFavorite, saveExternalChatFavorite } from "@joka-7/modeldispatcher-browser-agent";
+import { ModelPicker } from "modeldispatcher-react-ui";
+import "modeldispatcher-react-ui/styles.css";
+import { loadExternalChatFavorite, saveExternalChatFavorite } from "modeldispatcher-browser-agent";
 import { dispatcherFeatures } from "../modeldispatcher.config";
 import { useLingo } from "../store/useLingo";
 import {

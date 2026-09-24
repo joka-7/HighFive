@@ -19,8 +19,8 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@joka-7/modeldispatcher-browser-agent": "^0.6.0",
-    "@joka-7/modeldispatcher-react-ui": "^0.6.0",
+    "modeldispatcher-browser-agent": "^0.6.0",
+    "modeldispatcher-react-ui": "^0.6.0",
     "@sentry/browser": "^10.68.0",
     "firebase": "^12.16.0",
     "firebase-admin": "^14.2.0",
