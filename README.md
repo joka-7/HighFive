@@ -290,6 +290,7 @@ HighFive/
 ├── .ai               # Ogen-ai submodule — the shared source of rules, skills and the ai-sync…
 ├── .env.example
 ├── .gitignore
+├── .gitleaksignore
 ├── .gitmodules
 ├── .npmrc
 ├── AGENTS.md         # The compiled coding rules every AI assistant reads — generated, do not…
@@ -297,6 +298,7 @@ HighFive/
 ├── GEMINI.md         # Gemini CLI's copy of AGENTS.md (generated)
 ├── LICENSE
 ├── README.md         # High5 ✋
+├── SECURITY.md       # Security Policy
 ├── ai-config.toml    # Which rule fragments and target tools ai-sync compiles for this repo
 ├── eslint.config.js
 ├── firestore.rules

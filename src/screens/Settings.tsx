@@ -1,4 +1,5 @@
 import { useState } from "react";
+import GithubIcon from "../components/GithubIcon";
 import {
   PROVIDERS,
   loadAIConfig,
@@ -595,6 +596,14 @@ export default function Settings() {
       <p className="center muted fs-12">
         High5 · גרסת ווב · נבנה באהבה ✋
       </p>
+      <div className="footer-links">
+        <a href="https://github.com/joka-7" target="_blank" rel="noreferrer" aria-label="GitHub">
+          <GithubIcon size={14} />
+        </a>
+        <a href="https://jk-dev-7.vercel.app" target="_blank" rel="noreferrer" aria-label="jk.dev portfolio">
+          🌐
+        </a>
+      </div>
     </div>
   );
 }
