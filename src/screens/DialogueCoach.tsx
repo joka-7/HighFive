@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { EXTERNAL_CHAT_PROVIDERS } from "modeldispatcher-browser-agent";
+import { EXTERNAL_CHAT_PROVIDERS, loadExternalChatFavorite } from "modeldispatcher-browser-agent";
+import { NoProviderPrompt, ConversationIntro } from "modeldispatcher-react-ui";
 import { useLingo } from "../store/useLingo";
 import { generateDialogueReply } from "../services/content";
 import { isAIReady } from "../services/ai";
@@ -44,9 +45,11 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
           מאמן השיחה משתמש ב-AI חי ולכן דורש ספק AI מוגדר. הוסף מפתח בהגדרות כדי
           לתרגל דיבור עם תיקונים בזמן אמת.
         </p>
-        <button className="btn" onClick={() => go("settings")}>
-          להגדרת AI →
-        </button>
+        <NoProviderPrompt
+          favorite={loadExternalChatFavorite()}
+          onOpenSettings={() => go("settings")}
+          locale="he"
+        />
       </div>
     );
   }
@@ -123,7 +126,10 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
 
       <div className="chat-log" ref={logRef}>
         {messages.length === 0 && (
-          <p className="center muted">התחל את השיחה באנגלית — אני אענה ואתקן אותך 🙂</p>
+          <>
+            <ConversationIntro locale="he" />
+            <p className="center muted">התחל את השיחה באנגלית — אני אענה ואתקן אותך 🙂</p>
+          </>
         )}
         {messages.map((m) => (
           <div key={m.id} className={`bubble ${m.role}`}>

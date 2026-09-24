@@ -16,8 +16,9 @@ vi.mock("../services/firebase", () => ({
   signOut: vi.fn(),
 }));
 
+const mockIsAIReady = vi.fn(() => true);
 vi.mock("../services/ai", () => ({
-  isAIReady: () => true,
+  isAIReady: () => mockIsAIReady(),
 }));
 
 vi.mock("../services/tts", () => ({
@@ -51,6 +52,7 @@ function renderCoach() {
 beforeEach(() => {
   localStorage.clear();
   vi.clearAllMocks();
+  mockIsAIReady.mockReturnValue(true);
 });
 
 describe("DialogueCoach external AI escape hatch", () => {
@@ -89,5 +91,45 @@ describe("DialogueCoach external AI escape hatch", () => {
       expect(screen.getByText("Sure!")).toBeInTheDocument();
     });
     expect(screen.queryByRole("link", { name: "Claude" })).toBeNull();
+  });
+});
+
+describe("DialogueCoach — no provider configured", () => {
+  it("shows a way to open Settings, with no favorite saved", () => {
+    mockIsAIReady.mockReturnValue(false);
+    const go = vi.fn();
+    render(
+      <LingoProvider>
+        <Register>
+          <DialogueCoach go={go} />
+        </Register>
+      </LingoProvider>,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "פתיחת הגדרות AI" }));
+    expect(go).toHaveBeenCalledWith("settings");
+    expect(screen.queryByRole("button", { name: /^שאלו את /i })).toBeNull();
+  });
+
+  it("also offers to ask the saved favorite for free, no key required", () => {
+    mockIsAIReady.mockReturnValue(false);
+    localStorage.setItem("aiExternalChatFavorite", "claude");
+    render(
+      <LingoProvider>
+        <Register>
+          <DialogueCoach go={() => {}} />
+        </Register>
+      </LingoProvider>,
+    );
+
+    expect(screen.getByRole("button", { name: "שאלו את Claude" })).toBeInTheDocument();
+  });
+});
+
+describe("DialogueCoach — conversation intro", () => {
+  it("shows the on-screen AI-conversation notice once a scenario is picked, before any message", () => {
+    renderCoach();
+    fireEvent.click(screen.getByText("☕ בבית קפה"));
+    expect(screen.getByRole("note")).toHaveTextContent("אתם משוחחים עם AI");
   });
 });
