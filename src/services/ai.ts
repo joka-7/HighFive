@@ -1,5 +1,5 @@
 // Multi-provider AI layer — a thin wrapper over
-// @joka-7/modeldispatcher-browser-agent, the shared browser-native AI core
+// modeldispatcher-browser-agent, the shared browser-native AI core
 // extracted from this app (and JobFlowTracker/KanDOne/StepByLearn, which all
 // independently built the same thing). This file exists only to keep every
 // existing call site (Settings.tsx, content.ts, QuizRunner.tsx, Dashboard.tsx,
@@ -20,7 +20,7 @@ import {
   complete as agentComplete,
   type AgentConfig,
   type ProviderId,
-} from "@joka-7/modeldispatcher-browser-agent";
+} from "modeldispatcher-browser-agent";
 
 export type { ProviderId };
 export type ProviderInfo = (typeof PROVIDERS)[ProviderId];
@@ -32,7 +32,7 @@ export function loadAIConfig(): AIConfig {
   return loadConfig();
 }
 
-export function saveAIConfig(cfg: Partial<AIConfig>): void {
+export function saveAIConfig(cfg: AIConfig): void {
   saveConfig(cfg);
 }
 
