@@ -279,7 +279,7 @@ keep the key server-side.
 
 <!-- BEGIN GENERATED TREE (depth=1 entries=all) -->
 ```text
-highfive/
+HighFive/
 ├── .github/
 ├── api/              # Vercel Serverless Functions — built independently of the Vite app (see…
 ├── docs/
