@@ -279,7 +279,7 @@ keep the key server-side.
 
 <!-- BEGIN GENERATED TREE (depth=1 entries=all) -->
 ```text
-HighFive/
+highfive/
 ├── .github/
 ├── api/              # Vercel Serverless Functions — built independently of the Vite app (see…
 ├── docs/
@@ -292,7 +292,6 @@ HighFive/
 ├── .gitignore
 ├── .gitleaksignore
 ├── .gitmodules
-├── .npmrc
 ├── AGENTS.md         # The compiled coding rules every AI assistant reads — generated, do not…
 ├── CLAUDE.md         # Claude Code's copy of AGENTS.md (generated)
 ├── GEMINI.md         # Gemini CLI's copy of AGENTS.md (generated)

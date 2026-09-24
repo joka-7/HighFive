@@ -6,7 +6,7 @@ to refresh it, and never edit between the markers by hand.
 
 <!-- BEGIN GENERATED TREE (depth=all entries=all) -->
 ```text
-HighFive/
+highfive/
 ├── .github/
 │   ├── workflows/
 │   │   ├── ci.yml
@@ -231,6 +231,7 @@ HighFive/
 │   │   ├── Review.tsx
 │   │   ├── SavedWords.tsx
 │   │   ├── Settings.integration.test.tsx
+│   │   ├── Settings.modelPicker.test.tsx
 │   │   ├── Settings.tsx
 │   │   ├── Speaking.tsx
 │   │   └── Vocabulary.tsx
@@ -286,6 +287,7 @@ HighFive/
 │   ├── App.tsx
 │   ├── index.css
 │   ├── main.tsx
+│   ├── modeldispatcher.config.ts
 │   ├── test-setup.ts
 │   └── types.ts
 ├── .ai                          # Ogen-ai submodule — the shared source of rules, skills and the ai-sync…
@@ -293,7 +295,6 @@ HighFive/
 ├── .gitignore
 ├── .gitleaksignore
 ├── .gitmodules
-├── .npmrc
 ├── AGENTS.md                    # The compiled coding rules every AI assistant reads — generated, do not…
 ├── CLAUDE.md                    # Claude Code's copy of AGENTS.md (generated)
 ├── GEMINI.md                    # Gemini CLI's copy of AGENTS.md (generated)
