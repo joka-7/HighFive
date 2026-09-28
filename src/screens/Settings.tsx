@@ -594,7 +594,7 @@ export default function Settings() {
       </div>
 
       <p className="center muted fs-12">
-        High5 · גרסת ווב · נבנה באהבה ✋
+        נבנה על ידי joka-7
       </p>
       <div className="footer-links">
         <a href="https://github.com/joka-7" target="_blank" rel="noreferrer" aria-label="GitHub">
