@@ -603,6 +603,9 @@ export default function Settings() {
         <a href="https://jk-dev-7.vercel.app" target="_blank" rel="noreferrer" aria-label="jk.dev portfolio">
           🌐
         </a>
+        <a href="https://github.com/joka-7/HighFive" target="_blank" rel="noreferrer" aria-label="View repository">
+          📦
+        </a>
       </div>
     </div>
   );
