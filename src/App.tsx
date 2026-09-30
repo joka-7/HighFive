@@ -174,7 +174,10 @@ export default function App() {
           <span className="chip" aria-label={`רצף של ${progress.streak} ימים`}>
             🔥 {progress.streak}
           </span>
-          <span className="chip level" aria-label={`רמה ${progress.currentLevel}`}>
+          <span
+            className="chip level"
+            aria-label={`רמה ${progress.currentLevel}`}
+          >
             {progress.currentLevel}
           </span>
         </div>
@@ -192,20 +195,47 @@ export default function App() {
       <div className="center muted fs-12" style={{ padding: "12px 0 0" }}>
         נבנה על ידי joka-7
       </div>
-      <div className="footer-links" style={{ justifyContent: "center", paddingBottom: 12 }}>
-        <a href="https://github.com/joka-7" target="_blank" rel="noreferrer" aria-label="GitHub">
+      <div
+        className="footer-links"
+        style={{ justifyContent: "center", paddingBottom: 12 }}
+      >
+        <a
+          href="https://github.com/joka-7"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="GitHub"
+        >
           <GithubIcon size={14} />
         </a>
-        <a href="https://jk-dev-7.vercel.app" target="_blank" rel="noreferrer" aria-label="jk.dev portfolio">
+        <a
+          href="https://jk-dev-7.vercel.app"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="jk.dev portfolio"
+        >
           🌐
         </a>
-        <a href="https://github.com/joka-7/HighFive" target="_blank" rel="noreferrer" aria-label="View repository">
+        <a
+          href="https://github.com/joka-7/HighFive"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="View repository"
+        >
           📦
         </a>
-        <a href="mailto:joka.dev.7@gmail.com" rel="noreferrer" aria-label="Send feedback by email">
+        <a
+          href="mailto:joka.dev.7@gmail.com"
+          rel="noreferrer"
+          aria-label="Send feedback by email"
+        >
           ✉️
         </a>
-        <a href="https://github.com/joka-7/HighFive/issues/new" target="_blank" rel="noreferrer" aria-label="Report an issue">
+        <a
+          href="https://github.com/joka-7/HighFive/issues/new"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Report an issue"
+        >
           💬
         </a>
       </div>
