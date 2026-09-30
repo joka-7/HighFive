@@ -10,7 +10,10 @@ import {
 } from "../services/ai";
 import { ModelPicker } from "modeldispatcher-react-ui";
 import "modeldispatcher-react-ui/styles.css";
-import { loadExternalChatFavorite, saveExternalChatFavorite } from "modeldispatcher-browser-agent";
+import {
+  loadExternalChatFavorite,
+  saveExternalChatFavorite,
+} from "modeldispatcher-browser-agent";
 import { dispatcherFeatures } from "../modeldispatcher.config";
 import { useLingo } from "../store/useLingo";
 import {
@@ -24,7 +27,11 @@ import {
   requestReminderPermission,
 } from "../services/reminders";
 import { usePwaInstall, canShare, shareApp } from "../services/pwa";
-import { enablePushReminders, isPushSupported, pushPermission } from "../services/push";
+import {
+  enablePushReminders,
+  isPushSupported,
+  pushPermission,
+} from "../services/push";
 import { speak, ttsSupported } from "../services/tts";
 import { navigateHash } from "../utils/routing";
 
@@ -48,7 +55,9 @@ function NewAiSettingsCard() {
     saveAIConfig(next);
   }
 
-  function handleFavoriteChange(next: Parameters<typeof saveExternalChatFavorite>[0]) {
+  function handleFavoriteChange(
+    next: Parameters<typeof saveExternalChatFavorite>[0],
+  ) {
     setFavorite(next);
     saveExternalChatFavorite(next);
   }
@@ -88,7 +97,9 @@ function LegacyAiSettingsCard() {
   const [provider, setProvider] = useState<ProviderId>(initialProvider);
   const [apiKey, setApiKeyState] = useState(initialCred?.apiKeys[0] ?? "");
   const [model, setModel] = useState(
-    initialCred && initialCred.model !== PROVIDERS[initialProvider].defaultModel ? initialCred.model : "",
+    initialCred && initialCred.model !== PROVIDERS[initialProvider].defaultModel
+      ? initialCred.model
+      : "",
   );
   const [ollamaUrl, setOllamaUrl] = useState(initial.ollamaUrl);
   const [showKey, setShowKey] = useState(false);
@@ -145,11 +156,7 @@ function LegacyAiSettingsCard() {
             onClick={() => setProvider(p.id)}
           >
             {p.name}
-            {p.free && (
-              <span className="tag ok ms-1">
-                חינם
-              </span>
-            )}
+            {p.free && <span className="tag ok ms-1">חינם</span>}
           </button>
         ))}
       </div>
@@ -239,7 +246,9 @@ export default function Settings() {
 
   const [pushBusy, setPushBusy] = useState(false);
   const [pushError, setPushError] = useState("");
-  const [pushEnabled, setPushEnabled] = useState(pushPermission() === "granted");
+  const [pushEnabled, setPushEnabled] = useState(
+    pushPermission() === "granted",
+  );
 
   async function handleEnablePush() {
     if (!user) return;
@@ -259,7 +268,10 @@ export default function Settings() {
   }
 
   function setTheme(dark: boolean) {
-    const next = { ...prefs, theme: dark ? ("dark" as const) : ("light" as const) };
+    const next = {
+      ...prefs,
+      theme: dark ? ("dark" as const) : ("light" as const),
+    };
     setPrefs(next);
     savePrefs(next);
     applyTheme(next.theme);
@@ -406,7 +418,10 @@ export default function Settings() {
                 משנים את הרמה במסך ההתקדמות, שם רואים גם מה נשאר כדי לעלות.
               </div>
             </div>
-            <button className="btn ghost small" onClick={() => navigateHash("progress")}>
+            <button
+              className="btn ghost small"
+              onClick={() => navigateHash("progress")}
+            >
               רמה {progress.currentLevel} ←
             </button>
           </div>
@@ -450,14 +465,17 @@ export default function Settings() {
           <p className="muted">✅ האפליקציה מותקנת במכשיר שלך.</p>
         ) : canInstall ? (
           <>
-            <p className="muted">התקן את High5 כאפליקציה במסך הבית לגישה מהירה וגם ללא אינטרנט.</p>
+            <p className="muted">
+              התקן את High5 כאפליקציה במסך הבית לגישה מהירה וגם ללא אינטרנט.
+            </p>
             <button className="btn" onClick={install}>
               📥 התקנת האפליקציה
             </button>
           </>
         ) : (
           <p className="muted">
-            כדי להתקין: פתח את תפריט הדפדפן ובחר "הוסף למסך הבית". ב-iPhone — דרך כפתור השיתוף בספארי.
+            כדי להתקין: פתח את תפריט הדפדפן ובחר "הוסף למסך הבית". ב-iPhone —
+            דרך כפתור השיתוף בספארי.
           </p>
         )}
         {canShare() && (
@@ -474,8 +492,8 @@ export default function Settings() {
         <h3>☁️ חשבון וסנכרון</h3>
         {!cloudConfigured ? (
           <p className="muted">
-            הנתונים נשמרים במכשיר הזה בלבד. כדי לסנכרן בין מכשירים עם חשבון Google,
-            יש להגדיר Firebase (ראה הוראות ב-README).
+            הנתונים נשמרים במכשיר הזה בלבד. כדי לסנכרן בין מכשירים עם חשבון
+            Google, יש להגדיר Firebase (ראה הוראות ב-README).
           </p>
         ) : !authReady ? (
           <p className="muted">טוען…</p>
@@ -496,26 +514,30 @@ export default function Settings() {
               </div>
             )}
             <p className="muted">
-              מחובר כ-<strong>{user.email ?? user.displayName ?? "משתמש Google"}</strong>.
-              ההתקדמות מסונכרנת בין המכשירים שלך.
+              מחובר כ-
+              <strong>
+                {user.email ?? user.displayName ?? "משתמש Google"}
+              </strong>
+              . ההתקדמות מסונכרנת בין המכשירים שלך.
             </p>
-            <button className="btn ghost" disabled={authBusy} onClick={handleSignOut}>
+            <button
+              className="btn ghost"
+              disabled={authBusy}
+              onClick={handleSignOut}
+            >
               התנתקות
             </button>
           </>
         ) : (
           <>
             <p className="muted">
-              שמירה מקומית פעילה. התחבר עם Google כדי לסנכרן את ההתקדמות בין מכשירים.
+              שמירה מקומית פעילה. התחבר עם Google כדי לסנכרן את ההתקדמות בין
+              מכשירים.
             </p>
             <button className="btn" disabled={authBusy} onClick={handleSignIn}>
               {authBusy ? "מתחבר…" : "התחברות עם Google"}
             </button>
-            {authError && (
-              <p className="muted text-danger">
-                {authError}
-              </p>
-            )}
+            {authError && <p className="muted text-danger">{authError}</p>}
           </>
         )}
       </div>
@@ -527,14 +549,20 @@ export default function Settings() {
             <p className="muted">הדפדפן הזה לא תומך בהתראות דחיפה.</p>
           ) : pushEnabled ? (
             <p className="muted">
-              ✅ תזכורות פעילות. אם לא תיכנס/י ולא תשלים/י את המשימות היומיות, תישלח לך תזכורת.
+              ✅ תזכורות פעילות. אם לא תיכנס/י ולא תשלים/י את המשימות היומיות,
+              תישלח לך תזכורת.
             </p>
           ) : (
             <>
               <p className="muted">
-                קבל/י תזכורת אם לא נכנסת לאפליקציה ולא השלמת את המשימות היומיות שלך.
+                קבל/י תזכורת אם לא נכנסת לאפליקציה ולא השלמת את המשימות היומיות
+                שלך.
               </p>
-              <button className="btn" disabled={pushBusy} onClick={handleEnablePush}>
+              <button
+                className="btn"
+                disabled={pushBusy}
+                onClick={handleEnablePush}
+              >
                 {pushBusy ? "מפעיל…" : "הפעלת תזכורות"}
               </button>
               {pushError && (
@@ -593,18 +621,46 @@ export default function Settings() {
         </button>
       </div>
 
-      <p className="center muted fs-12">
-        נבנה על ידי joka-7
-      </p>
+      <p className="center muted fs-12">נבנה על ידי joka-7</p>
       <div className="footer-links">
-        <a href="https://github.com/joka-7" target="_blank" rel="noreferrer" aria-label="GitHub">
+        <a
+          href="https://github.com/joka-7"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="GitHub"
+        >
           <GithubIcon size={14} />
         </a>
-        <a href="https://jk-dev-7.vercel.app" target="_blank" rel="noreferrer" aria-label="jk.dev portfolio">
+        <a
+          href="https://jk-dev-7.vercel.app"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="jk.dev portfolio"
+        >
           🌐
         </a>
-        <a href="https://github.com/joka-7/HighFive" target="_blank" rel="noreferrer" aria-label="View repository">
+        <a
+          href="https://github.com/joka-7/HighFive"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="View repository"
+        >
           📦
+        </a>
+        <a
+          href="mailto:joka.dev.7@gmail.com"
+          rel="noreferrer"
+          aria-label="Send feedback by email"
+        >
+          ✉️
+        </a>
+        <a
+          href="https://github.com/joka-7/HighFive/issues/new"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Report an issue"
+        >
+          💬
         </a>
       </div>
     </div>
