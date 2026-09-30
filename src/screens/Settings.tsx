@@ -606,6 +606,12 @@ export default function Settings() {
         <a href="https://github.com/joka-7/HighFive" target="_blank" rel="noreferrer" aria-label="View repository">
           📦
         </a>
+        <a href="mailto:joka.dev.7@gmail.com" rel="noreferrer" aria-label="Send feedback by email">
+          ✉️
+        </a>
+        <a href="https://github.com/joka-7/HighFive/issues/new" target="_blank" rel="noreferrer" aria-label="Report an issue">
+          💬
+        </a>
       </div>
     </div>
   );
