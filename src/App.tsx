@@ -204,6 +204,7 @@ export default function App() {
           target="_blank"
           rel="noreferrer"
           aria-label="GitHub"
+          title="GitHub"
         >
           <GithubIcon size={14} />
         </a>
@@ -212,6 +213,7 @@ export default function App() {
           target="_blank"
           rel="noreferrer"
           aria-label="jk.dev portfolio"
+          title="jk.dev portfolio"
         >
           🌐
         </a>
@@ -220,6 +222,7 @@ export default function App() {
           target="_blank"
           rel="noreferrer"
           aria-label="View repository"
+          title="View repository"
         >
           📦
         </a>
@@ -227,6 +230,7 @@ export default function App() {
           href="mailto:joka.dev.7@gmail.com"
           rel="noreferrer"
           aria-label="Send feedback by email"
+          title="Send feedback by email"
         >
           ✉️
         </a>
@@ -235,6 +239,7 @@ export default function App() {
           target="_blank"
           rel="noreferrer"
           aria-label="Report an issue"
+          title="Report an issue"
         >
           💬
         </a>
