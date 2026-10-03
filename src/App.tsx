@@ -207,6 +207,7 @@ export default function App() {
           title="GitHub"
         >
           <GithubIcon size={14} />
+          <span className="footer-link-label">GitHub</span>
         </a>
         <a
           href="https://jk-dev-7.vercel.app"
@@ -215,7 +216,8 @@ export default function App() {
           aria-label="jk.dev portfolio"
           title="jk.dev portfolio"
         >
-          🌐
+          <span aria-hidden="true">🌐</span>
+          <span className="footer-link-label">אתר</span>
         </a>
         <a
           href="https://github.com/joka-7/HighFive"
@@ -224,7 +226,8 @@ export default function App() {
           aria-label="View repository"
           title="View repository"
         >
-          📦
+          <span aria-hidden="true">📦</span>
+          <span className="footer-link-label">קוד</span>
         </a>
         <a
           href="mailto:joka.dev.7@gmail.com"
@@ -232,7 +235,8 @@ export default function App() {
           aria-label="Send feedback by email"
           title="Send feedback by email"
         >
-          ✉️
+          <span aria-hidden="true">✉️</span>
+          <span className="footer-link-label">אימייל</span>
         </a>
         <a
           href="https://github.com/joka-7/HighFive/issues/new"
@@ -241,7 +245,8 @@ export default function App() {
           aria-label="Report an issue"
           title="Report an issue"
         >
-          💬
+          <span aria-hidden="true">💬</span>
+          <span className="footer-link-label">משוב</span>
         </a>
       </div>
 
