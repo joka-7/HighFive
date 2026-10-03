@@ -1264,15 +1264,22 @@ pre.explanation-text {
 
 .footer-links a {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 2px;
   color: var(--text-soft);
   opacity: 0.7;
-  padding: 8px;
+  padding: 6px 8px;
   border-radius: 10px;
   transition: opacity 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(128, 128, 128, 0.35);
+}
+
+.footer-link-label {
+  font-size: 9px;
+  line-height: 1;
 }
 
 .footer-links a:hover {
