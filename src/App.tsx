@@ -191,15 +191,20 @@ export default function App() {
         {renderScreen()}
       </main>
 
-      <div className="center fs-12" style={{ padding: "12px 0 96px" }}>
+      <div
+        className="center fs-12"
+        style={{ padding: "12px 0 96px", display: "flex", gap: "6px", justifyContent: "center" }}
+      >
+        <span className="muted">נבנה על ידי joka-7</span>
         <a
           href="https://jk-dev-7.vercel.app"
           target="_blank"
           rel="noreferrer"
+          aria-label="jk.dev portfolio"
+          title="jk.dev portfolio"
           className="tap-fx muted"
-          style={{ textDecorationLine: "underline", textUnderlineOffset: "2px" }}
         >
-          נבנה על ידי joka-7
+          <span aria-hidden="true">🌐</span>
         </a>
       </div>
 
