@@ -21,7 +21,6 @@ import Listening from "./screens/Listening";
 import Speaking from "./screens/Speaking";
 import Calendar from "./screens/Calendar";
 import Memorize from "./screens/Memorize";
-import GithubIcon from "./components/GithubIcon";
 
 const TITLES: Record<Screen, string> = {
   onboarding: "ברוכים הבאים",
@@ -192,61 +191,15 @@ export default function App() {
         {renderScreen()}
       </main>
 
-      <div className="center muted fs-12" style={{ padding: "12px 0 0" }}>
-        נבנה על ידי joka-7
-      </div>
-      <div
-        className="footer-links"
-        style={{ justifyContent: "center", paddingBottom: 12 }}
-      >
-        <a
-          href="https://github.com/joka-7"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="GitHub"
-          title="GitHub"
-        >
-          <GithubIcon size={14} />
-          <span className="footer-link-label">GitHub</span>
-        </a>
+      <div className="center fs-12" style={{ padding: "12px 0 96px" }}>
         <a
           href="https://jk-dev-7.vercel.app"
           target="_blank"
           rel="noreferrer"
-          aria-label="jk.dev portfolio"
-          title="jk.dev portfolio"
+          className="tap-fx muted"
+          style={{ textDecorationLine: "underline", textUnderlineOffset: "2px" }}
         >
-          <span aria-hidden="true">🌐</span>
-          <span className="footer-link-label">אתר</span>
-        </a>
-        <a
-          href="https://github.com/joka-7/HighFive"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="View repository"
-          title="View repository"
-        >
-          <span aria-hidden="true">📦</span>
-          <span className="footer-link-label">קוד</span>
-        </a>
-        <a
-          href="mailto:joka.dev.7@gmail.com"
-          rel="noreferrer"
-          aria-label="Send feedback by email"
-          title="Send feedback by email"
-        >
-          <span aria-hidden="true">✉️</span>
-          <span className="footer-link-label">אימייל</span>
-        </a>
-        <a
-          href="https://github.com/joka-7/HighFive/issues/new"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Report an issue"
-          title="Report an issue"
-        >
-          <span aria-hidden="true">💬</span>
-          <span className="footer-link-label">משוב</span>
+          נבנה על ידי joka-7
         </a>
       </div>
 
