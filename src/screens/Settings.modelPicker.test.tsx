@@ -22,18 +22,18 @@ beforeEach(() => {
 });
 
 describe("Settings screen — ModelPicker path (dispatcherFeatures.ui: true)", () => {
-  it("renders the shared ModelPicker empty state with no providers configured", () => {
+  it("renders the shared ModelPicker empty state in Hebrew, matching the app's RTL-only UI", () => {
     renderSettings();
-    expect(screen.getByText(/No providers added yet/i)).toBeInTheDocument();
+    expect(screen.getByText(/עדיין לא נוספו ספקים/)).toBeInTheDocument();
   });
 
   it("adding a provider through ModelPicker persists via saveConfig", async () => {
     const user = userEvent.setup();
     renderSettings();
 
-    const select = screen.getByLabelText("Choose a provider to add");
+    const select = screen.getByLabelText("בחירת ספק להוספה");
     await user.selectOptions(select, "groq");
-    await user.click(screen.getByRole("button", { name: "+ Add provider" }));
+    await user.click(screen.getByRole("button", { name: "+ הוספת ספק" }));
 
     const cfg = loadAIConfig();
     expect(cfg.providers).toEqual([

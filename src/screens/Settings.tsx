@@ -82,6 +82,7 @@ function NewAiSettingsCard() {
         onConfigChange={handleConfigChange}
         externalChatFavorite={favorite}
         onExternalChatFavoriteChange={handleFavoriteChange}
+        locale="he"
       />
     </div>
   );
