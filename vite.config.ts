@@ -127,14 +127,6 @@ export default defineConfig({
               expiration: { maxEntries: 5, maxAgeSeconds: 60 * 60 * 24 * 30 },
             },
           },
-          {
-            urlPattern: ({ url }) => url.hostname === "fonts.gstatic.com",
-            handler: "CacheFirst",
-            options: {
-              cacheName: "google-fonts",
-              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
-            },
-          },
         ],
       },
     }),
