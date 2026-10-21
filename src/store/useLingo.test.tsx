@@ -301,3 +301,27 @@ describe("useLingo — export / import progress", () => {
     expect(result.current.quizHistory).toHaveLength(1);
   });
 });
+
+const CAT = {
+  word: "cat",
+  partOfSpeech: "noun",
+  definition: "חתול",
+  example: "The cat sits.",
+  translation: "חתול",
+  level: "A1" as const,
+};
+
+describe("useLingo — storage failures", () => {
+  it("keeps working when localStorage is full", () => {
+    const result = renderRegisteredLingo();
+    const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("quota", "QuotaExceededError");
+    });
+    vi.spyOn(console, "error").mockImplementation(() => {});
+
+    act(() => result.current.toggleSaveWord(CAT));
+
+    expect(result.current.savedWords).toHaveLength(1);
+    setItem.mockRestore();
+  });
+});

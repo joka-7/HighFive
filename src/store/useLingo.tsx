@@ -74,6 +74,23 @@ function load<T>(key: string, fallback: T): T {
   }
 }
 
+// Keys whose write already failed this session — a full quota fails on every
+// state change, and one report per key is enough to see it.
+const reportedPersistFailures = new Set<string>();
+
+// Mirror state into localStorage. A full quota (Safari private mode, a very
+// long history) must not crash the app from inside an effect: in-memory state
+// stays correct for this session, and the failure is reported once.
+function persist(key: string, value: unknown): void {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (err) {
+    if (reportedPersistFailures.has(key)) return;
+    reportedPersistFailures.add(key);
+    reportError(err, `storage.${key}`);
+  }
+}
+
 const MISSION_POINTS = 30;
 // Longest "what did you watch/listen to/read?" note we keep, so a pasted wall
 // of text can't bloat localStorage or the synced Firestore document.
@@ -226,25 +243,25 @@ export function LingoProvider({ children }: { children: ReactNode }) {
 
   // Always mirror state to localStorage (local mode + offline cache).
   useEffect(() => {
-    localStorage.setItem(KEYS.progress, JSON.stringify(progress));
+    persist(KEYS.progress, progress);
   }, [progress]);
   useEffect(() => {
-    localStorage.setItem(KEYS.savedWords, JSON.stringify(savedWords));
+    persist(KEYS.savedWords, savedWords);
   }, [savedWords]);
   useEffect(() => {
-    localStorage.setItem(KEYS.learnedWords, JSON.stringify(learnedWords));
+    persist(KEYS.learnedWords, learnedWords);
   }, [learnedWords]);
   useEffect(() => {
-    localStorage.setItem(KEYS.chat, JSON.stringify(chatMessages));
+    persist(KEYS.chat, chatMessages);
   }, [chatMessages]);
   useEffect(() => {
-    localStorage.setItem(KEYS.quizHistory, JSON.stringify(quizHistory));
+    persist(KEYS.quizHistory, quizHistory);
   }, [quizHistory]);
   useEffect(() => {
-    localStorage.setItem(KEYS.missionLog, JSON.stringify(missionLog));
+    persist(KEYS.missionLog, missionLog);
   }, [missionLog]);
   useEffect(() => {
-    localStorage.setItem(KEYS.dailyMissions, JSON.stringify(dailyMissions));
+    persist(KEYS.dailyMissions, dailyMissions);
   }, [dailyMissions]);
 
   // Keep the latest snapshot in a ref so the auth callback can seed the cloud
@@ -330,7 +347,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
         setCloudSyncError(false);
         return;
       }
-      localStorage.setItem(KEYS.cloudSession, JSON.stringify(true));
+      persist(KEYS.cloudSession, true);
       setCloudSyncError(false);
       try {
         await applyCloudLoad(u.uid);
