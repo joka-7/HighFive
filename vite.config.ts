@@ -36,6 +36,11 @@ function firebaseCompatScripts(): Plugin {
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  define: {
+    // Tags Sentry reports with the deployed commit (Vercel sets this at build
+    // time), so an error can be traced to the deploy that introduced it.
+    "import.meta.env.VITE_APP_RELEASE": JSON.stringify(process.env.VERCEL_GIT_COMMIT_SHA ?? ""),
+  },
   build: {
     rollupOptions: {
       output: {
