@@ -4,8 +4,10 @@
 # and file-level orientation lives here instead. Always overrides a derived note.
 
 [notes]
-"api" = "Vercel Serverless Functions — built independently of the Vite app (see tsconfig.json)"
+"api" = "Vercel Serverless Functions — built independently of the Vite app, type-checked by tsconfig.api.json"
+"api/_lib" = "Helpers shared by the functions; Vercel skips underscore paths, so these are not deployed as endpoints"
 "api/mission-reminder.ts" = "Hourly push-reminder endpoint; actual per-user scheduling logic lives in reminderLogic.ts"
+"tsconfig.api.json" = "Strict type-check for api/ (Node), run by `npm run typecheck`"
 "e2e" = "Playwright end-to-end specs, run via `npm run test:e2e`"
 "public" = "Static assets + PWA manifest/service worker, served as-is by Vite"
 "scripts" = "Content generation — `npm run content` rebuilds src/data/offline/*.json from these"

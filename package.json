@@ -12,7 +12,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "typecheck": "tsc -b --noEmit",
+    "typecheck": "tsc -b --noEmit && tsc -p tsconfig.api.json",
     "content": "node scripts/generate-content.mjs",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
