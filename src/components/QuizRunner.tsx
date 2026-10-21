@@ -138,7 +138,7 @@ export default function QuizRunner({ questions, onFinish }: Props) {
             </button>
           </div>
         </div>
-        <h3 className="ltr">{q.question}</h3>
+        <h3 className="ltr" lang="en">{q.question}</h3>
         {revealQuestionHe && questionHe && (
           <p className="muted my-quiz-he">{questionHe}</p>
         )}

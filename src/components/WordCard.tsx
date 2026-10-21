@@ -12,7 +12,7 @@ export default function WordCard({ word, saved, onToggleSave }: Props) {
     <div className="card">
       <div className="word-head">
         <div>
-          <div className="word-en">{word.word}</div>
+          <div className="word-en" lang="en">{word.word}</div>
           <div className="pos">{word.partOfSpeech}</div>
         </div>
         <div className="icon-row">

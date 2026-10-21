@@ -143,7 +143,7 @@ export default function Speaking() {
         <span className="tag">
           משפט {index + 1}/{speakingSet.prompts.length}
         </span>
-        <h3 className="ltr-only my-speak-prompt">{prompt.text}</h3>
+        <h3 className="ltr-only my-speak-prompt" lang="en">{prompt.text}</h3>
         <p className="muted">{prompt.translation}</p>
         <div className="icon-row center mt-2">
           <button className="btn secondary" onClick={() => speak(prompt.text)}>
@@ -164,11 +164,11 @@ export default function Speaking() {
               {result.score}%
             </div>
             <p className="my-tight ltr-only">
-              <strong>שמענו:</strong> {result.heard || "—"}
+              <strong>שמענו:</strong> <span lang="en">{result.heard || "—"}</span>
             </p>
             {result.missed.length > 0 ? (
               <p className="muted ltr-only">
-                מילים שכדאי לחזק: {result.missed.join(", ")}
+                מילים שכדאי לחזק: <span lang="en">{result.missed.join(", ")}</span>
               </p>
             ) : (
               <p className="muted">מצוין! נשמע מדויק 🎉</p>
