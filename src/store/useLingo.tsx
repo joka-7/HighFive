@@ -247,8 +247,11 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   const [cloudSyncError, setCloudSyncError] = useState(false);
   // We only wait on auth (and load Firebase) at startup if the user previously
   // signed in. Local-mode users resolve immediately and never fetch the SDK.
-  const willRestoreSession =
-    isCloudConfigured() && load<boolean>(KEYS.cloudSession, false);
+  // Read once: it must not flip after this session's own sign-in writes the
+  // flag, or the startup effect below would tear down the live auth watch.
+  const [willRestoreSession] = useState(
+    () => isCloudConfigured() && load<boolean>(KEYS.cloudSession, false),
+  );
   const [authReady, setAuthReady] = useState(!willRestoreSession);
   const authUnsubRef = useRef<(() => void) | null>(null);
 
@@ -392,8 +395,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       authUnsubRef.current?.();
       authUnsubRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [willRestoreSession, startAuthWatch]);
 
   // While signed in, debounce-sync changes up to Firestore — gated on
   // cloudLoaded so this never fires before the initial load has either
@@ -434,6 +436,22 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     await signInWithGoogle();
   }, [startAuthWatch]);
 
+  const resetAll = useCallback(() => {
+    setProgress(null);
+    setSavedWords([]);
+    setLearnedWords(seedStarterEntries());
+    setChatMessages([]);
+    setQuizHistory([]);
+    setMissionLog([]);
+    setDailyMissions(EMPTY_MISSIONS);
+    setLevelUpNotice(null);
+    // Also clear cached lesson/reading/listening/speaking-of-the-day content
+    // so a reset doesn't leave stale content showing on the next visit.
+    // Deliberately does NOT touch the AI provider key or UI prefs (theme,
+    // speech speed) — those are user settings, not learning progress.
+    clearAllDailyCaches();
+  }, [setDailyMissions]);
+
   const signOut = useCallback(async () => {
     await cloudSignOut();
     setUser(null);
@@ -446,8 +464,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     // the next Google account) on a shared device doesn't inherit it, or have
     // it re-uploaded over their own cloud data.
     resetAll();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [resetAll]);
 
   const registerUser = useCallback(
     (userName: string, nativeLanguage: string, level: Level) => {
@@ -472,10 +489,11 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   const clearLevelUpNotice = useCallback(() => setLevelUpNotice(null), []);
 
   // Auto-promote when vocabulary mastery thresholds are met at the current level.
+  const currentLevel = progress?.currentLevel;
   useEffect(() => {
-    if (!progress) return;
-    const target = promotionTarget(progress.currentLevel, learnedWords, savedWords);
-    if (!target || target === progress.currentLevel) return;
+    if (!currentLevel) return;
+    const target = promotionTarget(currentLevel, learnedWords, savedWords);
+    if (!target || target === currentLevel) return;
     setLevelUpNotice(target);
     setMissionLog((ml) =>
       capMissionLog([
@@ -491,7 +509,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     setProgress((prev) =>
       prev ? { ...prev, currentLevel: target, points: prev.points + 100 } : prev,
     );
-  }, [learnedWords, savedWords, progress?.currentLevel]);
+  }, [learnedWords, savedWords, currentLevel]);
 
   const addPoints = useCallback((points: number) => {
     setProgress((prev) => (prev ? { ...prev, points: prev.points + points } : prev));
@@ -813,22 +831,6 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     setChatMessages((prev) =>
       prev.filter((m) => !(m.scenario === scenario && m.level === level)),
     );
-  }, []);
-
-  const resetAll = useCallback(() => {
-    setProgress(null);
-    setSavedWords([]);
-    setLearnedWords(seedStarterEntries());
-    setChatMessages([]);
-    setQuizHistory([]);
-    setMissionLog([]);
-    setDailyMissions(EMPTY_MISSIONS);
-    setLevelUpNotice(null);
-    // Also clear cached lesson/reading/listening/speaking-of-the-day content
-    // so a reset doesn't leave stale content showing on the next visit.
-    // Deliberately does NOT touch the AI provider key or UI prefs (theme,
-    // speech speed) — those are user settings, not learning progress.
-    clearAllDailyCaches();
   }, []);
 
   const exportProgress = useCallback((): ProgressBackup => {
