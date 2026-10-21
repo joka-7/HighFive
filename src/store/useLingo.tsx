@@ -225,9 +225,20 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   const [missionLog, setMissionLog] = useState<MissionLog[]>(() =>
     load<MissionLog[]>(KEYS.missionLog, []),
   );
-  const [dailyMissions, setDailyMissions] = useState<DailyMissionsState>(() =>
+  const [dailyMissions, setDailyMissionsState] = useState<DailyMissionsState>(() =>
     load<DailyMissionsState>(KEYS.dailyMissions, EMPTY_MISSIONS),
   );
+  // Read-your-writes copy of dailyMissions. Awarding a mission has to check
+  // and set the flag *and* grant points; doing the grant from inside a state
+  // updater is impure (StrictMode runs updaters twice, and so would grant
+  // twice), and reading the rendered value would miss a second award made
+  // in the same tick. So every write goes through setDailyMissions below,
+  // which updates this ref synchronously.
+  const missionsRef = useRef(dailyMissions);
+  const setDailyMissions = useCallback((next: DailyMissionsState) => {
+    missionsRef.current = next;
+    setDailyMissionsState(next);
+  }, []);
   const [levelUpNotice, setLevelUpNotice] = useState<Level | null>(null);
 
   const [user, setUser] = useState<CloudUser | null>(null);
@@ -329,7 +340,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       await saveCloud(uid, latest.current);
     }
     setCloudLoaded(true);
-  }, []);
+  }, [setDailyMissions]);
 
   // Begin watching Google sign-in state. This is what pulls in the Firebase
   // SDK, so it stays deferred until a sign-in is actually needed. Idempotent —
@@ -512,43 +523,44 @@ export function LingoProvider({ children }: { children: ReactNode }) {
 
   const toggleSaveWord = useCallback<LingoContextValue["toggleSaveWord"]>(
     (word) => {
-      setSavedWords((prev) => {
-        const exists = prev.find((w) => w.word.toLowerCase() === word.word.toLowerCase());
-        if (exists) {
-          return prev.filter((w) => w.id !== exists.id);
-        }
-        // Saving a new word awards +10 points.
-        setProgress((p) => (p ? { ...p, points: p.points + 10 } : p));
-        // New words enter the spaced-repetition queue immediately due (box 0).
-        // Saving also marks the word as learned for progressive content.
-        setLearnedWords((lw) => {
-          const key = word.word.toLowerCase();
-          if (lw[key]) return lw;
-          return {
-            ...lw,
-            [key]: {
-              word: word.word,
-              translation: word.translation,
-              level: word.level,
-              firstSeenAt: Date.now(),
-            },
-          };
-        });
-        return [
-          {
-            ...word,
-            id: uid(),
-            isMastered: false,
-            savedAt: Date.now(),
-            srsLevel: 0,
-            nextReviewAt: Date.now(),
-            reviewCount: 0,
+      const key = word.word.toLowerCase();
+      const exists = savedWords.find((w) => w.word.toLowerCase() === key);
+      if (exists) {
+        setSavedWords((prev) => prev.filter((w) => w.id !== exists.id));
+        return;
+      }
+      // Decided here, outside any updater, so the grant below happens once.
+      // Saving a new word awards +10 points.
+      setProgress((p) => (p ? { ...p, points: p.points + 10 } : p));
+      // New words enter the spaced-repetition queue immediately due (box 0).
+      // Saving also marks the word as learned for progressive content.
+      setLearnedWords((lw) => {
+        if (lw[key]) return lw;
+        return {
+          ...lw,
+          [key]: {
+            word: word.word,
+            translation: word.translation,
+            level: word.level,
+            firstSeenAt: Date.now(),
           },
-          ...prev,
-        ];
+        };
       });
+      const now = Date.now();
+      setSavedWords((prev) => [
+        {
+          ...word,
+          id: uid(),
+          isMastered: false,
+          savedAt: now,
+          srsLevel: 0,
+          nextReviewAt: now,
+          reviewCount: 0,
+        },
+        ...prev,
+      ]);
     },
-    [],
+    [savedWords],
   );
 
   const toggleMastered = useCallback((id: string) => {
@@ -672,12 +684,19 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   // never carry over or block today's points. Shared by the manual "mark as
   // done" missions and the auto-detected ones below.
   // `note` is set only when the learner did the activity in another app.
-  const awardMission = useCallback((id: DailyMissionFlag, note?: string) => {
-    const today = dateKeyFromTs(Date.now());
-    const trimmed = note?.trim().slice(0, MAX_EXTERNAL_NOTE) ?? "";
-    setDailyMissions((prev) => {
-      const current = todaysMissions(prev, today);
-      if (current[id]) return current;
+  const awardMission = useCallback(
+    (id: DailyMissionFlag, note?: string) => {
+      const today = dateKeyFromTs(Date.now());
+      const trimmed = note?.trim().slice(0, MAX_EXTERNAL_NOTE) ?? "";
+      const current = todaysMissions(missionsRef.current, today);
+      if (current[id]) return;
+      setDailyMissions({
+        ...current,
+        [id]: true,
+        externalNotes: trimmed
+          ? { ...current.externalNotes, [id]: trimmed }
+          : current.externalNotes,
+      });
       setProgress((p) => (p ? { ...p, points: p.points + MISSION_POINTS } : p));
 
       // Log missions that aren't already tracked elsewhere: the checklist-only
@@ -686,26 +705,18 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       const meta = DAILY_CHECKLIST_LABELS[id];
       if (id === "video" || id === "talk" || id === "words" || trimmed) {
         const label = trimmed ? externalMissionLabel(id, trimmed) : meta.label;
+        const timestamp = Date.now();
+        const entryId = uid();
         setMissionLog((ml) => {
           if (ml.some((m) => m.kind === meta.kind && dateKeyFromTs(m.timestamp) === today)) {
             return ml;
           }
-          return capMissionLog([
-            { id: uid(), kind: meta.kind, label, timestamp: Date.now() },
-            ...ml,
-          ]);
+          return capMissionLog([{ id: entryId, kind: meta.kind, label, timestamp }, ...ml]);
         });
       }
-
-      return {
-        ...current,
-        [id]: true,
-        externalNotes: trimmed
-          ? { ...current.externalNotes, [id]: trimmed }
-          : current.externalNotes,
-      };
-    });
-  }, []);
+    },
+    [setDailyMissions],
+  );
 
   const completeMission = useCallback(
     (id: DailyMissionFlag, note?: string) => awardMission(id, note),
@@ -715,18 +726,18 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   // Speaking-practice points: full credit for the first round of the day
   // (SPEAKING_FULL_CREDIT_ATTEMPTS attempts), reduced after — otherwise the
   // same sentence could be re-recorded indefinitely for unlimited points.
-  const awardSpeakingPoints = useCallback((score0to100: number) => {
-    const today = dateKeyFromTs(Date.now());
-    setDailyMissions((prev) => {
-      const current = todaysMissions(prev, today);
+  const awardSpeakingPoints = useCallback(
+    (score0to100: number) => {
+      const current = todaysMissions(missionsRef.current, dateKeyFromTs(Date.now()));
       const count = current.speakingCount ?? 0;
       const fullCredit = count < SPEAKING_FULL_CREDIT_ATTEMPTS;
       const raw = Math.round((score0to100 / 100) * SPEAKING_POINTS_MAX);
       const earned = fullCredit ? raw : Math.round(raw * REPEAT_POINTS_FACTOR);
+      setDailyMissions({ ...current, speakingCount: count + 1 });
       setProgress((p) => (p ? { ...p, points: p.points + earned } : p));
-      return { ...current, speakingCount: count + 1 };
-    });
-  }, []);
+    },
+    [setDailyMissions],
+  );
 
   // Words saved today (via toggleSaveWord) — drives the "save 5 words" mission.
   const todayWordCount = useMemo(() => {
@@ -857,7 +868,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     setDailyMissions(todaysMissions(data.dailyMissions, dateKeyFromTs(Date.now())));
     setLevelUpNotice(null);
     clearAllDailyCaches();
-  }, []);
+  }, [setDailyMissions]);
 
   const todayMissions = useMemo(
     () => todaysMissions(dailyMissions, dateKeyFromTs(Date.now())),

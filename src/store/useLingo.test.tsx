@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import type { ReactNode } from "react";
+import { StrictMode, type ReactNode } from "react";
 import { LingoProvider, useLingo } from "./useLingo";
 
 // Local-mode only for these tests — cloud sync (A2) has its own store-level
@@ -310,6 +310,46 @@ const CAT = {
   translation: "חתול",
   level: "A1" as const,
 };
+
+describe("useLingo — points stay correct under StrictMode", () => {
+  // StrictMode runs state updaters twice in development; an award made from
+  // inside another setter's updater used to be granted twice.
+  function strictWrapper({ children }: { children: ReactNode }) {
+    return (
+      <StrictMode>
+        <LingoProvider>{children}</LingoProvider>
+      </StrictMode>
+    );
+  }
+
+  it.each([
+    { name: "saving a word", act: (l: ReturnType<typeof useLingo>) => l.toggleSaveWord(CAT), points: 10 },
+    { name: "completing a mission", act: (l: ReturnType<typeof useLingo>) => l.completeMission("video"), points: 30 },
+    { name: "a full-credit speaking attempt", act: (l: ReturnType<typeof useLingo>) => l.awardSpeakingPoints(100), points: 20 },
+  ])("$name awards $points points exactly once", ({ act: doIt, points }) => {
+    const { result } = renderHook(() => useLingo(), { wrapper: strictWrapper });
+    act(() => result.current.registerUser("Dana", "עברית", "A1"));
+    const before = result.current.progress!.points;
+
+    act(() => doIt(result.current));
+
+    expect(result.current.progress!.points - before).toBe(points);
+  });
+
+  it("awards two different missions completed in the same tick", () => {
+    const { result } = renderHook(() => useLingo(), { wrapper: strictWrapper });
+    act(() => result.current.registerUser("Dana", "עברית", "A1"));
+    const before = result.current.progress!.points;
+
+    act(() => {
+      result.current.completeMission("video");
+      result.current.completeMission("talk");
+    });
+
+    expect(result.current.dailyMissions.video && result.current.dailyMissions.talk).toBe(true);
+    expect(result.current.progress!.points - before).toBe(60);
+  });
+});
 
 describe("useLingo — storage failures", () => {
   it("keeps working when localStorage is full", () => {
