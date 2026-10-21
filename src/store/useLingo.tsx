@@ -148,9 +148,14 @@ const SPEAKING_FULL_CREDIT_ATTEMPTS = 4;
 // so localStorage doesn't grow unbounded on long-term local-mode users.
 const MAX_CHAT_MESSAGES = 200;
 const MAX_MISSION_LOG = 400;
+const MAX_QUIZ_HISTORY = 1000;
 
 function capMissionLog(list: MissionLog[]): MissionLog[] {
   return list.length > MAX_MISSION_LOG ? list.slice(0, MAX_MISSION_LOG) : list;
+}
+
+function capQuizHistory(list: QuizHistory[]): QuizHistory[] {
+  return list.length > MAX_QUIZ_HISTORY ? list.slice(0, MAX_QUIZ_HISTORY) : list;
 }
 
 interface LingoContextValue {
@@ -689,10 +694,12 @@ export function LingoProvider({ children }: { children: ReactNode }) {
         : QUIZ_POINTS_PER_ANSWER;
       const earned = score * perAnswer;
       setProgress((prev) => (prev ? { ...prev, points: prev.points + earned } : prev));
-      setQuizHistory((prev) => [
-        { id: uid(), level, topic, score, totalQuestions: total, timestamp: Date.now() },
-        ...prev,
-      ]);
+      setQuizHistory((prev) =>
+        capQuizHistory([
+          { id: uid(), level, topic, score, totalQuestions: total, timestamp: Date.now() },
+          ...prev,
+        ]),
+      );
       return earned;
     },
     [quizHistory],

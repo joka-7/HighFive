@@ -365,3 +365,14 @@ describe("useLingo — storage failures", () => {
     setItem.mockRestore();
   });
 });
+
+describe("useLingo — bounded quiz history", () => {
+  it("caps quiz history at 1000, keeping the most recent first", () => {
+    const result = renderRegisteredLingo();
+    act(() => {
+      for (let i = 0; i < 1005; i++) result.current.completeQuiz("A1", `topic ${i}`, 1, 1);
+    });
+    expect(result.current.quizHistory).toHaveLength(1000);
+    expect(result.current.quizHistory[0]!.topic).toBe("topic 1004");
+  });
+});

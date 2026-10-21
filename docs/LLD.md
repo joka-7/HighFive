@@ -54,11 +54,20 @@ database. Exposes the `useLingo()` hook, which throws if used outside
   `high5.chat_messages`, `high5.quiz_history`, plus `high5.cloud_session`
   (remembers the user opted into cloud sync, so the Firebase SDK is only eagerly
   loaded on startup for returning signed-in users).
-- Each of the four persisted slices is a `useState` initialised via
+- Each persisted slice is a `useState` initialised via
   `load<T>(key, fallback)` and written back on every change via a matching
-  `useEffect` (this is also the offline cache in Account mode).
-- **Streak logic** runs once on mount: same calendar day → unchanged; exactly
-  the next day → `streak + 1`; any larger gap → reset to `1`.
+  `useEffect` calling `persist(key, value)` (this is also the offline cache in
+  Account mode). `persist` swallows a full quota and reports it once per key,
+  so storage pressure never crashes the app; in-memory state stays correct.
+- **Bounded history:** chat 200 messages, mission log 400, quiz history 1000.
+- **Pure awards:** points are never granted from inside another state
+  updater (StrictMode runs updaters twice). `dailyMissions` is read through
+  `missionsRef`, which every write updates synchronously, so two missions
+  awarded in the same tick both land.
+- **Streak logic** runs on mount and whenever the tab becomes visible: same
+  calendar day → unchanged; the previous calendar day (`previousDateKey`, which
+  steps the calendar rather than subtracting 24h, so DST days are safe) →
+  `streak + 1`; any larger gap → reset to `1`.
 - **Points:**
   - `+10` — save a new word (`toggleSaveWord`).
   - `+5` — remembered a word in review (`reviewWord` with `remembered = true`).
