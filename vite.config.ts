@@ -143,12 +143,14 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "lcov"],
-      include: ["src/store/**", "src/services/**", "src/utils/**"],
-      // Floor — raise over time as more of the store/content paths are covered.
+      include: ["src/store/**", "src/services/**", "src/utils/**", "api/**"],
+      // Floor just under today's coverage, so a real drop fails CI — raise it
+      // as coverage grows rather than letting it sit far below.
       thresholds: {
-        lines: 35,
-        functions: 35,
-        statements: 35,
+        lines: 65,
+        functions: 65,
+        statements: 65,
+        branches: 55,
       },
     },
   },
