@@ -33,6 +33,7 @@ import {
   dateKeyFromTs,
   externalMissionLabel,
   MEMORIZATION_TOPIC,
+  previousDateKey,
 } from "../utils/missions";
 import { clearAllDailyCaches } from "../utils/dailyCache";
 import { parseProgressBackup, type ProgressBackup } from "../utils/backup";
@@ -313,7 +314,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
         const today = dateKeyFromTs(now);
         const last = prev.lastActiveTimestamp ? dateKeyFromTs(prev.lastActiveTimestamp) : "";
         if (last === today) return prev;
-        const yesterday = dateKeyFromTs(now - 86_400_000);
+        const yesterday = previousDateKey(now);
         const streak = last === yesterday ? prev.streak + 1 : 1;
         return { ...prev, streak, lastActiveTimestamp: now };
       });
