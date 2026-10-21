@@ -8,8 +8,12 @@
 // registration URL's query string instead (see registerServiceWorker() in
 // src/services/push.ts), and this SW reads it back from self.location.
 
-importScripts("https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js");
-importScripts("https://www.gstatic.com/firebasejs/12.15.0/firebase-messaging-compat.js");
+// Served from this origin by the firebaseCompatScripts plugin in
+// vite.config.ts, straight out of the installed firebase package: the site's
+// CSP (script-src 'self', see vercel.json) also governs this worker, so a CDN
+// copy would be blocked, and a pinned CDN URL drifts from package.json.
+importScripts("/firebase-app-compat.js");
+importScripts("/firebase-messaging-compat.js");
 
 const params = new URL(self.location.href).searchParams;
 firebase.initializeApp({
