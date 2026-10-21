@@ -29,6 +29,7 @@ import {
 } from "../utils/levelProgress";
 import {
   DAILY_CHECKLIST_LABELS,
+  DAILY_WORD_TARGET,
   dateKeyFromTs,
   externalMissionLabel,
   MEMORIZATION_TOPIC,
@@ -74,7 +75,6 @@ function load<T>(key: string, fallback: T): T {
 }
 
 const MISSION_POINTS = 30;
-export const DAILY_WORD_TARGET = 5;
 // Longest "what did you watch/listen to/read?" note we keep, so a pasted wall
 // of text can't bloat localStorage or the synced Firestore document.
 const MAX_EXTERNAL_NOTE = 120;

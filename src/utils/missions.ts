@@ -27,6 +27,9 @@ export function dateKeyFromTs(ts: number): string {
   return `${y}-${m}-${day}`;
 }
 
+/** New words a learner saves to complete the daily "words" mission. */
+export const DAILY_WORD_TARGET = 5;
+
 /** Quiz topic used by the Memorization round (see screens/Memorize.tsx). */
 export const MEMORIZATION_TOPIC = "Memorization";
 
