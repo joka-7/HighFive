@@ -21,6 +21,6 @@ describe("cleanJson", () => {
 
 describe("parseJson", () => {
   it("parses fenced JSON into an object", () => {
-    expect(parseJson<{ a: number }>('```json\n{"a":1}\n```')).toEqual({ a: 1 });
+    expect(parseJson('```json\n{"a":1}\n```')).toEqual({ a: 1 });
   });
 });

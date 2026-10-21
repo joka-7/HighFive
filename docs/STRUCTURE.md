@@ -259,6 +259,8 @@ HighFive/
 │   │   ├── useLingo.test.tsx
 │   │   └── useLingo.tsx
 │   ├── utils/                   # Pure logic: spaced-repetition (SRS), scoring, cycles, missions, backup/restore
+│   │   ├── aiSchemas.test.ts
+│   │   ├── aiSchemas.ts
 │   │   ├── backup.test.ts
 │   │   ├── backup.ts
 │   │   ├── cycle.test.ts

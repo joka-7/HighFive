@@ -136,7 +136,7 @@ same offline-fallback shape:
 ```
 if (!isAIReady()) return <random offline pick>;
 try {
-  return parseJson<T>(await complete(prompt, systemInstruction));
+  return asT(parseJson(await complete(prompt, systemInstruction)));  // utils/aiSchemas
 } catch {
   return <random offline pick>;
 }
@@ -235,7 +235,18 @@ unsupported:
 
 - `cleanJson(raw)` — strips ```` ```json ```` / ```` ``` ```` fences that some
   providers wrap responses in, then trims. Mirrors `LingoRepository.cleanJson`.
-- `parseJson<T>(raw)` — `JSON.parse(cleanJson(raw)) as T`.
+- `parseJson(raw)` — `JSON.parse(cleanJson(raw))`, returned as `unknown`.
+
+## `src/utils/aiSchemas.ts`
+
+Runtime shape guards for AI responses — `asWordList`, `asLesson`, `asQuiz`,
+`asDialogueReply`, `asSpeaking`, `asQuestionTranslation(v, optionCount)`.
+Each throws `AiResponseShapeError` on a missing or mistyped field, an
+out-of-range `correctIndex`, or (for translations) a changed option count.
+A malformed *optional* field (`questionHe`, `optionsHe`) is dropped, not
+fatal. The lesson, quiz, vocabulary and speaking generators fall back to
+offline content on a throw; dialogue replies and question translations have
+no offline copy, so their screens show an error.
 
 ## `src/utils/srs.ts`
 

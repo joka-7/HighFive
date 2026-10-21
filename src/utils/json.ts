@@ -10,6 +10,8 @@ export function cleanJson(raw: string): string {
   return cleaned.trim();
 }
 
-export function parseJson<T>(raw: string): T {
-  return JSON.parse(cleanJson(raw)) as T;
+/** Parse model output. Returns `unknown` on purpose: narrow it with a
+ * utils/aiSchemas guard rather than trusting the shape. */
+export function parseJson(raw: string): unknown {
+  return JSON.parse(cleanJson(raw));
 }

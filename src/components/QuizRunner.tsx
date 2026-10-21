@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import type { GemQuestion } from "../types";
 import { speak } from "../services/tts";
 import { isAIReady } from "../services/ai";
-import { translateQuestion, type GemQuestionTranslation } from "../services/content";
+import { translateQuestion } from "../services/content";
+import type { GemQuestionTranslation } from "../utils/aiSchemas";
 
 interface Props {
   questions: GemQuestion[];
