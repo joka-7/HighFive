@@ -4,18 +4,6 @@ import type { ReactNode } from "react";
 import { LingoProvider, useLingo } from "../store/useLingo";
 import DialogueCoach from "./DialogueCoach";
 
-vi.mock("../services/firebase", () => ({
-  isCloudConfigured: () => false,
-  watchAuth: (cb: (user: null) => void) => {
-    cb(null);
-    return () => {};
-  },
-  loadCloud: vi.fn(),
-  saveCloud: vi.fn(),
-  signInWithGoogle: vi.fn(),
-  signOut: vi.fn(),
-}));
-
 const mockIsAIReady = vi.fn(() => true);
 vi.mock("../services/ai", () => ({
   isAIReady: () => mockIsAIReady(),

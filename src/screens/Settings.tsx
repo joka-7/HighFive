@@ -16,6 +16,7 @@ import {
 } from "modeldispatcher-browser-agent";
 import { dispatcherFeatures } from "../modeldispatcher.config";
 import { useLingo } from "../store/useLingo";
+import { formatSignInError } from "../services/driveSync";
 import {
   loadPrefs,
   savePrefs,
@@ -28,10 +29,12 @@ import {
 } from "../services/reminders";
 import { usePwaInstall, canShare, shareApp } from "../services/pwa";
 import {
+  disablePushReminders,
   enablePushReminders,
   isPushSupported,
-  pushPermission,
+  isRemindersRegistered,
 } from "../services/push";
+import { isPushConfigured } from "../services/firebase";
 import { speak, ttsSupported } from "../services/tts";
 import { navigateHash } from "../utils/routing";
 
@@ -229,11 +232,13 @@ export default function Settings() {
     resetAll,
     cloudConfigured,
     user,
+    cloudLinked,
     authReady,
     cloudSyncError,
     retryCloudSync,
     signIn,
     signOut,
+    deleteCloudData,
     progress,
     exportProgress,
     importProgress,
@@ -247,15 +252,12 @@ export default function Settings() {
 
   const [pushBusy, setPushBusy] = useState(false);
   const [pushError, setPushError] = useState("");
-  const [pushEnabled, setPushEnabled] = useState(
-    pushPermission() === "granted",
-  );
+  const [pushEnabled, setPushEnabled] = useState(() => isRemindersRegistered());
 
   async function handleEnablePush() {
-    if (!user) return;
     setPushError("");
     setPushBusy(true);
-    const result = await enablePushReminders(user.uid);
+    const result = await enablePushReminders();
     if (result.ok) {
       setPushEnabled(true);
     } else {
@@ -266,6 +268,19 @@ export default function Settings() {
       );
     }
     setPushBusy(false);
+  }
+
+  async function handleDisablePush() {
+    setPushError("");
+    setPushBusy(true);
+    try {
+      await disablePushReminders();
+      setPushEnabled(false);
+    } catch {
+      setPushError("ביטול התזכורות נכשל. נסו שוב מאוחר יותר.");
+    } finally {
+      setPushBusy(false);
+    }
   }
 
   function setTheme(dark: boolean) {
@@ -313,8 +328,8 @@ export default function Settings() {
     setAuthBusy(true);
     try {
       await signIn();
-    } catch {
-      setAuthError("ההתחברות נכשלה. נסה שוב.");
+    } catch (err) {
+      setAuthError(formatSignInError(err));
     } finally {
       setAuthBusy(false);
     }
@@ -323,10 +338,10 @@ export default function Settings() {
   async function handleSignOut() {
     // Signing out clears this device's local learner data too (so the next
     // person, or the next Google account, on a shared device doesn't inherit
-    // it) — the account's real progress stays safe in the cloud.
+    // it) — the account's real progress stays safe in its own Drive.
     if (
       !confirm(
-        "להתנתק? נתוני הלמידה שנשמרו במכשיר הזה יימחקו. ההתקדמות שלך נשארת בענן ותחזור בהתחברות הבאה.",
+        "להתנתק מ-Google Drive? נתוני הלמידה שנשמרו במכשיר הזה יימחקו. ההתקדמות שלך נשארת ב-Drive ותחזור בחיבור הבא.",
       )
     ) {
       return;
@@ -334,6 +349,26 @@ export default function Settings() {
     setAuthBusy(true);
     try {
       await signOut();
+    } finally {
+      setAuthBusy(false);
+    }
+  }
+
+  async function handleDeleteCloudData() {
+    if (
+      !confirm(
+        "למחוק את כל נתוני High5 מה-Google Drive שלך ולבטל את הגישה של האפליקציה? ההתקדמות במכשיר הזה נשארת. מכשירים אחרים שעדיין מחוברים יעלו את העותק שלהם שוב — התנתקו בהם קודם.",
+      )
+    ) {
+      return;
+    }
+    setAuthError("");
+    setAuthBusy(true);
+    try {
+      await deleteCloudData();
+      setBackupMsg("הנתונים נמחקו מ-Google Drive.");
+    } catch (err) {
+      setAuthError(formatSignInError(err));
     } finally {
       setAuthBusy(false);
     }
@@ -490,11 +525,11 @@ export default function Settings() {
       </div>
 
       <div className="card">
-        <h3>☁️ חשבון וסנכרון</h3>
+        <h3>☁️ סנכרון ל-Google Drive</h3>
         {!cloudConfigured ? (
           <p className="muted">
-            הנתונים נשמרים במכשיר הזה בלבד. כדי לסנכרן בין מכשירים עם חשבון
-            Google, יש להגדיר Firebase (ראה הוראות ב-README).
+            הנתונים נשמרים במכשיר הזה בלבד. סנכרון ל-Google Drive לא מוגדר
+            בגרסה הזו (ראו הוראות ב-README).
           </p>
         ) : !authReady ? (
           <p className="muted">טוען…</p>
@@ -502,8 +537,8 @@ export default function Settings() {
           <>
             {cloudSyncError && (
               <div className="banner mb-2_5">
-                ⚠️ הסנכרון לענן נכשל — ההתקדמות שלך נשארת מקומית בינתיים ולא
-                תידרס. בדוק חיבור לאינטרנט ונסה שוב.
+                ⚠️ הסנכרון ל-Drive נכשל — ההתקדמות שלך נשארת במכשיר בינתיים
+                ולא תידרס. בדקו את החיבור לאינטרנט ונסו שוב.
                 <div>
                   <button
                     className="btn ghost small mt-1_5"
@@ -516,10 +551,9 @@ export default function Settings() {
             )}
             <p className="muted">
               מחובר כ-
-              <strong>
-                {user.email ?? user.displayName ?? "משתמש Google"}
-              </strong>
-              . ההתקדמות מסונכרנת בין המכשירים שלך.
+              <strong>{user.email || user.displayName || "משתמש Google"}</strong>
+              . ההתקדמות נשמרת בתיקייה מוסתרת ב-Google Drive שלך, שרק האפליקציה
+              יכולה לקרוא — אף אחד אחר לא רואה אותה, גם לא מפעיל האפליקציה.
             </p>
             <button
               className="btn ghost"
@@ -528,51 +562,58 @@ export default function Settings() {
             >
               התנתקות
             </button>
+            <div className="spacer-sm" />
+            <button
+              className="btn btn-danger"
+              disabled={authBusy}
+              onClick={handleDeleteCloudData}
+            >
+              מחיקת הנתונים מ-Google Drive
+            </button>
+            {authError && <p className="muted text-danger">{authError}</p>}
           </>
         ) : (
           <>
             <p className="muted">
-              שמירה מקומית פעילה. התחבר עם Google כדי לסנכרן את ההתקדמות בין
-              מכשירים.
+              שמירה מקומית פעילה. חברו את Google Drive כדי לסנכרן את ההתקדמות
+              בין מכשירים — הנתונים נשמרים ב-Drive שלכם בלבד.
             </p>
             <button className="btn" disabled={authBusy} onClick={handleSignIn}>
-              {authBusy ? "מתחבר…" : "התחברות עם Google"}
+              {authBusy ? "מתחבר…" : "חיבור ל-Google Drive"}
             </button>
             {authError && <p className="muted text-danger">{authError}</p>}
           </>
         )}
       </div>
 
-      {user && (
+      {isPushConfigured() && (
         <div className="card">
           <h3>🔔 תזכורות יומיות</h3>
           {!isPushSupported() ? (
             <p className="muted">הדפדפן הזה לא תומך בהתראות דחיפה.</p>
           ) : pushEnabled ? (
-            <p className="muted">
-              ✅ תזכורות פעילות. אם לא תיכנס/י ולא תשלים/י את המשימות היומיות,
-              תישלח לך תזכורת.
-            </p>
+            <>
+              <p className="muted">
+                ✅ תזכורות פעילות. אם לא תיכנס/י ולא תשלים/י את המשימות היומיות,
+                תישלח לך תזכורת בשש בערב.
+              </p>
+              <button className="btn ghost" disabled={pushBusy} onClick={handleDisablePush}>
+                {pushBusy ? "מבטל…" : "ביטול תזכורות"}
+              </button>
+            </>
           ) : (
             <>
               <p className="muted">
                 קבל/י תזכורת אם לא נכנסת לאפליקציה ולא השלמת את המשימות היומיות
-                שלך.
+                שלך. השרת שומר רק אסימון התראה, אזור זמן ותאריך — בלי חשבון ובלי
+                נתוני למידה.
               </p>
-              <button
-                className="btn"
-                disabled={pushBusy}
-                onClick={handleEnablePush}
-              >
+              <button className="btn" disabled={pushBusy} onClick={handleEnablePush}>
                 {pushBusy ? "מפעיל…" : "הפעלת תזכורות"}
               </button>
-              {pushError && (
-                <p className="muted" style={{ color: "var(--danger)" }}>
-                  {pushError}
-                </p>
-              )}
             </>
           )}
+          {pushError && <p className="muted text-danger">{pushError}</p>}
         </div>
       )}
 
@@ -615,7 +656,10 @@ export default function Settings() {
         <button
           className="btn btn-danger"
           onClick={() => {
-            if (confirm("לאפס את כל הנתונים? פעולה זו אינה הפיכה.")) resetAll();
+            const message = cloudLinked
+              ? "לאפס את כל הנתונים? האיפוס יחול גם על ה-Google Drive המחובר ועל המכשירים המסונכרנים. פעולה זו אינה הפיכה."
+              : "לאפס את כל הנתונים? פעולה זו אינה הפיכה.";
+            if (confirm(message)) resetAll();
           }}
         >
           איפוס הכל

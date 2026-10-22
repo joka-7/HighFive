@@ -13,9 +13,13 @@ There is no backend of its own. The app runs in two persistence modes:
   every AI call goes directly from the browser to the chosen provider's REST
   API. No account, no server, no env vars required. Optional JSON export/import
   covers cross-device backup without Google.
-- **Account mode (optional):** if a Firebase project is configured via
-  `VITE_FIREBASE_*`, the user can sign in with Google and their progress syncs
-  to Firestore under their `uid`. Local mode always remains the offline cache.
+- **Drive sync (optional):** with `VITE_GOOGLE_CLIENT_ID` set, the learner can
+  connect their own Google Drive. Progress syncs to Drive's hidden
+  `appDataFolder`, one file per device, straight from the browser; no High5
+  server holds a copy. Local mode always remains the offline cache.
+- **Web-push reminders (optional):** with `VITE_FIREBASE_*` set, a browser can
+  opt in to an evening reminder. The server keeps only a push token, a
+  timezone and two dates per install (see "Data flow (reminders)").
 
 The learning surface is organised as feature "pillars" — Daily Lesson,
 Vocabulary, Dialogue Coach, Practice Quiz, Spaced-Repetition Review, Reading,
@@ -49,12 +53,12 @@ recall practice instead of new ones arriving (`screens/Memorize.tsx`).
 │  └──────┬──────┘     │  + streak + SRS) │     │ quiz_history + prefs│   │
 │         │            └────────┬─────────┘     │ + AI config keys    │   │
 │         │                     │               └────────────────────┘   │
-│         │                     │ (debounced, only when signed in)        │
+│         │                     │ (per-record diff, when linked)          │
 │         │                     ▼                                         │
 │         │            ┌──────────────────┐   HTTPS   ┌───────────────┐   │
-│         │            │  firebase.ts     │──────────▶│  Firestore    │   │
-│         │            │ (lazy import(),  │           │ users/{uid}   │   │
-│         │            │  Google sign-in) │           └───────────────┘   │
+│         │            │  driveSync.ts    │──────────▶│ Google Drive  │   │
+│         │            │ (GIS token,      │           │ appDataFolder │   │
+│         │            │  own file/device)│           └───────────────┘   │
 │         ▼                                                               │
 │  ┌─────────────┐     ┌──────────────────┐                              │
 │  │ content.ts  │────▶│     ai.ts        │                              │
@@ -78,10 +82,14 @@ recall practice instead of new ones arriving (`screens/Memorize.tsx`).
 |---|---|
 | `src/screens/*` | One React component per `Screen` — onboarding, dashboard, daily lesson, daily missions, vocabulary, dialogue coach, practice quiz, spaced-repetition review, reading, listening, speaking, saved words, progress, calendar, settings. |
 | `src/App.tsx` | Shell + hash routing (`#/missions`, etc.): gates on onboarding, switches on the active `Screen`, top bar (points/streak/level), 5-item bottom nav, offline banner, SW update prompt. |
-| `src/store/useLingo.tsx` | App state (`UserProgress`, saved words, chat, quizzes, mission log, daily missions checklist) as a React Context, persisted to `localStorage` and — in Account mode — mirrored to Firestore. Owns points, streak, SRS, mission auto-complete, export/import. |
+| `src/store/useLingo.tsx` | App state (`UserProgress`, saved words, chat, quizzes, mission log, daily missions checklist) as a React Context, persisted to `localStorage`. Owns points, streak, SRS, mission auto-complete, export/import. |
+| `src/store/useCloudSync.ts` | Decides when to pull from and push to Drive: diffs every state change, records pending ids, uploads only after this session's pull. |
 | `src/services/ai.ts` | Multi-provider AI client — a thin wrapper over the shared [`@joka-7/modeldispatcher-browser-agent`](https://github.com/joka-7/ModelDispatcher/tree/main/clients/browser-agent) package (also used by JobFlowTracker/KanDOne/StepByLearn). Stores provider/key/model in `localStorage` and exposes `complete(prompt, systemInstruction)`. |
 | `src/services/content.ts` | Generators per pillar with vocabulary-safe offline fallbacks. Reading/Listening always pick bundled content; other pillars try AI then fall back. |
-| `src/services/firebase.ts` | Optional Google sign-in + Firestore sync. Env-var config only (no hardcoded project). Lazy `import()`. |
+| `src/services/driveSync.ts` | Google Drive `appDataFolder` sync, ported from KanDOne: one file per device, newest entry wins per record, tombstones, clock guard, Web Locks, paginated listing, idle-file compaction, delete-all. `services/cloud.ts` is its composition root. |
+| `src/services/firebase.ts` | Firebase web config, used only for web-push (FCM). Env-var config only (no hardcoded project). |
+| `src/services/push.ts` | Web-push opt-in: registers the messaging SW in its own scope, registers the install with `api/reminder-register`, reports seen/done days. |
+| `api/*` | Vercel functions: `reminder-register` and `reminder` (per-install records with a hashed write key), and the hourly `mission-reminder` sender. |
 | `src/services/prefs.ts` | Theme, speech speed, and local reminder prefs. |
 | `src/services/reminders.ts` | Best-effort local Notification reminders while the app is open. |
 | `src/services/errors.ts` | `reportError` — console always; optional Sentry when `VITE_SENTRY_DSN` is set. |
@@ -90,7 +98,7 @@ recall practice instead of new ones arriving (`screens/Memorize.tsx`).
 | `src/data/offline.ts` + `extras.ts` | Per-CEFR-level offline loaders (lessons/vocab/quizzes + reading/listening/speaking pools). |
 | `src/data/videos.ts` | Level-tagged curated YouTube list for the daily video mission. |
 | `src/data/placement.ts` / `topics.ts` | Placement test + rotating daily topics / dialogue scenarios. |
-| `src/utils/*` | Pure helpers: `json`, `srs`, `score`, `missions`, `cycle` (the Sun–Thu / Fri–Sat week), `levelProgress`, `routing`, `progressCharts`, `backup`, `dailyCache`. |
+| `src/utils/*` | Pure helpers: `json`, `aiSchemas`, `srs`, `score`, `missions`, `cycle` (the Sun–Thu / Fri–Sat week), `levelProgress`, `routing`, `progressCharts`, `backup`, `dailyCache`, `cloudMerge` (state ↔ Drive records, merge rules), `pendingSync`, `reminderLogic`. |
 | `scripts/generate-content.mjs` | Build-time generator for offline JSON banks. |
 
 ## Key design decisions
@@ -99,8 +107,10 @@ recall practice instead of new ones arriving (`screens/Memorize.tsx`).
   precaches the shell; content chunks cache on first use. AI-backed features
   (lesson/vocab/quiz/speaking) degrade to bundled JSON; Reading/Listening are
   offline-only by design; Dialogue Coach requires a live key.
-- **Optional cloud, not required cloud.** Cloud sync is opt-in and gated on
-  `VITE_FIREBASE_*` (`isCloudConfigured()`). No hardcoded Firebase project.
+- **Private by design.** The operator can't read anyone's learning data: it
+  lives on the device and, optionally, in the learner's own Drive. Sync is
+  opt-in and gated on `VITE_GOOGLE_CLIENT_ID`. Firestore rules deny all
+  client access; only the reminder functions use it, through the Admin SDK.
 - **Optional error monitoring.** `reportError` logs always; Sentry loads only
   when `VITE_SENTRY_DSN` is set.
 - **Hash routing.** Screens are bookmarkable (`#/reading`) without a router
@@ -130,7 +140,7 @@ recall practice instead of new ones arriving (`screens/Memorize.tsx`).
    `QuizRunner` component.
 6. On completion, `useLingo().completeLesson(correct)` awards points (+50
    once/day + 20/correct) and updates `localStorage`.
-7. In Account mode, a debounced effect mirrors the updated state up to Firestore.
+7. With Drive connected, `useCloudSync` diffs the change and uploads the changed records.
 
 ## Data flow (example: Speaking practice)
 
@@ -156,14 +166,35 @@ talk. Auto: reading / listening (via `quizHistory` topics), speaking (via
 still awards +30 like the five, it just isn't one of them. `Calendar` aggregates
 `missionLog` + quiz history by local `dateKeyFromTs`.
 
-## Data flow (Account mode sync)
+## Data flow (Drive sync)
 
-1. User signs in with Google (`signIn()`), which lazily loads Firebase and
-   starts the auth watcher.
-2. On first sign-in, if a Firestore document exists for the `uid` it is pulled
-   into state; otherwise the current local state seeds the cloud.
-3. Thereafter, any state change is debounced (800 ms) and written to
-   `users/{uid}`. On sign-out, the app falls back to Local mode.
+1. The learner taps "חיבור ל-Google Drive". Google Identity Services opens its
+   popup inside the click (the script is preloaded) and returns a
+   `drive.appdata` token.
+2. `useCloudSync` pulls: every `high5-*.json` file in the appDataFolder is
+   read and merged (`mergeDeviceDocuments`). `mergePull` then merges that
+   into local state. Records with a pending local edit keep the local copy;
+   pending local deletes are replayed; local data from a different account is
+   discarded. The merged state is applied, and whatever Drive lacks is
+   uploaded.
+3. From then on every state change is fingerprint-diffed (`diffForUpload`),
+   recorded as pending, and written to this device's own file. Bursts are
+   coalesced into one upload, and a landed write clears its pending ids.
+4. A pull also runs on retry and when the tab returns to view (at most once a
+   minute). On sign-out the device is cleared; "delete my data" removes every
+   file and revokes access.
+
+## Data flow (reminders)
+
+1. Opting in registers the messaging SW (own scope) and gets an FCM token.
+   `POST /api/reminder-register` validates it with a dry-run send and stores
+   `{ pushToken, timezone, doneDate: null, seenDate: null, writeKeyHash }`. It
+   returns `{ installId, writeKey }`, which the browser keeps.
+2. The browser reports `seenDate` when the app opens and `doneDate` when every
+   mission is done (`POST /api/reminder`, at most once per day each).
+3. Hourly, `api/mission-reminder` pages through `reminders`, sends where it is
+   18:00 locally and neither date is today, and removes installs whose token
+   FCM reports dead.
 
 ## Testing strategy
 

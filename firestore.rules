@@ -1,10 +1,13 @@
 rules_version = '2';
 
-// Each signed-in user can read and write only their own document.
+// Deny everything to clients. Learning data never reaches Firestore — it
+// stays on the device and, optionally, in the learner's own Google Drive.
+// The only collection left, reminders/{installId}, is read and written by the
+// Vercel functions through the Admin SDK, which these rules do not govern.
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

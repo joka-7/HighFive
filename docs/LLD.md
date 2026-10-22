@@ -46,14 +46,15 @@ Domain model for CEFR content and persisted learner state:
 
 ## `src/store/useLingo.tsx`
 
-React Context + `localStorage` (+ optional Firestore), replacing the Room
-database. Exposes the `useLingo()` hook, which throws if used outside
+React Context + `localStorage` (+ optional Google Drive sync through
+`useCloudSync`), replacing the Room database. Exposes the `useLingo()` hook, which throws if used outside
 `<LingoProvider>` (mounted once in `main.tsx`).
 
 - **localStorage keys:** `high5.progress`, `high5.saved_words`,
-  `high5.chat_messages`, `high5.quiz_history`, plus `high5.cloud_session`
-  (remembers the user opted into cloud sync, so the Firebase SDK is only eagerly
-  loaded on startup for returning signed-in users).
+  `high5.chat_messages`, `high5.quiz_history`, `high5.mission_log`,
+  `high5.daily_missions`, `high5.learned_words`. Drive sync adds
+  `high5.drive_session_v1`, `high5.drive_device_v1`,
+  `high5.pending_sync_v1:<collection>` and `high5.data_owner_v1`.
 - Each persisted slice is a `useState` initialised via
   `load<T>(key, fallback)` and written back on every change via a matching
   `useEffect` calling `persist(key, value)` (this is also the offline cache in
@@ -84,11 +85,11 @@ database. Exposes the `useLingo()` hook, which throws if used outside
   words whose review time has arrived. `reviewWord(id, remembered)` calls
   `scheduleNext` (from `utils/srs`) to advance/reset the box + next-review time,
   increments `reviewCount`, and auto-masters at the top box.
-- **Cloud sync:** `startAuthWatch()` (idempotent) subscribes via `watchAuth`; on
-  sign-in it pulls the user's Firestore doc if present, else seeds the cloud
-  from local state. A debounced (800 ms) `useEffect` mirrors state up to
-  Firestore while signed in. `signIn` / `signOut` wrap the firebase service;
-  `cloudConfigured` / `user` / `authReady` expose cloud state to the UI.
+- **Drive sync:** delegated to `useCloudSync` (below). The store hands it the
+  synced slices (`SyncedState`), a setter to apply a merged state, and
+  `resetAll` for sign-out. `cloudConfigured` / `user` / `authReady` /
+  `cloudSyncError` / `retryCloudSync` / `signIn` / `signOut` /
+  `deleteCloudData` pass through to the UI.
 - `resetAll()` clears all four learning slices; used by the Settings "danger
   zone".
 - **Full API** (`LingoContextValue`): `progress`, `savedWords`, `chatMessages`,
@@ -179,21 +180,108 @@ learner's level), and `isKnownToken`'s morphology, which maps `streets` back to
 system instructions are copied verbatim from `LingoRepository.kt` to preserve
 content/scoring parity with the Android app.
 
+## `src/store/useCloudSync.ts`
+
+When to pull and push; the rules are in `utils/cloudMerge.ts`.
+
+- Subscribes to `driveSync.onAuthChange`. When a user is reported and this
+  session hasn't pulled for that uid, it calls `pull(uid)`:
+  - `loadMerged()`;
+  - `mergePull` with the pending ids, and `discardLocal` when
+    `readDataOwner()` names another account;
+  - apply the merged state, `writeDataOwner(uid)`, then record and send
+    whatever Drive lacks.
+- **Every state change** is diffed against the last snapshot
+  (`diffForUpload`). While `driveSync.isLinked()`, the changed ids are recorded
+  as pending. They are sent only once this session has pulled for the
+  connected user.
+- **Failures:** `signed-out` and `offline` failures are expected; the change
+  stays pending and the next pull replays it. Anything else is reported and
+  sets `cloudSyncError`.
+- **`signOut`:** `driveSync.signOut()`, then `clearLocalSyncState`, then
+  `resetLocal()`. Unlinking first means clearing the device records no
+  deletes.
+- **`deleteCloudData`:** `driveSync.deleteAllSyncedData()`, then
+  `clearLocalSyncState`. Local progress stays and belongs to no account.
+- **Known limit:** tabs on one device share the pending ledger and the device
+  file, so a stale tab's pull can win over another tab's unsent edit.
+
+## `src/utils/cloudMerge.ts`
+
+- **Collections** (records by `id`): `savedWords`, `quizHistory`,
+  `missionLog`, `chatMessages`, and `learnedWords` (its `id` is the lower-cased
+  word).
+- **Profile fields:** `progress`, `dailyMissions`.
+- `diffForUpload(previous, state)` returns `{ snapshot, upload }`. A removal
+  from a capped history (`HISTORY_CAPS`) counts as a cap trim, never a delete,
+  when it comes with at least as many additions on a list at its cap.
+- `mergePull({ local, cloud, pending, discardLocal, defaults })` is
+  KanDOne's `unionById` per collection:
+  - Drive wins a shared id unless the id has a pending local edit.
+  - Pending local deletes are replayed.
+  - Local-only records are pushed, unless Drive holds a newer delete for them.
+- After merging, `mergePull` also:
+  - dedupes `savedWords` by lower-cased word (the newest copy wins, the others
+    are deleted);
+  - re-applies the caps, newest first (chat is ordered oldest first);
+  - drops records from Drive that fail a shape check.
+- **Profile fields:** Drive's copy wins unless the field is pending locally or
+  missing in Drive.
+
+## `src/services/driveSync.ts`
+
+A TypeScript port of KanDOne's `driveSync.js`; its comments carry the reasons
+for each guard. `createDriveSync(deps)` takes every dependency injected
+(fetch, GIS loader, storage, clock, ids, locks, sleep, random, online check,
+`nativeAuth`, `onLanded`). It returns:
+
+- **Session:** `isCloudConfigured`, `hasRestorableSession`, `isLinked`,
+  `onAuthChange`, `signInWithGoogle`, `signOut`, `deleteAllSyncedData`.
+- **Data:** `loadMerged`, `saveProfile`, `upsertItems`, `deleteItems`.
+
+The document format is
+`{ version: 1, device, profile: { [field]: { value, at } }, collections: { [name]: { [id]: { item | null, at } } } }`.
+`services/cloud.ts` is the composition root: real `fetch`,
+`VITE_GOOGLE_CLIENT_ID`, and `onLanded` → `clearPendingIds`.
+
 ## `src/services/firebase.ts`
 
-Optional cloud sync (Google sign-in + Firestore), all opt-in:
+Firebase web config for FCM only. `isPushConfigured()` is `true` when the
+config FCM needs and `VITE_FIREBASE_VAPID_KEY` are set; it is a public client
+identifier, not a secret.
 
-- `isCloudConfigured()` — `true` only when the minimum Firebase config
-  (apiKey/projectId/appId) is present. The web config ships defaults and can be
-  overridden by `VITE_FIREBASE_*` env vars; it is a public client identifier,
-  not a secret (access is controlled by `firestore.rules`).
-- The Firebase SDK is imported lazily via dynamic `import()` inside
-  `ensureInit()` (memoised), so it never enters the main bundle for Local-mode
-  users.
-- `watchAuth(cb)` — subscribes to sign-in state; a no-op returning `null` when
-  unconfigured. `signInWithGoogle()` / `signOut()` wrap the auth flow.
-- `loadCloud(uid)` / `saveCloud(uid, data)` — read/write the whole app state
-  (`CloudData`) as a single `users/{uid}` document.
+## `src/services/push.ts`
+
+- `enablePushReminders()`:
+  - registers `firebase-messaging-sw.js` at `MESSAGING_SW_SCOPE`;
+  - gets an FCM token;
+  - `POST /api/reminder-register` with `{ pushToken, timezone }`;
+  - stores `{ installId, writeKey }` under `high5.reminder_install`.
+- `reportReminderDay({ seenDate?, doneDate? })` sends only what changed since
+  the last report (plus the timezone when it moved). Reports run one at a
+  time, so two at once can't overwrite each other's record of what was sent.
+  A 404 forgets the registration.
+- `disablePushReminders()`: `DELETE /api/reminder`.
+- `hooks/useReminderReports.ts` reports `seenDate` on load and on tab return,
+  and `doneDate` once `dayComplete(dailyMissions)`. A failure while offline is
+  ignored; the next open reports again.
+
+## `api/` (Vercel functions)
+
+- `_lib/reminderApi.ts` is pure, with an injected `ReminderStore` and FCM
+  check:
+  - `register` → 201 `{ installId, writeKey }` (only the key's SHA-256 is
+    stored);
+  - `update` → 204, after checking the hashed key in constant time;
+  - `unregister` → 204.
+  - Bad input → 400; wrong key → 403; unknown install → 404.
+- `_lib/http.ts`: method routing, `application/json` required (415
+  otherwise), and a bare 500 that never logs the body.
+- `reminder-register.ts` / `reminder.ts` build their deps inside that guard,
+  so a missing `FIREBASE_SERVICE_ACCOUNT` answers the same 500.
+- `mission-reminder.ts`: `CRON_SECRET` bearer, pages of 500 by document id,
+  `shouldSendReminder` (18:00 local, and neither `doneDate` nor `seenDate` is
+  today), `sendEach`, and dead tokens remove their install.
 
 ## `src/services/prefs.ts`
 
@@ -389,9 +477,9 @@ plus a quarter-local index) and only the current quarter is downloaded.
 - **`Settings`** — AI provider/key/model form (Ollama-URL variant + show/hide
   key), theme toggle, speech speed, a link out to the level switcher on
   ההתקדמות שלי (which owns it, next to the thresholds that explain it),
-  PWA install/share, Google
-  cloud sign-in/out, and a "reset all" danger zone (`resetAll` behind a
-  `confirm()`).
+  PWA install/share, Google Drive connect/disconnect and "delete my data",
+  the web-push reminder opt-in/out, and a "reset all" danger zone (`resetAll`
+  behind a `confirm()`).
 
 ## Testing notes
 

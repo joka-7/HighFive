@@ -33,6 +33,11 @@ function markNotified(today: string): void {
   }
 }
 
+/** True once every one of today's missions is done (see missionsIncomplete). */
+export function dayComplete(m: DailyMissionsState, now: number): boolean {
+  return m.date === dateKeyFromTs(now) && !missionsIncomplete(m, now);
+}
+
 // The day is complete when all five operations are done plus the words box —
 // new words on a learning day, the week's review round on Friday/Saturday.
 function missionsIncomplete(m: DailyMissionsState, now: number): boolean {

@@ -5,18 +5,6 @@ import { LingoProvider, useLingo } from "../store/useLingo";
 import DailyMissions from "./DailyMissions";
 import { OPERATIONS } from "../data/operations";
 
-vi.mock("../services/firebase", () => ({
-  isCloudConfigured: () => false,
-  watchAuth: (cb: (user: null) => void) => {
-    cb(null);
-    return () => {};
-  },
-  loadCloud: vi.fn(),
-  saveCloud: vi.fn(),
-  signInWithGoogle: vi.fn(),
-  signOut: vi.fn(),
-}));
-
 // 2026-07-26 is a Sunday (a learning day), 2026-07-31 a Friday (a review day).
 // Built with the local Date constructor so the weekday holds in any timezone.
 const SUNDAY = new Date(2026, 6, 26, 9);

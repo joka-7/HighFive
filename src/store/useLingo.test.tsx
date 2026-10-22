@@ -3,21 +3,9 @@ import { renderHook, act } from "@testing-library/react";
 import { StrictMode, type ReactNode } from "react";
 import { LingoProvider, useLingo } from "./useLingo";
 
-// Local-mode only for these tests — cloud sync (A2) has its own store-level
-// tests below with a controllable mock, but the points/history tests don't
-// need Firebase at all and shouldn't depend on it.
-vi.mock("../services/firebase", () => ({
-  isCloudConfigured: () => false,
-  watchAuth: (cb: (user: null) => void) => {
-    cb(null);
-    return () => {};
-  },
-  loadCloud: vi.fn(),
-  saveCloud: vi.fn(),
-  signInWithGoogle: vi.fn(),
-  signOut: vi.fn(),
-}));
-
+// Local mode: with no VITE_GOOGLE_CLIENT_ID the Drive client is unconfigured
+// and never touches the network. Drive sync has its own tests
+// (useCloudSync.test.tsx, utils/cloudMerge.test.ts, services/driveSync.test.ts).
 function wrapper({ children }: { children: ReactNode }) {
   return <LingoProvider>{children}</LingoProvider>;
 }

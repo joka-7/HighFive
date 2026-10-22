@@ -3,6 +3,7 @@ import { useLingo } from "./store/useLingo";
 import { useServiceWorkerUpdate } from "./services/pwa";
 import { useOnlineStatus } from "./hooks/useOnlineStatus";
 import { useLocalReminder } from "./hooks/useLocalReminder";
+import { useReminderReports } from "./hooks/useReminderReports";
 import { navigateHash, screenFromHash } from "./utils/routing";
 import type { Screen } from "./types";
 import Onboarding from "./screens/Onboarding";
@@ -59,6 +60,7 @@ export default function App() {
   const online = useOnlineStatus();
   const mainRef = useRef<HTMLElement>(null);
   useLocalReminder();
+  useReminderReports();
 
   // Hash routing: refresh-safe, shareable deep links; browser back/forward
   // follow hash history instead of exiting the PWA.

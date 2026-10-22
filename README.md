@@ -178,75 +178,104 @@ in your browser (`localStorage`).
 Without a key, lessons, vocabulary, and quizzes use the bundled offline content —
 only the Dialogue Coach needs a provider.
 
-## Cloud sync with Google (optional)
+## Sync across devices with Google Drive (optional)
 
-By default your progress is saved **locally** in the browser. You can optionally
-enable **Account mode** — sign in with Google and your data syncs to the cloud
-(Firebase/Firestore) so it follows you across devices, exactly like
-JobFlowTracker.
+By default your progress is saved **locally** in the browser. You can connect
+your own **Google Drive** to sync it across devices. The data goes into Drive's
+hidden *appDataFolder*, which only this app's OAuth client can read. The
+browser talks to Google directly, so no High5 server (and nobody running one)
+ever holds a copy of anyone's learning data.
 
-To turn it on, create a free Firebase project and add its config:
+How it works ([`src/services/driveSync.ts`](src/services/driveSync.ts), ported
+from KanDOne):
 
-1. Go to <https://console.firebase.google.com> → **Add project**.
-2. **Build → Authentication → Get started → Sign-in method → enable Google.**
-3. **Build → Firestore Database → Create database** (production mode).
-4. Paste the contents of [`firestore.rules`](./firestore.rules) into the
-   **Rules** tab and **Publish** (so each user only accesses their own data).
-5. **Project settings → Your apps → Web app (`</>`)** → copy the config values.
-6. Put them in a `.env` file (see [`.env.example`](./.env.example)):
+- **One file per device.** Each device writes only its own
+  `high5-<deviceId>.json` and reads everyone's. Drive has no conditional write,
+  so two devices sharing one file would silently overwrite each other.
+- **Merged per record.** Each record keeps its newest version; deletes are
+  kept as tombstones so they don't come back. Profile fields (`progress`,
+  `dailyMissions`) take the newest copy.
+- **Unsynced changes survive.** A change that hasn't reached Drive yet is
+  recorded as pending ([`src/utils/pendingSync.ts`](src/utils/pendingSync.ts))
+  and replayed on the next connect instead of being overwritten.
+- **Accounts stay separate.** Signing out clears the device. Local data that
+  belongs to a different Google account is never merged into the one
+  connecting.
+- **Settings → "מחיקת הנתונים מ-Google Drive"** deletes every High5 file from
+  your Drive and revokes the app's access.
+- **Two open tabs on one device share one file.** A stale tab that pulls can
+  overwrite a newer edit the other tab hasn't uploaded yet. This is the same
+  trade-off KanDOne makes; reload the other tab after a burst of edits.
 
-   ```
-   VITE_FIREBASE_API_KEY=...
-   VITE_FIREBASE_AUTH_DOMAIN=...
-   VITE_FIREBASE_PROJECT_ID=...
-   VITE_FIREBASE_STORAGE_BUCKET=...
-   VITE_FIREBASE_MESSAGING_SENDER_ID=...
-   VITE_FIREBASE_APP_ID=...
-   ```
+To turn it on, use a Google Cloud project (a Firebase project counts):
 
-   For the deployed app, add the same variables in **Vercel → Project →
-   Settings → Environment Variables**, then redeploy.
-7. Under **Authentication → Settings → Authorized domains**, add your Vercel
-   domain so Google sign-in works in production.
+1. Enable the **Google Drive API**.
+2. Under **Data Access**, add the scope
+   `https://www.googleapis.com/auth/drive.appdata`. It is non-sensitive, so no
+   verification is needed. Under **Audience**, click **Publish app**.
+3. Create a **Web application** OAuth client. Under **Authorized JavaScript
+   origins**, add the production URL (and any preview URL you test on).
+4. Set `VITE_GOOGLE_CLIENT_ID` to the client ID, in `.env` locally (see
+   [`.env.example`](./.env.example)) and in **Vercel → Settings → Environment
+   Variables**, then redeploy.
 
-Without these variables the app simply stays in Local mode. The Firebase web
-config is safe to expose in the client — access is enforced by the Firestore
-rules.
+Without it the app stays in Local mode. The client ID is a public identifier,
+not a secret.
 
-## Daily missions reminder (optional, requires Cloud sync)
+## Daily missions reminder (optional)
 
-Signed-in users can opt into a push notification that fires if they haven't
-opened the app and haven't finished today's Daily Missions by the evening.
-Enable it from **Settings → 🔔 תזכורות יומיות**.
+Any browser can opt into a push notification that fires at 18:00 local time
+if the learner hasn't opened the app and hasn't finished today's missions.
+Enable it from **Settings → 🔔 תזכורות יומיות**. No Google sign-in is needed.
 
-This has three parts:
+**The server stores almost nothing.** Per browser install,
+`reminders/{installId}` holds a push token, a timezone, and two dates the
+browser reports: the last day it opened the app, and the last day it finished
+every mission. There is no account, no progress, and no content. The browser
+gets back a random write key, of which the server keeps only the SHA-256; every
+update or opt-out must present the key. See
+[`api/_lib/reminderApi.ts`](api/_lib/reminderApi.ts).
 
-1. **Web Push (client)** — needs a VAPID key: Firebase console → **Project
-   settings → Cloud Messaging → Web Push certificates → generate a key pair**.
-   Add it as `VITE_FIREBASE_VAPID_KEY` alongside your other Firebase env vars
-   (see [`.env.example`](./.env.example)), both locally and in Vercel.
-2. **The check itself (`api/mission-reminder.ts`)** — a Vercel serverless
-   function, kept outside the Vite build. It needs two *server-only* Vercel
-   environment variables (Project → Settings → Environment Variables — do not
-   put these in `.env`/`VITE_*`):
-   - `FIREBASE_SERVICE_ACCOUNT` — the full JSON of a service account key
-     (Firebase console → Project settings → Service accounts → Generate new
-     private key), pasted as a single-line string.
-   - `CRON_SECRET` — any random string; it authorizes calls to this endpoint.
-     Without it the endpoint rejects every call (it fails closed). Users are
-     read in pages of 500 and sent with FCM `sendEach`; each run logs one
-     aggregate line (`checked`/`sent`/`cleared`/`failed`, no tokens or ids).
-3. **The schedule (`.github/workflows/mission-reminder.yml`)** — calls that
-   endpoint every hour. Vercel's free Hobby plan only allows once-a-day cron,
-   which can't respect each user's own timezone, so the trigger lives in
-   GitHub Actions instead (free) and the endpoint decides per-user whether
-   it's actually their reminder hour. Add these repo secrets (**Settings →
-   Secrets and variables → Actions**):
+This has four parts:
+
+1. **Web Push (client).** Set the Firebase web-app config
+   (`VITE_FIREBASE_*`) and a VAPID key (Firebase console → **Project settings →
+   Cloud Messaging → Web Push certificates**) as `VITE_FIREBASE_VAPID_KEY`,
+   locally and in Vercel.
+2. **Registration (`api/reminder-register.ts`, `api/reminder.ts`).**
+   - Register checks the token with an FCM dry-run send.
+   - Both endpoints accept only `application/json`, so another site can't call
+     them through a visitor's browser.
+3. **The check (`api/mission-reminder.ts`).** It needs two *server-only*
+   Vercel environment variables (do not put these in `.env`/`VITE_*`):
+   - `FIREBASE_SERVICE_ACCOUNT` — the full JSON of a service account key,
+     pasted as a single-line string. All three functions use it.
+   - `CRON_SECRET` — any random string; it authorizes calls to the check.
+     Without it the check rejects every call (it fails closed).
+
+   Installs are read in pages of 500 and sent with FCM `sendEach`. An install
+   whose token FCM reports as dead is removed. Each run logs one aggregate
+   line (`checked`/`sent`/`removed`/`failed`, no tokens or ids).
+4. **The schedule (`.github/workflows/mission-reminder.yml`).** It calls the
+   check every hour. Vercel's free Hobby plan only allows a once-a-day cron,
+   which can't respect each learner's timezone, so the trigger lives in
+   GitHub Actions and the check decides per install whether it's that
+   learner's reminder hour. Add these repo secrets (**Settings → Secrets and
+   variables → Actions**):
    - `REMINDER_ENDPOINT_URL` — `https://<your-vercel-domain>/api/mission-reminder`
    - `CRON_SECRET` — the same value set in Vercel
 
-Everything here is free-tier: Firestore reads/writes and FCM sends have no
-cost at this scale, and GitHub Actions cron is free for a once-an-hour job.
+Deploy [`firestore.rules`](./firestore.rules) (deny everything to clients;
+only the Admin SDK touches `reminders`).
+
+**Upgrading from the Firestore version:**
+
+- Learning data no longer goes to Firestore. The old `users/{uid}` documents
+  are left in place and read by nothing. Delete the `users` collection from the
+  Firebase console once every device has connected to Drive.
+- Reminder opt-ins made before this change were stored under `users/{uid}`,
+  which the check no longer reads. Those browsers stop getting reminders until
+  they opt in again from Settings.
 
 ## Testing
 
@@ -267,7 +296,8 @@ push and pull request.
 1. Import the repo at <https://vercel.com/new> — Vercel auto-detects Vite.
 2. **Root Directory** must be the repo root (leave it empty).
 3. Optional environment variables (see [`.env.example`](./.env.example)):
-   - `VITE_FIREBASE_*` — enable Google cloud sync
+   - `VITE_GOOGLE_CLIENT_ID` — enable Google Drive sync
+   - `VITE_FIREBASE_*` — enable web-push reminders
    - `VITE_SENTRY_DSN` — optional error monitoring (Sentry)
 4. `vercel.json` applies hardened HTTP security headers automatically.
 

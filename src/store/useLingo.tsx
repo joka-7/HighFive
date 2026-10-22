@@ -38,20 +38,13 @@ import {
 import { clearAllDailyCaches } from "../utils/dailyCache";
 import { parseProgressBackup, type ProgressBackup } from "../utils/backup";
 import { reportError } from "../services/errors";
-import {
-  isCloudConfigured,
-  loadCloud,
-  saveCloud,
-  signInWithGoogle,
-  signOut as cloudSignOut,
-  watchAuth,
-  type CloudData,
-  type CloudUser,
-} from "../services/firebase";
+import type { DriveUser } from "../services/driveSync";
+import { HISTORY_CAPS, type SyncedState } from "../utils/cloudMerge";
+import { useCloudSync } from "./useCloudSync";
 
-// Persistence layer — localStorage in "Local mode", and (optionally) Firestore
-// in "Account mode" when the user signs in with Google. Local mode is always
-// the default and the offline cache.
+// Persistence layer — localStorage always, and (optionally) the learner's own
+// Google Drive when they connect it (see useCloudSync). Local mode is the
+// default and the offline cache.
 
 const KEYS = {
   progress: "high5.progress",
@@ -61,9 +54,6 @@ const KEYS = {
   missionLog: "high5.mission_log",
   dailyMissions: "high5.daily_missions",
   learnedWords: "high5.learned_words",
-  // Remembers that the user opted into cloud sync, so we only eagerly load the
-  // (heavy) Firebase SDK on startup for returning signed-in users.
-  cloudSession: "high5.cloud_session",
 } as const;
 
 function load<T>(key: string, fallback: T): T {
@@ -143,12 +133,11 @@ const SPEAKING_POINTS_MAX = 20;
 // so the first round each day earns full credit per attempt.
 const SPEAKING_FULL_CREDIT_ATTEMPTS = 4;
 
-// Keep persisted history bounded so it can't grow forever — both so the
-// synced Firestore document stays under Firestore's 1 MiB document limit, and
-// so localStorage doesn't grow unbounded on long-term local-mode users.
-const MAX_CHAT_MESSAGES = 200;
-const MAX_MISSION_LOG = 400;
-const MAX_QUIZ_HISTORY = 1000;
+// Keep persisted history bounded so it can't grow forever (see HISTORY_CAPS:
+// Drive sync trims by the same caps after every merge).
+const MAX_CHAT_MESSAGES = HISTORY_CAPS.chatMessages;
+const MAX_MISSION_LOG = HISTORY_CAPS.missionLog;
+const MAX_QUIZ_HISTORY = HISTORY_CAPS.quizHistory;
 
 function capMissionLog(list: MissionLog[]): MissionLog[] {
   return list.length > MAX_MISSION_LOG ? list.slice(0, MAX_MISSION_LOG) : list;
@@ -165,17 +154,19 @@ interface LingoContextValue {
   chatMessages: ChatMessage[];
   quizHistory: QuizHistory[];
   missionLog: MissionLog[];
-  // Cloud / account state
+  // Google Drive sync (see useCloudSync)
   cloudConfigured: boolean;
-  user: CloudUser | null;
+  user: DriveUser | null;
+  // An account is stored on this device, even while its token has lapsed.
+  cloudLinked: boolean;
   authReady: boolean;
-  // True once the initial cloud load for the current session has either
-  // applied real cloud data or confirmed there was none and seeded it — the
-  // gate that stops the debounced upload effect from firing on a failed load.
+  // A pull or upload failed for a reason other than being offline or signed
+  // out; local progress is untouched and the UI offers a retry.
   cloudSyncError: boolean;
   retryCloudSync: () => void;
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
+  deleteCloudData: () => Promise<void>;
   registerUser: (userName: string, nativeLanguage: string, level: Level) => void;
   updateLevel: (level: Level) => void;
   levelUpNotice: Level | null;
@@ -247,20 +238,6 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   }, []);
   const [levelUpNotice, setLevelUpNotice] = useState<Level | null>(null);
 
-  const [user, setUser] = useState<CloudUser | null>(null);
-  // See LingoContextValue.cloudSyncError for what these two gate.
-  const [cloudLoaded, setCloudLoaded] = useState(false);
-  const [cloudSyncError, setCloudSyncError] = useState(false);
-  // We only wait on auth (and load Firebase) at startup if the user previously
-  // signed in. Local-mode users resolve immediately and never fetch the SDK.
-  // Read once: it must not flip after this session's own sign-in writes the
-  // flag, or the startup effect below would tear down the live auth watch.
-  const [willRestoreSession] = useState(
-    () => isCloudConfigured() && load<boolean>(KEYS.cloudSession, false),
-  );
-  const [authReady, setAuthReady] = useState(!willRestoreSession);
-  const authUnsubRef = useRef<(() => void) | null>(null);
-
   // Always mirror state to localStorage (local mode + offline cache).
   useEffect(() => {
     persist(KEYS.progress, progress);
@@ -284,28 +261,6 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     persist(KEYS.dailyMissions, dailyMissions);
   }, [dailyMissions]);
 
-  // Keep the latest snapshot in a ref so the auth callback can seed the cloud
-  // with current data without depending on stale closures.
-  const latest = useRef<CloudData>({
-    progress,
-    savedWords,
-    learnedWords,
-    chatMessages,
-    quizHistory,
-    missionLog,
-    dailyMissions,
-  });
-  useEffect(() => {
-    latest.current = {
-      progress,
-      savedWords,
-      learnedWords,
-      chatMessages,
-      quizHistory,
-      missionLog,
-      dailyMissions,
-    };
-  }, [progress, savedWords, learnedWords, chatMessages, quizHistory, missionLog, dailyMissions]);
 
   // Streak bookkeeping — same day → unchanged; consecutive day → +1; gap →
   // reset. Runs on mount and again whenever the tab regains visibility, so a
@@ -332,116 +287,6 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
 
-  // Apply a loaded (or freshly seeded) cloud document to local state and mark
-  // the load as successful — shared by the initial auth watcher and the
-  // manual retry below.
-  const applyCloudLoad = useCallback(async (uid: string) => {
-    const cloud = await loadCloud(uid);
-    if (cloud) {
-      setProgress(cloud.progress ?? null);
-      setSavedWords(cloud.savedWords ?? []);
-      setLearnedWords(cloud.learnedWords ?? seedStarterEntries());
-      setChatMessages(cloud.chatMessages ?? []);
-      setQuizHistory(cloud.quizHistory ?? []);
-      setMissionLog(cloud.missionLog ?? []);
-      setDailyMissions(cloud.dailyMissions ?? EMPTY_MISSIONS);
-    } else {
-      await saveCloud(uid, latest.current);
-    }
-    setCloudLoaded(true);
-  }, [setDailyMissions]);
-
-  // Begin watching Google sign-in state. This is what pulls in the Firebase
-  // SDK, so it stays deferred until a sign-in is actually needed. Idempotent —
-  // safe to call from both startup (session restore) and the signIn flow.
-  // On sign-in, pull the user's cloud data if it exists; otherwise seed the
-  // cloud from whatever is currently local.
-  const startAuthWatch = useCallback(() => {
-    if (authUnsubRef.current) return;
-    authUnsubRef.current = watchAuth(async (u) => {
-      setUser(u);
-      setAuthReady(true);
-      if (!u) {
-        localStorage.removeItem(KEYS.cloudSession);
-        setCloudLoaded(false);
-        setCloudSyncError(false);
-        return;
-      }
-      persist(KEYS.cloudSession, true);
-      setCloudSyncError(false);
-      try {
-        await applyCloudLoad(u.uid);
-      } catch (err) {
-        // Network/permission issue → stay on local data, and deliberately do
-        // NOT mark cloudLoaded — the debounced upload effect below stays off
-        // until a retry succeeds, so a transient failure here can never
-        // silently overwrite the user's real cloud progress with stale local
-        // data. Surfaced via cloudSyncError so the UI can offer a retry.
-        reportError(err, "cloud.load");
-        setCloudSyncError(true);
-      }
-    });
-  }, [applyCloudLoad]);
-
-  // Manual retry for the UI to call after a failed initial load.
-  const retryCloudSync = useCallback(() => {
-    if (!user) return;
-    setCloudSyncError(false);
-    applyCloudLoad(user.uid).catch((err) => {
-      reportError(err, "cloud.retry");
-      setCloudSyncError(true);
-    });
-  }, [user, applyCloudLoad]);
-
-  // Only restore a session (and load Firebase) on startup for users who were
-  // signed in last time. Everyone else stays in Local mode with no SDK fetch.
-  useEffect(() => {
-    if (willRestoreSession) startAuthWatch();
-    return () => {
-      authUnsubRef.current?.();
-      authUnsubRef.current = null;
-    };
-  }, [willRestoreSession, startAuthWatch]);
-
-  // While signed in, debounce-sync changes up to Firestore — gated on
-  // cloudLoaded so this never fires before the initial load has either
-  // applied the user's real cloud data or confirmed there was none.
-  useEffect(() => {
-    if (!user || !cloudLoaded) return;
-    const t = setTimeout(() => {
-      saveCloud(user.uid, {
-        progress,
-        savedWords,
-        learnedWords,
-        chatMessages,
-        quizHistory,
-        missionLog,
-        dailyMissions,
-      }).catch((err) => {
-        reportError(err, "cloud.save");
-        setCloudSyncError(true);
-      });
-    }, 800);
-    return () => clearTimeout(t);
-  }, [
-    user,
-    cloudLoaded,
-    progress,
-    savedWords,
-    learnedWords,
-    chatMessages,
-    quizHistory,
-    missionLog,
-    dailyMissions,
-  ]);
-
-  const signIn = useCallback(async () => {
-    // Start listening first so onAuthStateChanged catches this sign-in; this is
-    // also the point where the Firebase SDK is finally fetched.
-    startAuthWatch();
-    await signInWithGoogle();
-  }, [startAuthWatch]);
-
   const resetAll = useCallback(() => {
     setProgress(null);
     setSavedWords([]);
@@ -458,19 +303,43 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     clearAllDailyCaches();
   }, [setDailyMissions]);
 
-  const signOut = useCallback(async () => {
-    await cloudSignOut();
-    setUser(null);
-    setCloudLoaded(false);
-    setCloudSyncError(false);
-    localStorage.removeItem(KEYS.cloudSession);
-    // Signing out only happens from an account session (the Settings sign-out
-    // button only renders while `user` is set), so this device's local data
-    // is a copy of that account's progress — clear it so the next person (or
-    // the next Google account) on a shared device doesn't inherit it, or have
-    // it re-uploaded over their own cloud data.
-    resetAll();
-  }, [resetAll]);
+  // The learning state Drive sync keeps in step (see useCloudSync).
+  const syncedState = useMemo<SyncedState>(
+    () => ({ progress, dailyMissions, savedWords, learnedWords, chatMessages, quizHistory, missionLog }),
+    [progress, dailyMissions, savedWords, learnedWords, chatMessages, quizHistory, missionLog],
+  );
+  const applySynced = useCallback(
+    (next: SyncedState) => {
+      setProgress(next.progress);
+      setDailyMissions(next.dailyMissions);
+      setSavedWords([...next.savedWords]);
+      setLearnedWords(
+        Object.keys(next.learnedWords).length > 0 ? { ...next.learnedWords } : seedStarterEntries(),
+      );
+      setChatMessages([...next.chatMessages]);
+      setQuizHistory([...next.quizHistory]);
+      setMissionLog([...next.missionLog]);
+    },
+    [setDailyMissions],
+  );
+  const {
+    cloudConfigured,
+    user,
+    cloudLinked,
+    authReady,
+    cloudSyncError,
+    retryCloudSync,
+    signIn,
+    signOut,
+    deleteCloudData,
+  } = useCloudSync({
+    state: syncedState,
+    apply: applySynced,
+    // Signing out clears this device, so the next person (or the next Google
+    // account) on a shared device doesn't inherit the account's progress.
+    resetLocal: resetAll,
+    defaults: { progress: null, dailyMissions: EMPTY_MISSIONS },
+  });
 
   const registerUser = useCallback(
     (userName: string, nativeLanguage: string, level: Level) => {
@@ -896,13 +765,15 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       dailyMissions: todayMissions,
       todayWordCount,
       completeMission,
-      cloudConfigured: isCloudConfigured(),
+      cloudConfigured,
       user,
+      cloudLinked,
       authReady,
       cloudSyncError,
       retryCloudSync,
       signIn,
       signOut,
+      deleteCloudData,
       registerUser,
       updateLevel,
       levelUpNotice,
@@ -934,12 +805,15 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       todayMissions,
       todayWordCount,
       completeMission,
+      cloudConfigured,
       user,
+      cloudLinked,
       authReady,
       cloudSyncError,
       retryCloudSync,
       signIn,
       signOut,
+      deleteCloudData,
       registerUser,
       updateLevel,
       levelUpNotice,

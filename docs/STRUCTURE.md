@@ -18,8 +18,17 @@ HighFive/
 ├── api/                         # Vercel Serverless Functions — built independently of the Vite app,…
 │   ├── _lib/                    # Helpers shared by the functions; Vercel skips underscore paths, so these are…
 │   │   ├── cronAuth.test.ts
-│   │   └── cronAuth.ts
-│   └── mission-reminder.ts      # Hourly push-reminder endpoint; actual per-user scheduling logic lives in…
+│   │   ├── cronAuth.ts
+│   │   ├── firebaseAdmin.ts
+│   │   ├── http.test.ts
+│   │   ├── http.ts
+│   │   ├── reminderApi.test.ts
+│   │   └── reminderApi.ts
+│   ├── mission-reminder.ts      # Hourly push-reminder sender over reminders/{installId}; who is due is…
+│   ├── reminder-register.test.ts
+│   ├── reminder-register.ts     # POST: registers a browser install for push reminders (token + timezone only)
+│   ├── reminder.test.ts
+│   └── reminder.ts              # POST: reports seen/done days for an install; DELETE: opts it out
 ├── docs/
 │   ├── screenshots/
 │   │   ├── daily-lesson.png
@@ -216,7 +225,9 @@ HighFive/
 │   │   └── videos.ts
 │   ├── hooks/                   # Small reusable React hooks (local reminders, online-status)
 │   │   ├── useLocalReminder.ts
-│   │   └── useOnlineStatus.ts
+│   │   ├── useOnlineStatus.ts
+│   │   ├── useReminderReports.test.tsx
+│   │   └── useReminderReports.ts
 │   ├── screens/                 # One file per app screen/route
 │   │   ├── Calendar.tsx
 │   │   ├── DailyLesson.tsx
@@ -242,8 +253,11 @@ HighFive/
 │   │   ├── ai.test.ts
 │   │   ├── ai.ts
 │   │   ├── asr.ts
+│   │   ├── cloud.ts
 │   │   ├── content.test.ts
 │   │   ├── content.ts
+│   │   ├── driveSync.test.ts
+│   │   ├── driveSync.ts
 │   │   ├── errors.test.ts
 │   │   ├── errors.ts
 │   │   ├── firebase.ts
@@ -256,6 +270,8 @@ HighFive/
 │   │   ├── reminders.ts
 │   │   └── tts.ts
 │   ├── store/                   # UseLingo — the app's central state/context provider
+│   │   ├── useCloudSync.test.tsx
+│   │   ├── useCloudSync.ts
 │   │   ├── useLingo.test.tsx
 │   │   └── useLingo.tsx
 │   ├── utils/                   # Pure logic: spaced-repetition (SRS), scoring, cycles, missions, backup/restore
@@ -263,6 +279,8 @@ HighFive/
 │   │   ├── aiSchemas.ts
 │   │   ├── backup.test.ts
 │   │   ├── backup.ts
+│   │   ├── cloudMerge.test.ts
+│   │   ├── cloudMerge.ts
 │   │   ├── cycle.test.ts
 │   │   ├── cycle.ts
 │   │   ├── daily.test.ts
@@ -277,6 +295,8 @@ HighFive/
 │   │   ├── memorize.ts
 │   │   ├── missions.test.ts
 │   │   ├── missions.ts
+│   │   ├── pendingSync.test.ts
+│   │   ├── pendingSync.ts
 │   │   ├── progressCharts.test.ts
 │   │   ├── progressCharts.ts
 │   │   ├── reminderLogic.test.ts
