@@ -133,7 +133,7 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
         )}
         {messages.map((m) => (
           <div key={m.id} className={`bubble ${m.role}`}>
-            <div onClick={() => m.role === "assistant" && speak(m.messageText)}>
+            <div lang="en" onClick={() => m.role === "assistant" && speak(m.messageText)}>
               {m.messageText}
             </div>
             {m.corrections && <div className="correction">✏️ {m.corrections}</div>}
@@ -171,6 +171,7 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
       <div className="chat-input">
         <input
           className="input input-ltr"
+          lang="en"
           placeholder="Type in English..."
           value={text}
           onChange={(e) => setText(e.target.value)}

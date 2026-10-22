@@ -69,7 +69,7 @@ export default function Review() {
         <span className="tag">
           חזרה {index + 1}/{queue.length}
         </span>
-        <div className="word-en my-word-en">
+        <div className="word-en my-word-en" lang="en">
           {word.word}
         </div>
         <div className="pos">{word.partOfSpeech}</div>

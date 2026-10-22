@@ -191,10 +191,7 @@ export default function App() {
         {renderScreen()}
       </main>
 
-      <div
-        className="center fs-12"
-        style={{ padding: "12px 0 96px", display: "flex", gap: "6px", justifyContent: "center" }}
-      >
+      <div className="app-credit fs-12">
         <span className="muted">נבנה על ידי joka-7</span>
         <a
           href="https://jk-dev-7.vercel.app"

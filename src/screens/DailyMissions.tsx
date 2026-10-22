@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { DAILY_WORD_TARGET, useLingo } from "../store/useLingo";
+import { useLingo } from "../store/useLingo";
 import { videoForToday, youtubeEmbedUrl } from "../data/videos";
 import { isOperationDone, OPERATIONS, type Operation } from "../data/operations";
 import {
@@ -8,6 +8,7 @@ import {
   learningDayNumber,
   WEEK_WORD_COUNT,
 } from "../utils/cycle";
+import { DAILY_WORD_TARGET } from "../utils/missions";
 import { MissionCard } from "../components/Card";
 import type { DailyMissionFlag, Screen } from "../types";
 

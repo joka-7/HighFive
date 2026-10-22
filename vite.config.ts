@@ -2,9 +2,45 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { dirname, join } from "node:path";
+import type { Plugin } from "vite";
+
+// The push service worker (public/firebase-messaging-sw.js) loads Firebase's
+// compat builds with importScripts. Serving them from this origin keeps them
+// inside the CSP's script-src 'self' and pins them to the installed firebase
+// version instead of a hand-maintained CDN URL.
+const FIREBASE_COMPAT_SCRIPTS = ["firebase-app-compat.js", "firebase-messaging-compat.js"];
+
+function firebaseCompatScripts(): Plugin {
+  const firebaseDir = dirname(createRequire(import.meta.url).resolve("firebase/package.json"));
+  const read = (name: string) => readFileSync(join(firebaseDir, name));
+  return {
+    name: "firebase-compat-scripts",
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        const name = req.url?.split("?")[0]?.slice(1) ?? "";
+        if (!FIREBASE_COMPAT_SCRIPTS.includes(name)) return next();
+        res.setHeader("Content-Type", "text/javascript");
+        res.end(read(name));
+      });
+    },
+    generateBundle() {
+      for (const name of FIREBASE_COMPAT_SCRIPTS) {
+        this.emitFile({ type: "asset", fileName: name, source: read(name) });
+      }
+    },
+  };
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  define: {
+    // Tags Sentry reports with the deployed commit (Vercel sets this at build
+    // time), so an error can be traced to the deploy that introduced it.
+    "import.meta.env.VITE_APP_RELEASE": JSON.stringify(process.env.VERCEL_GIT_COMMIT_SHA ?? ""),
+  },
   build: {
     rollupOptions: {
       output: {
@@ -41,6 +77,7 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    firebaseCompatScripts(),
     VitePWA({
       // The app already ships and links its own public/manifest.webmanifest
       // (see index.html) — reuse that instead of generating a second one that
@@ -67,7 +104,11 @@ export default defineConfig({
         // below instead cache each the first time it's actually fetched, so
         // they keep working offline once they've been used online once.
         globPatterns: ["**/*.{js,css,html,ico,png,svg,webmanifest,woff2}"],
-        globIgnores: ["assets/content/**", "assets/vendor-firebase-*.js"],
+        globIgnores: [
+          "assets/content/**",
+          "assets/vendor-firebase-*.js",
+          ...FIREBASE_COMPAT_SCRIPTS,
+        ],
         maximumFileSizeToCacheInBytes: 1_500_000,
         navigateFallback: "/index.html",
         runtimeCaching: [
@@ -91,14 +132,6 @@ export default defineConfig({
               expiration: { maxEntries: 5, maxAgeSeconds: 60 * 60 * 24 * 30 },
             },
           },
-          {
-            urlPattern: ({ url }) => url.hostname === "fonts.gstatic.com",
-            handler: "CacheFirst",
-            options: {
-              cacheName: "google-fonts",
-              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
-            },
-          },
         ],
       },
     }),
@@ -110,12 +143,14 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "lcov"],
-      include: ["src/store/**", "src/services/**", "src/utils/**"],
-      // Floor — raise over time as more of the store/content paths are covered.
+      include: ["src/store/**", "src/services/**", "src/utils/**", "api/**"],
+      // Floor just under today's coverage, so a real drop fails CI — raise it
+      // as coverage grows rather than letting it sit far below.
       thresholds: {
-        lines: 35,
-        functions: 35,
-        statements: 35,
+        lines: 65,
+        functions: 65,
+        statements: 65,
+        branches: 55,
       },
     },
   },

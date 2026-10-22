@@ -27,6 +27,18 @@ export function dateKeyFromTs(ts: number): string {
   return `${y}-${m}-${day}`;
 }
 
+/** The calendar day before `ts`'s local day. Steps the calendar, not the
+ * clock: `ts - 24h` lands two days back in the hour after a 23-hour
+ * spring-forward day, which reset streaks that were still alive. */
+export function previousDateKey(ts: number): string {
+  const d = new Date(ts);
+  d.setDate(d.getDate() - 1);
+  return dateKeyFromTs(d.getTime());
+}
+
+/** New words a learner saves to complete the daily "words" mission. */
+export const DAILY_WORD_TARGET = 5;
+
 /** Quiz topic used by the Memorization round (see screens/Memorize.tsx). */
 export const MEMORIZATION_TOPIC = "Memorization";
 

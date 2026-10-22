@@ -1,8 +1,9 @@
-import { describe, it, expect } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
 import {
   allMissions,
   buildMonthGrid,
   dateKeyFromTs,
+  previousDateKey,
   kindFromQuizTopic,
   missionsByDate,
 } from "./missions";
@@ -55,5 +56,26 @@ describe("missions utils", () => {
     expect(cells).toHaveLength(42);
     expect(cells.filter((c) => c.inMonth).length).toBe(31);
     expect(cells.find((c) => c.inMonth && c.day === 1)?.dateKey).toBe("2026-07-01");
+  });
+});
+
+describe("previousDateKey", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it.each([
+    { name: "an ordinary day", tz: "UTC", local: [2026, 5, 15, 12, 0], expected: "2026-06-14" },
+    { name: "the first of a month", tz: "UTC", local: [2026, 2, 1, 9, 0], expected: "2026-02-28" },
+    { name: "the first of a year", tz: "UTC", local: [2026, 0, 1, 0, 5], expected: "2025-12-31" },
+    // 2026-03-08 is a 23-hour day in New York; 00:30 the next day minus 24h
+    // would land on 03-07.
+    { name: "just after a spring-forward day", tz: "America/New_York", local: [2026, 2, 9, 0, 30], expected: "2026-03-08" },
+    // Israel springs forward on 2026-03-27.
+    { name: "just after Israel's spring-forward day", tz: "Asia/Jerusalem", local: [2026, 2, 28, 0, 30], expected: "2026-03-27" },
+  ])("$name → $expected", ({ tz, local, expected }) => {
+    vi.stubEnv("TZ", tz);
+    const [y, mo, d, h, mi] = local as [number, number, number, number, number];
+    expect(previousDateKey(new Date(y, mo, d, h, mi).getTime())).toBe(expected);
   });
 });

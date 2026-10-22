@@ -10,6 +10,8 @@ interface ImportMetaEnv {
   readonly VITE_FIREBASE_APP_ID?: string;
   readonly VITE_FIREBASE_VAPID_KEY?: string;
   readonly VITE_SENTRY_DSN?: string;
+  /** Deployed commit SHA, injected by vite.config.ts; empty outside Vercel. */
+  readonly VITE_APP_RELEASE?: string;
   readonly VITE_MODEL_DISPATCHER_UI?: string;
 }
 

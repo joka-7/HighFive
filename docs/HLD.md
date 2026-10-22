@@ -123,7 +123,8 @@ recall practice instead of new ones arriving (`screens/Memorize.tsx`).
    level).
 3. Otherwise, build the prompt (verbatim from the original app) and call
    `complete()`, which dispatches to the configured provider's REST API.
-4. Parse the JSON response (`parseJson`, with fence-stripping); on parse or
+4. Parse the JSON response (`parseJson`, with fence-stripping) and check its
+   shape (`asLesson` in `src/utils/aiSchemas.ts`); on a parse, shape or
    network failure, fall back to offline content rather than showing an error.
 5. Render the lesson explanation, then the 3-question quiz via the shared
    `QuizRunner` component.

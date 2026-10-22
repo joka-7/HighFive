@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import type { GemQuestion } from "../types";
 import { speak } from "../services/tts";
 import { isAIReady } from "../services/ai";
-import { translateQuestion, type GemQuestionTranslation } from "../services/content";
+import { translateQuestion } from "../services/content";
+import type { GemQuestionTranslation } from "../utils/aiSchemas";
 
 interface Props {
   questions: GemQuestion[];
@@ -137,7 +138,7 @@ export default function QuizRunner({ questions, onFinish }: Props) {
             </button>
           </div>
         </div>
-        <h3 className="ltr">{q.question}</h3>
+        <h3 className="ltr" lang="en">{q.question}</h3>
         {revealQuestionHe && questionHe && (
           <p className="muted my-quiz-he">{questionHe}</p>
         )}

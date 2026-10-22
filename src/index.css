@@ -352,6 +352,14 @@ button {
   border-color: var(--skill-speaking);
 }
 
+/* --- Credit line under the screen; bottom padding clears the fixed nav --- */
+.app-credit {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 0 96px;
+}
+
 /* --- Bottom nav --- */
 .bottom-nav {
   position: fixed;

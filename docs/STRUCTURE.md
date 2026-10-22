@@ -15,7 +15,10 @@ HighFive/
 │   │   └── security.yml
 │   ├── copilot-instructions.md  # Copilot's copy of AGENTS.md (generated)
 │   └── dependabot.yml
-├── api/                         # Vercel Serverless Functions — built independently of the Vite app (see…
+├── api/                         # Vercel Serverless Functions — built independently of the Vite app,…
+│   ├── _lib/                    # Helpers shared by the functions; Vercel skips underscore paths, so these are…
+│   │   ├── cronAuth.test.ts
+│   │   └── cronAuth.ts
 │   └── mission-reminder.ts      # Hourly push-reminder endpoint; actual per-user scheduling logic lives in…
 ├── docs/
 │   ├── screenshots/
@@ -246,6 +249,7 @@ HighFive/
 │   │   ├── firebase.ts
 │   │   ├── prefs.test.ts
 │   │   ├── prefs.ts
+│   │   ├── push.test.ts
 │   │   ├── push.ts
 │   │   ├── pwa.ts
 │   │   ├── reminders.test.ts
@@ -255,6 +259,8 @@ HighFive/
 │   │   ├── useLingo.test.tsx
 │   │   └── useLingo.tsx
 │   ├── utils/                   # Pure logic: spaced-repetition (SRS), scoring, cycles, missions, backup/restore
+│   │   ├── aiSchemas.test.ts
+│   │   ├── aiSchemas.ts
 │   │   ├── backup.test.ts
 │   │   ├── backup.ts
 │   │   ├── cycle.test.ts
@@ -309,6 +315,7 @@ HighFive/
 ├── package.json
 ├── playwright.config.ts
 ├── stitch-prompt.md             # Google Stitch Prompt
+├── tsconfig.api.json            # Strict type-check for api/ (Node), run by `npm run typecheck`
 ├── tsconfig.json
 ├── vercel.json
 ├── vite-env.d.ts

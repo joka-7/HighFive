@@ -116,7 +116,7 @@ export default function SavedWords() {
           <div className={`card${w.isMastered ? " dimmed" : ""}`} key={w.id}>
             <div className="word-head">
               <div>
-                <div className="word-en">{w.word}</div>
+                <div className="word-en" lang="en">{w.word}</div>
                 <div className="pos">
                   {w.partOfSpeech} · {w.level}
                 </div>

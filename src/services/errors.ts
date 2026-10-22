@@ -10,8 +10,11 @@ function loadSentry(): Promise<typeof import("@sentry/browser") | null> {
   if (!sentryReady) {
     sentryReady = import("@sentry/browser")
       .then((Sentry) => {
+        const release = import.meta.env.VITE_APP_RELEASE;
         Sentry.init({
           dsn,
+          environment: import.meta.env.MODE,
+          ...(release ? { release } : {}),
           // Keep the free tier quiet — no session replay / tracing by default.
           tracesSampleRate: 0,
         });

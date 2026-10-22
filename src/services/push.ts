@@ -20,14 +20,23 @@ export function pushPermission(): NotificationPermission | "unsupported" {
   return Notification.permission;
 }
 
+// A scope holds exactly one service worker, and the Workbox app-shell worker
+// (services/pwa.ts) already owns "/". Registering the messaging worker there
+// too would evict the offline precache — and the next page load would evict
+// the messaging worker right back. This is the scope the Firebase SDK itself
+// uses for its default registration.
+export const MESSAGING_SW_SCOPE = "/firebase-cloud-messaging-push-scope";
+
 // firebase-messaging-sw.js is a static file (public/), never processed by
 // Vite, so it can't read import.meta.env — the live config is passed in the
 // registration URL's query string instead, and the SW reads it from there.
-async function registerServiceWorker(): Promise<ServiceWorkerRegistration> {
+export async function registerServiceWorker(): Promise<ServiceWorkerRegistration> {
   const params = new URLSearchParams(
     Object.entries(firebaseConfig).filter(([, v]) => Boolean(v)) as [string, string][],
   );
-  return navigator.serviceWorker.register(`/firebase-messaging-sw.js?${params.toString()}`);
+  return navigator.serviceWorker.register(`/firebase-messaging-sw.js?${params.toString()}`, {
+    scope: MESSAGING_SW_SCOPE,
+  });
 }
 
 export interface EnablePushResult {

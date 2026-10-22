@@ -111,7 +111,7 @@ export default function Reading() {
             <span aria-hidden="true">🔊</span>
           </button>
         </div>
-        <pre className="explanation-text ltr mt-2_5">
+        <pre className="explanation-text ltr mt-2_5" lang="en">
           {reading.text}
         </pre>
         {reading.textHe ? (
@@ -136,7 +136,7 @@ export default function Reading() {
           {reading.glossary.map((w) => (
             <button
               key={w.word}
-              className="level-pill ltr-only"
+              className="level-pill ltr-only" lang="en"
               onClick={() => setOpen(open === w.word ? null : w.word)}
             >
               {w.word}
@@ -150,7 +150,7 @@ export default function Reading() {
             return (
               <div className="explanation mt-3">
                 <div className="row-between">
-                  <strong className="ltr-only">
+                  <strong className="ltr-only" lang="en">
                     {w.word} <span className="pos">{w.partOfSpeech}</span>
                   </strong>
                   <button

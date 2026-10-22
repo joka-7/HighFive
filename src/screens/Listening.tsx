@@ -85,7 +85,7 @@ export default function Listening() {
         <h2>כל הכבוד!</h2>
         <div className="card mt-3">
           <span className="tag">התמלול המלא</span>
-          <pre className="explanation-text ltr mt-2">
+          <pre className="explanation-text ltr mt-2" lang="en">
             {clip.transcript}
           </pre>
           {clip.transcriptHe && (
@@ -138,7 +138,7 @@ export default function Listening() {
         </button>
         {showText && (
           <>
-            <pre className="explanation-text ltr mt-2">
+            <pre className="explanation-text ltr mt-2" lang="en">
               {clip.transcript}
             </pre>
             {clip.transcriptHe && (

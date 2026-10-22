@@ -9,6 +9,11 @@ import "./index.css";
 // Apply the saved theme before first paint to avoid a flash of the wrong theme.
 applyTheme(loadPrefs().theme);
 
+// Local mode keeps all progress in localStorage, which a browser may evict
+// under storage pressure. Asking for persistence is best effort: browsers
+// grant it silently for engaged or installed sites and ignore it otherwise.
+void navigator.storage?.persist?.().catch(() => false);
+
 // Mobile browsers skip :active/tap-highlight rendering on pages with no
 // touch listeners (treated as passively scrollable) -- this one-time no-op
 // listener makes tap feedback on the footer icon links actually render.

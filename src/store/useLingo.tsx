@@ -29,9 +29,11 @@ import {
 } from "../utils/levelProgress";
 import {
   DAILY_CHECKLIST_LABELS,
+  DAILY_WORD_TARGET,
   dateKeyFromTs,
   externalMissionLabel,
   MEMORIZATION_TOPIC,
+  previousDateKey,
 } from "../utils/missions";
 import { clearAllDailyCaches } from "../utils/dailyCache";
 import { parseProgressBackup, type ProgressBackup } from "../utils/backup";
@@ -73,8 +75,24 @@ function load<T>(key: string, fallback: T): T {
   }
 }
 
+// Keys whose write already failed this session — a full quota fails on every
+// state change, and one report per key is enough to see it.
+const reportedPersistFailures = new Set<string>();
+
+// Mirror state into localStorage. A full quota (Safari private mode, a very
+// long history) must not crash the app from inside an effect: in-memory state
+// stays correct for this session, and the failure is reported once.
+function persist(key: string, value: unknown): void {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (err) {
+    if (reportedPersistFailures.has(key)) return;
+    reportedPersistFailures.add(key);
+    reportError(err, `storage.${key}`);
+  }
+}
+
 const MISSION_POINTS = 30;
-export const DAILY_WORD_TARGET = 5;
 // Longest "what did you watch/listen to/read?" note we keep, so a pasted wall
 // of text can't bloat localStorage or the synced Firestore document.
 const MAX_EXTERNAL_NOTE = 120;
@@ -130,9 +148,14 @@ const SPEAKING_FULL_CREDIT_ATTEMPTS = 4;
 // so localStorage doesn't grow unbounded on long-term local-mode users.
 const MAX_CHAT_MESSAGES = 200;
 const MAX_MISSION_LOG = 400;
+const MAX_QUIZ_HISTORY = 1000;
 
 function capMissionLog(list: MissionLog[]): MissionLog[] {
   return list.length > MAX_MISSION_LOG ? list.slice(0, MAX_MISSION_LOG) : list;
+}
+
+function capQuizHistory(list: QuizHistory[]): QuizHistory[] {
+  return list.length > MAX_QUIZ_HISTORY ? list.slice(0, MAX_QUIZ_HISTORY) : list;
 }
 
 interface LingoContextValue {
@@ -208,9 +231,20 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   const [missionLog, setMissionLog] = useState<MissionLog[]>(() =>
     load<MissionLog[]>(KEYS.missionLog, []),
   );
-  const [dailyMissions, setDailyMissions] = useState<DailyMissionsState>(() =>
+  const [dailyMissions, setDailyMissionsState] = useState<DailyMissionsState>(() =>
     load<DailyMissionsState>(KEYS.dailyMissions, EMPTY_MISSIONS),
   );
+  // Read-your-writes copy of dailyMissions. Awarding a mission has to check
+  // and set the flag *and* grant points; doing the grant from inside a state
+  // updater is impure (StrictMode runs updaters twice, and so would grant
+  // twice), and reading the rendered value would miss a second award made
+  // in the same tick. So every write goes through setDailyMissions below,
+  // which updates this ref synchronously.
+  const missionsRef = useRef(dailyMissions);
+  const setDailyMissions = useCallback((next: DailyMissionsState) => {
+    missionsRef.current = next;
+    setDailyMissionsState(next);
+  }, []);
   const [levelUpNotice, setLevelUpNotice] = useState<Level | null>(null);
 
   const [user, setUser] = useState<CloudUser | null>(null);
@@ -219,32 +253,35 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   const [cloudSyncError, setCloudSyncError] = useState(false);
   // We only wait on auth (and load Firebase) at startup if the user previously
   // signed in. Local-mode users resolve immediately and never fetch the SDK.
-  const willRestoreSession =
-    isCloudConfigured() && load<boolean>(KEYS.cloudSession, false);
+  // Read once: it must not flip after this session's own sign-in writes the
+  // flag, or the startup effect below would tear down the live auth watch.
+  const [willRestoreSession] = useState(
+    () => isCloudConfigured() && load<boolean>(KEYS.cloudSession, false),
+  );
   const [authReady, setAuthReady] = useState(!willRestoreSession);
   const authUnsubRef = useRef<(() => void) | null>(null);
 
   // Always mirror state to localStorage (local mode + offline cache).
   useEffect(() => {
-    localStorage.setItem(KEYS.progress, JSON.stringify(progress));
+    persist(KEYS.progress, progress);
   }, [progress]);
   useEffect(() => {
-    localStorage.setItem(KEYS.savedWords, JSON.stringify(savedWords));
+    persist(KEYS.savedWords, savedWords);
   }, [savedWords]);
   useEffect(() => {
-    localStorage.setItem(KEYS.learnedWords, JSON.stringify(learnedWords));
+    persist(KEYS.learnedWords, learnedWords);
   }, [learnedWords]);
   useEffect(() => {
-    localStorage.setItem(KEYS.chat, JSON.stringify(chatMessages));
+    persist(KEYS.chat, chatMessages);
   }, [chatMessages]);
   useEffect(() => {
-    localStorage.setItem(KEYS.quizHistory, JSON.stringify(quizHistory));
+    persist(KEYS.quizHistory, quizHistory);
   }, [quizHistory]);
   useEffect(() => {
-    localStorage.setItem(KEYS.missionLog, JSON.stringify(missionLog));
+    persist(KEYS.missionLog, missionLog);
   }, [missionLog]);
   useEffect(() => {
-    localStorage.setItem(KEYS.dailyMissions, JSON.stringify(dailyMissions));
+    persist(KEYS.dailyMissions, dailyMissions);
   }, [dailyMissions]);
 
   // Keep the latest snapshot in a ref so the auth callback can seed the cloud
@@ -282,7 +319,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
         const today = dateKeyFromTs(now);
         const last = prev.lastActiveTimestamp ? dateKeyFromTs(prev.lastActiveTimestamp) : "";
         if (last === today) return prev;
-        const yesterday = dateKeyFromTs(now - 86_400_000);
+        const yesterday = previousDateKey(now);
         const streak = last === yesterday ? prev.streak + 1 : 1;
         return { ...prev, streak, lastActiveTimestamp: now };
       });
@@ -312,7 +349,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       await saveCloud(uid, latest.current);
     }
     setCloudLoaded(true);
-  }, []);
+  }, [setDailyMissions]);
 
   // Begin watching Google sign-in state. This is what pulls in the Firebase
   // SDK, so it stays deferred until a sign-in is actually needed. Idempotent —
@@ -330,7 +367,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
         setCloudSyncError(false);
         return;
       }
-      localStorage.setItem(KEYS.cloudSession, JSON.stringify(true));
+      persist(KEYS.cloudSession, true);
       setCloudSyncError(false);
       try {
         await applyCloudLoad(u.uid);
@@ -364,8 +401,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       authUnsubRef.current?.();
       authUnsubRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [willRestoreSession, startAuthWatch]);
 
   // While signed in, debounce-sync changes up to Firestore — gated on
   // cloudLoaded so this never fires before the initial load has either
@@ -406,6 +442,22 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     await signInWithGoogle();
   }, [startAuthWatch]);
 
+  const resetAll = useCallback(() => {
+    setProgress(null);
+    setSavedWords([]);
+    setLearnedWords(seedStarterEntries());
+    setChatMessages([]);
+    setQuizHistory([]);
+    setMissionLog([]);
+    setDailyMissions(EMPTY_MISSIONS);
+    setLevelUpNotice(null);
+    // Also clear cached lesson/reading/listening/speaking-of-the-day content
+    // so a reset doesn't leave stale content showing on the next visit.
+    // Deliberately does NOT touch the AI provider key or UI prefs (theme,
+    // speech speed) — those are user settings, not learning progress.
+    clearAllDailyCaches();
+  }, [setDailyMissions]);
+
   const signOut = useCallback(async () => {
     await cloudSignOut();
     setUser(null);
@@ -418,8 +470,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     // the next Google account) on a shared device doesn't inherit it, or have
     // it re-uploaded over their own cloud data.
     resetAll();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [resetAll]);
 
   const registerUser = useCallback(
     (userName: string, nativeLanguage: string, level: Level) => {
@@ -444,10 +495,11 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   const clearLevelUpNotice = useCallback(() => setLevelUpNotice(null), []);
 
   // Auto-promote when vocabulary mastery thresholds are met at the current level.
+  const currentLevel = progress?.currentLevel;
   useEffect(() => {
-    if (!progress) return;
-    const target = promotionTarget(progress.currentLevel, learnedWords, savedWords);
-    if (!target || target === progress.currentLevel) return;
+    if (!currentLevel) return;
+    const target = promotionTarget(currentLevel, learnedWords, savedWords);
+    if (!target || target === currentLevel) return;
     setLevelUpNotice(target);
     setMissionLog((ml) =>
       capMissionLog([
@@ -463,7 +515,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     setProgress((prev) =>
       prev ? { ...prev, currentLevel: target, points: prev.points + 100 } : prev,
     );
-  }, [learnedWords, savedWords, progress?.currentLevel]);
+  }, [learnedWords, savedWords, currentLevel]);
 
   const addPoints = useCallback((points: number) => {
     setProgress((prev) => (prev ? { ...prev, points: prev.points + points } : prev));
@@ -495,43 +547,44 @@ export function LingoProvider({ children }: { children: ReactNode }) {
 
   const toggleSaveWord = useCallback<LingoContextValue["toggleSaveWord"]>(
     (word) => {
-      setSavedWords((prev) => {
-        const exists = prev.find((w) => w.word.toLowerCase() === word.word.toLowerCase());
-        if (exists) {
-          return prev.filter((w) => w.id !== exists.id);
-        }
-        // Saving a new word awards +10 points.
-        setProgress((p) => (p ? { ...p, points: p.points + 10 } : p));
-        // New words enter the spaced-repetition queue immediately due (box 0).
-        // Saving also marks the word as learned for progressive content.
-        setLearnedWords((lw) => {
-          const key = word.word.toLowerCase();
-          if (lw[key]) return lw;
-          return {
-            ...lw,
-            [key]: {
-              word: word.word,
-              translation: word.translation,
-              level: word.level,
-              firstSeenAt: Date.now(),
-            },
-          };
-        });
-        return [
-          {
-            ...word,
-            id: uid(),
-            isMastered: false,
-            savedAt: Date.now(),
-            srsLevel: 0,
-            nextReviewAt: Date.now(),
-            reviewCount: 0,
+      const key = word.word.toLowerCase();
+      const exists = savedWords.find((w) => w.word.toLowerCase() === key);
+      if (exists) {
+        setSavedWords((prev) => prev.filter((w) => w.id !== exists.id));
+        return;
+      }
+      // Decided here, outside any updater, so the grant below happens once.
+      // Saving a new word awards +10 points.
+      setProgress((p) => (p ? { ...p, points: p.points + 10 } : p));
+      // New words enter the spaced-repetition queue immediately due (box 0).
+      // Saving also marks the word as learned for progressive content.
+      setLearnedWords((lw) => {
+        if (lw[key]) return lw;
+        return {
+          ...lw,
+          [key]: {
+            word: word.word,
+            translation: word.translation,
+            level: word.level,
+            firstSeenAt: Date.now(),
           },
-          ...prev,
-        ];
+        };
       });
+      const now = Date.now();
+      setSavedWords((prev) => [
+        {
+          ...word,
+          id: uid(),
+          isMastered: false,
+          savedAt: now,
+          srsLevel: 0,
+          nextReviewAt: now,
+          reviewCount: 0,
+        },
+        ...prev,
+      ]);
     },
-    [],
+    [savedWords],
   );
 
   const toggleMastered = useCallback((id: string) => {
@@ -641,10 +694,12 @@ export function LingoProvider({ children }: { children: ReactNode }) {
         : QUIZ_POINTS_PER_ANSWER;
       const earned = score * perAnswer;
       setProgress((prev) => (prev ? { ...prev, points: prev.points + earned } : prev));
-      setQuizHistory((prev) => [
-        { id: uid(), level, topic, score, totalQuestions: total, timestamp: Date.now() },
-        ...prev,
-      ]);
+      setQuizHistory((prev) =>
+        capQuizHistory([
+          { id: uid(), level, topic, score, totalQuestions: total, timestamp: Date.now() },
+          ...prev,
+        ]),
+      );
       return earned;
     },
     [quizHistory],
@@ -655,12 +710,19 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   // never carry over or block today's points. Shared by the manual "mark as
   // done" missions and the auto-detected ones below.
   // `note` is set only when the learner did the activity in another app.
-  const awardMission = useCallback((id: DailyMissionFlag, note?: string) => {
-    const today = dateKeyFromTs(Date.now());
-    const trimmed = note?.trim().slice(0, MAX_EXTERNAL_NOTE) ?? "";
-    setDailyMissions((prev) => {
-      const current = todaysMissions(prev, today);
-      if (current[id]) return current;
+  const awardMission = useCallback(
+    (id: DailyMissionFlag, note?: string) => {
+      const today = dateKeyFromTs(Date.now());
+      const trimmed = note?.trim().slice(0, MAX_EXTERNAL_NOTE) ?? "";
+      const current = todaysMissions(missionsRef.current, today);
+      if (current[id]) return;
+      setDailyMissions({
+        ...current,
+        [id]: true,
+        externalNotes: trimmed
+          ? { ...current.externalNotes, [id]: trimmed }
+          : current.externalNotes,
+      });
       setProgress((p) => (p ? { ...p, points: p.points + MISSION_POINTS } : p));
 
       // Log missions that aren't already tracked elsewhere: the checklist-only
@@ -669,26 +731,18 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       const meta = DAILY_CHECKLIST_LABELS[id];
       if (id === "video" || id === "talk" || id === "words" || trimmed) {
         const label = trimmed ? externalMissionLabel(id, trimmed) : meta.label;
+        const timestamp = Date.now();
+        const entryId = uid();
         setMissionLog((ml) => {
           if (ml.some((m) => m.kind === meta.kind && dateKeyFromTs(m.timestamp) === today)) {
             return ml;
           }
-          return capMissionLog([
-            { id: uid(), kind: meta.kind, label, timestamp: Date.now() },
-            ...ml,
-          ]);
+          return capMissionLog([{ id: entryId, kind: meta.kind, label, timestamp }, ...ml]);
         });
       }
-
-      return {
-        ...current,
-        [id]: true,
-        externalNotes: trimmed
-          ? { ...current.externalNotes, [id]: trimmed }
-          : current.externalNotes,
-      };
-    });
-  }, []);
+    },
+    [setDailyMissions],
+  );
 
   const completeMission = useCallback(
     (id: DailyMissionFlag, note?: string) => awardMission(id, note),
@@ -698,18 +752,18 @@ export function LingoProvider({ children }: { children: ReactNode }) {
   // Speaking-practice points: full credit for the first round of the day
   // (SPEAKING_FULL_CREDIT_ATTEMPTS attempts), reduced after — otherwise the
   // same sentence could be re-recorded indefinitely for unlimited points.
-  const awardSpeakingPoints = useCallback((score0to100: number) => {
-    const today = dateKeyFromTs(Date.now());
-    setDailyMissions((prev) => {
-      const current = todaysMissions(prev, today);
+  const awardSpeakingPoints = useCallback(
+    (score0to100: number) => {
+      const current = todaysMissions(missionsRef.current, dateKeyFromTs(Date.now()));
       const count = current.speakingCount ?? 0;
       const fullCredit = count < SPEAKING_FULL_CREDIT_ATTEMPTS;
       const raw = Math.round((score0to100 / 100) * SPEAKING_POINTS_MAX);
       const earned = fullCredit ? raw : Math.round(raw * REPEAT_POINTS_FACTOR);
+      setDailyMissions({ ...current, speakingCount: count + 1 });
       setProgress((p) => (p ? { ...p, points: p.points + earned } : p));
-      return { ...current, speakingCount: count + 1 };
-    });
-  }, []);
+    },
+    [setDailyMissions],
+  );
 
   // Words saved today (via toggleSaveWord) — drives the "save 5 words" mission.
   const todayWordCount = useMemo(() => {
@@ -787,22 +841,6 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
-  const resetAll = useCallback(() => {
-    setProgress(null);
-    setSavedWords([]);
-    setLearnedWords(seedStarterEntries());
-    setChatMessages([]);
-    setQuizHistory([]);
-    setMissionLog([]);
-    setDailyMissions(EMPTY_MISSIONS);
-    setLevelUpNotice(null);
-    // Also clear cached lesson/reading/listening/speaking-of-the-day content
-    // so a reset doesn't leave stale content showing on the next visit.
-    // Deliberately does NOT touch the AI provider key or UI prefs (theme,
-    // speech speed) — those are user settings, not learning progress.
-    clearAllDailyCaches();
-  }, []);
-
   const exportProgress = useCallback((): ProgressBackup => {
     return {
       version: 1,
@@ -840,7 +878,7 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     setDailyMissions(todaysMissions(data.dailyMissions, dateKeyFromTs(Date.now())));
     setLevelUpNotice(null);
     clearAllDailyCaches();
-  }, []);
+  }, [setDailyMissions]);
 
   const todayMissions = useMemo(
     () => todaysMissions(dailyMissions, dateKeyFromTs(Date.now())),
