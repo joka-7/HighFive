@@ -1,27 +1,37 @@
-// Pure logic for the daily "you haven't done today's missions" reminder.
-// Shared between the Vercel cron endpoint (api/mission-reminder.ts) and its
-// tests — kept dependency-free so it needs no Firebase Admin/Vercel types.
+// Pure logic for the daily "you haven't done today's missions" web-push
+// reminder. Shared by the Vercel functions (api/) and their tests, so it
+// stays dependency-free.
+//
+// The server knows nothing about anyone's learning: per browser install it
+// keeps only a push token, a timezone, and two dates the browser reports —
+// the last day the learner finished every mission, and the last day they
+// opened the app. No Google account, no progress, no content.
 
-// Mirrors DailyMissionsState's flags. Optional because a document written by
-// an older client won't carry the newer ones — a missing flag counts as "not
-// done", so the reminder still fires rather than silently going quiet.
-export interface ReminderDailyMissions {
-  date: string;
-  video: boolean;
-  talk: boolean;
-  words: boolean;
-  reading: boolean;
-  listening?: boolean;
-  speaking?: boolean;
-  grammar: boolean;
-  memorization?: boolean;
+/** What the server stores per install (reminders/{installId}). */
+export interface ReminderInstall {
+  readonly pushToken: string;
+  readonly timezone: string;
+  /** Local day (YYYY-MM-DD) the learner last finished every mission, or null. */
+  readonly doneDate: string | null;
+  /** Local day (YYYY-MM-DD) the learner last opened the app, or null. */
+  readonly seenDate: string | null;
 }
 
-export interface ReminderUserData {
-  pushToken?: string | null;
-  timezone?: string | null;
-  progress?: { lastActiveTimestamp?: number } | null;
-  dailyMissions?: ReminderDailyMissions | null;
+const DATE_KEY = /^\d{4}-\d{2}-\d{2}$/;
+
+export function isDateKey(value: unknown): value is string {
+  return typeof value === "string" && DATE_KEY.test(value);
+}
+
+/** True for an IANA timezone this runtime understands. */
+export function isValidTimeZone(value: unknown): value is string {
+  if (typeof value !== "string" || value.length === 0 || value.length > 64) return false;
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: value });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /** YYYY-MM-DD for the given instant, in the given IANA timezone. */
@@ -42,53 +52,13 @@ export function localHour(timeZone: string, date: Date): number {
 }
 
 /**
- * Friday and Saturday are review days (see utils/cycle.ts): the vocabulary slot
- * is the week's memorization round then, not five new words — so requiring
- * `words` on those days would nag a learner who finished everything. Derived
- * from the date key rather than the clock, so it follows the *user's* timezone
- * and not the server's.
+ * True if this install should get today's reminder at `now`: it is the
+ * target hour where the learner is, and today they have neither opened the
+ * app nor finished their missions.
  */
-export function isReviewDateKey(todayKey: string): boolean {
-  return new Date(`${todayKey}T12:00:00Z`).getUTCDay() >= 5;
-}
-
-/** Missions reset daily (see DailyMissionsState) — a stale `date` means none
- * of today's missions have started yet. */
-export function missionsCompleteToday(
-  missions: ReminderDailyMissions | null | undefined,
-  todayKey: string,
-): boolean {
-  if (!missions || missions.date !== todayKey) return false;
-  const vocabulary = isReviewDateKey(todayKey) ? missions.memorization : missions.words;
-  return Boolean(
-    missions.video &&
-      missions.talk &&
-      vocabulary &&
-      missions.reading &&
-      missions.listening &&
-      missions.speaking &&
-      missions.grammar,
-  );
-}
-
-/** True if this user should get today's reminder, evaluated at `now`. */
-export function shouldSendReminder(user: ReminderUserData, now: Date, targetHour: number): boolean {
-  if (!user.pushToken || !user.timezone) return false;
-
-  let hour: number;
-  let todayKey: string;
-  try {
-    hour = localHour(user.timezone, now);
-    todayKey = localDateKey(user.timezone, now);
-  } catch {
-    return false; // invalid/unsupported IANA timezone string
-  }
-  if (hour !== targetHour) return false;
-
-  const lastActiveKey = user.progress?.lastActiveTimestamp
-    ? localDateKey(user.timezone, new Date(user.progress.lastActiveTimestamp))
-    : "";
-  if (lastActiveKey === todayKey) return false; // already opened the app today
-
-  return !missionsCompleteToday(user.dailyMissions, todayKey);
+export function shouldSendReminder(install: ReminderInstall, now: Date, targetHour: number): boolean {
+  if (!install.pushToken || !isValidTimeZone(install.timezone)) return false;
+  if (localHour(install.timezone, now) !== targetHour) return false;
+  const today = localDateKey(install.timezone, now);
+  return install.doneDate !== today && install.seenDate !== today;
 }
