@@ -21,11 +21,11 @@
   "dependencies": {
     "modeldispatcher-browser-agent": "^0.6.7",
     "modeldispatcher-react-ui": "^0.6.7",
-    "@sentry/browser": "^10.74.0",
-    "firebase": "^12.19.0",
+    "@sentry/browser": "^11.8.0",
+    "firebase": "^13.0.0",
     "firebase-admin": "^14.4.0",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
