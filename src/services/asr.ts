@@ -3,6 +3,8 @@
 // state on browsers without it (notably some versions of Firefox/iOS). Mirrors
 // the defensive style of tts.ts.
 
+import { isNativeApp } from "./platform";
+
 interface SpeechRecognitionLike {
   lang: string;
   interimResults: boolean;
@@ -26,12 +28,25 @@ function getCtor(): SpeechRecognitionCtor | null {
 }
 
 export function asrSupported(): boolean {
-  return getCtor() !== null;
+  return isNativeApp() || getCtor() !== null;
+}
+
+// Android's WebView has no SpeechRecognition, so the app listens through the
+// device's recognizer. Whether one is installed is only known by asking it.
+async function recognizeNative(lang: string): Promise<string> {
+  const { SpeechRecognition } = await import("@capacitor-community/speech-recognition");
+  const { available } = await SpeechRecognition.available();
+  if (!available) throw new Error("Speech recognition is not available on this device.");
+  const permission = await SpeechRecognition.requestPermissions();
+  if (permission.speechRecognition !== "granted") throw new Error("not-allowed");
+  const { matches } = await SpeechRecognition.start({ language: lang, maxResults: 1, partialResults: false, popup: false });
+  return matches?.[0] ?? "";
 }
 
 // Listen once and resolve with the recognized transcript. Rejects on error or
 // when recognition is unsupported.
 export function recognizeOnce(lang = "en-US"): Promise<string> {
+  if (isNativeApp()) return recognizeNative(lang);
   return new Promise((resolve, reject) => {
     const Ctor = getCtor();
     if (!Ctor) {
