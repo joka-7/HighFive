@@ -47,6 +47,7 @@ HighFive/
 │   └── STRUCTURE.md             # Repository structure
 ├── e2e/                         # Playwright end-to-end specs, run via `npm run test:e2e`
 │   ├── onboarding.spec.ts
+│   ├── privacy.spec.ts
 │   └── screenshots.spec.ts
 ├── public/                      # Static assets + PWA manifest/service worker, served as-is by Vite
 │   ├── fonts/
@@ -58,7 +59,8 @@ HighFive/
 │   ├── firebase-messaging-sw.js
 │   ├── icon-192.png
 │   ├── icon-512.png
-│   └── manifest.webmanifest
+│   ├── manifest.webmanifest
+│   └── privacy.html
 ├── scripts/                     # Content generation — `npm run content` rebuilds src/data/offline/*.json from…
 │   ├── content/                 # Source word banks/passages the content generator reads
 │   │   ├── banks.mjs

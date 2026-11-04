@@ -111,6 +111,9 @@ export default defineConfig({
         ],
         maximumFileSizeToCacheInBytes: 1_500_000,
         navigateFallback: "/index.html",
+        // The privacy page is a separate static file; without this an
+        // installed app would answer /privacy.html with the app shell.
+        navigateFallbackDenylist: [/^\/privacy\.html$/],
         runtimeCaching: [
           {
             urlPattern: ({ url, sameOrigin }) =>
