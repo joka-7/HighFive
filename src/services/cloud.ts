@@ -6,11 +6,18 @@
 // that appears in every sign-in URL, not a secret. Unset, sync is off and the
 // app runs purely on localStorage.
 
-import { createDriveSync } from "./driveSync";
+import { createDriveSync, type FetchLike } from "./driveSync";
+import { createNativeGoogleAuth } from "./nativeGoogleAuth";
+import { isNativeApp } from "./platform";
 import { clearPendingIds } from "../utils/pendingSync";
 
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? "";
+const fetchImpl: FetchLike = (url, init) => fetch(url, init);
+
 export const driveSync = createDriveSync({
-  clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID ?? "",
-  fetchImpl: (url, init) => fetch(url, init),
+  clientId,
+  fetchImpl,
+  // Google refuses its popup inside the app's WebView; Android signs in natively.
+  nativeAuth: isNativeApp() ? createNativeGoogleAuth({ webClientId: clientId, fetchImpl }) : null,
   onLanded: (collection, ids) => clearPendingIds(collection, ids),
 });

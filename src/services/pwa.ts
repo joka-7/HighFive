@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { registerSW } from "virtual:pwa-register";
+import { isNativeApp } from "./platform";
 
 // Minimal PWA install + share helpers. The browser fires `beforeinstallprompt`
 // when the app is installable; we stash the event so a button can trigger the
@@ -55,12 +56,16 @@ export function usePwaInstall() {
 // reloading the app out from under the user mid-lesson. `registerType:
 // "prompt"` in the Vite config means the new service worker installs but
 // waits — nothing activates until `applyUpdate()` is called.
+//
+// The Android app skips it: its files ship inside the APK, and a service
+// worker there would only serve a stale copy after an update.
 export function useServiceWorkerUpdate() {
   const [needRefresh, setNeedRefresh] = useState(false);
   const [offlineReady, setOfflineReady] = useState(false);
   const updateRef = useRef<((reload?: boolean) => Promise<void>) | null>(null);
 
   useEffect(() => {
+    if (isNativeApp()) return;
     updateRef.current = registerSW({
       immediate: true,
       onNeedRefresh() {

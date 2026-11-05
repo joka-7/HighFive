@@ -1,0 +1,130 @@
+name: Android
+
+# Builds the Capacitor Android app. Every push to main also signs the APK with
+# the permanent High5 key and publishes it as a GitHub release, so the latest
+# APK is always at
+#   https://github.com/joka-7/HighFive/releases/latest/download/High5.apk
+#
+# Building runs the repo's and npm's code, so it gets a read-only token and
+# never sees the signing key. Signing is a separate job that runs none of that
+# code: it only downloads the unsigned APK, signs it and releases it. Google
+# sign-in on Android only works for an APK signed with the key whose SHA-1 is
+# registered on the Android OAuth client, so nothing is ever signed with a
+# temporary key, and pull requests get no signed APK.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  VERSION_NAME: 1.0.${{ github.run_number }}
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    env:
+      # Public identifiers, not secrets. Unset, the app builds with Drive sync
+      # (VITE_GOOGLE_CLIENT_ID) or error reporting (VITE_SENTRY_DSN) off.
+      VITE_GOOGLE_CLIENT_ID: ${{ vars.VITE_GOOGLE_CLIENT_ID }}
+      VITE_SENTRY_DSN: ${{ vars.VITE_SENTRY_DSN }}
+      VITE_APP_RELEASE: android-1.0.${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # This workflow can publish a release on its own, so it does not rely on
+      # the separate CI workflow having passed.
+      - name: Lint, type-check and unit tests
+        run: |
+          npm run lint
+          npm run typecheck
+          npm test
+
+      - name: Build the web app into the Android project
+        run: |
+          npm run build
+          npx cap sync android
+
+      - name: Build the unsigned release APK
+        working-directory: android
+        run: ./gradlew --no-daemon assembleRelease -PversionCode=${{ github.run_number }} -PversionName=$VERSION_NAME
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: High5-${{ env.VERSION_NAME }}-unsigned
+          path: android/app/build/outputs/apk/release/app-release-unsigned.apk
+          if-no-files-found: error
+
+  release:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    # Two quick pushes must not finish out of order: the older release would
+    # become "latest" and the download link would serve a downgrade.
+    concurrency:
+      group: android-release
+      cancel-in-progress: false
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: High5-${{ env.VERSION_NAME }}-unsigned
+
+      - name: Sign the APK
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          KEYSTORE_B64_2: ${{ secrets.ANDROID_KEYSTORE_B64_2 }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          # The keystore may be split across two secrets: some clipboards cut long lines at 2000 characters.
+          KEYSTORE_B64="$KEYSTORE_B64$KEYSTORE_B64_2"
+          [ -n "$KEYSTORE_B64" ] || { echo "::error::ANDROID_KEYSTORE_B64 is not set. Add the signing secrets (see docs/LLD.md, Android app)."; exit 1; }
+          printf '%s' "$KEYSTORE_B64" | tr -d ' \r\n\t' | base64 -d > release.jks 2>/dev/null \
+            || { echo "::error::ANDROID_KEYSTORE_B64 + ANDROID_KEYSTORE_B64_2 are not valid base64. Paste both again exactly."; exit 1; }
+          KEY_PASSWORD=$(printf '%s' "$KEY_PASSWORD" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          export KEY_PASSWORD
+          # Passwords go through the environment, never on a command line other processes can read.
+          keytool -list -keystore release.jks -storepass:env KEY_PASSWORD -alias high5 > /dev/null 2>&1 \
+            || { echo "::error::ANDROID_KEY_PASSWORD does not open the keystore, or it has no 'high5' key."; exit 1; }
+          echo "::notice::Signing key $(keytool -list -v -keystore release.jks -storepass:env KEY_PASSWORD -alias high5 | grep -o 'SHA1:.*')"
+          # Newest stable build-tools (skip rc/preview directories).
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | grep -E '/[0-9]+(\.[0-9]+)*$' | sort -V | tail -1)
+          "$BT/zipalign" -f -p 4 app-release-unsigned.apk aligned.apk
+          "$BT/apksigner" sign --ks release.jks --ks-key-alias high5 --ks-pass env:KEY_PASSWORD --key-pass env:KEY_PASSWORD \
+            --out High5.apk aligned.apk
+          "$BT/apksigner" verify High5.apk
+          rm -f release.jks aligned.apk
+
+      - name: Publish the APK as a release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          # A re-run keeps the run number, so the release may already exist.
+          if gh release view "android-$VERSION_NAME" > /dev/null 2>&1; then
+            gh release upload "android-$VERSION_NAME" High5.apk --clobber
+          else
+            gh release create "android-$VERSION_NAME" High5.apk --target "$GITHUB_SHA" --latest \
+              --title "High5 Android $VERSION_NAME" \
+              --notes "Android app built from $GITHUB_SHA. Install: download High5.apk on the phone and open it (allow installing from this source when asked)."
+          fi

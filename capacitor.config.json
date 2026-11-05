@@ -1,0 +1,10 @@
+{
+  "appId": "io.github.joka7.highfive",
+  "appName": "High5",
+  "webDir": "dist",
+  "plugins": {
+    "SocialLogin": {
+      "providers": { "google": true, "facebook": false, "apple": false, "twitter": false }
+    }
+  }
+}
