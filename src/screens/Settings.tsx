@@ -732,6 +732,10 @@ export default function Settings() {
           <span aria-hidden="true">📦</span>
           <span className="footer-link-label">קוד</span>
         </a>
+        <a href="/privacy.html" aria-label="Privacy" title="Privacy">
+          <span aria-hidden="true">🛡️</span>
+          <span className="footer-link-label">פרטיות</span>
+        </a>
         <a
           href="mailto:joka.dev.7@gmail.com"
           rel="noreferrer"
