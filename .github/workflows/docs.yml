@@ -32,3 +32,22 @@ jobs:
         run: |
           python .ai/skills/repo_tree/gen_tree.py --project . --output docs/STRUCTURE.md --check
           python .ai/skills/repo_tree/gen_tree.py --project . --output README.md --max-depth 1 --check
+
+  content-audit:
+    name: Content audit is current
+    runs-on: ubuntu-latest
+    steps:
+      # docs/CONTENT-AUDIT.md is generated from the shipped content. This fails
+      # when a content change didn't regenerate it, so the PR shows the change's
+      # effect, and when a hard content rule breaks (scripts/content-audit.mjs).
+      # The audit uses only Node and files in the repo: no npm install needed.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22
+
+      - name: Check the content audit against the content
+        run: node scripts/audit-content.mjs --check
