@@ -26,7 +26,11 @@ import {
 import {
   notificationsSupported,
   requestReminderPermission,
+  syncNativeReminders,
 } from "../services/reminders";
+import { isNativeApp } from "../services/platform";
+import { reportError } from "../services/errors";
+import { ANDROID_APK_URL, isAndroidBrowser } from "../utils/androidApk";
 import { usePwaInstall, canShare, shareApp } from "../services/pwa";
 import {
   disablePushReminders,
@@ -240,6 +244,7 @@ export default function Settings() {
     signOut,
     deleteCloudData,
     progress,
+    dailyMissions,
     exportProgress,
     importProgress,
   } = useLingo();
@@ -308,19 +313,32 @@ export default function Settings() {
       }
       const perm = await requestReminderPermission();
       if (perm !== "granted") {
-        setBackupMsg("יש לאשר התראות בהגדרות הדפדפן.");
+        setBackupMsg(
+          isNativeApp()
+            ? "יש לאשר התראות בהגדרות האפליקציה במכשיר."
+            : "יש לאשר התראות בהגדרות הדפדפן.",
+        );
         return;
       }
     }
     const next = { ...prefs, remindersEnabled: enabled };
     setPrefs(next);
     savePrefs(next);
+    rescheduleOnDevice();
   }
 
   function setReminderHour(hour: number) {
     const next = { ...prefs, reminderHour: hour };
     setPrefs(next);
     savePrefs(next);
+    rescheduleOnDevice();
+  }
+
+  // The Android app's reminders are scheduled with the OS ahead of time, so a
+  // changed preference has to replace them now.
+  function rescheduleOnDevice() {
+    if (!isNativeApp()) return;
+    syncNativeReminders(dailyMissions).catch((err: unknown) => reportError(err, "reminder.native"));
   }
 
   async function handleSignIn() {
@@ -467,7 +485,9 @@ export default function Settings() {
           <div>
             <div className="fw-700">🔔 תזכורת משימות</div>
             <div className="muted fs-13">
-              התראה מקומית כשהאפליקציה פתוחה אחרי השעה שנבחרה ומשימות לא הושלמו.
+              {isNativeApp()
+                ? "התראה בשעה שנבחרה אם משימות היום לא הושלמו, גם כשהאפליקציה סגורה."
+                : "התראה מקומית כשהאפליקציה פתוחה אחרי השעה שנבחרה ומשימות לא הושלמו."}
             </div>
           </div>
           <button
@@ -495,34 +515,48 @@ export default function Settings() {
         )}
       </div>
 
-      <div className="card">
-        <h3>📲 התקנה ושיתוף</h3>
-        {installed ? (
-          <p className="muted">✅ האפליקציה מותקנת במכשיר שלך.</p>
-        ) : canInstall ? (
-          <>
+      {!isNativeApp() && (
+        <div className="card">
+          <h3>📲 התקנה ושיתוף</h3>
+          {isAndroidBrowser(navigator.userAgent) && (
+            <>
+              <a className="btn" href={ANDROID_APK_URL}>
+                🤖 הורדת אפליקציית אנדרואיד
+              </a>
+              <p className="muted fs-13">
+                אחרי ההורדה פתחו את הקובץ ואשרו התקנה ממקור זה. באפליקציה תזכורות
+                מגיעות גם כשהיא סגורה, בלי שרת.
+              </p>
+              <div className="spacer-sm" />
+            </>
+          )}
+          {installed ? (
+            <p className="muted">✅ האפליקציה מותקנת במכשיר שלך.</p>
+          ) : canInstall ? (
+            <>
+              <p className="muted">
+                התקן את High5 כאפליקציה במסך הבית לגישה מהירה וגם ללא אינטרנט.
+              </p>
+              <button className="btn" onClick={install}>
+                📥 התקנת האפליקציה
+              </button>
+            </>
+          ) : (
             <p className="muted">
-              התקן את High5 כאפליקציה במסך הבית לגישה מהירה וגם ללא אינטרנט.
+              כדי להתקין: פתח את תפריט הדפדפן ובחר "הוסף למסך הבית". ב-iPhone —
+              דרך כפתור השיתוף בספארי.
             </p>
-            <button className="btn" onClick={install}>
-              📥 התקנת האפליקציה
-            </button>
-          </>
-        ) : (
-          <p className="muted">
-            כדי להתקין: פתח את תפריט הדפדפן ובחר "הוסף למסך הבית". ב-iPhone —
-            דרך כפתור השיתוף בספארי.
-          </p>
-        )}
-        {canShare() && (
-          <>
-            <div className="spacer-sm" />
-            <button className="btn secondary" onClick={() => shareApp()}>
-              🔗 שיתוף האפליקציה
-            </button>
-          </>
-        )}
-      </div>
+          )}
+          {canShare() && (
+            <>
+              <div className="spacer-sm" />
+              <button className="btn secondary" onClick={() => shareApp()}>
+                🔗 שיתוף האפליקציה
+              </button>
+            </>
+          )}
+        </div>
+      )}
 
       <div className="card">
         <h3>☁️ סנכרון ל-Google Drive</h3>
@@ -586,7 +620,7 @@ export default function Settings() {
         )}
       </div>
 
-      {isPushConfigured() && (
+      {isPushConfigured() && !isNativeApp() && (
         <div className="card">
           <h3>🔔 תזכורות יומיות</h3>
           {!isPushSupported() ? (

@@ -21,6 +21,10 @@ There is no backend of its own. The app runs in two persistence modes:
   opt in to an evening reminder. The server keeps only a push token, a
   timezone and two dates per install (see "Data flow (reminders)").
 
+The same build also ships as an **Android app**: a Capacitor shell around the
+web build, with native Google sign-in for Drive, OS-scheduled reminders that
+need no server, and the device's own speech engines (see "Android app").
+
 The learning surface is organised as feature "pillars" — Daily Lesson,
 Vocabulary, Dialogue Coach, Practice Quiz, Spaced-Repetition Review, Reading,
 Listening, Speaking, Daily Missions, and Mission Calendar. Lessons / vocab /
@@ -91,10 +95,14 @@ recall practice instead of new ones arriving (`screens/Memorize.tsx`).
 | `src/services/push.ts` | Web-push opt-in: registers the messaging SW in its own scope, registers the install with `api/reminder-register`, reports seen/done days. |
 | `api/*` | Vercel functions: `reminder-register` and `reminder` (per-install records with a hashed write key), and the hourly `mission-reminder` sender. |
 | `src/services/prefs.ts` | Theme, speech speed, and local reminder prefs. |
-| `src/services/reminders.ts` | Best-effort local Notification reminders while the app is open. |
+| `src/services/reminders.ts` | Local reminders: a Notification while the browser tab is open, or on Android the OS-scheduled reminders (`syncNativeReminders`). |
+| `src/services/nativeReminders.ts` | Android: keeps the next week of reminders scheduled with `@capacitor/local-notifications`. |
+| `src/services/nativeGoogleAuth.ts` | Android: Drive access token from Android's own Google sign-in (`@capgo/capacitor-social-login`), ported from KanDOne. |
+| `src/services/platform.ts` | `isNativeApp()`: the one check for the Android app vs a browser. |
 | `src/services/errors.ts` | `reportError` — console always; optional Sentry when `VITE_SENTRY_DSN` is set. |
-| `src/services/tts.ts` / `asr.ts` | Web Speech API wrappers. |
-| `src/services/pwa.ts` | Install prompt + SW update registration (`virtual:pwa-register`). |
+| `src/services/tts.ts` / `asr.ts` | Web Speech API wrappers; on Android, the device's TTS engine and speech recognizer. |
+| `src/services/pwa.ts` | Install prompt + SW update registration (`virtual:pwa-register`); skipped in the Android app. |
+| `android/` | Capacitor Android project; built and signed by `.github/workflows/android.yml`. |
 | `src/data/offline.ts` + `extras.ts` | Per-CEFR-level offline loaders (lessons/vocab/quizzes + reading/listening/speaking pools). |
 | `src/data/videos.ts` | Level-tagged curated YouTube list for the daily video mission. |
 | `src/data/placement.ts` / `topics.ts` | Placement test + rotating daily topics / dialogue scenarios. |
@@ -196,6 +204,32 @@ still awards +30 like the five, it just isn't one of them. `Calendar` aggregates
    18:00 locally and neither date is today, and removes installs whose token
    FCM reports dead.
 
+## Android app
+
+The Android app is the web build inside a Capacitor 8 WebView
+(`capacitor.config.json`, `android/`). Every platform branch asks
+`services/platform.ts`:
+
+| Concern | Browser | Android app |
+|---|---|---|
+| Drive sign-in | Google Identity Services popup | `nativeGoogleAuth.ts`; Google refuses OAuth inside a WebView |
+| Reminders | Web push through the reminder server | `nativeReminders.ts`: local notifications at the chosen hour; the server sees nothing |
+| Speech | Web Speech API | `@capacitor-community/text-to-speech` and `speech-recognition`; the WebView has neither API |
+| Offline | Workbox service worker | Files ship in the APK; no service worker |
+| Install | PWA install prompt; Android browsers also get the APK link | — |
+
+Reminders are rebuilt on every open and whenever the day's missions or the
+reminder setting change: the next seven days are scheduled, with today dropped
+once every mission is done. They are inexact alarms, so Android never asks for
+the exact-alarm permission.
+
+`.github/workflows/android.yml` has two jobs. `build` lints, type-checks and
+tests, builds the web app, runs `cap sync` and builds the unsigned release APK,
+with a read-only token and no secrets. On each push to `main`, `release`
+downloads that APK, signs it with the permanent key (alias `high5`) and
+publishes it as a release, which the website links to on Android. It runs no
+repo or npm code, so the build's dependencies never see the key.
+
 ## Testing strategy
 
 | Layer | Tool | Covers |
@@ -204,6 +238,7 @@ still awards +30 like the five, it just isn't one of them. `Calendar` aggregates
 | Integration | Vitest + RTL | Screens wired to `LingoProvider` (Settings, onboarding → dashboard). |
 | E2E | Playwright | Desktop + mobile: onboarding, quiz, lesson, save-word, hash deep-link, dark mode. |
 | Security / size | CI | `npm audit --omit=dev`, shell-bundle size gate, Dependabot. |
+| Android build | `android.yml` | Gradle release build on every PR and push to `main`, signing on `main`; nothing on-device (see LLD, Android app). |
 
 CI (`.github/workflows/ci.yml`) runs audit → lint → typecheck → coverage tests →
 build → bundle gate, then Playwright E2E on Chromium (desktop + Pixel 5).

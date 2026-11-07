@@ -2,15 +2,21 @@ import { loadPrefs } from "../services/prefs";
 import { dateKeyFromTs } from "../utils/missions";
 import { isOperationDone, OPERATIONS } from "../data/operations";
 import { isReviewDay } from "../utils/cycle";
+import { isNativeApp } from "./platform";
+import { nativeReminders } from "./nativeReminders";
 import type { DailyMissionFlag, DailyMissionsState } from "../types";
 
 const NOTIFIED_KEY = "high5.reminder_notified";
 
+// The Android app has no Notification API in its WebView; it schedules
+// notifications with the OS instead (nativeReminders.ts).
 export function notificationsSupported(): boolean {
+  if (isNativeApp()) return true;
   return typeof window !== "undefined" && "Notification" in window;
 }
 
 export async function requestReminderPermission(): Promise<NotificationPermission> {
+  if (isNativeApp()) return nativeReminders.requestPermission();
   if (!notificationsSupported()) return "denied";
   if (Notification.permission === "granted") return "granted";
   if (Notification.permission === "denied") return "denied";
@@ -31,6 +37,20 @@ function markNotified(today: string): void {
   } catch {
     // ignore
   }
+}
+
+/**
+ * Android: rebuild the scheduled reminders from the saved preference and
+ * today's missions. Call it on open and whenever either changes.
+ */
+export function syncNativeReminders(dailyMissions: DailyMissionsState, now = new Date()): Promise<void> {
+  const prefs = loadPrefs();
+  return nativeReminders.reschedule({
+    enabled: prefs.remindersEnabled,
+    hour: prefs.reminderHour,
+    todayDone: dayComplete(dailyMissions, now.getTime()),
+    now,
+  });
 }
 
 /** True once every one of today's missions is done (see missionsIncomplete). */

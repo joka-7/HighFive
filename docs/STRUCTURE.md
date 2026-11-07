@@ -9,14 +9,100 @@ to refresh it, and never edit between the markers by hand.
 HighFive/
 ├── .github/
 │   ├── workflows/
+│   │   ├── android.yml
 │   │   ├── ci.yml
 │   │   ├── docs.yml
 │   │   ├── mission-reminder.yml
 │   │   └── security.yml
-│   ├── copilot-instructions.md  # Copilot's copy of AGENTS.md (generated)
+│   ├── copilot-instructions.md                   # Copilot's copy of AGENTS.md (generated)
 │   └── dependabot.yml
-├── api/                         # Vercel Serverless Functions — built independently of the Vite app,…
-│   ├── _lib/                    # Helpers shared by the functions; Vercel skips underscore paths, so these are…
+├── android/                                      # Capacitor Android project wrapping the web build (see LLD, Android app)
+│   ├── app/
+│   │   ├── src/
+│   │   │   └── main/
+│   │   │       ├── java/
+│   │   │       │   └── io/
+│   │   │       │       └── github/
+│   │   │       │           └── joka7/
+│   │   │       │               └── highfive/
+│   │   │       │                   └── MainActivity.java  # Hands Google's Drive-consent result back to the sign-in plugin
+│   │   │       ├── res/
+│   │   │       │   ├── drawable/
+│   │   │       │   │   └── splash.png
+│   │   │       │   ├── drawable-land-hdpi/
+│   │   │       │   │   └── splash.png
+│   │   │       │   ├── drawable-land-mdpi/
+│   │   │       │   │   └── splash.png
+│   │   │       │   ├── drawable-land-xhdpi/
+│   │   │       │   │   └── splash.png
+│   │   │       │   ├── drawable-land-xxhdpi/
+│   │   │       │   │   └── splash.png
+│   │   │       │   ├── drawable-land-xxxhdpi/
+│   │   │       │   │   └── splash.png
+│   │   │       │   ├── drawable-port-hdpi/
+│   │   │       │   │   └── splash.png
+│   │   │       │   ├── drawable-port-mdpi/
+│   │   │       │   │   └── splash.png
+│   │   │       │   ├── drawable-port-xhdpi/
+│   │   │       │   │   └── splash.png
+│   │   │       │   ├── drawable-port-xxhdpi/
+│   │   │       │   │   └── splash.png
+│   │   │       │   ├── drawable-port-xxxhdpi/
+│   │   │       │   │   └── splash.png
+│   │   │       │   ├── layout/
+│   │   │       │   │   └── activity_main.xml
+│   │   │       │   ├── mipmap-anydpi-v26/
+│   │   │       │   │   ├── ic_launcher.xml
+│   │   │       │   │   └── ic_launcher_round.xml
+│   │   │       │   ├── mipmap-hdpi/
+│   │   │       │   │   ├── ic_launcher.png
+│   │   │       │   │   ├── ic_launcher_background.png
+│   │   │       │   │   ├── ic_launcher_foreground.png
+│   │   │       │   │   └── ic_launcher_round.png
+│   │   │       │   ├── mipmap-mdpi/
+│   │   │       │   │   ├── ic_launcher.png
+│   │   │       │   │   ├── ic_launcher_background.png
+│   │   │       │   │   ├── ic_launcher_foreground.png
+│   │   │       │   │   └── ic_launcher_round.png
+│   │   │       │   ├── mipmap-xhdpi/
+│   │   │       │   │   ├── ic_launcher.png
+│   │   │       │   │   ├── ic_launcher_background.png
+│   │   │       │   │   ├── ic_launcher_foreground.png
+│   │   │       │   │   └── ic_launcher_round.png
+│   │   │       │   ├── mipmap-xxhdpi/
+│   │   │       │   │   ├── ic_launcher.png
+│   │   │       │   │   ├── ic_launcher_background.png
+│   │   │       │   │   ├── ic_launcher_foreground.png
+│   │   │       │   │   └── ic_launcher_round.png
+│   │   │       │   ├── mipmap-xxxhdpi/
+│   │   │       │   │   ├── ic_launcher.png
+│   │   │       │   │   ├── ic_launcher_background.png
+│   │   │       │   │   ├── ic_launcher_foreground.png
+│   │   │       │   │   └── ic_launcher_round.png
+│   │   │       │   ├── values/
+│   │   │       │   │   ├── strings.xml
+│   │   │       │   │   └── styles.xml
+│   │   │       │   └── xml/
+│   │   │       │       └── file_paths.xml
+│   │   │       └── AndroidManifest.xml
+│   │   ├── .gitignore
+│   │   ├── build.gradle
+│   │   ├── capacitor.build.gradle
+│   │   └── proguard-rules.pro
+│   ├── gradle/
+│   │   └── wrapper/
+│   │       ├── gradle-wrapper.jar
+│   │       └── gradle-wrapper.properties
+│   ├── .gitignore
+│   ├── build.gradle
+│   ├── capacitor.settings.gradle
+│   ├── gradle.properties
+│   ├── gradlew
+│   ├── gradlew.bat
+│   ├── settings.gradle
+│   └── variables.gradle
+├── api/                                          # Vercel Serverless Functions — built independently of the Vite app,…
+│   ├── _lib/                                     # Helpers shared by the functions; Vercel skips underscore paths, so these are…
 │   │   ├── cronAuth.test.ts
 │   │   ├── cronAuth.ts
 │   │   ├── firebaseAdmin.ts
@@ -24,11 +110,11 @@ HighFive/
 │   │   ├── http.ts
 │   │   ├── reminderApi.test.ts
 │   │   └── reminderApi.ts
-│   ├── mission-reminder.ts      # Hourly push-reminder sender over reminders/{installId}; who is due is…
+│   ├── mission-reminder.ts                       # Hourly push-reminder sender over reminders/{installId}; who is due is…
 │   ├── reminder-register.test.ts
-│   ├── reminder-register.ts     # POST: registers a browser install for push reminders (token + timezone only)
+│   ├── reminder-register.ts                      # POST: registers a browser install for push reminders (token + timezone only)
 │   ├── reminder.test.ts
-│   └── reminder.ts              # POST: reports seen/done days for an install; DELETE: opts it out
+│   └── reminder.ts                               # POST: reports seen/done days for an install; DELETE: opts it out
 ├── docs/
 │   ├── screenshots/
 │   │   ├── daily-lesson.png
@@ -42,14 +128,14 @@ HighFive/
 │   │   ├── settings.png
 │   │   └── vocabulary.png
 │   ├── .structure-notes.toml
-│   ├── HLD.md                   # High-Level Design
-│   ├── LLD.md                   # Low-Level Design
-│   └── STRUCTURE.md             # Repository structure
-├── e2e/                         # Playwright end-to-end specs, run via `npm run test:e2e`
+│   ├── HLD.md                                    # High-Level Design
+│   ├── LLD.md                                    # Low-Level Design
+│   └── STRUCTURE.md                              # Repository structure
+├── e2e/                                          # Playwright end-to-end specs, run via `npm run test:e2e`
 │   ├── onboarding.spec.ts
 │   ├── privacy.spec.ts
 │   └── screenshots.spec.ts
-├── public/                      # Static assets + PWA manifest/service worker, served as-is by Vite
+├── public/                                       # Static assets + PWA manifest/service worker, served as-is by Vite
 │   ├── fonts/
 │   │   ├── heebo-hebrew.woff2
 │   │   ├── heebo-latin.woff2
@@ -61,8 +147,8 @@ HighFive/
 │   ├── icon-512.png
 │   ├── manifest.webmanifest
 │   └── privacy.html
-├── scripts/                     # Content generation — `npm run content` rebuilds src/data/offline/*.json from…
-│   ├── content/                 # Source word banks/passages the content generator reads
+├── scripts/                                      # Content generation (`npm run content` rebuilds src/data/offline/*.json) and…
+│   ├── content/                                  # Source word banks/passages the content generator reads
 │   │   ├── banks.mjs
 │   │   ├── example-he.mjs
 │   │   ├── passages-extra.mjs
@@ -85,9 +171,10 @@ HighFive/
 │   │   ├── wordbank-extra7.mjs
 │   │   ├── wordbank-extra8.mjs
 │   │   └── wordbank-extra9.mjs
+│   ├── gen-android-icons.mjs                     # Renders the Android launcher icons and splash screens from public/icon-512.png
 │   └── generate-content.mjs
-├── src/                         # The Vite app: screens, components, state (useLingo), and content/offline…
-│   ├── components/              # Shared UI: cards, quiz runner, error boundary
+├── src/                                          # The Vite app: screens, components, state (useLingo), and content/offline…
+│   ├── components/                               # Shared UI: cards, quiz runner, error boundary
 │   │   ├── Card.tsx
 │   │   ├── ErrorBoundary.test.tsx
 │   │   ├── ErrorBoundary.tsx
@@ -97,8 +184,8 @@ HighFive/
 │   │   ├── Spinner.tsx
 │   │   ├── Tile.tsx
 │   │   └── WordCard.tsx
-│   ├── data/                    # Curriculum data (word banks, topics, videos) and the bundled offline content…
-│   │   ├── offline/             # Bundled per-level (A1-C2) quiz/listening/reading/speaking content, used…
+│   ├── data/                                     # Curriculum data (word banks, topics, videos) and the bundled offline content…
+│   │   ├── offline/                              # Bundled per-level (A1-C2) quiz/listening/reading/speaking content, used…
 │   │   │   ├── a1.listening.curated.json
 │   │   │   ├── a1.listening.q1.json
 │   │   │   ├── a1.listening.q2.json
@@ -225,12 +312,13 @@ HighFive/
 │   │   ├── todays-words.ts
 │   │   ├── topics.ts
 │   │   └── videos.ts
-│   ├── hooks/                   # Small reusable React hooks (local reminders, online-status)
+│   ├── hooks/                                    # Small reusable React hooks (local reminders, online-status)
+│   │   ├── useLocalReminder.test.tsx
 │   │   ├── useLocalReminder.ts
 │   │   ├── useOnlineStatus.ts
 │   │   ├── useReminderReports.test.tsx
 │   │   └── useReminderReports.ts
-│   ├── screens/                 # One file per app screen/route
+│   ├── screens/                                  # One file per app screen/route
 │   │   ├── Calendar.tsx
 │   │   ├── DailyLesson.tsx
 │   │   ├── DailyMissions.test.tsx
@@ -251,9 +339,10 @@ HighFive/
 │   │   ├── Settings.tsx
 │   │   ├── Speaking.tsx
 │   │   └── Vocabulary.tsx
-│   ├── services/                # External integrations: AI provider, Firebase, TTS/ASR, push, prefs, PWA
+│   ├── services/                                 # External integrations: AI provider, Drive sync, TTS/ASR, push and Android…
 │   │   ├── ai.test.ts
 │   │   ├── ai.ts
+│   │   ├── asr.test.ts
 │   │   ├── asr.ts
 │   │   ├── cloud.ts
 │   │   ├── content.test.ts
@@ -263,22 +352,31 @@ HighFive/
 │   │   ├── errors.test.ts
 │   │   ├── errors.ts
 │   │   ├── firebase.ts
+│   │   ├── nativeGoogleAuth.test.ts
+│   │   ├── nativeGoogleAuth.ts
+│   │   ├── nativeReminders.test.ts
+│   │   ├── nativeReminders.ts
+│   │   ├── platform.ts
 │   │   ├── prefs.test.ts
 │   │   ├── prefs.ts
 │   │   ├── push.test.ts
 │   │   ├── push.ts
+│   │   ├── pwa.test.ts
 │   │   ├── pwa.ts
 │   │   ├── reminders.test.ts
 │   │   ├── reminders.ts
+│   │   ├── tts.test.ts
 │   │   └── tts.ts
-│   ├── store/                   # UseLingo — the app's central state/context provider
+│   ├── store/                                    # UseLingo — the app's central state/context provider
 │   │   ├── useCloudSync.test.tsx
 │   │   ├── useCloudSync.ts
 │   │   ├── useLingo.test.tsx
 │   │   └── useLingo.tsx
-│   ├── utils/                   # Pure logic: spaced-repetition (SRS), scoring, cycles, missions, backup/restore
+│   ├── utils/                                    # Pure logic: spaced-repetition (SRS), scoring, cycles, missions, backup/restore
 │   │   ├── aiSchemas.test.ts
 │   │   ├── aiSchemas.ts
+│   │   ├── androidApk.test.ts
+│   │   ├── androidApk.ts
 │   │   ├── backup.test.ts
 │   │   ├── backup.ts
 │   │   ├── cloudMerge.test.ts
@@ -318,26 +416,27 @@ HighFive/
 │   ├── modeldispatcher.config.ts
 │   ├── test-setup.ts
 │   └── types.ts
-├── .ai                          # Ogen-ai submodule — the shared source of rules, skills and the ai-sync…
+├── .ai                                           # Ogen-ai submodule — the shared source of rules, skills and the ai-sync…
 ├── .env.example
 ├── .gitignore
 ├── .gitleaksignore
 ├── .gitmodules
-├── AGENTS.md                    # The compiled coding rules every AI assistant reads — generated, do not…
-├── CLAUDE.md                    # Claude Code's copy of AGENTS.md (generated)
-├── GEMINI.md                    # Gemini CLI's copy of AGENTS.md (generated)
+├── AGENTS.md                                     # The compiled coding rules every AI assistant reads — generated, do not…
+├── CLAUDE.md                                     # Claude Code's copy of AGENTS.md (generated)
+├── GEMINI.md                                     # Gemini CLI's copy of AGENTS.md (generated)
 ├── LICENSE
-├── README.md                    # High5 ✋
-├── SECURITY.md                  # Security Policy
-├── ai-config.toml               # Which rule fragments and target tools ai-sync compiles for this repo
+├── README.md                                     # High5 ✋
+├── SECURITY.md                                   # Security Policy
+├── ai-config.toml                                # Which rule fragments and target tools ai-sync compiles for this repo
+├── capacitor.config.json                         # Capacitor app id, name and web build folder for the Android app
 ├── eslint.config.js
 ├── firestore.rules
 ├── index.html
 ├── package-lock.json
 ├── package.json
 ├── playwright.config.ts
-├── stitch-prompt.md             # Google Stitch Prompt
-├── tsconfig.api.json            # Strict type-check for api/ (Node), run by `npm run typecheck`
+├── stitch-prompt.md                              # Google Stitch Prompt
+├── tsconfig.api.json                             # Strict type-check for api/ (Node), run by `npm run typecheck`
 ├── tsconfig.json
 ├── vercel.json
 ├── vite-env.d.ts

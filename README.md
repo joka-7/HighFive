@@ -277,6 +277,28 @@ only the Admin SDK touches `reminders`).
   which the check no longer reads. Those browsers stop getting reminders until
   they opt in again from Settings.
 
+## Android app
+
+The same app ships as an Android APK: the web build inside a Capacitor shell
+([`capacitor.config.json`](capacitor.config.json), [`android/`](android/)).
+On a phone, open Settings on the website and tap **🤖 הורדת אפליקציית
+אנדרואיד**, or download
+[the latest release](https://github.com/joka-7/HighFive/releases/latest/download/High5.apk).
+
+What differs from the website:
+
+- **Reminders need no server.** Settings → 🔔 תזכורת משימות schedules a
+  notification at the chosen hour with Android itself, so it fires while the
+  app is closed and skips days whose missions are done.
+- **Google Drive sync** signs in through Android's own Google account sheet,
+  since Google blocks its web sign-in inside apps.
+- **Speech** uses the phone's text-to-speech and speech recognition.
+
+[`.github/workflows/android.yml`](.github/workflows/android.yml) builds the
+APK on every pull request, and signs and publishes it as a release on every
+push to `main`. It needs a signing key, an Android OAuth client and three repo
+secrets; [`docs/LLD.md`](docs/LLD.md#android-app) has the one-time setup.
+
 ## Testing
 
 ```bash
@@ -314,32 +336,34 @@ keep the key server-side.
 ```text
 HighFive/
 ├── .github/
-├── api/               # Vercel Serverless Functions — built independently of the Vite app,…
+├── android/               # Capacitor Android project wrapping the web build (see LLD, Android app)
+├── api/                   # Vercel Serverless Functions — built independently of the Vite app,…
 ├── docs/
-├── e2e/               # Playwright end-to-end specs, run via `npm run test:e2e`
-├── public/            # Static assets + PWA manifest/service worker, served as-is by Vite
-├── scripts/           # Content generation — `npm run content` rebuilds src/data/offline/*.json from…
-├── src/               # The Vite app: screens, components, state (useLingo), and content/offline…
-├── .ai                # Ogen-ai submodule — the shared source of rules, skills and the ai-sync…
+├── e2e/                   # Playwright end-to-end specs, run via `npm run test:e2e`
+├── public/                # Static assets + PWA manifest/service worker, served as-is by Vite
+├── scripts/               # Content generation (`npm run content` rebuilds src/data/offline/*.json) and…
+├── src/                   # The Vite app: screens, components, state (useLingo), and content/offline…
+├── .ai                    # Ogen-ai submodule — the shared source of rules, skills and the ai-sync…
 ├── .env.example
 ├── .gitignore
 ├── .gitleaksignore
 ├── .gitmodules
-├── AGENTS.md          # The compiled coding rules every AI assistant reads — generated, do not…
-├── CLAUDE.md          # Claude Code's copy of AGENTS.md (generated)
-├── GEMINI.md          # Gemini CLI's copy of AGENTS.md (generated)
+├── AGENTS.md              # The compiled coding rules every AI assistant reads — generated, do not…
+├── CLAUDE.md              # Claude Code's copy of AGENTS.md (generated)
+├── GEMINI.md              # Gemini CLI's copy of AGENTS.md (generated)
 ├── LICENSE
-├── README.md          # High5 ✋
-├── SECURITY.md        # Security Policy
-├── ai-config.toml     # Which rule fragments and target tools ai-sync compiles for this repo
+├── README.md              # High5 ✋
+├── SECURITY.md            # Security Policy
+├── ai-config.toml         # Which rule fragments and target tools ai-sync compiles for this repo
+├── capacitor.config.json  # Capacitor app id, name and web build folder for the Android app
 ├── eslint.config.js
 ├── firestore.rules
 ├── index.html
 ├── package-lock.json
 ├── package.json
 ├── playwright.config.ts
-├── stitch-prompt.md   # Google Stitch Prompt
-├── tsconfig.api.json  # Strict type-check for api/ (Node), run by `npm run typecheck`
+├── stitch-prompt.md       # Google Stitch Prompt
+├── tsconfig.api.json      # Strict type-check for api/ (Node), run by `npm run typecheck`
 ├── tsconfig.json
 ├── vercel.json
 ├── vite-env.d.ts
