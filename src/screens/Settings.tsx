@@ -589,6 +589,10 @@ export default function Settings() {
               . ההתקדמות נשמרת בתיקייה מוסתרת ב-Google Drive שלך, שרק האפליקציה
               יכולה לקרוא — אף אחד אחר לא רואה אותה, גם לא מפעיל האפליקציה.
             </p>
+            <button className="btn secondary" onClick={retryCloudSync}>
+              🔄 סנכרון עכשיו
+            </button>
+            <div className="spacer-sm" />
             <button
               className="btn ghost"
               disabled={authBusy}

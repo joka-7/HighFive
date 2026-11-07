@@ -119,15 +119,19 @@ function fakeSync({ linked = true, user = USER, cloud = { profile: {}, collectio
   return { sync, upserts, deletes, profiles };
 }
 
-function useHarness(sync: DriveSync, initial: SyncedState) {
+type ResumeSource = (callback: () => void) => () => void;
+
+const noResume: ResumeSource = () => () => {};
+
+function useHarness(sync: DriveSync, initial: SyncedState, onAppResume: ResumeSource) {
   const [state, setState] = useState(initial);
   const resetLocal = useCallback(() => setState(empty()), []);
-  const cloud = useCloudSync({ state, apply: setState, resetLocal, defaults, sync });
+  const cloud = useCloudSync({ state, apply: setState, resetLocal, defaults, sync, onAppResume });
   return { state, setState, cloud };
 }
 
-function render(sync: DriveSync, initial: SyncedState = empty()) {
-  return renderHook(() => useHarness(sync, initial)).result;
+function render(sync: DriveSync, initial: SyncedState = empty(), onAppResume: ResumeSource = noResume) {
+  return renderHook(() => useHarness(sync, initial, onAppResume)).result;
 }
 
 beforeEach(() => {
@@ -294,6 +298,26 @@ describe("useCloudSync — review fixes", () => {
     act(() => window.dispatchEvent(new Event("online")));
 
     await waitFor(() => expect(readDataOwner()).toBe(USER.uid));
+  });
+
+  it("pulls another device's changes when the app resumes, even within a minute of the last pull", async () => {
+    const fake = fakeSync();
+    let resume = () => {};
+    const onAppResume: ResumeSource = (callback) => {
+      resume = callback;
+      return () => {};
+    };
+    const result = render(fake.sync, empty(), onAppResume);
+    await waitFor(() => expect(readDataOwner()).toBe(USER.uid));
+
+    fake.sync.loadMerged = vi.fn(async () => ({
+      profile: {},
+      collections: { savedWords: [word("web", "cat")] },
+      deleted: {},
+    }));
+    act(() => resume());
+
+    await waitFor(() => expect(result.current.state.savedWords.map((w) => w.id)).toEqual(["web"]));
   });
 
   it("drops a pull still in flight when the learner signs out, so the old account's data doesn't come back", async () => {
