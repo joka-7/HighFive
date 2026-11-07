@@ -9,9 +9,11 @@
 // - Changes are uploaded only once this session has pulled and merged for the
 //   connected account — never before, so a stale local copy can't be stamped
 //   as the newest version of a record.
-// - A pull runs on connect, on retry, and when the tab comes back into view.
+// - A pull runs on connect, on retry ("sync now"), when the tab comes back
+//   into view, and when the Android app resumes from the background.
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { onAppResume as defaultOnAppResume } from "../services/appLifecycle";
 import { driveSync as defaultDriveSync } from "../services/cloud";
 import { DriveSyncError, type DriveSync, type DriveUser } from "../services/driveSync";
 import { reportError } from "../services/errors";
@@ -52,6 +54,8 @@ export interface CloudSyncOptions {
   /** Fallbacks for profile fields neither side has. */
   readonly defaults: Pick<SyncedState, "progress" | "dailyMissions">;
   readonly sync?: DriveSync;
+  /** Subscribes to the native app returning to the foreground; returns an unsubscribe. */
+  readonly onAppResume?: (callback: () => void) => () => void;
 }
 
 export interface CloudSync {
@@ -91,7 +95,14 @@ function recordUpload(upload: Upload, notPending: readonly ProfileField[] = []):
   recordLocalChanges(PROFILE_PENDING, { edited: Object.keys(upload.profile).filter((f) => !quiet.has(f)) });
 }
 
-export function useCloudSync({ state, apply, resetLocal, defaults, sync = defaultDriveSync }: CloudSyncOptions): CloudSync {
+export function useCloudSync({
+  state,
+  apply,
+  resetLocal,
+  defaults,
+  sync = defaultDriveSync,
+  onAppResume = defaultOnAppResume,
+}: CloudSyncOptions): CloudSync {
   const [user, setUser] = useState<DriveUser | null>(null);
   const [authReady, setAuthReady] = useState(false);
   const [cloudSyncError, setCloudSyncError] = useState(false);
@@ -103,6 +114,8 @@ export function useCloudSync({ state, apply, resetLocal, defaults, sync = defaul
   // The account this session has pulled and merged for; uploads wait for it.
   const pulledUidRef = useRef<string | null>(null);
   const lastPullAtRef = useRef(0);
+  // A resume and a visibilitychange can arrive together; one pull serves both.
+  const pullInFlightRef = useRef(false);
   // Per field, bumped per save that carries it, so an older save landing can't
   // clear a field a newer save is still carrying — nor leave one stuck pending.
   const profileSaveSeqRef = useRef<Partial<Record<string, number>>>({});
@@ -152,6 +165,7 @@ export function useCloudSync({ state, apply, resetLocal, defaults, sync = defaul
     async (uid: string) => {
       setCloudSyncError(false);
       lastPullAtRef.current = Date.now();
+      pullInFlightRef.current = true;
       const generation = sessionGenRef.current;
       try {
         const cloud = await sync.loadMerged();
@@ -177,6 +191,8 @@ export function useCloudSync({ state, apply, resetLocal, defaults, sync = defaul
         }
       } catch (err) {
         handleFailure(err, "cloud.pull");
+      } finally {
+        pullInFlightRef.current = false;
       }
     },
     [sync, send, handleFailure],
@@ -197,11 +213,13 @@ export function useCloudSync({ state, apply, resetLocal, defaults, sync = defaul
     if (user && pulledUidRef.current !== user.uid) void pull(user.uid);
   }, [user, pull]);
 
-  // Pull again when the tab returns, and when the network does: a first pull
-  // that failed offline shows no error, so this is what retries it.
+  // Pull again when the tab returns, when the app resumes, and when the
+  // network does: a first pull that failed offline shows no error, so this is
+  // what retries it. A resume always pulls — it is the moment the learner
+  // expects to see what they did on another device.
   useEffect(() => {
     function pullAgain(force: boolean) {
-      if (!user) return;
+      if (!user || pullInFlightRef.current) return;
       if (!force && Date.now() - lastPullAtRef.current < VISIBILITY_PULL_MIN_MS) return;
       void pull(user.uid);
     }
@@ -211,11 +229,13 @@ export function useCloudSync({ state, apply, resetLocal, defaults, sync = defaul
     const onOnline = () => pullAgain(true);
     document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("online", onOnline);
+    const stopResume = onAppResume(() => pullAgain(true));
     return () => {
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("online", onOnline);
+      stopResume();
     };
-  }, [user, pull]);
+  }, [user, pull, onAppResume]);
 
   // Diff every change. Snapshot always moves forward; pending and uploads
   // depend on whether an account is linked and pulled.

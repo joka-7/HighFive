@@ -342,6 +342,7 @@ HighFive/
 │   ├── services/                                 # External integrations: AI provider, Drive sync, TTS/ASR, push and Android…
 │   │   ├── ai.test.ts
 │   │   ├── ai.ts
+│   │   ├── appLifecycle.ts
 │   │   ├── asr.test.ts
 │   │   ├── asr.ts
 │   │   ├── cloud.ts
