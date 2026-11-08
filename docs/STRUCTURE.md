@@ -128,6 +128,7 @@ HighFive/
 │   │   ├── settings.png
 │   │   └── vocabulary.png
 │   ├── .structure-notes.toml
+│   ├── CONTENT-AUDIT.md                          # Content audit
 │   ├── HLD.md                                    # High-Level Design
 │   ├── LLD.md                                    # Low-Level Design
 │   └── STRUCTURE.md                              # Repository structure
@@ -147,8 +148,12 @@ HighFive/
 │   ├── icon-512.png
 │   ├── manifest.webmanifest
 │   └── privacy.html
-├── scripts/                                      # Content generation (`npm run content` rebuilds src/data/offline/*.json) and…
+├── scripts/                                      # Content generation (`npm run content` rebuilds src/data/offline/*.json), the…
 │   ├── content/                                  # Source word banks/passages the content generator reads
+│   │   ├── cefr/                                 # Open CEFR reference word lists (CEFR-J A1–B2, Octanove C1/C2) used only by…
+│   │   │   ├── README.md                         # CEFR reference word lists
+│   │   │   ├── cefrj-vocabulary-profile-1.5.csv
+│   │   │   └── octanove-vocabulary-profile-c1c2-1.0.csv
 │   │   ├── banks.mjs
 │   │   ├── example-he.mjs
 │   │   ├── passages-extra.mjs
@@ -171,6 +176,9 @@ HighFive/
 │   │   ├── wordbank-extra7.mjs
 │   │   ├── wordbank-extra8.mjs
 │   │   └── wordbank-extra9.mjs
+│   ├── audit-content.mjs                         # `npm run content:audit`: loads the shipped content and writes…
+│   ├── content-audit.mjs                         # The audit's pure rules: CEFR list parsing, level fit, inflection-aware…
+│   ├── content-audit.test.mjs
 │   ├── gen-android-icons.mjs                     # Renders the Android launcher icons and splash screens from public/icon-512.png
 │   └── generate-content.mjs
 ├── src/                                          # The Vite app: screens, components, state (useLingo), and content/offline…

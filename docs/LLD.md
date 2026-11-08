@@ -582,6 +582,9 @@ stepping back through screens.
   store mocking), relying on `localStorage.clear()` between tests for isolation:
   `App.integration.test.tsx` (onboarding → dashboard → nav) and
   `screens/Settings.integration.test.tsx` (provider save/clear flow).
+- **Content audit:** `scripts/content-audit.test.mjs` covers the audit's
+  rules with small fixtures; `node scripts/audit-content.mjs --check` (CI's
+  "Content audit is current") runs them on the shipped content.
 - **E2E** (`e2e/*.spec.ts`) run against a production build via `vite preview`,
   driven by Playwright; CI installs Chromium with `--with-deps` since GitHub's
   runners need the system libraries Playwright doesn't bundle.

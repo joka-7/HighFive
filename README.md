@@ -150,6 +150,15 @@ curated pool if it is **fully bilingual** — `textHe`/`transcriptHe` plus
 generator filters out anything that isn't and fails the build on a malformed
 item.
 
+**Checking the content.** `npm run content:audit` writes
+[`docs/CONTENT-AUDIT.md`](./docs/CONTENT-AUDIT.md): per level, how often words
+and quiz questions repeat over the year, how the taught words compare with the
+open CEFR-J and Octanove word lists (`scripts/content/cefr/`), passage
+difficulty, words taught at two levels, and hand-written passages that never
+ship for lack of Hebrew. CI fails if the report is out of date or a word entry
+is incomplete. After changing content, run `npm run content`, then
+`npm run content:audit`, and commit all three together.
+
 ## Getting started
 
 ```bash
@@ -341,7 +350,7 @@ HighFive/
 ├── docs/
 ├── e2e/                   # Playwright end-to-end specs, run via `npm run test:e2e`
 ├── public/                # Static assets + PWA manifest/service worker, served as-is by Vite
-├── scripts/               # Content generation (`npm run content` rebuilds src/data/offline/*.json) and…
+├── scripts/               # Content generation (`npm run content` rebuilds src/data/offline/*.json), the…
 ├── src/                   # The Vite app: screens, components, state (useLingo), and content/offline…
 ├── .ai                    # Ogen-ai submodule — the shared source of rules, skills and the ai-sync…
 ├── .env.example
@@ -377,6 +386,7 @@ Full annotated tree: [`docs/STRUCTURE.md`](./docs/STRUCTURE.md).
 
 - [`docs/HLD.md`](./docs/HLD.md) — architecture and data flow.
 - [`docs/LLD.md`](./docs/LLD.md) — module-level design detail.
+- [`docs/CONTENT-AUDIT.md`](./docs/CONTENT-AUDIT.md) — generated report on the learning content per level.
 
 ## License
 
