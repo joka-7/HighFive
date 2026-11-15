@@ -162,6 +162,9 @@ carry `band`, `skillType` (receptive / productive), `wordFamily` and a Hebrew
   question a day on a second meaning, a word family or a confusing pair.
 - **Readings** (`passages-2026.mjs`): two bilingual passages built on the new
   words, at B1 and B2.
+- **Dialogue scripts** (`src/data/topics.ts`): four Dialogue Coach scenarios,
+  one per band, whose AI partner encourages and highlights the level's target
+  phrases.
 
 **Checking the content.** `npm run content:audit` writes
 [`docs/CONTENT-AUDIT.md`](./docs/CONTENT-AUDIT.md): per level, how often words

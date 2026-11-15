@@ -156,7 +156,9 @@ try {
   `GemDialogueReply` — the one exception: it has **no offline fallback** (a
   roleplay conversation can't be canned) and throws if no provider is
   configured; the `DialogueCoach` screen catches this and prompts the user to
-  add a key.
+  add a key. `scenario` is a `DialogueScenario`: when it has a `brief` or
+  `targetPhrases` (the 2026 scripts in `data/topics.ts`), both go into the
+  prompt, and the partner bolds target phrases the learner uses.
 
 The first three fall back to `loadOfflineContent(level).{vocabulary,lessons,
 quizzes}`. Reading/Listening/Speaking pick from two bundled pools, in order:

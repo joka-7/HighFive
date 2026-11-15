@@ -90,7 +90,7 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
     try {
       const reply = await generateDialogueReply(
         level,
-        scenario.en,
+        scenario,
         messages,
         message,
         Object.keys(learnedWords),

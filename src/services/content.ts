@@ -18,6 +18,7 @@ import { complete, isAIReady } from "./ai";
 import { getTodaysWords } from "../data/todays-words";
 import { dayIndex, loadOfflineContent, pickByDay } from "../data/offline";
 import { levelVocabulary } from "../data/level-vocabulary";
+import type { DialogueScenario } from "../data/topics";
 import {
   loadCuratedListenings,
   loadCuratedReadings,
@@ -271,7 +272,7 @@ Return as JSON with questionHe and optionsHe on every question.`;
 // --- Dialogue Coach (requires a configured provider) ---
 export async function generateDialogueReply(
   level: Level,
-  scenario: string,
+  scenario: Pick<DialogueScenario, "en" | "brief" | "targetPhrases">,
   history: ChatMessage[],
   newText: string,
   learnedKeys: Iterable<string>,
@@ -285,8 +286,17 @@ export async function generateDialogueReply(
     .map((m) => `${m.role.toUpperCase()}: ${m.messageText}`)
     .join("\n");
 
-  const prompt = `You are an English roleplay partner at CEFR level ${level} under scenario "${scenario}".
-${vocabPromptBlock(ctx)}
+  const script = [
+    scenario.brief ?? "",
+    scenario.targetPhrases?.length
+      ? `Encourage the student to use these target phrases, and put any they use correctly in **bold** in your reply: ${scenario.targetPhrases.map((p) => `"${p}"`).join(", ")}.`
+      : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const prompt = `You are an English roleplay partner at CEFR level ${level} under scenario "${scenario.en}".
+${script ? `${script}\n` : ""}${vocabPromptBlock(ctx)}
 The student says: "${newText}"
 Conversation history:
 ${chatContext}
