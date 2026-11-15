@@ -156,6 +156,8 @@ HighFive/
 │   │   │   └── octanove-vocabulary-profile-c1c2-1.0.csv
 │   │   ├── banks.mjs
 │   │   ├── example-he.mjs
+│   │   ├── exercises-2026.mjs                    # 2026 B2–C1 grammar items and A1–B2 skill quiz questions (second meanings,…
+│   │   ├── passages-2026.mjs                     # Two bilingual 2026 reading passages built on the new Band III words
 │   │   ├── passages-extra.mjs
 │   │   ├── passages-extra2.mjs
 │   │   ├── passages-extra3.mjs

@@ -19,6 +19,8 @@
 "scripts/audit-content.mjs" = "`npm run content:audit`: loads the shipped content and writes docs/CONTENT-AUDIT.md (or checks it with --check)"
 "scripts/content-schedule.mjs" = "Which bank words each day teaches (wordIndicesForDay), so day sets don't repeat when a bank divides by five"
 "scripts/content-text.mjs" = "Finds a taught word or phrase inside its example sentence, for quiz blanks"
+"scripts/content/exercises-2026.mjs" = "2026 B2–C1 grammar items and A1–B2 skill quiz questions (second meanings, word families, confusing pairs)"
+"scripts/content/passages-2026.mjs" = "Two bilingual 2026 reading passages built on the new Band III words"
 "scripts/content/wordbank-2026.mjs" = "Ministry of Education 2026 bagrut lists: Band I/II/III words and curriculum tags for existing ones"
 "scripts/content-audit.mjs" = "The audit's pure rules: CEFR list parsing, level fit, inflection-aware example check, passage difficulty, report rendering"
 "scripts/content/cefr" = "Open CEFR reference word lists (CEFR-J A1–B2, Octanove C1/C2) used only by the content audit"
