@@ -109,17 +109,18 @@ function editDistance(a, b, limit) {
 /**
  * Whether an example sentence uses its headword, in any inflection. Irregular
  * forms the tables don't list ("ring" → "rang") are accepted when a token is
- * one edit away from a word of four letters or more. Multi-word headwords must
- * appear as written.
+ * one edit away from a word of four letters or more. A phrase or hyphenated
+ * headword must appear as one run, with only its first word inflected
+ * ("waiting for", "broke down").
  */
 export function exampleHasWord(word, example, irregulars) {
   const target = word.toLowerCase();
-  const sentence = example.toLowerCase();
-  if (target.includes(" ")) return sentence.includes(target);
-  const forms = new Set([...regularForms(target), ...irregularForms(target, irregulars)]);
-  return tokenize(sentence).some(
-    (token) => forms.has(token) || (target.length >= 4 && token[0] === target[0] && editDistance(token, target, 1) <= 1),
-  );
+  const tokens = tokenize(example);
+  const [first = "", ...rest] = tokenize(target);
+  const firstForms = new Set([...regularForms(first), ...irregularForms(first, irregulars)]);
+  const usesFirst = (token) =>
+    firstForms.has(token) || (first.length >= 4 && token[0] === first[0] && editDistance(token, first, 1) <= 1);
+  return tokens.some((token, i) => usesFirst(token) && rest.every((part, j) => tokens[i + 1 + j] === part));
 }
 
 /** Possible dictionary forms of an inflected token, most likely first. */

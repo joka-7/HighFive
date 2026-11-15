@@ -34,6 +34,8 @@ import { MORE_WORDS7 } from "./content/wordbank-extra7.mjs";
 import { MORE_WORDS8 } from "./content/wordbank-extra8.mjs";
 import { MORE_WORDS9 } from "./content/wordbank-extra9.mjs";
 import { MORE_WORDS10 } from "./content/wordbank-extra10.mjs";
+import { blankWordInText, wordFormInText } from "./content-text.mjs";
+import { wordIndicesForDay } from "./content-schedule.mjs";
 import { MORE_READINGS, MORE_LISTENINGS } from "./content/passages-extra.mjs";
 import { MORE_READINGS2, MORE_LISTENINGS2, MORE_SPEAKING } from "./content/passages-extra2.mjs";
 import { MORE_READINGS3, MORE_LISTENINGS3, MORE_SPEAKING3 } from "./content/passages-extra3.mjs";
@@ -195,27 +197,6 @@ const FALLBACK_HE = {
   conjunction: [(w) => `נשארתי בבית ${w.translation} הייתי עייף.`],
   preposition: [(w) => `הספר ${w.translation} השולחן.`],
 };
-
-function wordFormInText(text, word) {
-  if (!text || !word) return null;
-  const tokens = text.match(/\b[\w']+\b/g) || [];
-  const lw = word.toLowerCase();
-  const candidates = [lw, lw + "s", lw + "es", lw + "ed", lw + "ing"];
-  if (lw.endsWith("e")) candidates.push(lw.slice(0, -1) + "ing");
-  if (lw.endsWith("y")) candidates.push(lw.slice(0, -1) + "ies", lw.slice(0, -1) + "ied");
-  for (const tok of tokens) {
-    const lt = tok.toLowerCase();
-    if (candidates.includes(lt)) return tok;
-  }
-  return null;
-}
-
-function blankWordInText(text, word) {
-  const form = wordFormInText(text, word);
-  if (!form) return text;
-  const escaped = form.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return text.replace(new RegExp(`\\b${escaped}\\b`, "i"), "___");
-}
 
 function enrichWord(w, level) {
   const key = `${level}:${w.word}`;
@@ -629,9 +610,7 @@ function buildLevel(level, levelIdx) {
   const bank = allWords.map((w) => enrichWord(w, level));
   const vocabulary = [];
   for (let d = 0; d < DAYS; d++) {
-    const words = [];
-    for (let j = 0; j < 5; j++) words.push(bank[(d * 5 + j) % bank.length]);
-    vocabulary.push({ words });
+    vocabulary.push({ words: wordIndicesForDay(d, bank.length, 5).map((i) => bank[i]) });
   }
 
   // Lessons: 365, rotating the curriculum; each has 3 freshly-generated Qs.
