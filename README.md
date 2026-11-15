@@ -150,6 +150,12 @@ curated pool if it is **fully bilingual** — `textHe`/`transcriptHe` plus
 generator filters out anything that isn't and fails the build on a malformed
 item.
 
+**2026 curriculum.** `scripts/content/wordbank-2026.mjs` adds the Ministry
+of Education's bagrut word lists: Band I chunks at A1, Band II multi-word items
+at A2, and Band III Core I (Lists A–D and the academic core) at B1/B2. Words can
+carry `band`, `skillType` (receptive / productive), `wordFamily` and a Hebrew
+`contextNote`, which the word card shows.
+
 **Checking the content.** `npm run content:audit` writes
 [`docs/CONTENT-AUDIT.md`](./docs/CONTENT-AUDIT.md): per level, how often words
 and quiz questions repeat over the year, how the taught words compare with the

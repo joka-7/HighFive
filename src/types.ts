@@ -6,12 +6,22 @@ export const LEVELS: Level[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
 // --- AI / content shapes ---
 
+/** Israel's Ministry of Education lexical band (bagrut curriculum, 2026). */
+export type MinistryBand = "I" | "II" | "III";
+
+/** Receptive: understood in reading and listening. Productive: used in speaking and writing. */
+export type SkillType = "receptive" | "productive";
+
 export interface GemWord {
   word: string;
   partOfSpeech: string;
   definition: string; // in Hebrew
   example: string; // English sentence
   translation: string; // Hebrew
+  band?: MinistryBand;
+  skillType?: SkillType;
+  wordFamily?: string; // e.g. "explode (v) → explosion (n)"
+  contextNote?: string; // Hebrew tip: a second meaning or a typical Hebrew-speaker error
 }
 
 export interface GemWordList {

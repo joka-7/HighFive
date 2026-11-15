@@ -166,6 +166,7 @@ HighFive/
 │   │   ├── passages-extra8.mjs
 │   │   ├── passages-extra9.mjs
 │   │   ├── passages.mjs
+│   │   ├── wordbank-2026.mjs                     # Ministry of Education 2026 bagrut lists: Band I/II/III words and curriculum…
 │   │   ├── wordbank-extra.mjs
 │   │   ├── wordbank-extra10.mjs
 │   │   ├── wordbank-extra2.mjs
@@ -195,6 +196,7 @@ HighFive/
 │   │   ├── QuizRunner.tsx
 │   │   ├── Spinner.tsx
 │   │   ├── Tile.tsx
+│   │   ├── WordCard.test.tsx
 │   │   └── WordCard.tsx
 │   ├── data/                                     # Curriculum data (word banks, topics, videos) and the bundled offline content…
 │   │   ├── offline/                              # Bundled per-level (A1-C2) quiz/listening/reading/speaking content, used…

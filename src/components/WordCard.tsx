@@ -1,5 +1,15 @@
-import type { GemWord } from "../types";
+import type { GemWord, SkillType } from "../types";
 import { speak } from "../services/tts";
+
+const SKILL_LABEL: Record<SkillType, string> = {
+  receptive: "להבנה (קריאה ושמיעה)",
+  productive: "לשימוש פעיל (דיבור וכתיבה)",
+};
+
+/** "Band II · לשימוש פעיל", from whichever curriculum tags the word has. */
+function curriculumLabel(word: GemWord): string {
+  return [word.band && `Band ${word.band}`, word.skillType && SKILL_LABEL[word.skillType]].filter(Boolean).join(" · ");
+}
 
 interface Props {
   word: GemWord;
@@ -14,6 +24,7 @@ export default function WordCard({ word, saved, onToggleSave }: Props) {
         <div>
           <div className="word-en" lang="en">{word.word}</div>
           <div className="pos">{word.partOfSpeech}</div>
+          {curriculumLabel(word) && <div className="pos">{curriculumLabel(word)}</div>}
         </div>
         <div className="icon-row">
           <button
@@ -42,6 +53,12 @@ export default function WordCard({ word, saved, onToggleSave }: Props) {
       <p className="muted my-tight">
         {word.definition}
       </p>
+      {word.wordFamily && (
+        <p className="muted fs-13 my-tight">
+          <strong>משפחת מילים:</strong> <span lang="en">{word.wordFamily}</span>
+        </p>
+      )}
+      {word.contextNote && <p className="muted fs-13 my-tight">💡 {word.contextNote}</p>}
       <div className="word-example" onClick={() => speak(word.example)}>
         💬 {word.example}
       </div>
