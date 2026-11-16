@@ -39,6 +39,7 @@ import { READINGS_2026 } from "./content/passages-2026.mjs";
 import { GRAMMAR_2026, GRAMMAR_2026_RULES, SKILL_QUIZ_2026 } from "./content/exercises-2026.mjs";
 import { blankWordInText, wordFormInText } from "./content-text.mjs";
 import { wordIndicesForDay } from "./content-schedule.mjs";
+import { shuffleOptions } from "./content-questions.mjs";
 import { MORE_READINGS, MORE_LISTENINGS } from "./content/passages-extra.mjs";
 import { MORE_READINGS2, MORE_LISTENINGS2, MORE_SPEAKING } from "./content/passages-extra2.mjs";
 import { MORE_READINGS3, MORE_LISTENINGS3, MORE_SPEAKING3 } from "./content/passages-extra3.mjs";
@@ -367,16 +368,22 @@ function questionsAreBilingual(questions) {
   );
 }
 
+// Seeded by the item's own text, so the order is stable however rounds move.
+function withShuffledOptions(item, level, key) {
+  const questions = item.questions.map((q, n) => shuffleOptions(q, rngFrom(`${level}:curated:${key}:${n}`)));
+  return { ...item, questions };
+}
+
 function curatedReadings(level) {
-  return [...READINGS[level], ...merge(READING_ROUNDS, level)].filter(
-    (r) => r.textHe && questionsAreBilingual(r.questions),
-  );
+  return [...READINGS[level], ...merge(READING_ROUNDS, level)]
+    .filter((r) => r.textHe && questionsAreBilingual(r.questions))
+    .map((r) => withShuffledOptions(r, level, r.text));
 }
 
 function curatedListenings(level) {
-  return [...LISTENINGS[level], ...merge(LISTENING_ROUNDS, level)].filter(
-    (l) => l.transcriptHe && questionsAreBilingual(l.questions),
-  );
+  return [...LISTENINGS[level], ...merge(LISTENING_ROUNDS, level)]
+    .filter((l) => l.transcriptHe && questionsAreBilingual(l.questions))
+    .map((l) => withShuffledOptions(l, level, l.transcript));
 }
 
 /** Curated speaking sentences grouped into full rounds of 4. */
