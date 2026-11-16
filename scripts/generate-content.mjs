@@ -34,6 +34,9 @@ import { MORE_WORDS7 } from "./content/wordbank-extra7.mjs";
 import { MORE_WORDS8 } from "./content/wordbank-extra8.mjs";
 import { MORE_WORDS9 } from "./content/wordbank-extra9.mjs";
 import { MORE_WORDS10 } from "./content/wordbank-extra10.mjs";
+import { WORDS_2026, TAGS_2026 } from "./content/wordbank-2026.mjs";
+import { blankWordInText, wordFormInText } from "./content-text.mjs";
+import { wordIndicesForDay } from "./content-schedule.mjs";
 import { MORE_READINGS, MORE_LISTENINGS } from "./content/passages-extra.mjs";
 import { MORE_READINGS2, MORE_LISTENINGS2, MORE_SPEAKING } from "./content/passages-extra2.mjs";
 import { MORE_READINGS3, MORE_LISTENINGS3, MORE_SPEAKING3 } from "./content/passages-extra3.mjs";
@@ -45,7 +48,7 @@ import { MORE_READINGS8, MORE_LISTENINGS8, MORE_SPEAKING8 } from "./content/pass
 import { MORE_READINGS9, MORE_LISTENINGS9, MORE_SPEAKING9 } from "./content/passages-extra9.mjs";
 
 // All extra vocabulary rounds, merged in order. Append new rounds here.
-const WORD_ROUNDS = [MORE_WORDS, MORE_WORDS2, MORE_WORDS3, MORE_WORDS4, MORE_WORDS5, MORE_WORDS6, MORE_WORDS7, MORE_WORDS8, MORE_WORDS9, MORE_WORDS10];
+const WORD_ROUNDS = [MORE_WORDS, MORE_WORDS2, MORE_WORDS3, MORE_WORDS4, MORE_WORDS5, MORE_WORDS6, MORE_WORDS7, MORE_WORDS8, MORE_WORDS9, MORE_WORDS10, WORDS_2026];
 const READING_ROUNDS = [MORE_READINGS, MORE_READINGS2, MORE_READINGS3, MORE_READINGS4, MORE_READINGS5, MORE_READINGS6, MORE_READINGS7, MORE_READINGS8, MORE_READINGS9];
 const LISTENING_ROUNDS = [MORE_LISTENINGS, MORE_LISTENINGS2, MORE_LISTENINGS3, MORE_LISTENINGS4, MORE_LISTENINGS5, MORE_LISTENINGS6, MORE_LISTENINGS7, MORE_LISTENINGS8, MORE_LISTENINGS9];
 const SPEAKING_ROUNDS = [MORE_SPEAKING, MORE_SPEAKING3, MORE_SPEAKING4, MORE_SPEAKING5, MORE_SPEAKING6, MORE_SPEAKING7, MORE_SPEAKING8, MORE_SPEAKING9];
@@ -196,31 +199,28 @@ const FALLBACK_HE = {
   preposition: [(w) => `הספר ${w.translation} השולחן.`],
 };
 
-function wordFormInText(text, word) {
-  if (!text || !word) return null;
-  const tokens = text.match(/\b[\w']+\b/g) || [];
-  const lw = word.toLowerCase();
-  const candidates = [lw, lw + "s", lw + "es", lw + "ed", lw + "ing"];
-  if (lw.endsWith("e")) candidates.push(lw.slice(0, -1) + "ing");
-  if (lw.endsWith("y")) candidates.push(lw.slice(0, -1) + "ies", lw.slice(0, -1) + "ied");
-  for (const tok of tokens) {
-    const lt = tok.toLowerCase();
-    if (candidates.includes(lt)) return tok;
+// The optional curriculum fields a word may carry (see wordbank-2026.mjs).
+const BANDS = ["I", "II", "III"];
+const SKILL_TYPES = ["receptive", "productive"];
+
+function validateCurriculumFields(w, where) {
+  if (w.band !== undefined && !BANDS.includes(w.band)) throw new Error(`${where}: band must be one of ${BANDS.join(", ")}`);
+  if (w.skillType !== undefined && !SKILL_TYPES.includes(w.skillType)) {
+    throw new Error(`${where}: skillType must be one of ${SKILL_TYPES.join(", ")}`);
   }
-  return null;
+  for (const field of ["wordFamily", "contextNote"]) {
+    if (w[field] !== undefined && (typeof w[field] !== "string" || !w[field].trim())) {
+      throw new Error(`${where}: ${field} must be a non-empty string`);
+    }
+  }
 }
 
-function blankWordInText(text, word) {
-  const form = wordFormInText(text, word);
-  if (!form) return text;
-  const escaped = form.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return text.replace(new RegExp(`\\b${escaped}\\b`, "i"), "___");
-}
-
+// A word's own fields win over the 2026 tags for words taught before them.
 function enrichWord(w, level) {
   const key = `${level}:${w.word}`;
   const exampleHe = w.exampleHe ?? EXAMPLE_HE[key];
-  return exampleHe ? { ...w, exampleHe } : { ...w };
+  const tagged = { ...(TAGS_2026[w.word.toLowerCase()] ?? {}), ...w };
+  return exampleHe ? { ...tagged, exampleHe } : tagged;
 }
 
 function englishSentence(w, templateIndex = 0) {
@@ -629,9 +629,7 @@ function buildLevel(level, levelIdx) {
   const bank = allWords.map((w) => enrichWord(w, level));
   const vocabulary = [];
   for (let d = 0; d < DAYS; d++) {
-    const words = [];
-    for (let j = 0; j < 5; j++) words.push(bank[(d * 5 + j) % bank.length]);
-    vocabulary.push({ words });
+    vocabulary.push({ words: wordIndicesForDay(d, bank.length, 5).map((i) => bank[i]) });
   }
 
   // Lessons: 365, rotating the curriculum; each has 3 freshly-generated Qs.
@@ -714,6 +712,7 @@ function main() {
       if (!enrichWord(w, level).exampleHe) {
         throw new Error(`${level} word bank: missing exampleHe for "${w.word}"`);
       }
+      validateCurriculumFields(enrichWord(w, level), `${level} word "${w.word}"`);
     }
 
     vocabIndex[level] = [

@@ -25,12 +25,12 @@ A year is 365 days: 1,825 word slots (five a day) and 1,825 quiz questions per l
 
 | Level | Unique words | Each word shown | Grammar topics | Unique quiz questions | Unique daily readings | Readings shown / written | Listenings shown / written | Speaking sentences shown / written |
 |---|---|---|---|---|---|---|---|---|
-| A1 | 412 | 4.4× | 7 | 380 | 365 / 365 | 4 / 36 | 4 / 36 | 40 / 42 |
-| A2 | 319 | 5.7× | 7 | 303 | 319 / 365 | 4 / 36 | 4 / 36 | 40 / 42 |
-| B1 | 326 | 5.6× | 6 | 296 | 326 / 365 | 4 / 36 | 4 / 36 | 40 / 42 |
-| B2 | 263 | 6.9× | 6 | 247 | 263 / 365 | 4 / 30 | 4 / 30 | 40 / 42 |
-| C1 | 245 | 7.4× | 4 | 233 | 49 / 365 | 4 / 30 | 4 / 30 | 40 / 42 |
-| C2 | 237 | 7.7× | 4 | 211 | 237 / 365 | 4 / 30 | 4 / 30 | 40 / 42 |
+| A1 | 432 | 4.2× | 7 | 393 | 365 / 365 | 4 / 36 | 4 / 36 | 40 / 42 |
+| A2 | 349 | 5.2× | 7 | 340 | 349 / 365 | 4 / 36 | 4 / 36 | 40 / 42 |
+| B1 | 415 | 4.4× | 6 | 412 | 365 / 365 | 4 / 36 | 4 / 36 | 40 / 42 |
+| B2 | 278 | 6.6× | 6 | 273 | 278 / 365 | 4 / 30 | 4 / 30 | 40 / 42 |
+| C1 | 245 | 7.4× | 4 | 244 | 245 / 365 | 4 / 30 | 4 / 30 | 40 / 42 |
+| C2 | 237 | 7.7× | 4 | 225 | 237 / 365 | 4 / 30 | 4 / 30 | 40 / 42 |
 
 Hand-written items are only shown once they have a Hebrew translation (`textHe` / `transcriptHe`, `questionHe` on every question; speaking sentences in full rounds of four).
 
@@ -40,10 +40,10 @@ Reference: CEFR-J 1.5 (A1–B2) and Octanove C1/C2 1.0 (`scripts/content/cefr/`)
 
 | Level | Same level | One level off | 2+ harder | 2+ easier | In neither list |
 |---|---|---|---|---|---|
-| A1 | 351 | 45 | 10 | 0 | 6 |
-| A2 | 117 | 193 | 7 | 0 | 2 |
-| B1 | 152 | 157 | 0 | 15 | 2 |
-| B2 | 89 | 83 | 14 | 8 | 69 |
+| A1 | 355 | 45 | 10 | 0 | 22 |
+| A2 | 119 | 200 | 10 | 0 | 20 |
+| B1 | 184 | 182 | 0 | 21 | 28 |
+| B2 | 103 | 83 | 14 | 8 | 70 |
 | C1 | 34 | 67 | 0 | 8 | 136 |
 | C2 | 27 | 9 | 0 | 1 | 200 |
 
@@ -51,25 +51,25 @@ Reference: CEFR-J 1.5 (A1–B2) and Octanove C1/C2 1.0 (`scripts/content/cefr/`)
 
 - **Two or more levels harder:** finger (B1), boot (B1), foot (B1), pillow (B1), rest (B1), pot (B1), sand (B1), candle (B1), sometimes (B1), proud (B1)
 - **Two or more levels easier:** none
-- **In neither list:** goodbye, wake up, snowman, lace, blow out, teddy bear
+- **In neither list:** goodbye, wake up, snowman, lace, blow out, teddy bear, a bit, at all, at least, by the wall, cross the street, find out, go on a trip, in fact, in front of, in the end, interested in, lie down, on my own, pick up, the same, wait for
 
 ### A2
 
-- **Two or more levels harder:** friendly (B2), rub (B2), squeeze (B2), ceiling (B2), salty (B2), decorate (B2), colleague (B2)
+- **Two or more levels harder:** friendly (B2), rub (B2), squeeze (B2), ceiling (B2), salty (B2), decorate (B2), colleague (B2), employee (B2), employer (B2), postpone (B2)
 - **Two or more levels easier:** none
-- **In neither list:** allergy, chore
+- **In neither list:** allergy, chore, by accident, on purpose, supposed to, willing to, break down, can't stand, carry on, carry out, deal with, depend on, fill in, get rid of, in charge of, look after, look forward to, make a difference, play a trick on, quite a while
 
 ### B1
 
 - **Two or more levels harder:** none
-- **Two or more levels easier:** successful (A1), social (A1), result (A1), reason (A1), goal (A1), skill (A1), culture (A1), discuss (A1), focus (A1), imagine (A1), celebrate (A1), collect (A1), feed (A1), greet (A1), pollution (A1)
-- **In neither list:** authentic, boundary
+- **Two or more levels easier:** successful (A1), social (A1), result (A1), reason (A1), goal (A1), skill (A1), culture (A1), discuss (A1), focus (A1), imagine (A1), celebrate (A1), collect (A1), feed (A1), greet (A1), pollution (A1), technology (A1), contest (A1), living (A1), learned (A1), bank (A1), strict (A1)
+- **In neither list:** authentic, boundary, in that case, on the other hand, situated, give away, take into account, tired of, painless, pregnancy, robber, expecting a baby, blow up, burst into tears, check out, don't ask, get away with, hang out, mix up, on board, see off, shake your head, show you around, split up, stay up, strangely enough, take a risk, take out
 
 ### B2
 
 - **Two or more levels harder:** hypothesis (C2), commodity (C2), diminish (C2), correlate (C2), adhere (C2), embody (C2), fluctuate (C2), induce (C2), denote (C2), mediate (C2), stipulate (C2), substantiate (C2), correlation (C2), embed (C2)
 - **Two or more levels easier:** significant (A2), establish (A2), consequence (A2), appropriate (A2), indicate (A2), release (A2), reveal (A2), context (A2)
-- **In neither list:** framework, distinct, allocate, variable, domain, notably, bias, terminate, validate, verify, comprehend, ratio, accommodate, adjacent, amend, ascertain, augment, confer, consolidate, counteract, devise, differentiate, affirm, analogous, autonomy, bolster, brisk, consecutive, contingent, deviate, discrete, accelerate, accountable, designate, deter, disclose, dispose, distort, incorporate, inhibit, negate, postulate, supersede, warrant, underpin, optimize, streamline, pinpoint, optimal, rigorous, rationale, surplus, spectrum, hierarchy, infrastructure, magnitude, criterion, benchmark, breach, commence, conclusive, condense, counterpart, curb, deploy, equate, exhaustive, inception, iterate
+- **In neither list:** framework, distinct, allocate, variable, domain, notably, bias, terminate, validate, verify, comprehend, ratio, accommodate, adjacent, amend, ascertain, augment, confer, consolidate, counteract, devise, differentiate, affirm, analogous, autonomy, bolster, brisk, consecutive, contingent, deviate, discrete, accelerate, accountable, designate, deter, disclose, dispose, distort, incorporate, inhibit, negate, postulate, supersede, warrant, underpin, optimize, streamline, pinpoint, optimal, rigorous, rationale, surplus, spectrum, hierarchy, infrastructure, magnitude, criterion, benchmark, breach, commence, conclusive, condense, counterpart, curb, deploy, equate, exhaustive, inception, iterate, rub out
 
 ### C1
 

@@ -166,6 +166,7 @@ HighFive/
 │   │   ├── passages-extra8.mjs
 │   │   ├── passages-extra9.mjs
 │   │   ├── passages.mjs
+│   │   ├── wordbank-2026.mjs                     # Ministry of Education 2026 bagrut lists: Band I/II/III words and curriculum…
 │   │   ├── wordbank-extra.mjs
 │   │   ├── wordbank-extra10.mjs
 │   │   ├── wordbank-extra2.mjs
@@ -179,6 +180,10 @@ HighFive/
 │   ├── audit-content.mjs                         # `npm run content:audit`: loads the shipped content and writes…
 │   ├── content-audit.mjs                         # The audit's pure rules: CEFR list parsing, level fit, inflection-aware…
 │   ├── content-audit.test.mjs
+│   ├── content-schedule.mjs                      # Which bank words each day teaches (wordIndicesForDay), so day sets don't…
+│   ├── content-schedule.test.mjs
+│   ├── content-text.mjs                          # Finds a taught word or phrase inside its example sentence, for quiz blanks
+│   ├── content-text.test.mjs
 │   ├── gen-android-icons.mjs                     # Renders the Android launcher icons and splash screens from public/icon-512.png
 │   └── generate-content.mjs
 ├── src/                                          # The Vite app: screens, components, state (useLingo), and content/offline…
@@ -191,6 +196,7 @@ HighFive/
 │   │   ├── QuizRunner.tsx
 │   │   ├── Spinner.tsx
 │   │   ├── Tile.tsx
+│   │   ├── WordCard.test.tsx
 │   │   └── WordCard.tsx
 │   ├── data/                                     # Curriculum data (word banks, topics, videos) and the bundled offline content…
 │   │   ├── offline/                              # Bundled per-level (A1-C2) quiz/listening/reading/speaking content, used…

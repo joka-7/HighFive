@@ -750,7 +750,7 @@ export default function Settings() {
           <span className="footer-link-label">אימייל</span>
         </a>
         <a
-          href="https://github.com/joka-7/HighFive/issues/new"
+          href="https://github.com/joka-7/HighFive/issues/new?title=Feedback+from+HighFive+App"
           target="_blank"
           rel="noreferrer"
           aria-label="Report an issue"
