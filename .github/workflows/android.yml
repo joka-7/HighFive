@@ -80,8 +80,8 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: write
-    # Two quick pushes must not finish out of order: the older release would
-    # become "latest" and the download link would serve a downgrade.
+    # Releases one at a time. The queue does not keep push order, so the
+    # publish step decides "latest" by run number (see there).
     concurrency:
       group: android-release
       cancel-in-progress: false
@@ -119,12 +119,19 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
+          RUN_NUMBER: ${{ github.run_number }}
         run: |
           # A re-run keeps the run number, so the release may already exist.
           if gh release view "android-$VERSION_NAME" > /dev/null 2>&1; then
             gh release upload "android-$VERSION_NAME" High5.apk --clobber
           else
-            gh release create "android-$VERSION_NAME" High5.apk --target "$GITHUB_SHA" --latest \
+            # Queued runs can reach this step in any order. An older build
+            # still gets its release but must not take over the download link.
+            LATEST_TAG=$(gh release list --exclude-drafts --json tagName,isLatest --jq '.[] | select(.isLatest) | .tagName')
+            LATEST_RUN=${LATEST_TAG##*.}
+            case "$LATEST_RUN" in ''|*[!0-9]*) LATEST_RUN=0 ;; esac
+            if [ "$RUN_NUMBER" -gt "$LATEST_RUN" ]; then IS_LATEST=true; else IS_LATEST=false; fi
+            gh release create "android-$VERSION_NAME" High5.apk --target "$GITHUB_SHA" --latest="$IS_LATEST" \
               --title "High5 Android $VERSION_NAME" \
               --notes "Android app built from $GITHUB_SHA. Install: download High5.apk on the phone and open it (allow installing from this source when asked)."
           fi
