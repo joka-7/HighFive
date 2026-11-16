@@ -1,9 +1,9 @@
 # CEFR reference word lists
 
 Used by `scripts/audit-content.mjs` to check that each word is taught at a
-sensible level, and as the word source for new rounds: round 11
-(`../wordbank-extra11.mjs`) teaches CEFR-J A1 nouns, verbs, adjectives and
-adverbs that no earlier round taught. Copied unchanged from
+sensible level, and as the word source for new rounds: rounds 11–14
+(`../wordbank-extra11.mjs` to `../wordbank-extra14.mjs`) teach the CEFR-J A1 and
+A2 nouns, verbs, adjectives and adverbs that no earlier round taught. Copied unchanged from
 [openlanguageprofiles/olp-en-cefrj](https://github.com/openlanguageprofiles/olp-en-cefrj)
 (commit `d4e45b7`).
 
