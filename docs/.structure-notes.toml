@@ -17,6 +17,7 @@
 "public" = "Static assets + PWA manifest/service worker, served as-is by Vite"
 "scripts" = "Content generation (`npm run content` rebuilds src/data/offline/*.json), the content audit and the Android icon generator"
 "scripts/audit-content.mjs" = "`npm run content:audit`: loads the shipped content and writes docs/CONTENT-AUDIT.md (or checks it with --check)"
+"scripts/content-questions.mjs" = "Seeded reordering of hand-written quiz options, so the right answer isn't always option B"
 "scripts/content-schedule.mjs" = "Which bank words each day teaches (wordIndicesForDay), so day sets don't repeat when a bank divides by five"
 "scripts/content-text.mjs" = "Finds a taught word or phrase inside its example sentence, for quiz blanks"
 "scripts/content/exercises-2026.mjs" = "2026 B2–C1 grammar items and A1–B2 skill quiz questions (second meanings, word families, confusing pairs)"

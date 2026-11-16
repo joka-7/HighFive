@@ -56,7 +56,7 @@ export const MORE_READINGS6 = {
     R("The Power of Small Habits (כוחם של הרגלים קטנים)",
       "I used to believe that change required dramatic effort. Then I tried reading just ten pages a day. It felt almost too small to matter, yet over a year it added up to fifteen books. Tiny habits, repeated, quietly reshape a life.",
       [g("dramatic", "adjective", "דרמטי, גדול", "Dramatic effort.", "דרמטי"), g("habit", "noun", "הרגל", "A daily habit.", "הרגל"), g("reshape", "verb", "לעצב מחדש", "Reshape a life.", "לעצב מחדש")],
-      [q("What did the writer try?", ["Reading ten pages a day", "Writing a book", "A reading class", "Speed reading"], 1, "'reading just ten pages a day'."), q("What was the result over a year?", ["One book", "Fifteen books", "No change", "Five books"], 1, "'it added up to fifteen books'.")]),
+      [q("What did the writer try?", ["Reading ten pages a day", "Writing a book", "A reading class", "Speed reading"], 0, "'reading just ten pages a day'."), q("What was the result over a year?", ["One book", "Fifteen books", "No change", "Five books"], 1, "'it added up to fifteen books'.")]),
     R("Why I Stopped Watching the News (למה הפסקתי לצפות בחדשות)",
       "For years I watched the news every evening, and it left me anxious and tired. I decided to read one good article a week instead. Surprisingly, I missed nothing important — friends still told me what mattered. I feel calmer and, oddly, better informed.",
       [g("anxious", "adjective", "חרד, מודאג", "It made me anxious.", "חרד"), g("instead", "adverb", "במקום זאת", "Read instead.", "במקום זאת"), g("informed", "adjective", "מעודכן, בקיא", "Well informed.", "מעודכן/בקיא")],
