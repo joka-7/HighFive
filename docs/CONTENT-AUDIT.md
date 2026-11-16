@@ -26,7 +26,7 @@ A year is 365 days: 1,825 word slots (five a day) and 1,825 quiz questions per l
 | Level | Unique words | Each word shown | Grammar topics | Unique quiz questions | Unique daily readings | Readings shown / written | Listenings shown / written | Speaking sentences shown / written |
 |---|---|---|---|---|---|---|---|---|
 | A1 | 786 | 2.3× | 7 | 745 | 365 / 365 | 36 / 36 | 36 / 36 | 40 / 42 |
-| A2 | 721 | 2.5× | 7 | 717 | 365 / 365 | 36 / 36 | 36 / 36 | 40 / 42 |
+| A2 | 980 | 1.9× | 7 | 972 | 365 / 365 | 36 / 36 | 36 / 36 | 40 / 42 |
 | B1 | 415 | 4.4× | 6 | 421 | 365 / 365 | 37 / 37 | 36 / 36 | 40 / 42 |
 | B2 | 278 | 6.6× | 7 | 281 | 278 / 365 | 31 / 31 | 30 / 30 | 40 / 42 |
 | C1 | 245 | 7.4× | 11 | 244 | 245 / 365 | 30 / 30 | 30 / 30 | 40 / 42 |
@@ -41,7 +41,7 @@ Reference: CEFR-J 1.5 (A1–B2) and Octanove C1/C2 1.0 (`scripts/content/cefr/`)
 | Level | Same level | One level off | 2+ harder | 2+ easier | In neither list |
 |---|---|---|---|---|---|
 | A1 | 709 | 45 | 10 | 0 | 22 |
-| A2 | 489 | 202 | 10 | 0 | 20 |
+| A2 | 744 | 206 | 10 | 0 | 20 |
 | B1 | 184 | 182 | 0 | 21 | 28 |
 | B2 | 103 | 83 | 14 | 8 | 70 |
 | C1 | 34 | 67 | 0 | 8 | 136 |

@@ -121,7 +121,7 @@ export const MORE_WORDS12 = {
     { word: "comic", partOfSpeech: "noun", definition: "קומיקס, סיפור בציורים", example: "My brother reads comics every day.", exampleHe: "אחי קורא קומיקס כל יום.", translation: "קומיקס" },
     { word: "communicate", partOfSpeech: "verb", definition: "לתקשר, להעביר מידע או רגשות", example: "We communicate by email.", exampleHe: "אנחנו שומרים על קשר במייל.", translation: "לתקשר" },
     { word: "company", partOfSpeech: "noun", definition: "חברה, עסק", example: "My father works for a big company.", exampleHe: "אבא שלי עובד בחברה גדולה.", translation: "חברה (עסק)" },
-    { word: "comparative", partOfSpeech: "noun", definition: "צורת השוואה, כמו bigger", example: "\"Taller\" is the comparative of \"tall\".", exampleHe: "\"גבוה יותר\" היא צורת ההשוואה של \"גבוה\".", translation: "צורת השוואה" },
+    { word: "comparative", partOfSpeech: "noun", definition: "צורת השוואה, כמו bigger", example: "\"Taller\" is the comparative of \"tall\".", exampleHe: "\"taller\" היא צורת ההשוואה של \"tall\".", translation: "צורת השוואה" },
     { word: "complaint", partOfSpeech: "noun", definition: "תלונה", example: "I want to make a complaint.", exampleHe: "אני רוצה להגיש תלונה.", translation: "תלונה" },
     { word: "composer", partOfSpeech: "noun", definition: "מלחין, מי שכותב מוזיקה", example: "Mozart was a famous composer.", exampleHe: "מוצרט היה מלחין מפורסם.", translation: "מלחין" },
     { word: "condition", partOfSpeech: "noun", definition: "מצב", example: "The car is in good condition.", exampleHe: "המכונית במצב טוב.", translation: "מצב, תנאי" },
