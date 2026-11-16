@@ -35,6 +35,8 @@ import { MORE_WORDS8 } from "./content/wordbank-extra8.mjs";
 import { MORE_WORDS9 } from "./content/wordbank-extra9.mjs";
 import { MORE_WORDS10 } from "./content/wordbank-extra10.mjs";
 import { WORDS_2026, TAGS_2026 } from "./content/wordbank-2026.mjs";
+import { READINGS_2026 } from "./content/passages-2026.mjs";
+import { GRAMMAR_2026, GRAMMAR_2026_RULES, SKILL_QUIZ_2026 } from "./content/exercises-2026.mjs";
 import { blankWordInText, wordFormInText } from "./content-text.mjs";
 import { wordIndicesForDay } from "./content-schedule.mjs";
 import { MORE_READINGS, MORE_LISTENINGS } from "./content/passages-extra.mjs";
@@ -49,7 +51,7 @@ import { MORE_READINGS9, MORE_LISTENINGS9, MORE_SPEAKING9 } from "./content/pass
 
 // All extra vocabulary rounds, merged in order. Append new rounds here.
 const WORD_ROUNDS = [MORE_WORDS, MORE_WORDS2, MORE_WORDS3, MORE_WORDS4, MORE_WORDS5, MORE_WORDS6, MORE_WORDS7, MORE_WORDS8, MORE_WORDS9, MORE_WORDS10, WORDS_2026];
-const READING_ROUNDS = [MORE_READINGS, MORE_READINGS2, MORE_READINGS3, MORE_READINGS4, MORE_READINGS5, MORE_READINGS6, MORE_READINGS7, MORE_READINGS8, MORE_READINGS9];
+const READING_ROUNDS = [MORE_READINGS, MORE_READINGS2, MORE_READINGS3, MORE_READINGS4, MORE_READINGS5, MORE_READINGS6, MORE_READINGS7, MORE_READINGS8, MORE_READINGS9, READINGS_2026];
 const LISTENING_ROUNDS = [MORE_LISTENINGS, MORE_LISTENINGS2, MORE_LISTENINGS3, MORE_LISTENINGS4, MORE_LISTENINGS5, MORE_LISTENINGS6, MORE_LISTENINGS7, MORE_LISTENINGS8, MORE_LISTENINGS9];
 const SPEAKING_ROUNDS = [MORE_SPEAKING, MORE_SPEAKING3, MORE_SPEAKING4, MORE_SPEAKING5, MORE_SPEAKING6, MORE_SPEAKING7, MORE_SPEAKING8, MORE_SPEAKING9];
 const merge = (rounds, level) => rounds.flatMap((r) => r[level] || []);
@@ -531,6 +533,19 @@ const GEN = {
       optionHe: (opt) => opt,
     });
   },
+  // 2026 B2–C1 structures (exercises-2026.mjs), one generator per topic.
+  ...Object.fromEntries(
+    Object.entries(GRAMMAR_2026).map(([key, items]) => [
+      key,
+      (rng) => {
+        const it = pick(rng, items);
+        return mcq(rng, `${it.before}___${it.after}`, it.correct, it.wrong, GRAMMAR_2026_RULES[key], [], {
+          questionHe: `השלימו את המשפט: ${it.before}___${it.after}`,
+          optionHe: (opt) => opt,
+        });
+      },
+    ]),
+  ),
   vocabMeaning(rng, ctx) {
     const w = pick(rng, ctx.words);
     const others = shuffle(
@@ -591,11 +606,19 @@ function curriculum(levelIdx) {
       { key: "prepositions", title: "Dependent Prepositions (מילות יחס קבועות)", explanation: "פעלים ושמות תואר רבים מתחברים למילת יחס קבועה: good at, wait for, depend on. כדאי ללמוד את הצירוף כולו כיחידה אחת." },
       { key: "modals", title: "Modals of Deduction & Advice (מודאליים)", explanation: "מודאליים מביעים גם הסקה והמלצה: must (בטוח), might (ייתכן), should (כדאי), mustn't (אסור). שימו לב להבדל ביניהם." },
       { key: "vocabMeaning", title: "Academic Vocabulary (אוצר מילים אקדמי)", explanation: "ברמה זו נכנסות מילים מופשטות ונפוצות בכתיבה רשמית: significant, establish, demonstrate, framework. למדו אותן בהקשר." },
+      { key: "modalsDeduction", title: "Modals of Deduction in the Past (מודאלים של הסקה בעבר)", explanation: "כדי להסיק או לבקר אירוע בעבר: must have + V3 (בטוח שקרה), can't have + V3 (בטוח שלא קרה), might/may have + V3 (ייתכן), should have + V3 (היה צריך)." },
     ],
     // C1
     [
       { key: "vocabMeaning", title: "Advanced Lexis (אוצר מילים מתקדם)", explanation: "ברמה זו הדגש הוא על דיוק ועל גוון (nuance). מילים כמו 'mitigate' או 'inherent' מאפשרות להביע רעיונות מורכבים בקצרה ובדייקנות." },
       { key: "vocabMeaning", title: "Connectors & Register (מילות קישור ומשלב)", explanation: "מילים כמו nevertheless, albeit, notwithstanding מעלות את המשלב של הטקסט. שליטה בהן מבדילה כתיבה שוטפת מכתיבה מתקדמת." },
+      { key: "inversion", title: "Inversion (היפוך תחבירי)", explanation: "בכתיבה רשמית פותחים משפט בביטוי שלילי או מגביל כדי להדגיש: Not only..., Rarely..., Under no circumstances.... אחריו בא פועל עזר לפני הנושא: Not only did she win." },
+      { key: "participleClauses", title: "Participle Clauses (פסוקיות בינוני)", explanation: "פסוקית בינונית מקצרת משפט סיבה או זמן: Having finished... (פעולה שקדמה), Faced with... (סביל), Walking home... (בו-זמנית). הנושא שלה זהה לנושא המשפט הראשי." },
+      { key: "reportingVerbs", title: "Advanced Reporting Verbs (פעלי דיווח מתקדמים)", explanation: "בכתיבה ובדיון מחליפים את say ו-think בפעלים מדויקים: acknowledge, allege, attribute X to Y, emphasise, urge sb to. לכל פועל מבנה קבוע משלו." },
+      { key: "subjunctive", title: "The Subjunctive (מבנה ה-Subjunctive)", explanation: "להמלצה דחופה: It is essential/vital/imperative that + נושא + פועל בסיס, גם בגוף שלישי: It is essential that the government provide..." },
+      { key: "causative", title: "The Causative (have / get something done)", explanation: "have/get + מושא + V3 מתאר שירות שמישהו אחר עושה עבורנו: We had the roof repaired. They got the system tested." },
+      { key: "modalsDeduction", title: "Modals of Deduction in the Past (מודאלים של הסקה בעבר)", explanation: "must have + V3 (בטוח שקרה), can't have + V3 (בטוח שלא קרה), might/may have + V3 (ייתכן), should have + V3 (ביקורת: היה צריך)." },
+      { key: "collocations", title: "Collocations & Idioms (צירופים וניבים)", explanation: "צירופים קבועים משדרגים את אוצר המילים בחיבור ובדיון: pose a threat to, bridge the gap, play a pivotal role, a double-edged sword, take for granted." },
     ],
     // C2
     [
@@ -641,11 +664,15 @@ function buildLevel(level, levelIdx) {
     lessons.push({ title: topic.title, explanation: topic.explanation, questions });
   }
 
-  // Quizzes: 365 progressive sets using today's vocabulary words.
+  // Quizzes: 365 progressive sets using today's vocabulary words, plus one
+  // rotating 2026 skill question (second meaning, word family, confusing pair)
+  // at the levels that have them.
+  const skillBank = SKILL_QUIZ_2026[level];
   const quizzes = [];
   for (let d = 0; d < DAYS; d++) {
     const rng = rngFrom(`${level}:quiz:${d}`);
-    quizzes.push(buildProgressiveQuiz(d, vocabulary, bank, level, rng));
+    const quiz = buildProgressiveQuiz(d, vocabulary, bank, level, rng);
+    quizzes.push(skillBank.length ? { questions: [...quiz.questions, skillBank[d % skillBank.length]] } : quiz);
   }
 
   // Reading & Listening: 365 progressive sets using only cumulative vocabulary.
@@ -730,7 +757,7 @@ function main() {
       l.questions.forEach((q, n) => validateQuestion(q, `${level} lesson ${d} q${n}`));
     });
     quizzes.forEach((z, d) => {
-      validateQuestionSet(z.questions, 5, `${level} quiz ${d}`);
+      validateQuestionSet(z.questions, SKILL_QUIZ_2026[level].length ? 6 : 5, `${level} quiz ${d}`);
       z.questions.forEach((q, n) => validateQuestion(q, `${level} quiz ${d} q${n}`));
     });
     readings.forEach((r, d) => {

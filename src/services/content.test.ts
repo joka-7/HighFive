@@ -52,7 +52,7 @@ describe("content service — offline fallbacks (no AI key)", () => {
 
   it("generateDialogueReply requires an AI key", async () => {
     await expect(
-      generateDialogueReply("A1", "cafe", [], "Hello", []),
+      generateDialogueReply("A1", { en: "Ordering at a cafe" }, [], "Hello", []),
     ).rejects.toThrow(/requires an AI provider key/);
   });
 });
@@ -120,5 +120,24 @@ describe("offline content selection — curated vs. progressive", () => {
     const target = (curatedA1 as GemReading[])[0];
     const rich = await generateSpeaking("A1", "daily life", vocabularyFor(target), 0);
     expect(rich.prompts).toHaveLength(4);
+  });
+});
+
+describe("generateDialogueReply", () => {
+  it.each([
+    {
+      name: "adds the scenario's role brief and target phrases to the prompt",
+      scenario: { en: "Ordering coffee in London", brief: "You are a friendly barista.", targetPhrases: ["wait for", "a bit"] },
+      included: ["You are a friendly barista.", '"wait for", "a bit"', "**bold**"],
+    },
+    { name: "sends no script for a plain scenario", scenario: { en: "Ordering at a cafe" }, included: ['scenario "Ordering at a cafe"'] },
+  ])("$name", async ({ scenario, included }) => {
+    vi.mocked(isAIReady).mockReturnValue(true);
+    vi.mocked(complete).mockResolvedValue('{"reply":"Hello","corrections":null}');
+
+    await generateDialogueReply("A1", scenario, [], "Hello", []);
+
+    const prompt = String(vi.mocked(complete).mock.calls[0]?.[0]);
+    expect([included.every((text) => prompt.includes(text)), "brief" in scenario || !prompt.includes("target phrases")]).toEqual([true, true]);
   });
 });

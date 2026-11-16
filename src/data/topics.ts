@@ -105,6 +105,10 @@ export interface DialogueScenario {
   label: string;
   en: string;
   minLevel: Level;
+  /** Role-play instructions for the AI partner (2026 curriculum scripts). */
+  brief?: string;
+  /** Phrases the learner should try to use; the partner encourages and highlights them. */
+  targetPhrases?: readonly string[];
 }
 
 export const DIALOGUE_SCENARIOS: DialogueScenario[] = [
@@ -124,6 +128,43 @@ export const DIALOGUE_SCENARIOS: DialogueScenario[] = [
   { id: "rent", label: "🏠 שכירת דירה", en: "Renting an apartment", minLevel: "B2" },
   { id: "interview", label: "💼 ראיון עבודה", en: "A job interview", minLevel: "B2" },
   { id: "meeting", label: "📊 פגישת עבודה", en: "A business meeting", minLevel: "C1" },
+  // 2026 curriculum scripts: each practises its level's Ministry target phrases.
+  {
+    id: "london-cafe",
+    label: "☕ הזמנה בבית קפה בלונדון",
+    en: "Ordering coffee and getting to know a barista in London",
+    minLevel: "A1",
+    brief:
+      "You are a friendly barista in London talking to a Hebrew-speaking A1 beginner. Keep your sentences short (5-8 words). Ask what they want to drink, if they want it here or to go, and if the table by the window is free for them. If they make a Hebrew-transfer error (like 'I wait to my friend'), praise their effort and model the correct form ('I am waiting for my friend').",
+    targetPhrases: ["a bit", "free", "wait for", "here or to go", "would like"],
+  },
+  {
+    id: "hotel-problem",
+    label: "🛎️ טיפול בתקלה במלון בחו״ל",
+    en: "Reporting a problem at a hotel abroad",
+    minLevel: "A2",
+    brief:
+      "You are a hotel receptionist helping an A2 learner whose room air conditioner broke down. Ask them to explain what happened and what they need. Reply naturally in character.",
+    targetPhrases: ["by accident", "supposed to", "in charge of", "deal with", "break down"],
+  },
+  {
+    id: "exchange-interview",
+    label: "🌍 ראיון לתוכנית חילופי נוער",
+    en: "An interview for an international youth exchange programme",
+    minLevel: "B1",
+    brief:
+      "You are an interviewer for an international youth exchange programme, speaking with a B1/B2 Israeli student. Ask four progressive questions: about a challenge they faced, how they work in a team, what they can contribute, and why they want this opportunity.",
+    targetPhrases: ["take into account", "take a risk", "contribute", "experience", "opportunity", "up-to-date"],
+  },
+  {
+    id: "ai-debate",
+    label: "🎤 דיבייט: בינה מלאכותית בחינוך",
+    en: "A debate about artificial intelligence in schools",
+    minLevel: "C1",
+    brief:
+      "You are an academic debate coach training a C1 speaker. Debate the use of AI tools in schools, taking the opposite side to the learner. Push them to raise their register: inversion ('Not only...'), advanced reporting verbs ('attribute', 'emphasise') and the subjunctive ('It is essential that...'). When they use a simple expression like 'big problem' or 'say', suggest a C1 alternative ('pose a serious threat', 'argue', 'emphasise').",
+    targetPhrases: ["Not only", "pose a threat", "attribute", "essential that", "consequence"],
+  },
 ];
 
 export function dialogueScenariosForLevel(level: Level): DialogueScenario[] {

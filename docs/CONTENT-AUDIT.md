@@ -25,11 +25,11 @@ A year is 365 days: 1,825 word slots (five a day) and 1,825 quiz questions per l
 
 | Level | Unique words | Each word shown | Grammar topics | Unique quiz questions | Unique daily readings | Readings shown / written | Listenings shown / written | Speaking sentences shown / written |
 |---|---|---|---|---|---|---|---|---|
-| A1 | 432 | 4.2× | 7 | 393 | 365 / 365 | 4 / 36 | 4 / 36 | 40 / 42 |
-| A2 | 349 | 5.2× | 7 | 340 | 349 / 365 | 4 / 36 | 4 / 36 | 40 / 42 |
-| B1 | 415 | 4.4× | 6 | 412 | 365 / 365 | 4 / 36 | 4 / 36 | 40 / 42 |
-| B2 | 278 | 6.6× | 6 | 273 | 278 / 365 | 4 / 30 | 4 / 30 | 40 / 42 |
-| C1 | 245 | 7.4× | 4 | 244 | 245 / 365 | 4 / 30 | 4 / 30 | 40 / 42 |
+| A1 | 432 | 4.2× | 7 | 400 | 365 / 365 | 4 / 36 | 4 / 36 | 40 / 42 |
+| A2 | 349 | 5.2× | 7 | 349 | 349 / 365 | 4 / 36 | 4 / 36 | 40 / 42 |
+| B1 | 415 | 4.4× | 6 | 421 | 365 / 365 | 5 / 37 | 4 / 36 | 40 / 42 |
+| B2 | 278 | 6.6× | 7 | 281 | 278 / 365 | 5 / 31 | 4 / 30 | 40 / 42 |
+| C1 | 245 | 7.4× | 11 | 244 | 245 / 365 | 4 / 30 | 4 / 30 | 40 / 42 |
 | C2 | 237 | 7.7× | 4 | 225 | 237 / 365 | 4 / 30 | 4 / 30 | 40 / 42 |
 
 Hand-written items are only shown once they have a Hebrew translation (`textHe` / `transcriptHe`, `questionHe` on every question; speaking sentences in full rounds of four).
@@ -92,8 +92,8 @@ All hand-written readings and listening transcripts, shown or not. "Above level"
 |---|---|---|---|---|
 | A1 | 72 | 6.2 | 2.2% | 1.8% |
 | A2 | 72 | 8.6 | 3.6% | 2.1% |
-| B1 | 72 | 10.9 | 1.7% | 2% |
-| B2 | 60 | 14.9 | 0.8% | 4% |
+| B1 | 73 | 11.2 | 1.9% | 2.1% |
+| B2 | 61 | 15.1 | 0.8% | 4.1% |
 | C1 | 60 | 16 | 0.4% | 4.7% |
 | C2 | 60 | 17.9 | 0% | 6.6% |
 

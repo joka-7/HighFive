@@ -154,7 +154,17 @@ item.
 of Education's bagrut word lists: Band I chunks at A1, Band II multi-word items
 at A2, and Band III Core I (Lists A–D and the academic core) at B1/B2. Words can
 carry `band`, `skillType` (receptive / productive), `wordFamily` and a Hebrew
-`contextNote`, which the word card shows.
+`contextNote`, which the word card shows. The same round adds:
+
+- **Exercises** (`exercises-2026.mjs`): seven B2–C1 grammar lessons (inversion,
+  participle clauses, reporting verbs, the subjunctive, the causative, modals
+  of deduction in the past, collocations) and, at A1–B2, one extra quiz
+  question a day on a second meaning, a word family or a confusing pair.
+- **Readings** (`passages-2026.mjs`): two bilingual passages built on the new
+  words, at B1 and B2.
+- **Dialogue scripts** (`src/data/topics.ts`): four Dialogue Coach scenarios,
+  one per band, whose AI partner encourages and highlights the level's target
+  phrases.
 
 **Checking the content.** `npm run content:audit` writes
 [`docs/CONTENT-AUDIT.md`](./docs/CONTENT-AUDIT.md): per level, how often words
