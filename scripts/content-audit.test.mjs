@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   BEGIN_MARKER,
   END_MARKER,
+  aboveLevelWords,
   buildIrregulars,
   cefrLevelOf,
   crossLevelDuplicates,
@@ -9,6 +10,7 @@ import {
   incompleteWords,
   lemmaCandidates,
   levelFit,
+  namesIn,
   mergeCefrIndexes,
   parseCefrCsv,
   passageStats,
@@ -17,6 +19,7 @@ import {
   replaceGenerated,
   tokenize,
   violations,
+  withOverrides,
 } from "./content-audit.mjs";
 
 const irregulars = buildIrregulars(
@@ -140,6 +143,39 @@ describe("content-audit", () => {
     });
   });
 
+  describe("withOverrides", () => {
+    it("replaces a listed level and leaves the original index untouched", () => {
+      const merged = withOverrides(cefr, { mitigate: "B2", brandnew: "A2" });
+
+      expect([merged.get("mitigate"), merged.get("brandnew"), merged.get("go"), cefr.get("mitigate")]).toEqual(["B2", "A2", "A1", "C1"]);
+    });
+  });
+
+  describe("namesIn", () => {
+    it.each([
+      { name: "finds a capitalised word mid-sentence", text: "My dog Max is big.", expected: ["max"] },
+      { name: "ignores the first word of a sentence", text: "Study now. Go home.", expected: [] },
+      { name: "finds a name after a comma", text: "Hi, Dan is here.", expected: ["dan"] },
+      { name: "ignores options written as their own sentences", text: "Who is it?. Sam. Dan.", expected: [] },
+    ])("$name", ({ text, expected }) => {
+      expect([...namesIn(text)]).toEqual(expected);
+    });
+  });
+
+  describe("aboveLevelWords", () => {
+    it.each([
+      { name: "flags a word rated above the level", text: "We study and go.", level: "A1", known: [], expected: ["study"] },
+      { name: "passes a word taught at or below the level, in any inflection", text: "She studied.", level: "A1", known: ["study"], expected: [] },
+      { name: "passes words at or below the level", text: "We study and go.", level: "A2", known: [], expected: [] },
+      { name: "passes question terms even when a list rates them above the level", text: "What is the plural of house?", level: "A1", known: [], expected: [], rated: { plural: "B1" } },
+      { name: "passes names written with a capital mid-sentence", text: "My teacher Reveal is here.", level: "A1", known: [], expected: [] },
+      { name: "ignores words no list rates", text: "The zyx goes.", level: "A1", known: [], expected: [] },
+      { name: "lists each word once", text: "Study, study and mitigate.", level: "A1", known: [], expected: ["study", "mitigate"] },
+    ])("$name", ({ text, level, known, expected, rated = {} }) => {
+      expect(aboveLevelWords(text, level, withOverrides(cefr, rated), irregulars, new Set(known))).toEqual(expected);
+    });
+  });
+
   describe("passageStats", () => {
     it.each([
       {
@@ -198,6 +234,7 @@ describe("content-audit", () => {
     passages: { passages: 3, avgSentenceWords: 6, abovePct: 1, unlistedPct: 2 },
     incomplete: [],
     examplesMissingWord: [],
+    aboveLevel: { byKind: [], items: [] },
     ...overrides,
   });
 
@@ -213,6 +250,16 @@ describe("content-audit", () => {
           }),
         ],
         expected: ['A1 "b": missing example', 'A1 "cat": example does not use the word: The car is red.'],
+      },
+      {
+        name: "names each sentence above the level at A1 and A2",
+        levels: [level({ aboveLevel: { byKind: [], items: [{ kind: "reading", text: "We study…", words: ["study"] }] } })],
+        expected: ['A1 reading: "We study…" uses words above A1: study'],
+      },
+      {
+        name: "reports sentences above the level from B1 up without failing CI",
+        levels: [level({ level: "B1", aboveLevel: { byKind: [], items: [{ kind: "reading", text: "We mitigate…", words: ["mitigate"] }] } })],
+        expected: [],
       },
     ])("$name", ({ levels, expected }) => {
       expect(violations({ levels, duplicates: [] })).toEqual(expected);

@@ -197,6 +197,47 @@ export function passageStats(texts, level, cefr, irregulars) {
   };
 }
 
+/**
+ * Words the app's questions use to talk about the language and the task
+ * ("What is the plural of…", "What does the speaker want?"). The lessons
+ * explain them in Hebrew, so they never count as above level.
+ */
+export const QUESTION_TERMS = new Set([
+  "noun", "verb", "adjective", "adverb", "phrase", "preposition", "pronoun", "plural", "singular",
+  "simple", "continuous", "perfect", "past", "present", "future", "comparative", "superlative",
+  "speaker", "listener",
+]);
+
+/** Lowercased words written with a capital letter mid-sentence: names ("my dog Max"), which no level list rates. */
+export function namesIn(text) {
+  return new Set((text.match(/(?<=[a-z,;:'"]\s+)[A-Z][a-z]+/g) ?? []).map((w) => w.toLowerCase()));
+}
+
+/** A copy of a CEFR index with app-specific level decisions applied on top. @param {Record<string, string>} overrides */
+export function withOverrides(cefr, overrides) {
+  const merged = new Map(cefr);
+  for (const [word, level] of Object.entries(overrides)) merged.set(word, level);
+  return merged;
+}
+
+/**
+ * The distinct words of `text` that the lists put above `level` and the
+ * learner has not been taught. `known` holds taught words as single lowercase
+ * tokens (every part of a taught phrase counts); question terms and names always pass.
+ * @param {Set<string>} known
+ */
+export function aboveLevelWords(text, level, cefr, irregulars, known) {
+  const found = new Set();
+  const names = namesIn(text);
+  for (const token of tokenize(text)) {
+    if (QUESTION_TERMS.has(token) || names.has(token)) continue;
+    const ref = cefrLevelOf(token, cefr, irregulars);
+    if (!ref || levelIndex(ref) <= levelIndex(level)) continue;
+    if (!lemmaCandidates(token, irregulars).some((c) => known.has(c))) found.add(token);
+  }
+  return [...found];
+}
+
 /** Words taught at more than one level. @param {Record<string, string[]>} wordsByLevel */
 export function crossLevelDuplicates(wordsByLevel) {
   const levelsOf = new Map();
@@ -228,11 +269,17 @@ export function repetition(items) {
 
 /** The rules CI enforces. Anything else in the report is information, not a gate. */
 export function violations(audit) {
-  return audit.levels.flatMap(({ level, incomplete, examplesMissingWord }) => [
+  return audit.levels.flatMap(({ level, incomplete, examplesMissingWord, aboveLevel }) => [
     ...incomplete.map((e) => `${level} "${e.word}": missing ${e.missing.join(", ")}`),
     ...examplesMissingWord.map((e) => `${level} "${e.word}": example does not use the word: ${e.example}`),
+    ...(STRICT_LEVELS.includes(level) ? aboveLevel.items : []).map(
+      (i) => `${level} ${i.kind}: "${i.text}" uses words above ${level}: ${i.words.join(", ")}`,
+    ),
   ]);
 }
+
+/** Levels where every sentence must use only words at or below the level, or already taught. */
+export const STRICT_LEVELS = ["A1", "A2"];
 
 const table = (header, rows) =>
   [`| ${header.join(" | ")} |`, `|${header.map(() => "---").join("|")}|`, ...rows.map((r) => `| ${r.join(" | ")} |`)].join("\n");
@@ -278,7 +325,7 @@ function fitSection(levels) {
   return [
     "## Words against the CEFR lists",
     "",
-    "Reference: CEFR-J 1.5 (A1–B2) and Octanove C1/C2 1.0 (`scripts/content/cefr/`). One level off is within the lists' own uncertainty.",
+    "Reference: CEFR-J 1.5 (A1–B2) and Octanove C1/C2 1.0 (`scripts/content/cefr/`), with the app's reviewed exceptions in `scripts/content/level-overrides.mjs`. One level off is within the lists' own uncertainty.",
     "",
     table(["Level", "Same level", "One level off", "2+ harder", "2+ easier", "In neither list"], rows),
     "",
@@ -294,6 +341,19 @@ function passageSection(levels) {
     "All hand-written readings and listening transcripts, shown or not. \"Above level\" counts word tokens the lists put above the passage's level; \"in neither list\" is mostly names and forms the checker can't trace to a dictionary word.",
     "",
     table(["Level", "Passages", "Words per sentence", "Above level", "In neither list"], rows),
+  ].join("\n");
+}
+
+function aboveLevelSection(levels) {
+  const rows = levels.flatMap((l) =>
+    l.aboveLevel.byKind.map((k) => [l.level, k.kind, k.items, k.flagged, wordList(k.top)]),
+  );
+  return [
+    "## Words above the learner's level",
+    "",
+    "Every sentence a learner sees, checked word by word: a word counts when the lists put it above the level and it is not taught at or below the level (question terms such as \"plural\", names, and reading glossaries pass). Word levels follow the lists, with the app's own decisions in `scripts/content/level-overrides.mjs`. A1 and A2 must be clean (see the rules below); higher levels are information.",
+    "",
+    table(["Level", "Part of the app", "Items", "Items with a word above level", "Most common such words"], rows),
   ].join("\n");
 }
 
@@ -317,7 +377,7 @@ function rulesSection(found) {
   return [
     "## Rules CI enforces",
     "",
-    "Every word entry has a word, part of speech, definition, example and translation, and its example uses the word.",
+    "Every word entry has a word, part of speech, definition, example and translation, and its example uses the word. At A1 and A2, every word card example, quiz, grammar question, reading, listening and speaking sentence uses only words at or below the level, words already taught at or below it, or (in a reading) words in its glossary.",
     "",
     found.length ? found.map((v) => `- ${v}`).join("\n") : "All pass.",
   ].join("\n");
@@ -329,6 +389,7 @@ export function renderReport(audit) {
     summarySection(audit.levels),
     fitSection(audit.levels),
     passageSection(audit.levels),
+    aboveLevelSection(audit.levels),
     duplicateSection(audit.duplicates),
     hiddenSection(audit.levels),
     rulesSection(violations(audit)),

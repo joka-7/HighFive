@@ -12,9 +12,12 @@ import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { IRREGULAR_PLURALS, VERBS } from "./content/banks.mjs";
+import { LEVEL_OVERRIDES } from "./content/level-overrides.mjs";
 import {
   LEVELS,
+  aboveLevelWords,
   buildIrregulars,
+  tokenize,
   crossLevelDuplicates,
   exampleHasWord,
   incompleteWords,
@@ -26,6 +29,7 @@ import {
   repetition,
   replaceGenerated,
   violations,
+  withOverrides,
 } from "./content-audit.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -70,6 +74,55 @@ function handWritten(source, level) {
   };
 }
 
+/** Every English sentence a learner sees at `level`, grouped by part of the app. */
+function learnerTexts(level) {
+  const lc = level.toLowerCase();
+  const daily = QUARTERS.map((q) => readJson(`${lc}.q${q}.json`));
+  // Each question and option is its own sentence, so a capitalised option is never mistaken for a name.
+  const asked = (q) => [q.question, ...q.options].join(". ");
+  const of = (kind) => [...QUARTERS.flatMap((q) => readJson(`${lc}.${kind}.q${q}.json`)), ...readJson(`${lc}.${kind}.curated.json`)];
+  const words = [...new Map(daily.flatMap((d) => d.vocabulary.flatMap((day) => day.words)).map((w) => [w.word, w])).values()];
+  return [
+    { kind: "word example", items: words.map((w) => ({ text: String(w.example), own: String(w.word) })) },
+    { kind: "daily quiz", items: daily.flatMap((d) => d.quizzes.flatMap((z) => z.questions)).map((q) => ({ text: asked(q) })) },
+    { kind: "grammar question", items: daily.flatMap((d) => d.lessons.flatMap((l) => l.questions)).map((q) => ({ text: asked(q) })) },
+    {
+      kind: "reading",
+      items: of("reading").map((r) => ({
+        text: [r.text, ...(r.glossary ?? []).map((g) => g.example), ...(r.questions ?? []).map(asked)].join(". "),
+        own: (r.glossary ?? []).map((g) => g.word).join(" "),
+      })),
+    },
+    { kind: "listening", items: of("listening").map((l) => ({ text: [l.transcript, ...(l.questions ?? []).map(asked)].join(". ") })) },
+    { kind: "speaking", items: of("speaking").flatMap((s) => s.prompts).map((p) => ({ text: String(p.text) })) },
+  ];
+}
+
+/**
+ * Sentences at `level` with words above it. `known` is every word taught at
+ * or below the level; an item's own headword or glossary words also pass.
+ */
+function aboveLevel(level, cefr, irregulars, known) {
+  const items = [];
+  const byKind = learnerTexts(level).map(({ kind, items: all }) => {
+    const seen = new Map();
+    const counts = new Map();
+    for (const { text, own = "" } of all) {
+      const key = `${text}\u0000${own}`;
+      if (seen.has(key)) continue;
+      const allowed = new Set([...known, ...tokenize(own)]);
+      const words = aboveLevelWords(text, level, cefr, irregulars, allowed);
+      seen.set(key, words);
+      for (const w of words) counts.set(w, (counts.get(w) ?? 0) + 1);
+      if (words.length) items.push({ kind, text: opening(text), words });
+    }
+    const flagged = [...seen.values()].filter((w) => w.length).length;
+    const top = [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 8).map(([w, n]) => `${w} (${n})`);
+    return { kind, items: seen.size, flagged, top };
+  });
+  return { byKind, items };
+}
+
 function auditLevel(level, source, cefr, irregulars) {
   const lc = level.toLowerCase();
   const daily = QUARTERS.map((q) => readJson(`${lc}.q${q}.json`));
@@ -85,13 +138,27 @@ function auditLevel(level, source, cefr, irregulars) {
     quizQuestions: repetition(daily.flatMap((d) => d.quizzes.flatMap((z) => z.questions.map((q) => q.question)))),
     dailyReadings: repetition(readings),
     handWritten: written,
-    fit: levelFit(firstOfEach.map((w) => String(w.word)), level, cefr, irregulars),
-    passages: passageStats(written.texts, level, cefr, irregulars),
+    fit: levelFit(firstOfEach.map((w) => String(w.word)), level, withOverrides(cefr, LEVEL_OVERRIDES), irregulars),
+    passages: passageStats(written.texts, level, withOverrides(cefr, LEVEL_OVERRIDES), irregulars),
     incomplete: incompleteWords(firstOfEach),
+    aboveLevel: aboveLevel(level, withOverrides(cefr, LEVEL_OVERRIDES), irregulars, taughtUpTo(level)),
     examplesMissingWord: firstOfEach
       .filter((w) => w.example && !exampleHasWord(String(w.word), String(w.example), irregulars))
       .map((w) => ({ word: String(w.word), example: String(w.example) })),
   };
+}
+
+/** Every word taught at or below `level`, as lowercase tokens (each part of a phrase counts). */
+function taughtUpTo(level) {
+  const known = new Set();
+  for (const lower of LEVELS.slice(0, LEVELS.indexOf(level) + 1)) {
+    for (const q of QUARTERS) {
+      for (const day of readJson(`${lower.toLowerCase()}.q${q}.json`).vocabulary) {
+        for (const w of day.words) for (const t of tokenize(String(w.word))) known.add(t);
+      }
+    }
+  }
+  return known;
 }
 
 async function buildAudit() {

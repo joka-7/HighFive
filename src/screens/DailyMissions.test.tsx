@@ -76,6 +76,16 @@ describe("the five daily operations", () => {
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", expect.stringContaining("noopener"));
   });
+
+  it("shows only the links that suit the learner's level", () => {
+    renderMissions();
+    // Safe: every operation heading renders inside a MissionCard (.card).
+    const seeCard = screen.getByRole("heading", { name: "1. לראות" }).closest(".card")!;
+    fireEvent.click(within(seeCard as HTMLElement).getByRole("button", { name: /אפליקציה אחרת/ }));
+
+    const links = within(seeCard as HTMLElement).getAllByRole("link").map((l) => l.textContent);
+    expect([links.some((t) => t?.includes("English for kids")), links.some((t) => t?.includes("TED"))]).toEqual([true, false]);
+  });
 });
 
 describe("the words box", () => {

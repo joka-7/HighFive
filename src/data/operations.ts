@@ -1,4 +1,4 @@
-import type { DailyMissionFlag, Screen } from "../types";
+import type { DailyMissionFlag, Level, Screen } from "../types";
 
 // The five daily operations. Every one of them can be practised **inside**
 // High5 or **outside** it (a video on YouTube, a podcast on Spotify, an
@@ -11,7 +11,13 @@ export type OperationId = "see" | "listen" | "talk" | "read" | "understand";
 export interface ExternalLink {
   label: string;
   url: string;
+  /** Levels the link suits; absent means every level. */
+  levels?: readonly Level[];
 }
+
+const youtubeSearch = (query: string) =>
+  `https://www.youtube.com/results?${new URLSearchParams({ search_query: query })}`;
+const spotifySearch = (query: string) => `https://open.spotify.com/search/${encodeURIComponent(query)}`;
 
 export interface Operation {
   id: OperationId;
@@ -31,7 +37,7 @@ export interface Operation {
   /** Label for the "what did you do?" field on the external form. */
   externalLabel: string;
   externalPlaceholder: string;
-  /** Suggested apps/sites — opened in a new tab, nothing is tracked. */
+  /** Suggested apps/sites — opened in a new tab, nothing is tracked. Use `linksForLevel` to show them. */
   links: ExternalLink[];
 }
 
@@ -49,8 +55,10 @@ export const OPERATIONS: Operation[] = [
     externalLabel: "מה ראיתם?",
     externalPlaceholder: 'לדוגמה: "Friends S1E3" ב-Netflix',
     links: [
-      { label: "YouTube", url: "https://www.youtube.com/results?search_query=english+for+beginners" },
-      { label: "TED Talks", url: "https://www.ted.com/talks" },
+      { label: "YouTube — English for kids", url: youtubeSearch("english for kids beginners"), levels: ["A1"] },
+      { label: "YouTube — easy English stories", url: youtubeSearch("easy english stories for beginners"), levels: ["A2"] },
+      { label: "YouTube — English listening practice", url: youtubeSearch("english listening practice intermediate"), levels: ["B1", "B2"] },
+      { label: "TED Talks", url: "https://www.ted.com/talks", levels: ["B2", "C1", "C2"] },
       { label: "BBC Learning English", url: "https://www.bbc.co.uk/learningenglish/english/features" },
     ],
   },
@@ -65,8 +73,9 @@ export const OPERATIONS: Operation[] = [
     externalLabel: "למה הקשבתם?",
     externalPlaceholder: 'לדוגמה: "Yesterday" — The Beatles',
     links: [
-      { label: "Spotify", url: "https://open.spotify.com/search/english%20podcast" },
-      { label: "BBC Podcasts", url: "https://www.bbc.co.uk/learningenglish/english/features/6-minute-english" },
+      { label: "Spotify — podcasts for beginners", url: spotifySearch("english podcast for beginners"), levels: ["A1", "A2"] },
+      { label: "Spotify", url: spotifySearch("english podcast"), levels: ["B1", "B2", "C1", "C2"] },
+      { label: "BBC Podcasts", url: "https://www.bbc.co.uk/learningenglish/english/features/6-minute-english", levels: ["B1", "B2", "C1", "C2"] },
       { label: "YouTube Music", url: "https://music.youtube.com" },
     ],
   },
@@ -99,9 +108,9 @@ export const OPERATIONS: Operation[] = [
     externalLabel: "מה קראתם?",
     externalPlaceholder: 'לדוגמה: כתבה על ספורט ב-BBC',
     links: [
-      { label: "News in Levels", url: "https://www.newsinlevels.com" },
-      { label: "BBC News", url: "https://www.bbc.com/news" },
-      { label: "Simple Wikipedia", url: "https://simple.wikipedia.org" },
+      { label: "News in Levels", url: "https://www.newsinlevels.com", levels: ["A1", "A2", "B1"] },
+      { label: "Simple Wikipedia", url: "https://simple.wikipedia.org", levels: ["A2", "B1", "B2"] },
+      { label: "BBC News", url: "https://www.bbc.com/news", levels: ["B2", "C1", "C2"] },
     ],
   },
   {
@@ -120,6 +129,11 @@ export const OPERATIONS: Operation[] = [
     ],
   },
 ];
+
+/** The operation's suggested links that suit `level`. */
+export function linksForLevel(op: Operation, level: Level): ExternalLink[] {
+  return op.links.filter((link) => !link.levels || link.levels.includes(level));
+}
 
 /** True when the operation counts as done for today's mission state. */
 export function isOperationDone(

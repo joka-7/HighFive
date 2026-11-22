@@ -157,6 +157,7 @@ HighFive/
 │   │   ├── banks.mjs
 │   │   ├── example-he.mjs
 │   │   ├── exercises-2026.mjs                    # 2026 B2–C1 grammar items and A1–B2 skill quiz questions (second meanings,…
+│   │   ├── level-overrides.mjs
 │   │   ├── passages-2026.mjs                     # Two bilingual 2026 reading passages built on the new Band III words
 │   │   ├── passages-extra.mjs
 │   │   ├── passages-extra2.mjs
@@ -175,6 +176,7 @@ HighFive/
 │   │   ├── wordbank-extra12.mjs
 │   │   ├── wordbank-extra13.mjs
 │   │   ├── wordbank-extra14.mjs
+│   │   ├── wordbank-extra15.mjs
 │   │   ├── wordbank-extra2.mjs
 │   │   ├── wordbank-extra3.mjs
 │   │   ├── wordbank-extra4.mjs
@@ -182,7 +184,8 @@ HighFive/
 │   │   ├── wordbank-extra6.mjs
 │   │   ├── wordbank-extra7.mjs
 │   │   ├── wordbank-extra8.mjs
-│   │   └── wordbank-extra9.mjs
+│   │   ├── wordbank-extra9.mjs
+│   │   └── wordbank-level-moves.mjs
 │   ├── audit-content.mjs                         # `npm run content:audit`: loads the shipped content and writes…
 │   ├── content-audit.mjs                         # The audit's pure rules: CEFR list parsing, level fit, inflection-aware…
 │   ├── content-audit.test.mjs
@@ -327,6 +330,7 @@ HighFive/
 │   │   ├── level-vocabulary.ts
 │   │   ├── offline.test.ts
 │   │   ├── offline.ts
+│   │   ├── operations.test.ts
 │   │   ├── operations.ts
 │   │   ├── placement.test.ts
 │   │   ├── placement.ts
