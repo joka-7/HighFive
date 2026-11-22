@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AppUpdateCard from "../components/AppUpdateCard";
 import GithubIcon from "../components/GithubIcon";
 import {
   PROVIDERS,
@@ -557,6 +558,8 @@ export default function Settings() {
           )}
         </div>
       )}
+
+      <AppUpdateCard />
 
       <div className="card">
         <h3>☁️ סנכרון ל-Google Drive</h3>

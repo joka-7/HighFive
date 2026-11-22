@@ -79,7 +79,7 @@ test.describe("capture README screenshots", () => {
 
   test("daily lesson + practice quiz", async ({ page }) => {
     await onboard(page, "דנה", "B1");
-    await page.getByRole("button", { name: /שיעור יומי/ }).click();
+    await page.getByRole("button", { name: /להבין/ }).click();
     await settle(page);
     await page
       .getByRole("button", { name: /בוא נתרגל/ })
