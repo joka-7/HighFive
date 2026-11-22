@@ -667,7 +667,7 @@ Whether the app shows an item is checked with
 39. Welcome to the water park. Please read the rules before you go in.
 40. Hello, team. Tomorrow's basketball practice is moved from the school hall to the sports centre because of the exams.
 41. Good evening. Tonight is the first night of Hanukkah.
-42. Hi, it is Dad. I am in traffic because of an accident on the highway.
+42. Hi, it is Dad. I am on the highway, and the cars are not moving because of an accident.
 43. Welcome to the tour of the old city. First we will walk down this street to the market.
 44. This is a message for passengers on bus number twelve. Because of road works, the bus will not stop at the hospital today.
 45. Hello, welcome to the cooking class. Today we are going to make vegetable soup.

@@ -28,7 +28,7 @@ export const MORE_READINGS15 = {
       ],
       [
         q("What did the two students make?", "מה שני התלמידים הכינו?", ["A model of the planets", "A game", "A big boat", "A clock"], ["דגם של כוכבי הלכת", "משחק", "סירה גדולה", "שעון"], 0, "כתוב 'a model of the planets'."),
-        q("What prize did they win?", "איזה פרס הם זכו?", ["Second prize", "First prize", "No prize", "Third prize"], ["מקום שני", "מקום ראשון", "בלי פרס", "מקום שלישי"], 0, "כתוב 'we won second prize'."),
+        q("What prize did they win?", "באיזה פרס הם זכו?", ["Second prize", "First prize", "No prize", "Third prize"], ["מקום שני", "מקום ראשון", "בלי פרס", "מקום שלישי"], 0, "כתוב 'we won second prize'."),
       ],
     ),
     R(
@@ -62,10 +62,10 @@ export const MORE_READINGS15 = {
     R(
       "Exam Week (שבוע המבחנים)",
       "This week we have three exams, and I am very nervous. I study every evening until ten o'clock and I drink a lot of water. My mother makes me soup so that I do not forget to eat. After the last exam I plan to sleep for twelve hours.",
-      "השבוע יש לנו שלושה מבחנים, ואני עצבני מאוד. אני לומד בכל ערב עד עשר ושותה הרבה מים. אמא שלי מכינה לי מרק כדי שלא אשכח לאכול. אחרי המבחן האחרון אני מתכנן לישון שתים עשרה שעות.",
+      "השבוע יש לנו שלושה מבחנים, ואני מתוח מאוד. אני לומד בכל ערב עד עשר ושותה הרבה מים. אמא שלי מכינה לי מרק כדי שלא אשכח לאכול. אחרי המבחן האחרון אני מתכנן לישון שתים עשרה שעות.",
       [
         g("exam", "noun", "מבחן גדול", "We have three exams.", "מבחן"),
-        g("nervous", "adjective", "חושש לפני משהו", "I am very nervous.", "עצבני"),
+        g("nervous", "adjective", "חושש לפני משהו", "I am very nervous.", "מתוח"),
         g("plan", "verb", "לחשוב מה לעשות", "I plan to sleep.", "לתכנן"),
       ],
       [
@@ -104,14 +104,14 @@ export const MORE_READINGS15 = {
     R(
       "The Football Final (גמר הכדורגל)",
       "Last Saturday our school team played in the final. We were losing one-nil until the last five minutes. Then my friend scored a beautiful goal, and a minute later I scored another. We won two-one, and everyone ran to the field.",
-      "בשבת שעברה קבוצת בית הספר שלנו שיחקה בגמר. הפסדנו אחד-אפס עד חמש הדקות האחרונות. אז החבר שלי הבקיע שער יפה, ודקה אחר כך אני הבקעתי עוד אחד. ניצחנו שתיים-אחד, וכולם רצו אל המגרש.",
+      "בשבת שעברה קבוצת בית הספר שלנו שיחקה בגמר. היינו בפיגור אחד-אפס עד חמש הדקות האחרונות. אז החבר שלי הבקיע שער יפה, ודקה אחר כך אני הבקעתי עוד אחד. ניצחנו שתיים-אחד, וכולם רצו אל המגרש.",
       [
         g("final", "noun", "המשחק האחרון בתחרות", "Our team played in the final.", "גמר"),
         g("score", "verb", "להכניס כדור לשער", "My friend scored a goal.", "להבקיע"),
         g("goal", "noun", "שער בכדורגל", "He scored a beautiful goal.", "שער"),
       ],
       [
-        q("What was the score before the last five minutes?", "מה היה התוצאה לפני חמש הדקות האחרונות?", ["They were losing 1-0", "They were winning 1-0", "It was 0-0", "They were losing 3-0"], ["הם הפסידו 1-0", "הם ניצחו 1-0", "זה היה 0-0", "הם הפסידו 3-0"], 0, "כתוב 'losing one-nil'."),
+        q("What was the score before the last five minutes?", "מה הייתה התוצאה לפני חמש הדקות האחרונות?", ["They were losing 1-0", "They were winning 1-0", "It was 0-0", "They were losing 3-0"], ["הם היו בפיגור 1-0", "הם ניצחו 1-0", "זה היה 0-0", "הם הפסידו 3-0"], 0, "כתוב 'losing one-nil'."),
         q("What was the final score?", "מה התוצאה הסופית?", ["Two-one to the writer's team", "One-two", "Two-two", "Three-one"], ["שתיים-אחד לקבוצה של הכותב", "אחד-שתיים", "שתיים-שתיים", "שלוש-אחד"], 0, "כתוב 'We won two-one'."),
       ],
     ),
@@ -148,7 +148,7 @@ export const MORE_READINGS15 = {
       "My grandfather grew up in a small village by the sea. He told me that he walked to school every day and caught fish before breakfast. I love his stories, even when I have heard them many times. Last week I wrote some of them down in a notebook.",
       "סבא שלי גדל בכפר קטן ליד הים. הוא סיפר לי שהוא הלך לבית הספר בכל יום ותפס דגים לפני ארוחת הבוקר. אני אוהב את הסיפורים שלו, גם כשאני שומע אותם הרבה פעמים. בשבוע שעבר כתבתי כמה מהם במחברת.",
       [
-        g("village", "noun", "עיירה קטנה מאוד", "He grew up in a village.", "כפר"),
+        g("village", "noun", "מקום קטן מאוד עם מעט בתים", "He grew up in a village.", "כפר"),
         g("catch", "verb", "לתפוס", "He caught fish before breakfast.", "לתפוס"),
         g("notebook", "noun", "ספר לכתיבה", "I wrote them in a notebook.", "מחברת"),
       ],
@@ -214,9 +214,9 @@ export const MORE_READINGS15 = {
       ],
     ),
     R(
-      "My Aunt's Wedding (החתונה של דודה)",
+      "My Aunt's Wedding (החתונה של הדודה שלי)",
       "Last Friday I went to my aunt's wedding. It was in a garden near the sea, and the sun was going down while she walked to the front. After the ceremony there was dinner, music and dancing until midnight. I danced with my grandfather, and he was better than me.",
-      "ביום שישי שעבר הלכתי לחתונה של דודה שלי. היא הייתה בגן ליד הים, והשמש שקעה כשהיא הלכה לחזית. אחרי הטקס היה ארוחת ערב, מוזיקה וריקודים עד חצות. רקדתי עם סבא שלי, והוא היה טוב ממני.",
+      "ביום שישי שעבר הלכתי לחתונה של דודה שלי. היא הייתה בגן ליד הים, והשמש שקעה כשהיא הלכה קדימה. אחרי הטקס הייתה ארוחת ערב, מוזיקה וריקודים עד חצות. רקדתי עם סבא שלי, והוא היה טוב ממני.",
       [
         g("wedding", "noun", "טקס נישואין", "I went to a wedding.", "חתונה"),
         g("ceremony", "noun", "טקס", "After the ceremony there was dinner.", "טקס"),
@@ -224,12 +224,12 @@ export const MORE_READINGS15 = {
       ],
       [
         q("Where was the wedding?", "איפה הייתה החתונה?", ["In a garden near the sea", "In a hotel", "At a school", "At home"], ["בגן ליד הים", "במלון", "בבית ספר", "בבית"], 0, "כתוב 'in a garden near the sea'."),
-        q("Who did the writer dance with?", "עם מי הכותב רקד?", ["His grandfather", "His aunt", "His cousin", "His teacher"], ["סבא שלו", "דודה שלו", "בן דוד שלו", "המורה שלו"], 0, "כתוב 'I danced with my grandfather'."),
+        q("Who did the writer dance with?", "עם מי הכותב רקד?", ["His grandfather", "His aunt", "His cousin", "His teacher"], ["סבא שלו", "הדודה שלו", "בן דוד שלו", "המורה שלו"], 0, "כתוב 'I danced with my grandfather'."),
       ],
     ),
     R(
       "A Family Trip to the North (טיול משפחתי לצפון)",
-      "In the spring holiday we drove to the north of the country. We stayed in a small guesthouse near a river and walked in the forest every morning. My little brother found a frog by the water, and we took a photo before we let it go. It was the best holiday we have ever had.",
+      "During the spring holiday we drove to the north of the country. We stayed in a small guesthouse near a river and walked in the forest every morning. My little brother found a frog by the water, and we took a photo before we let it go. It was the best holiday we have ever had.",
       "בחופשת האביב נסענו לצפון הארץ. התארחנו בבית הארחה קטן ליד נהר והלכנו ביער בכל בוקר. אחי הקטן מצא צפרדע ליד המים, וצילמנו תמונה לפני ששחררנו אותו. זו הייתה החופשה הכי טובה שהייתה לנו אי פעם.",
       [
         g("forest", "noun", "מקום עם הרבה עצים", "We walked in the forest.", "יער"),
@@ -243,39 +243,39 @@ export const MORE_READINGS15 = {
     ),
     R(
       "A Bad Day in the Kitchen (יום גרוע במטבח)",
-      "I tried to make a cake for my mother's birthday, but everything went wrong. I forgot the sugar, and then I left the cake in the oven for too long. It was black on the outside and raw inside. My mother laughed and said the thought was the best part.",
-      "ניסיתי להכין עוגה ליום ההולדת של אמא שלי, אבל הכול השתבש. שכחתי את הסוכר, ואז השארתי את העוגה בתנור יותר מדי זמן. היא הייתה שחורה מבחוץ וגולמית מבפנים. אמא שלי צחקה ואמרה שהמחשבה היא החלק הכי טוב.",
+      "I tried to make a cake for my mother's birthday, but everything went wrong. I forgot the sugar, and then I left the cake in the oven for too long. It was black on the outside and raw inside. My mother laughed and said the best part was that I tried.",
+      "ניסיתי להכין עוגה ליום ההולדת של אמא שלי, אבל הכול השתבש. שכחתי את הסוכר, ואז השארתי את העוגה בתנור יותר מדי זמן. היא הייתה שחורה מבחוץ ולא אפויה מבפנים. אמא שלי צחקה ואמרה שהחלק הכי טוב הוא שניסיתי.",
       [
         g("oven", "noun", "מכשיר לאפייה", "I left the cake in the oven.", "תנור"),
         g("forget", "verb", "לא לזכור", "I forgot the sugar.", "לשכוח"),
-        g("raw", "adjective", "לא מבושל", "It was raw inside.", "גולמי"),
+        g("raw", "adjective", "לא מבושל", "It was raw inside.", "נא"),
       ],
       [
         q("What did the writer forget?", "מה הכותב שכח?", ["The sugar", "The eggs", "The flour", "The milk"], ["את הסוכר", "את הביצים", "את הקמח", "את החלב"], 0, "כתוב 'I forgot the sugar'."),
-        q("What did the mother say?", "מה האמא אמרה?", ["The thought was the best part", "The cake was perfect", "It was too sweet", "She was angry"], ["שהמחשבה היא החלק הכי טוב", "שהעוגה מושלמת", "שהיא מתוקה מדי", "שהיא כועסת"], 0, "כתוב 'the thought was the best part'."),
+        q("What did the mother say?", "מה האמא אמרה?", ["The best part was that I tried", "The cake was perfect", "It was too sweet", "She was angry"], ["שהחלק הכי טוב הוא שניסיתי", "שהעוגה מושלמת", "שהיא מתוקה מדי", "שהיא כועסת"], 0, "כתוב 'the best part was that I tried'."),
       ],
     ),
     R(
       "Trying Sushi (טועמים סושי)",
       "Yesterday my friend took me to a sushi restaurant for the first time. I was afraid of raw fish, so I ordered a roll with vegetables. The waiter showed me how to eat with two sticks. By the end I had tried fish too, and I liked it.",
-      "אתמול החבר שלי לקח אותי למסעדת סושי בפעם הראשונה. פחדתי מדג גולמי, ולכן הזמנתי רול עם ירקות. המלצר הראה לי איך לאכול עם שני מקלות. בסוף טעמתי גם דג, ואהבתי.",
+      "אתמול החבר שלי לקח אותי למסעדת סושי בפעם הראשונה. פחדתי מדג נא, ולכן הזמנתי רול עם ירקות. המלצר הראה לי איך לאכול עם שני מקלות. בסוף טעמתי גם דג, ואהבתי.",
       [
         g("restaurant", "noun", "מקום לאכול בו", "We went to a sushi restaurant.", "מסעדה"),
         g("order", "verb", "לבקש אוכל במסעדה", "I ordered a roll.", "להזמין"),
         g("waiter", "noun", "אדם שמגיש אוכל", "The waiter showed me.", "מלצר"),
       ],
       [
-        q("Why did the writer order a roll with vegetables?", "למה הכותב הזמין רול עם ירקות?", ["He was afraid of raw fish", "He was not hungry", "It was cheap", "It was the only choice"], ["הוא פחד מדג גולמי", "הוא לא היה רעב", "זה היה זול", "זו הייתה הברירה היחידה"], 0, "כתוב 'I was afraid of the raw fish'."),
+        q("Why did the writer order a roll with vegetables?", "למה הכותב הזמין רול עם ירקות?", ["He was afraid of raw fish", "He was not hungry", "It was cheap", "It was the only choice"], ["הוא פחד מדג נא", "הוא לא היה רעב", "זה היה זול", "זו הייתה הברירה היחידה"], 0, "כתוב 'I was afraid of raw fish'."),
         q("What did the waiter show him?", "מה המלצר הראה לו?", ["How to eat with two sticks", "How to cook rice", "How to cut fish", "How to pay"], ["איך לאכול עם שני מקלות", "איך לבשל אורז", "איך לחתוך דג", "איך לשלם"], 0, "כתוב 'how to eat with two sticks'."),
       ],
     ),
     R(
       "The Best Hummus (החומוס הכי טוב)",
       "My uncle says that he makes the best hummus in the city. He cooks the beans for hours. Then he adds lemon, garlic and a lot of tahini. Every Saturday we sit at his table and finish three plates.",
-      "הדוד שלי אומר שהוא מכין את החומוס הכי טוב בעיר. הוא מבשל את הגרגרים שעות. אחר כך הוא מוסיף לימון, שום והרבה טחינה. בכל שבת אנחנו יושבים ליד השולחן שלו וגומרים שלוש צלחות.",
+      "הדוד שלי אומר שהוא מכין את החומוס הכי טוב בעיר. הוא מבשל את השעועית שעות. אחר כך הוא מוסיף לימון, שום והרבה טחינה. בכל שבת אנחנו יושבים ליד השולחן שלו וגומרים שלוש צלחות.",
       [
         g("garlic", "noun", "ירק עם ריח חזק", "He adds garlic.", "שום"),
-        g("bean", "noun", "זרע קטן ללבשול", "He cooks the beans.", "גרגר"),
+        g("bean", "noun", "זרע קטן לבישול", "He cooks the beans.", "שעועית"),
         g("plate", "noun", "כלי שאוכלים ממנו", "We finish three plates.", "צלחת"),
       ],
       [
@@ -327,15 +327,15 @@ export const MORE_READINGS15 = {
     ),
     R(
       "Pizza Night (ערב פיצה)",
-      "Every second Friday we have pizza night at our house. We make the dough ourselves and everyone chooses their own toppings. My brother always puts banana on his, and the rest of us think it is strange. Last time we made six pizzas and finished all of them.",
-      "בכל יום שישי שני יש לנו ערב פיצה בבית. אנחנו מכינים את הבצק בעצמנו וכל אחד בוחר את התוספות שלו. אחי תמיד שם בננה על שלו, והשאר חושבים שזה מוזר. בפעם האחרונה הכנו שש פיצות וגמרנו את כולן.",
+      "Every two weeks, on Friday, we have pizza night at our house. We make the dough ourselves and everyone chooses their own toppings. My brother always puts banana on his, and the rest of us think it is strange. Last time we made six pizzas and finished all of them.",
+      "אחת לשבועיים, ביום שישי, יש לנו ערב פיצה בבית. אנחנו מכינים את הבצק בעצמנו וכל אחד בוחר את התוספות שלו. אחי תמיד שם בננה על שלו, והשאר חושבים שזה מוזר. בפעם האחרונה הכנו שש פיצות וגמרנו את כולן.",
       [
         g("dough", "noun", "בצק", "We make the dough ourselves.", "בצק"),
         g("topping", "noun", "מה שמוסיפים על הפיצה", "Everyone chooses their own toppings.", "תוספת"),
         g("strange", "adjective", "מוזר", "We think it is strange.", "מוזר"),
       ],
       [
-        q("How often is pizza night?", "באיזו תדירות ערב הפיצה?", ["Every second Friday", "Every day", "Every Sunday", "Once a year"], ["כל יום שישי שני", "כל יום", "כל יום ראשון", "פעם בשנה"], 0, "כתוב 'Every second Friday'."),
+        q("How often is pizza night?", "באיזו תדירות ערב הפיצה?", ["Every two weeks, on Friday", "Every day", "Every Sunday", "Once a year"], ["אחת לשבועיים, ביום שישי", "כל יום", "כל יום ראשון", "פעם בשנה"], 0, "כתוב 'Every two weeks, on Friday'."),
         q("What does the brother put on his pizza?", "מה האח שם על הפיצה שלו?", ["Banana", "Mushrooms", "Onions", "Corn"], ["בננה", "פטריות", "בצל", "תירס"], 0, "כתוב 'banana'."),
       ],
     ),
@@ -383,11 +383,11 @@ export const MORE_READINGS15 = {
     ),
     R(
       "A Day at the Water Park (יום בפארק המים)",
-      "For my birthday we spent the whole day at the water park. I went down the biggest slide four times, but my little sister was too afraid. We ate ice cream by the pool and jumped into the wave machine. When we got home, we were all red from the sun and fell asleep at once.",
-      "ליום ההולדת שלי בילינו יום שלם בפארק המים. ירדתי במגלשה הגדולה ביותר ארבע פעמים, אבל אחותי הקטנה פחדה מדי. אכלנו גלידה ליד הבריכה וקפצנו למכונת הגלים. כשהגענו הביתה, כולנו היינו אדומים מהשמש ונרדמנו מיד.",
+      "For my birthday we spent the whole day at the water park. I went down the biggest slide four times, but my little sister was too afraid. We ate ice cream by the pool and jumped into the wave pool. When we got home, we were all red from the sun and fell asleep at once.",
+      "ליום ההולדת שלי בילינו יום שלם בפארק המים. ירדתי במגלשה הגדולה ביותר ארבע פעמים, אבל אחותי הקטנה פחדה מכדי לנסות. אכלנו גלידה ליד הבריכה וקפצנו לבריכת הגלים. כשהגענו הביתה, כולנו היינו אדומים מהשמש ונרדמנו מיד.",
       [
         g("slide", "noun", "משטח להחלקה", "I went down the slide.", "מגלשה"),
-        g("wave", "noun", "תנועה של מים", "We jumped into the wave machine.", "גל"),
+        g("wave", "noun", "תנועה של מים", "We jumped into the wave pool.", "גל"),
         g("afraid", "adjective", "מפחד", "My sister was afraid.", "מפחדת"),
       ],
       [
@@ -439,8 +439,8 @@ export const MORE_READINGS15 = {
     ),
     R(
       "Purim Costumes (תחפושות פורים)",
-      "For Purim I decided to dress up as a pirate. My mother made me a red scarf, and my father made me a black hat. At school there was a party, and a boy dressed as a banana made everyone laugh. I did not mind, because I had a great time anyway.",
-      "בפורים החלטתי להתחפש לפיראט. אמא שלי הכינה לי צעיף אדום, ואבא שלי הכין לי כובע שחור. בבית הספר הייתה מסיבה, וילד שהתחפש לבננה הצחיק את כולם. לא הפריע לי, כי נהניתי בכל מקרה.",
+      "For Purim I decided to dress up as a pirate. My mother made me a red scarf, and my father made me a black hat. At school there was a party, and a boy dressed as a banana made everyone laugh. He was funnier than me, but I did not mind, because I had a great time anyway.",
+      "בפורים החלטתי להתחפש לפיראט. אמא שלי הכינה לי צעיף אדום, ואבא שלי הכין לי כובע שחור. בבית הספר הייתה מסיבה, וילד שהתחפש לבננה הצחיק את כולם. הוא היה מצחיק ממני, אבל לא הפריע לי, כי נהניתי בכל מקרה.",
       [
         g("costume", "noun", "בגדים מיוחדים של דמות", "My costume is red and black.", "תחפושת"),
         g("pirate", "noun", "שודד ים", "I dressed up as a pirate.", "פיראט"),
@@ -468,7 +468,7 @@ export const MORE_READINGS15 = {
     R(
       "Independence Day Barbecue (על האש ביום העצמאות)",
       "On Independence Day we always have a barbecue in the park. My uncle brings the meat, my aunt brings salads, and the children bring the football. We sit on blankets, eat until we are full, and watch the planes fly over. In the evening everyone goes home sunburnt and happy.",
-      "ביום העצמאות אנחנו תמיד עושים על האש בפארק. הדוד שלי מביא את הבשר, דודה שלי מביאה סלטים, והילדים מביאים את הכדורגל. אנחנו יושבים על שמיכות, אוכלים עד שאנחנו שבעים, וצופים במטוסים שעוברים מעלינו. בערב כולם חוזרים הביתה שרופים מהשמש ושמחים.",
+      "ביום העצמאות אנחנו תמיד עושים על האש בפארק. הדוד שלי מביא את הבשר, הדודה שלי מביאה סלטים, והילדים מביאים את הכדורגל. אנחנו יושבים על שמיכות, אוכלים עד שאנחנו שבעים, וצופים במטוסים שעוברים מעלינו. בערב כולם חוזרים הביתה שרופים מהשמש ושמחים.",
       [
         g("barbecue", "noun", "בישול בשר על אש בחוץ", "We have a barbecue in the park.", "על האש"),
         g("meat", "noun", "בשר", "My uncle brings the meat.", "בשר"),
@@ -496,7 +496,7 @@ export const MORE_READINGS15 = {
     R(
       "A Day in Jerusalem (יום בירושלים)",
       "Last weekend we visited Jerusalem for the first time as a class. We walked through the narrow streets of the old city and tasted warm bread from a small shop. The guide told us stories about every corner. I took more than a hundred photos with my phone.",
-      "בסוף השבוע האחרון ביקרנו בירושלים בפעם הראשונה כמחלקה. הלכנו ברחובות הצרים של העיר העתיקה וטעמנו לחם חם מחנות קטנה. המדריך סיפר לנו סיפורים על כל פינה. צילמתי יותר ממאה תמונות בטלפון.",
+      "בסוף השבוע האחרון ביקרנו בירושלים בפעם הראשונה עם הכיתה. הלכנו ברחובות הצרים של העיר העתיקה וטעמנו לחם חם מחנות קטנה. המדריך סיפר לנו סיפורים על כל פינה. צילמתי יותר ממאה תמונות בטלפון.",
       [
         g("narrow", "adjective", "לא רחב", "We walked through narrow streets.", "צר"),
         g("guide", "noun", "אדם שמראה מקומות", "The guide told us stories.", "מדריך"),
@@ -565,8 +565,8 @@ export const MORE_READINGS15 = {
     ),
     R(
       "Losing My Wallet (איבדתי את הארנק)",
-      "On the bus yesterday I realised that my wallet was missing. It had my student card, forty shekels and a photo of my family. I went back along the way and asked at the bus station. Luckily, a kind woman had handed it in, and nothing was gone.",
-      "באוטובוס אתמול הבנתי שהארנק שלי חסר. היו בו כרטיס הסטודנט שלי, ארבעים שקלים ותמונה של המשפחה שלי. חזרתי לאורך הדרך ושאלתי בתחנת האוטובוסים. למזלי, אישה נחמדה מסרה אותו, ושום דבר לא נעלם.",
+      "On the bus yesterday I realised that my wallet was missing. It had my student card, forty shekels and a photo of my family. I walked back the same way and asked at the bus station. Luckily, a kind woman had handed it in, and nothing was missing.",
+      "באוטובוס אתמול הבנתי שהארנק שלי חסר. היו בו כרטיס הסטודנט שלי, ארבעים שקלים ותמונה של המשפחה שלי. חזרתי באותה דרך ושאלתי בתחנת האוטובוסים. למזלי, אישה נחמדה מסרה אותו, ושום דבר לא חסר.",
       [
         g("wallet", "noun", "ארנק", "My wallet was missing.", "ארנק"),
         g("realise", "verb", "להבין פתאום", "I realised my wallet was missing.", "להבין"),
@@ -602,12 +602,12 @@ export const MORE_READINGS15 = {
       ],
       [
         q("Why could they not go to the beach?", "למה הם לא יכלו ללכת לים?", ["It rained all day", "It was too hot", "It was closed", "They were sick"], ["ירד גשם כל היום", "היה חם מדי", "זה היה סגור", "הם היו חולים"], 0, "כתוב 'It rained all day'."),
-        q("What did they build?", "מה הם בנו?", ["A fort from blankets and chairs", "A boat", "A boat outside", "A tower"], ["מבצר משמיכות וכיסאות", "סירה", "סירה בחוץ", "מגדל"], 0, "כתוב 'a fort from blankets and chairs'."),
+        q("What did they build?", "מה הם בנו?", ["A fort from blankets and chairs", "A boat", "A house", "A tower"], ["מבצר משמיכות וכיסאות", "סירה", "בית", "מגדל"], 0, "כתוב 'a fort from blankets and chairs'."),
       ],
     ),
     R(
       "A Visit to the Doctor (ביקור אצל הרופא)",
-      "I had a fever and a bad cough, so my mother took me to the doctor. She looked in my ears and listened to my chest. She said it was a normal cold and told me to rest and drink a lot. After three days I felt much better and went back to school.",
+      "I had a fever and a bad cough, so my mother took me to the doctor. The doctor looked in my ears and listened to my chest. She said it was a normal cold and told me to rest and drink a lot. After three days I felt much better and went back to school.",
       "היה לי חום ושיעול, ולכן אמא שלי לקחה אותי לרופאה. היא הסתכלה לי באוזניים והקשיבה לחזה שלי. היא אמרה שזו הצטננות רגילה והורתה לי לנוח ולשתות הרבה. אחרי שלושה ימים הרגשתי הרבה יותר טוב וחזרתי לבית הספר.",
       [
         g("fever", "noun", "חום גבוה בגוף", "I had a fever.", "חום"),
@@ -622,7 +622,7 @@ export const MORE_READINGS15 = {
     R(
       "Shopping Online (קונים באינטרנט)",
       "I wanted a new pair of shoes, so I looked at several websites. The prices were different everywhere, and I spent two hours comparing them. In the end I ordered a pair that was on sale. They arrived three days later, and they fit perfectly.",
-      "רציתי זוג נעליים חדש, ולכן הסתכלתי בכמה אתרים. המחירים היו שונים בכל מקום, ובילתי שעתיים בהשוואה ביניהם. בסוף הזמנתי זוג שהיה במבצע. הם הגיעו שלושה ימים אחר כך, והם התאימו בצורה מושלמת.",
+      "רציתי זוג נעליים חדש, ולכן הסתכלתי בכמה אתרים. המחירים היו שונים בכל מקום, וביליתי שעתיים בהשוואת המחירים. בסוף הזמנתי זוג שהיה במבצע. הנעליים הגיעו שלושה ימים אחר כך והתאימו בצורה מושלמת.",
       [
         g("website", "noun", "דף באינטרנט", "I looked at several websites.", "אתר"),
         g("compare", "verb", "לבדוק מה שונה", "I spent two hours comparing prices.", "להשוות"),
@@ -636,7 +636,7 @@ export const MORE_READINGS15 = {
     R(
       "The Piano Lesson (שיעור פסנתר)",
       "I started piano lessons when I was eight. My teacher is an old lady who lives in a house full of flowers. At first I only played simple songs with one hand, but now I can play with both. Every lesson ends with a cup of tea and a biscuit.",
-      "התחלתי שיעורי פסנתר כשהייתי בן שמונה. המורה שלי היא זקנה שגרה בבית מלא פרחים. בהתחלה ניגנתי רק שירים פשוטים ביד אחת, אבל עכשיו אני יכול לנגן בשתיים. כל שיעור מסתיים בכוס תה ובעוגייה.",
+      "התחלתי שיעורי פסנתר כשהייתי בן שמונה. המורה שלי היא גברת מבוגרת שגרה בבית מלא פרחים. בהתחלה ניגנתי רק שירים פשוטים ביד אחת, אבל עכשיו אני יכול לנגן בשתיים. כל שיעור מסתיים בכוס תה ובעוגייה.",
       [
         g("lesson", "noun", "זמן לימוד", "I have a piano lesson.", "שיעור"),
         g("simple", "adjective", "קל", "I played simple songs.", "פשוט"),
@@ -741,15 +741,15 @@ export const MORE_LISTENINGS15 = {
     ),
     L(
       "Hi, it is Maya. I am calling about Saturday. The weather is going to be bad, so we cannot have the barbecue in the park. My parents said we can have it at our house instead. Please tell the others. It still starts at twelve, and you can bring a salad if you want.",
-      "היי, זאת מאיה. אני מתקשרת בקשר ליום שבת. מזג האוויר הולך להיות גרוע, ולכן אנחנו לא יכולים לעשות את העל האש בפארק. ההורים שלי אמרו שאפשר לעשות אותו אצלנו בבית במקום. בבקשה תגידו לאחרים. זה עדיין מתחיל בשתים עשרה, ואפשר להביא סלט אם רוצים.",
+      "היי, זאת מאיה. אני מתקשרת בקשר ליום שבת. מזג האוויר הולך להיות גרוע, ולכן אנחנו לא יכולים לעשות את המנגל בפארק. ההורים שלי אמרו שאפשר לעשות אותו אצלנו בבית במקום. בבקשה תגידו לאחרים. זה עדיין מתחיל בשתים עשרה, ואפשר להביא סלט אם רוצים.",
       [
-        q("Why is the barbecue not in the park?", "למה העל האש לא בפארק?", ["The weather is going to be bad", "The park is closed", "It is too far", "Nobody can come"], ["מזג האוויר הולך להיות גרוע", "הפארק סגור", "זה רחוק מדי", "אף אחד לא יכול לבוא"], 0, "נאמר 'The weather is going to be bad'."),
+        q("Why is the barbecue not in the park?", "למה המנגל לא בפארק?", ["The weather is going to be bad", "The park is closed", "It is too far", "Nobody can come"], ["מזג האוויר הולך להיות גרוע", "הפארק סגור", "זה רחוק מדי", "אף אחד לא יכול לבוא"], 0, "נאמר 'The weather is going to be bad'."),
         q("Where will it be?", "איפה זה יהיה?", ["At Maya's house", "At the beach", "At school", "At a restaurant"], ["בבית של מאיה", "בים", "בבית הספר", "במסעדה"], 0, "נאמר 'at our house instead'."),
       ],
     ),
     L(
       "Welcome to the water park. Please read the rules before you go in. Children under ten must have an adult with them. Do not run near the pools. Wear your wristband at all times, and keep your things in a locker. The big slide closes at five o'clock today.",
-      "ברוכים הבאים לפארק המים. בבקשה קראו את הכללים לפני שאתם נכנסים. ילדים מתחת לגיל עשר חייבים להיות עם מבוגר. אל תרוצו ליד הבריכות. שאו את צמיד היד כל הזמן, ושמרו את הדברים שלכם בלוקר. המגלשה הגדולה נסגרת היום בחמש.",
+      "ברוכים הבאים לפארק המים. בבקשה קראו את הכללים לפני שאתם נכנסים. ילדים מתחת לגיל עשר חייבים להיות עם מבוגר. אל תרוצו ליד הבריכות. ענדו את צמיד היד כל הזמן, ושמרו את הדברים שלכם בלוקר. המגלשה הגדולה נסגרת היום בחמש.",
       [
         q("Who must have an adult with them?", "מי חייב להיות עם מבוגר?", ["Children under ten", "Everyone", "Children over twelve", "Teachers"], ["ילדים מתחת לגיל עשר", "כולם", "ילדים מעל גיל שתים עשרה", "מורים"], 0, "נאמר 'Children under ten'."),
         q("When does the big slide close today?", "מתי המגלשה הגדולה נסגרת היום?", ["At five o'clock", "At noon", "At nine", "At two"], ["בחמש", "בצהריים", "בתשע", "בשתיים"], 0, "נאמר 'closes at five o'clock today'."),
@@ -772,8 +772,8 @@ export const MORE_LISTENINGS15 = {
       ],
     ),
     L(
-      "Hi, it is Dad. I am in traffic because of an accident on the highway. I will be at least an hour late. Please start dinner without me. There is rice in the fridge, and you can make a salad. Mom is working until eight, so you have to look after your sister.",
-      "היי, זה אבא. אני בפקק בגלל תאונה בכביש המהיר. אאחר לפחות בשעה. בבקשה התחילו ארוחת ערב בלעדיי. יש אורז במקרר, ואפשר להכין סלט. אמא עובדת עד שמונה, אז אתה צריך לשמור על אחותך.",
+      "Hi, it is Dad. I am on the highway, and the cars are not moving because of an accident. I will be at least an hour late. Please start dinner without me. There is rice in the fridge, and you can make a salad. Mom is working until eight, so you have to look after your sister.",
+      "היי, זה אבא. אני בכביש המהיר, והמכוניות לא זזות בגלל תאונה. אאחר לפחות בשעה. בבקשה התחילו ארוחת ערב בלעדיי. יש אורז במקרר, ואפשר להכין סלט. אמא עובדת עד שמונה, אז אתה צריך לשמור על אחותך.",
       [
         q("Why is Dad late?", "למה אבא מאחר?", ["There is an accident", "His car broke", "He is working late", "He forgot"], ["יש תאונה", "המכונית שלו התקלקלה", "הוא עובד עד מאוחר", "הוא שכח"], 0, "נאמר 'an accident on the highway'."),
         q("What must the son do?", "מה הבן צריך לעשות?", ["Look after his sister", "Go to bed", "Call Mom", "Go shopping"], ["לשמור על אחותו", "ללכת לישון", "להתקשר לאמא", "לעשות קניות"], 0, "נאמר 'look after your sister'."),
@@ -812,8 +812,8 @@ export const MORE_LISTENINGS15 = {
       ],
     ),
     L(
-      "I am calling about the lost wallet. It is brown, and it has a student card and some money inside. I think I lost it on the number nine bus yesterday afternoon. Could you please check if someone handed it in? My phone number is on the website. Thank you very much.",
-      "אני מתקשר בקשר לארנק שאבד. הוא חום, ובתוכו כרטיס סטודנט וקצת כסף. אני חושב שאיבדתי אותו באוטובוס מספר תשע אתמול אחר הצהריים. אפשר בבקשה לבדוק אם מישהו מסר אותו? מספר הטלפון שלי באתר. תודה רבה.",
+      "I am calling about the lost wallet. It is brown, and it has a student card and some money inside. I think I lost it on the number nine bus yesterday afternoon. Could you please check if someone handed it in? Please call me if you find it. Thank you very much.",
+      "אני מתקשר בקשר לארנק שאבד. הוא חום, ובתוכו כרטיס סטודנט וקצת כסף. אני חושב שאיבדתי אותו באוטובוס מספר תשע אתמול אחר הצהריים. אפשר בבקשה לבדוק אם מישהו מסר אותו? אם תמצאו אותו, בבקשה התקשרו אליי. תודה רבה.",
       [
         q("What colour is the wallet?", "באיזה צבע הארנק?", ["Brown", "Black", "Red", "Blue"], ["חום", "שחור", "אדום", "כחול"], 0, "נאמר 'It is brown'."),
         q("Where did he lose it?", "איפה הוא איבד אותו?", ["On bus number nine", "In a shop", "At school", "In the park"], ["באוטובוס מספר תשע", "בחנות", "בבית הספר", "בפארק"], 0, "נאמר 'on the number nine bus'."),
@@ -845,15 +845,15 @@ export const MORE_LISTENINGS15 = {
     ),
     L(
       "Good afternoon, students. I have some news about next week's trip. We are going to leave at seven o'clock from the school gate, so please do not be late. Bring a packed lunch, a bottle of water and a hat. Wear comfortable shoes because we will walk a lot. The bus will bring us back at four.",
-      "אחר צהריים טובים, תלמידים. יש לי חדשות על הטיול של השבוע הבא. אנחנו יוצאים בשבע משער בית הספר, אז בבקשה אל תאחרו. הביאו אוכל ארוז, בקבוק מים וכובע. נעלו נעליים נוחות כי נלך הרבה. האוטובוס יחזיר אותנו בארבע.",
+      "אחר צהריים טובים, תלמידים. יש לי חדשות על הטיול של השבוע הבא. אנחנו יוצאים בשבע משער בית הספר, אז בבקשה אל תאחרו. הביאו ארוחת צהריים מהבית, בקבוק מים וכובע. נעלו נעליים נוחות כי נלך הרבה. האוטובוס יחזיר אותנו בארבע.",
       [
         q("What time does the bus leave?", "באיזו שעה האוטובוס יוצא?", ["At seven o'clock", "At eight", "At nine", "At six"], ["בשבע", "בשמונה", "בתשע", "בשש"], 0, "נאמר 'at seven o'clock'."),
         q("Why must students wear comfortable shoes?", "למה התלמידים צריכים לנעול נעליים נוחות?", ["They will walk a lot", "It is raining", "It is cold", "It is a rule"], ["הם ילכו הרבה", "יורד גשם", "קר", "זה כלל"], 0, "נאמר 'we will walk a lot'."),
       ],
     ),
     L(
-      "Hello, welcome to the new library. You can borrow up to five books for three weeks. If you want to keep a book longer, you can keep it longer online. The children's section is on the first floor, and the quiet study room is on the second floor. Please remember to turn off your phone.",
-      "שלום, ברוכים הבאים לספרייה החדשה. אפשר לשאול עד חמישה ספרים לשלושה שבועות. אם רוצים לשמור ספר יותר זמן, אפשר לשמור אותו יותר זמן באינטרנט. מדור הילדים בקומה הראשונה, וחדר הלימוד השקט בקומה השנייה. בבקשה זכרו לכבות את הטלפון.",
+      "Hello, welcome to the new library. You can borrow up to five books for three weeks. If you want to keep a book longer, you can ask for more time online. The children's section is on the first floor, and the quiet study room is on the second floor. Please remember to turn off your phone.",
+      "שלום, ברוכים הבאים לספרייה החדשה. אפשר לשאול עד חמישה ספרים לשלושה שבועות. אם רוצים לשמור ספר יותר זמן, אפשר לבקש עוד זמן באינטרנט. מדור הילדים בקומה הראשונה, וחדר הלימוד השקט בקומה השנייה. בבקשה זכרו לכבות את הטלפון.",
       [
         q("How many books can you borrow?", "כמה ספרים אפשר לשאול?", ["Up to five", "Up to ten", "Up to two", "Only one"], ["עד חמישה", "עד עשרה", "עד שניים", "רק אחד"], 0, "נאמר 'up to five books'."),
         q("Where is the study room?", "איפה חדר הלימוד?", ["On the second floor", "On the first floor", "In the basement", "Outside"], ["בקומה השנייה", "בקומה הראשונה", "במרתף", "בחוץ"], 0, "נאמר 'on the second floor'."),
@@ -908,11 +908,11 @@ export const MORE_LISTENINGS15 = {
       ],
     ),
     L(
-      "Hi, it is the dentist's office. I am calling to change your appointment. The dentist is ill tomorrow, so we can see you on Thursday at four instead. If that is not good for you, we also have a free time next Monday at nine. Please call us back before the end of the day.",
-      "היי, זה משרד רופא השיניים. אני מתקשרת כדי לשנות את התור שלכם. רופא השיניים חולה מחר, ולכן אפשר לראות אתכם ביום חמישי בארבע במקום. אם זה לא מתאים לכם, יש לנו גם זמן פנוי ביום שני הבא בתשע. בבקשה התקשרו אלינו חזרה עד סוף היום.",
+      "Hi, it is the dentist's office. I am calling to change your appointment. The dentist is ill, so we can't see you tomorrow. We can see you on Thursday at four instead. If that is not good for you, we also have time next Monday at nine. Please call us back before the end of the day.",
+      "היי, זה משרד רופא השיניים. אני מתקשרת כדי לשנות את התור שלכם. רופא השיניים חולה, ולכן אי אפשר לראות אתכם מחר. אפשר לראות אתכם ביום חמישי בארבע במקום. אם זה לא מתאים לכם, יש לנו גם זמן ביום שני הבא בתשע. בבקשה התקשרו אלינו חזרה עד סוף היום.",
       [
-        q("Why is the appointment changed?", "למה התור שונה?", ["The dentist is ill", "The office is closed", "The patient called", "There is a holiday"], ["רופא השיניים חולה", "המשרד סגור", "המטופל התקשר", "יש חג"], 0, "נאמר 'The dentist is ill tomorrow'."),
-        q("What is the new time?", "מהו הזמן החדש?", ["Thursday at four", "Monday at nine", "Friday at ten", "Tomorrow at four"], ["יום חמישי בארבע", "יום שני בתשע", "יום שישי בעשר", "מחר בארבע"], 0, "נאמר 'Thursday at four'."),
+        q("Why is the appointment changed?", "למה התור שונה?", ["The dentist is ill", "The office is closed", "The patient called", "There is a holiday"], ["רופא השיניים חולה", "המשרד סגור", "המטופל התקשר", "יש חג"], 0, "נאמר 'The dentist is ill'."),
+        q("What is the first time they offer?", "מהו הזמן הראשון שמציעים?", ["Thursday at four", "Monday at nine", "Friday at ten", "Tomorrow at four"], ["יום חמישי בארבע", "יום שני בתשע", "יום שישי בעשר", "מחר בארבע"], 0, "נאמר 'Thursday at four'."),
       ],
     ),
     L(
@@ -940,34 +940,34 @@ export const MORE_LISTENINGS15 = {
       ],
     ),
     L(
-      "Good morning, and welcome to the airport. The check-in desks for the flight to Paris are numbers one to five. Please have your passport and your ticket ready. Each person can take one small bag on the plane and one big suitcase. The door closes one hour before the plane leaves.",
-      "בוקר טוב, וברוכים הבאים לשדה התעופה. דלפקי הצ'ק-אין לטיסה לפריז הם מספר אחד עד חמש. בבקשה הכינו את הדרכון והכרטיס. כל אדם יכול לקחת תיק קטן אחד למטוס ומזוודה גדולה אחת. הדלת נסגרת שעה לפני שהמטוס ממריא.",
+      "Good morning, and welcome to the airport. The check-in desks for the flight to Paris are numbers one to five. Please have your passport and your ticket ready. Each person can take one small bag on the plane and one big suitcase. The gate closes one hour before the plane leaves.",
+      "בוקר טוב, וברוכים הבאים לשדה התעופה. דלפקי הצ'ק-אין לטיסה לפריז הם מספר אחד עד חמש. בבקשה הכינו את הדרכון והכרטיס. כל אדם יכול לקחת תיק קטן אחד למטוס ומזוודה גדולה אחת. השער נסגר שעה לפני שהמטוס ממריא.",
       [
         q("Which desks are for the flight to Paris?", "אילו דלפקים הם לטיסה לפריז?", ["One to five", "Six to ten", "Eight to twelve", "Five to ten"], ["אחד עד חמש", "שש עד עשר", "שמונה עד שתים עשרה", "חמש עד עשר"], 0, "נאמר 'numbers one to five'."),
-        q("When does the door close?", "מתי הדלת נסגרת?", ["One hour before the plane leaves", "When the plane leaves", "Two hours before", "Ten minutes before"], ["שעה לפני שהמטוס ממריא", "כשהמטוס ממריא", "שעתיים לפני", "עשר דקות לפני"], 0, "נאמר 'one hour before the plane leaves'."),
+        q("When does the gate close?", "מתי השער נסגר?", ["One hour before the plane leaves", "When the plane leaves", "Two hours before", "Ten minutes before"], ["שעה לפני שהמטוס ממריא", "כשהמטוס ממריא", "שעתיים לפני", "עשר דקות לפני"], 0, "נאמר 'one hour before the plane leaves'."),
       ],
     ),
     L(
-      "Hi, it is Mom. I forgot to tell you this morning that I will be late. There is a meeting at work, and I will be home at about seven. Please put the potatoes in the oven at six, and turn it off when it is ready. The chicken is already cooked. Do not forget to do your homework before you eat.",
-      "היי, זאת אמא. שכחתי להגיד לך הבוקר שאאחר. יש ישיבה בעבודה, ואהיה בבית בערך בשבע. בבקשה שים את תפוחי האדמה בתנור בשש, וכבה אותו כשהם מוכנים. העוף כבר מבושל. אל תשכח לעשות שיעורי בית לפני שאתה אוכל.",
+      "Hi, it is Mom. I forgot to tell you this morning that I will be late. There is a meeting at work, and I will be home at about seven. Please put the potatoes in the oven at six, and turn the oven off when the potatoes are ready. The chicken is already cooked. Do not forget to do your homework before you eat.",
+      "היי, זאת אמא. שכחתי להגיד לך הבוקר שאאחר. יש ישיבה בעבודה, ואהיה בבית בערך בשבע. בבקשה שים את תפוחי האדמה בתנור בשש, וכבה את התנור כשתפוחי האדמה מוכנים. העוף כבר מבושל. אל תשכח לעשות שיעורי בית לפני שאתה אוכל.",
       [
         q("When will Mom be home?", "מתי אמא תהיה בבית?", ["At about seven", "At six", "At eight", "At five"], ["בערך בשבע", "בשש", "בשמונה", "בחמש"], 0, "נאמר 'at about seven'."),
         q("What must the child put in the oven?", "מה הילד צריך לשים בתנור?", ["The potatoes", "The chicken", "The bread", "The cake"], ["את תפוחי האדמה", "את העוף", "את הלחם", "את העוגה"], 0, "נאמר 'put the potatoes in the oven'."),
       ],
     ),
     L(
-      "Hello, passengers on the ferry to the island. Please make sure that your bags are not blocking the doors. Life jackets are under every seat, and a man will show you how to use them. The trip takes about forty-five minutes. The weather is calm, so you can go outside and enjoy the view.",
-      "שלום, נוסעי המעבורת לאי. בבקשה ודאו שהתיקים שלכם לא חוסמים את הדלתות. אפודי הצלה נמצאים מתחת לכל מושב, ואיש יראה לכם איך להשתמש בהם. הנסיעה לוקחת כארבעים וחמש דקות. מזג האוויר רגוע, ולכן אפשר לצאת החוצה וליהנות מהנוף.",
+      "Hello, passengers on the ferry to the island. Please make sure that your bags are not blocking the doors. Life jackets are under every seat, and one of our team will show you how to use them. The trip takes about forty-five minutes. The weather is calm, so you can go outside and enjoy the view.",
+      "שלום, נוסעי המעבורת לאי. בבקשה ודאו שהתיקים שלכם לא חוסמים את הדלתות. אפודי הצלה נמצאים מתחת לכל מושב, ואחד מאנשי הצוות יראה לכם איך להשתמש בהם. הנסיעה לוקחת כארבעים וחמש דקות. מזג האוויר רגוע, ולכן אפשר לצאת החוצה וליהנות מהנוף.",
       [
         q("Where are the life jackets?", "איפה אפודי ההצלה?", ["Under every seat", "In the kitchen", "At the door", "On the roof"], ["מתחת לכל מושב", "במטבח", "ליד הדלת", "על הגג"], 0, "נאמר 'under every seat'."),
         q("How long does the trip take?", "כמה זמן הנסיעה לוקחת?", ["About forty-five minutes", "About two hours", "About ten minutes", "About one hour"], ["כארבעים וחמש דקות", "כשעתיים", "כעשר דקות", "כשעה"], 0, "נאמר 'forty-five minutes'."),
       ],
     ),
     L(
-      "Hi, this is the pharmacy. Your medicine is ready. Please take one in the morning and one in the evening, after you eat. Do not take more than two in one day. If you still feel ill after three days, you should see a doctor again. We are open until eight tonight.",
+      "Hi, this is the pharmacy. Your medicine is ready. Please take one pill in the morning and one pill in the evening, after you eat. Do not take more than two in one day. If you still feel ill after three days, you should see a doctor again. We are open until eight tonight.",
       "היי, זה בית המרקחת. התרופה שלכם מוכנה. בבקשה קחו כדור אחד בבוקר ואחד בערב, אחרי שאתם אוכלים. אל תקחו יותר משני כדורים ביום אחד. אם אתם עדיין מרגישים רע אחרי שלושה ימים, כדאי לראות רופא שוב. אנחנו פתוחים עד שמונה הערב.",
       [
-        q("How many can you take in one day?", "כמה אפשר לקחת ביום אחד?", ["Two", "Four", "One", "Three"], ["שניים", "ארבעה", "אחד", "שלושה"], 0, "נאמר 'not more than two in one day'."),
+        q("How many pills can you take in one day?", "כמה כדורים אפשר לקחת ביום אחד?", ["Two", "Four", "One", "Three"], ["שניים", "ארבעה", "אחד", "שלושה"], 0, "נאמר 'Do not take more than two in one day'."),
         q("What should you do after three days if you feel ill?", "מה כדאי לעשות אחרי שלושה ימים אם אתם מרגישים רע?", ["See a doctor again", "Take more medicine", "Wait a week", "Go to school"], ["לראות רופא שוב", "לקחת עוד תרופה", "לחכות שבוע", "ללכת לבית הספר"], 0, "נאמר 'see a doctor again'."),
       ],
     ),
@@ -984,7 +984,7 @@ export const MORE_LISTENINGS15 = {
       "היי, זה אני. אתה זוכר את האופניים הישנים שרציתי למכור? ילד מבית הספר שלי רוצה לקנות אותם בעשרה דולרים. אני חושב שזה מחיר טוב, אבל רציתי לשאול אותך קודם כי אתה נתת לי אותם. מה אתה חושב? בבקשה התקשר אליי הערב.",
       [
         q("How much does the boy want to pay?", "כמה הילד רוצה לשלם?", ["Ten dollars", "Five dollars", "Twelve dollars", "Two dollars"], ["עשרה דולרים", "חמישה דולרים", "שנים עשר דולר", "שני דולרים"], 0, "נאמר 'ten dollars'."),
-        q("Why does the speaker ask first?", "למה הדובר שואל קודם?", ["Because the friend gave him the bike", "Because it is expensive", "Because it is broken", "Because he needs money"], ["כי החבר נתן לו את האופניים", "כי זה יקר", "כי זה שבור", "כי הוא צריך כסף"], 0, "נאמר 'because you gave it to me'."),
+        q("Why does the speaker ask first?", "למה הדובר שואל קודם?", ["Because the other person gave him the bike", "Because it is expensive", "Because it is broken", "Because he needs money"], ["כי האדם שאליו מדברים נתן לו את האופניים", "כי זה יקר", "כי זה שבור", "כי הוא צריך כסף"], 0, "נאמר 'because you gave it to me'."),
       ],
     ),
     L(
@@ -1015,7 +1015,7 @@ export const MORE_LISTENINGS15 = {
       "Hi, it is me. I am so excited about our trip to the mountains next week. I have already packed my warm clothes and my walking shoes. Can you bring the map and a camera? My dad will drive, and we will pick you up at six in the morning. Do not be late!",
       "היי, זאת אני. אני כל כך מתרגשת מהטיול שלנו להרים בשבוע הבא. כבר ארזתי את הבגדים החמים ואת נעלי ההליכה. את יכולה להביא את המפה ומצלמה? אבא שלי ינהג, ואנחנו נאסוף אותך בשש בבוקר. אל תאחרי!",
       [
-        q("What must Noa bring?", "מה נועה צריכה להביא?", ["The map and a camera", "Warm clothes", "Food", "A bag"], ["את המפה ומצלמה", "בגדים חמים", "אוכל", "תיק"], 0, "נאמר 'the map and a camera'."),
+        q("What must the friend bring?", "מה החברה צריכה להביא?", ["The map and a camera", "Warm clothes", "Food", "A bag"], ["את המפה ומצלמה", "בגדים חמים", "אוכל", "תיק"], 0, "נאמר 'the map and a camera'."),
         q("Who will drive?", "מי ינהג?", ["The speaker's dad", "The friend's dad", "The speaker's mom", "A taxi driver"], ["אבא של הדוברת", "אבא של החברה", "אמא של הדוברת", "נהג מונית"], 0, "נאמר 'My dad will drive'."),
       ],
     ),
@@ -1031,8 +1031,8 @@ export const MORE_LISTENINGS15 = {
       "Hello! I am twelve years old. I live with my parents and two sisters in a flat near the sea. My favourite subject is science, and in my free time I play the guitar and ride my bike. Next summer I hope to travel to another country with my class.",
       "שלום! אני בן שתים עשרה. אני גר עם ההורים שלי ושתי אחיות בדירה ליד הים. המקצוע האהוב עליי הוא מדעים, ובזמן הפנוי אני מנגן בגיטרה ורוכב על אופניים. בקיץ הבא אני מקווה לנסוע למדינה אחרת עם הכיתה שלי.",
       [
-        q("How old is Sam?", "בן כמה סם?", ["Twelve", "Ten", "Eleven", "Nine"], ["שתים עשרה", "עשר", "אחת עשרה", "תשע"], 0, "נאמר 'twelve years old'."),
-        q("What does he want to do next summer?", "מה הוא רוצה לעשות בקיץ הבא?", ["Travel to another country", "Learn to swim", "Get a job", "Stay at home"], ["לנסוע למדינה אחרת", "ללמוד לשחות", "למצוא עבודה", "להישאר בבית"], 0, "נאמר 'travel to another country'."),
+        q("How old is the speaker?", "בן כמה הדובר?", ["Twelve", "Ten", "Eleven", "Nine"], ["שתים עשרה", "עשר", "אחת עשרה", "תשע"], 0, "נאמר 'twelve years old'."),
+        q("What does the speaker want to do next summer?", "מה הדובר רוצה לעשות בקיץ הבא?", ["Travel to another country", "Learn to swim", "Get a job", "Stay at home"], ["לנסוע למדינה אחרת", "ללמוד לשחות", "למצוא עבודה", "להישאר בבית"], 0, "נאמר 'travel to another country'."),
       ],
     ),
     L(
@@ -1052,11 +1052,11 @@ export const MORE_LISTENINGS15 = {
       ],
     ),
     L(
-      "Hi, it is me. I am at the airport and my flight is two hours late. I can't call my parents because my phone has no battery. Could you tell them, please? I will send a message when I arrive. The plane is full of people who are going on holiday, and the airport is very noisy.",
-      "היי, זה אני. אני בשדה התעופה והטיסה שלי מאחרת בשעתיים. אני לא יכול להתקשר להורים שלי כי אין לטלפון שלי סוללה. אתה יכול להגיד להם, בבקשה? אשלח הודעה כשאגיע. המטוס מלא באנשים שנוסעים לחופשה, ושדה התעופה רועש מאוד.",
+      "Hi, it is me. I am at the airport and my flight is two hours late. I am using a friend's phone, because my phone has no battery. Could you tell my parents, please? I will call you when I arrive. The airport is full of people who are going on holiday, and it is very noisy.",
+      "היי, זה אני. אני בשדה התעופה והטיסה שלי מאחרת בשעתיים. אני משתמש בטלפון של חבר, כי אין סוללה בטלפון שלי. אתה יכול להגיד להורים שלי, בבקשה? אתקשר כשאגיע. שדה התעופה מלא באנשים שנוסעים לחופשה, והוא רועש מאוד.",
       [
         q("How late is the flight?", "בכמה זמן הטיסה מאחרת?", ["Two hours", "One hour", "Four hours", "All night"], ["שעתיים", "שעה", "ארבע שעות", "כל הלילה"], 0, "נאמר 'two hours late'."),
-        q("Why can Yoni not call his parents?", "למה יוני לא יכול להתקשר להוריו?", ["His phone has no battery", "He has no money", "He is busy", "He has no time"], ["אין סוללה בטלפון שלו", "אין לו כסף", "הוא עסוק", "אין לו זמן"], 0, "נאמר 'my phone has no battery'."),
+        q("Why can the speaker not call his parents with his own phone?", "למה הדובר לא יכול להתקשר להוריו מהטלפון שלו?", ["His phone has no battery", "He has no money", "He is busy", "He has no time"], ["אין סוללה בטלפון שלו", "אין לו כסף", "הוא עסוק", "אין לו זמן"], 0, "נאמר 'my phone has no battery'."),
       ],
     ),
     L(
@@ -1068,8 +1068,8 @@ export const MORE_LISTENINGS15 = {
       ],
     ),
     L(
-      "Hello. I would like to make a reservation for dinner on Friday evening, please. There will be six of us, and one of us does not eat meat. Can we have a table by the window? We would like to come at seven thirty. My name is Cohen, and my number is on the form. Thank you.",
-      "שלום. אני רוצה להזמין מקום לארוחת ערב ביום שישי בערב, בבקשה. נהיה שישה, ואחד מאיתנו לא אוכל בשר. אפשר שולחן ליד החלון? נרצה להגיע בשבע וחצי. שמי כהן, והמספר שלי בטופס. תודה.",
+      "Hello. I would like to make a reservation for dinner on Friday evening, please. There will be six of us, and one of us does not eat meat. Can we have a table by the window? We would like to come at seven thirty. My name is Cohen. Thank you.",
+      "שלום. אני רוצה להזמין מקום לארוחת ערב ביום שישי בערב, בבקשה. נהיה שישה, ואחד מאיתנו לא אוכל בשר. אפשר שולחן ליד החלון? נרצה להגיע בשבע וחצי. שמי כהן. תודה.",
       [
         q("How many people will come?", "כמה אנשים יבואו?", ["Six", "Four", "Eight", "Two"], ["שישה", "ארבעה", "שמונה", "שניים"], 0, "נאמר 'six of us'."),
         q("Where do they want to sit?", "איפה הם רוצים לשבת?", ["By the window", "Outside", "At the bar", "In the corner"], ["ליד החלון", "בחוץ", "ליד הבר", "בפינה"], 0, "נאמר 'a table by the window'."),

@@ -98,7 +98,7 @@ All hand-written readings and listening transcripts, shown or not. "Above level"
 | Level | Passages | Words per sentence | Above level | In neither list |
 |---|---|---|---|---|
 | A1 | 520 | 6.8 | 1.8% | 0.8% |
-| A2 | 172 | 10 | 1.7% | 1.9% |
+| A2 | 172 | 10 | 1.8% | 1.9% |
 | B1 | 73 | 11.2 | 1.9% | 2.1% |
 | B2 | 61 | 15.1 | 0.8% | 4.1% |
 | C1 | 60 | 16 | 0.4% | 4.7% |
