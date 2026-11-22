@@ -318,6 +318,8 @@ What differs from the website:
 - **Google Drive sync** signs in through Android's own Google account sheet,
   since Google blocks its web sign-in inside apps.
 - **Speech** uses the phone's text-to-speech and speech recognition.
+- **Updates** — Settings → 🔄 עדכון אפליקציה checks GitHub for a newer APK and links
+  to the download; Android installs it over the current app.
 
 [`.github/workflows/android.yml`](.github/workflows/android.yml) builds the
 APK on every pull request, and signs and publishes it as a release on every

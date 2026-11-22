@@ -207,6 +207,8 @@ HighFive/
 │   └── generate-content.mjs
 ├── src/                                          # The Vite app: screens, components, state (useLingo), and content/offline…
 │   ├── components/                               # Shared UI: cards, quiz runner, error boundary
+│   │   ├── AppUpdateCard.test.tsx
+│   │   ├── AppUpdateCard.tsx
 │   │   ├── Card.tsx
 │   │   ├── ErrorBoundary.test.tsx
 │   │   ├── ErrorBoundary.tsx
@@ -380,6 +382,8 @@ HighFive/
 │   │   ├── ai.test.ts
 │   │   ├── ai.ts
 │   │   ├── appLifecycle.ts
+│   │   ├── appUpdate.test.ts
+│   │   ├── appUpdate.ts
 │   │   ├── asr.test.ts
 │   │   ├── asr.ts
 │   │   ├── cloud.ts

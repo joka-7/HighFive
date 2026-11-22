@@ -339,6 +339,22 @@ never touch it:
   (`isExactNotification: false`), and the manifest removes
   `SCHEDULE_EXACT_ALARM`.
 
+## `src/services/appUpdate.ts` / `src/components/AppUpdateCard.tsx`
+
+- The release workflow tags each build `android-1.0.<run number>` and passes the
+  same number as the APK's `versionCode`, so the installed build (from
+  `@capacitor/app`'s `getInfo().build`) and the newest release tag compare as
+  integers.
+- `checkForUpdate({ app?, fetchJson? })` reads the installed build, fetches
+  `releases/latest` from the GitHub API, and returns
+  `{ status: "current" | "available", installed, latestVersion? }`. A malformed
+  tag, a missing `tag_name` or a non-integer build throws `UpdateCheckError`;
+  network and HTTP failures propagate. Both dependencies are injectable.
+- `AppUpdateCard` renders only in the Android app (`isNativeApp()`), on Settings.
+  The check runs only when the button is tapped. On `available` it links to
+  `ANDROID_APK_URL`; Android downloads the file and the learner opens it to
+  install over the old app. There is no silent install.
+
 ## `src/services/tts.ts` / `src/services/asr.ts`
 
 Web Speech API wrappers, both feature-detected and safe to no-op where
