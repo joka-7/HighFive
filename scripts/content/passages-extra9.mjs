@@ -40,7 +40,7 @@ export const MORE_READINGS9 = {
         g("rain", "noun", "מים שיורדים מהשמיים", "I look at the rain.", "גשם"),
       ],
       [
-        q("What is the weather today?", "מה מזג האוויר היום?", ["Hot", "Very cold", "Warm", "Windy"], ["חם", "מאוד קר", "חמים", "סוער"], 1, "כתוב 'Today it is very cold'."),
+        q("What is the weather today?", "מה מזג האוויר היום?", ["Hot", "Very cold", "Warm", "Cloudy"], ["חם", "מאוד קר", "חמים", "מעונן"], 1, "כתוב 'Today it is very cold'."),
         q("Who makes the tea?", "מי מכינה את התה?", ["The mother", "The sister", "The father", "The writer"], ["האמא", "האחות", "האבא", "הכותב"], 1, "כתוב 'My sister makes hot tea'."),
       ],
     ),
@@ -99,7 +99,7 @@ export const MORE_READINGS9 = {
         g("somehow", "adverb", "איכשהו, בדרך שלא ברור איך", "Somehow it works.", "איכשהו"),
       ],
       [
-        q("How big is the kitchen?", "כמה גדול המטבח?", ["Very large", "Small", "Medium", "It is not said"], ["מאוד גדול", "קטן", "בינוני", "לא נאמר"], 1, "כתוב 'Our kitchen is small'."),
+        q("How big is the kitchen?", "כמה גדול המטבח?", ["Very large", "Small", "Big", "It is not said"], ["מאוד גדול", "קטן", "גדול", "לא נאמר"], 1, "כתוב 'Our kitchen is small'."),
         q("Who cuts the vegetables?", "מי חותך את הירקות?", ["The writer", "The partner", "A friend", "Nobody"], ["הכותב", "בן הזוג", "חבר", "אף אחד"], 1, "כתוב 'My partner cuts the vegetables'."),
       ],
     ),

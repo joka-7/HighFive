@@ -90,8 +90,8 @@ All hand-written readings and listening transcripts, shown or not. "Above level"
 
 | Level | Passages | Words per sentence | Above level | In neither list |
 |---|---|---|---|---|
-| A1 | 72 | 6.2 | 1.9% | 1.8% |
-| A2 | 72 | 8.6 | 2.9% | 2.1% |
+| A1 | 72 | 6.2 | 1.8% | 1.8% |
+| A2 | 72 | 8.6 | 2.7% | 2.1% |
 | B1 | 73 | 11.2 | 1.9% | 2.1% |
 | B2 | 61 | 15.1 | 0.8% | 4.1% |
 | C1 | 60 | 16 | 0.4% | 4.7% |
@@ -103,7 +103,7 @@ Every sentence a learner sees, checked word by word: a word counts when the list
 
 | Level | Part of the app | Items | Items with a word above level | Most common such words |
 |---|---|---|---|---|
-| A1 | word example | 768 | 0 | none |
+| A1 | word example | 779 | 0 | none |
 | A1 | daily quiz | 1833 | 0 | none |
 | A1 | grammar question | 929 | 0 | none |
 | A1 | reading | 401 | 0 | none |
@@ -118,8 +118,8 @@ Every sentence a learner sees, checked word by word: a word counts when the list
 | B1 | word example | 420 | 0 | none |
 | B1 | daily quiz | 1835 | 2 | explodes (1), exploding (1), explosive (1), project (1) |
 | B1 | grammar question | 817 | 0 | none |
-| B1 | reading | 402 | 8 | calmly (1), concrete (1), decades (1), enforce (1), expectation (1), faith (1), fluency (1), headquarters (1) |
-| B1 | listening | 401 | 14 | reminder (3), client (2), estate (1), expired (1), inspect (1), laptop (1), medication (1), output (1) |
+| B1 | reading | 402 | 9 | calmly (1), concrete (1), decades (1), enforce (1), expectation (1), faith (1), fame (1), fluency (1) |
+| B1 | listening | 401 | 16 | reminder (3), client (2), donate (1), estate (1), expired (1), inspect (1), landing (1), laptop (1) |
 | B1 | speaking | 462 | 0 | none |
 | B2 | word example | 264 | 0 | none |
 | B2 | daily quiz | 1833 | 0 | none |
@@ -131,7 +131,7 @@ Every sentence a learner sees, checked word by word: a word counts when the list
 | C1 | daily quiz | 1825 | 0 | none |
 | C1 | grammar question | 923 | 0 | none |
 | C1 | reading | 395 | 3 | automating (1), paradoxically (1), practitioners (1) |
-| C1 | listening | 395 | 3 | curator (1), fallacy (1), remit (1) |
+| C1 | listening | 395 | 3 | chronology (1), curator (1), fallacy (1), remit (1) |
 | C1 | speaking | 298 | 1 | merit (1) |
 | C2 | word example | 237 | 0 | none |
 | C2 | daily quiz | 1825 | 0 | none |

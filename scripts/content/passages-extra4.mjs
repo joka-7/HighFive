@@ -16,7 +16,7 @@ export const MORE_READINGS4 = {
       "It is winter. There is snow on the street. I wear a warm coat and a hat. My friend and I make a snowman. Then we drink hot tea at home.",
       "עכשיו חורף. יש שלג ברחוב. אני לובש מעיל חם וכובע. אני והחבר שלי בונים איש שלג. אחר כך אנחנו שותים תה חם בבית.",
       [g("winter", "noun", "העונה הקרה", "Cold winter.", "חורף"), g("warm", "adjective", "חמים", "A warm coat.", "חמים"), g("snowman", "noun", "בובת שלג", "Build a snowman.", "איש שלג")],
-      [q("What is the weather?", "מה מזג האוויר?", ["Hot", "Snowy", "Rainy", "Windy"], ["חם", "מושלג", "גשום", "סוער"], 1, "'There is snow on the street'."), q("What do they do?", "מה הם עושים?", ["Swim", "Make a snowman", "Run", "Sleep"], ["שוחים", "בונים איש שלג", "רצים", "ישנים"], 1, "'make a snowman'.")]),
+      [q("What is the weather?", "מה מזג האוויר?", ["Hot", "Snowy", "Rainy", "Cloudy"], ["חם", "מושלג", "גשום", "מעונן"], 1, "'There is snow on the street'."), q("What do they do?", "מה הם עושים?", ["Swim", "Make a snowman", "Run", "Sleep"], ["שוחים", "בונים איש שלג", "רצים", "ישנים"], 1, "'make a snowman'.")]),
   ],
   A2: [
     R("Learning to Cook (ללמוד לבשל)",

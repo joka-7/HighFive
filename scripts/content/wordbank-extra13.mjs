@@ -35,7 +35,7 @@ export const MORE_WORDS13 = {
     { word: "fortunately", partOfSpeech: "adverb", definition: "למרבה המזל", example: "Fortunately, nobody was hurt.", exampleHe: "למרבה המזל, אף אחד לא נפגע.", translation: "למרבה המזל" },
     { word: "forward", partOfSpeech: "adverb", definition: "קדימה", example: "Take two steps forward.", exampleHe: "תעשה שני צעדים קדימה.", translation: "קדימה" },
     { word: "frame", partOfSpeech: "noun", definition: "מסגרת", example: "I put the photo in a frame.", exampleHe: "שמתי את התמונה במסגרת.", translation: "מסגרת" },
-    { word: "freedom", partOfSpeech: "noun", definition: "חופש", example: "Children love the freedom of the summer holiday.", exampleHe: "ילדים אוהבים את החופש של חופשת הקיץ.", translation: "חופש" },
+    { word: "freedom", partOfSpeech: "noun", definition: "חופש", example: "Children love the freedom of the summer holiday.", exampleHe: "ילדים אוהבים את החופש בחופשת הקיץ.", translation: "חופש" },
     { word: "friendship", partOfSpeech: "noun", definition: "חברות", example: "Our friendship is very important to me.", exampleHe: "החברות שלנו מאוד חשובה לי.", translation: "חברות" },
     { word: "frighten", partOfSpeech: "verb", definition: "להפחיד", example: "The loud noise frightened the baby.", exampleHe: "הרעש החזק הפחיד את התינוק.", translation: "להפחיד" },
     { word: "frightened", partOfSpeech: "adjective", definition: "מפוחד", example: "The little boy was frightened of the dark.", exampleHe: "הילד הקטן פחד מהחושך.", translation: "מפוחד" },

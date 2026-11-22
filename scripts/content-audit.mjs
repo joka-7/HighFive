@@ -230,9 +230,10 @@ export function aboveLevelWords(text, level, cefr, irregulars, known) {
   const found = new Set();
   const names = namesIn(text);
   for (const token of tokenize(text)) {
-    if (QUESTION_TERMS.has(token) || names.has(token) || lemmaCandidates(token, irregulars).some((c) => known.has(c))) continue;
+    if (QUESTION_TERMS.has(token) || names.has(token)) continue;
     const ref = cefrLevelOf(token, cefr, irregulars);
-    if (ref && levelIndex(ref) > levelIndex(level)) found.add(token);
+    if (!ref || levelIndex(ref) <= levelIndex(level)) continue;
+    if (!lemmaCandidates(token, irregulars).some((c) => known.has(c))) found.add(token);
   }
   return [...found];
 }

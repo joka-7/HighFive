@@ -19,7 +19,7 @@ export const READINGS = {
       "Lia is my friend. She lives near my house. We go to school together every day. After school we play in the park and then we do our homework.",
       "ליה היא החברה שלי. היא גרה ליד הבית שלי. אנחנו הולכים לבית הספר ביחד כל יום. אחרי בית הספר אנחנו משחקים בפארק ואז מכינים את שיעורי הבית.",
       [g("near", "preposition", "קרוב ל-", "I live near the sea.", "ליד/קרוב"), g("together", "adverb", "ביחד, עם מישהו", "We work together.", "ביחד"), g("homework", "noun", "עבודה שעושים בבית אחרי בית הספר", "I do my homework.", "שיעורי בית")],
-      [q("Where does Lia live?", "איפה ליה גרה?", ["Far away", "Near the writer's house", "In another city", "At school"], ["רחוק", "ליד הבית של הכותב", "בעיר אחרת", "בבית הספר"], 1, "כתוב 'She lives near my house'."), q("What do they do after school?", "מה הם עושים אחרי בית הספר?", ["Sleep", "Play in the park", "Go to work", "Watch TV"], ["ישנים", "משחקים בפארק", "הולכים לעבודה", "צופים בטלוויזיה"], 1, "כתוב 'we play in the park'.")]),
+      [q("Where does Lia live?", "איפה ליה גרה?", ["In a big house", "Near the writer's house", "In another city", "At school"], ["בבית גדול", "ליד הבית של הכותב", "בעיר אחרת", "בבית הספר"], 1, "כתוב 'She lives near my house'."), q("What do they do after school?", "מה הם עושים אחרי בית הספר?", ["Sleep", "Play in the park", "Go to work", "Watch TV"], ["ישנים", "משחקים בפארק", "הולכים לעבודה", "צופים בטלוויזיה"], 1, "כתוב 'we play in the park'.")]),
     R("The Cat (החתול)",
       "I have a small cat. Her name is Mimi. She is black and white. Mimi sleeps all day and plays at night. I give her food in the morning and in the evening.",
       "יש לי חתולה קטנה. קוראים לה מימי. היא שחורה ולבנה. מימי ישנה כל היום ומשחקת בלילה. אני נותן לה אוכל בבוקר ובערב.",
@@ -34,7 +34,7 @@ export const READINGS = {
       "Today I do not work. I stay at home. In the morning I read a book. In the afternoon my brother comes and we cook lunch. It is a good day.",
       "היום אני לא עובד. אני נשאר בבית. בבוקר אני קורא ספר. אחר הצהריים אחי בא ואנחנו מבשלים ארוחת צהריים. זה יום טוב.",
       [g("stay", "verb", "להישאר במקום", "I stay at home.", "להישאר"), g("cook", "verb", "להכין אוכל", "We cook dinner.", "לבשל"), g("brother", "noun", "אח", "My brother is tall.", "אח")],
-      [q("Where is the writer today?", "איפה הכותב היום?", ["At work", "At home", "At school", "At the park"], ["בעבודה", "בבית", "בבית הספר", "בפארק"], 1, "כתוב 'I stay at home'."), q("Who comes in the afternoon?", "מי בא אחר הצהריים?", ["A friend", "The teacher", "The brother", "Nobody"], ["חבר", "המורה", "האח", "אף אחד"], 2, "כתוב 'my brother comes'.")]),
+      [q("Where is the writer today?", "איפה הכותב היום?", ["At work", "At home", "At school", "At the park"], ["בעבודה", "בבית", "בבית הספר", "בפארק"], 1, "כתוב 'I stay at home'."), q("Who comes in the afternoon?", "מי בא אחר הצהריים?", ["A friend", "The teacher", "The brother", "Grandma"], ["חבר", "המורה", "האח", "סבתא"], 2, "כתוב 'my brother comes'.")]),
   ],
   A2: [
     R("A Day at the Market (יום בשוק)",

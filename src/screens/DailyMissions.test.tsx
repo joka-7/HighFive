@@ -79,6 +79,7 @@ describe("the five daily operations", () => {
 
   it("shows only the links that suit the learner's level", () => {
     renderMissions();
+    // Safe: every operation heading renders inside a MissionCard (.card).
     const seeCard = screen.getByRole("heading", { name: "1. לראות" }).closest(".card")!;
     fireEvent.click(within(seeCard as HTMLElement).getByRole("button", { name: /אפליקציה אחרת/ }));
 

@@ -78,7 +78,8 @@ function handWritten(source, level) {
 function learnerTexts(level) {
   const lc = level.toLowerCase();
   const daily = QUARTERS.map((q) => readJson(`${lc}.q${q}.json`));
-  const asked = (q) => [q.question, ...q.options].join(" ");
+  // Each question and option is its own sentence, so a capitalised option is never mistaken for a name.
+  const asked = (q) => [q.question, ...q.options].join(". ");
   const of = (kind) => [...QUARTERS.flatMap((q) => readJson(`${lc}.${kind}.q${q}.json`)), ...readJson(`${lc}.${kind}.curated.json`)];
   const words = [...new Map(daily.flatMap((d) => d.vocabulary.flatMap((day) => day.words)).map((w) => [w.word, w])).values()];
   return [
@@ -88,11 +89,11 @@ function learnerTexts(level) {
     {
       kind: "reading",
       items: of("reading").map((r) => ({
-        text: [r.text, ...(r.questions ?? []).map(asked)].join(" "),
+        text: [r.text, ...(r.glossary ?? []).map((g) => g.example), ...(r.questions ?? []).map(asked)].join(". "),
         own: (r.glossary ?? []).map((g) => g.word).join(" "),
       })),
     },
-    { kind: "listening", items: of("listening").map((l) => ({ text: [l.transcript, ...(l.questions ?? []).map(asked)].join(" ") })) },
+    { kind: "listening", items: of("listening").map((l) => ({ text: [l.transcript, ...(l.questions ?? []).map(asked)].join(". ") })) },
     { kind: "speaking", items: of("speaking").flatMap((s) => s.prompts).map((p) => ({ text: String(p.text) })) },
   ];
 }
@@ -107,12 +108,13 @@ function aboveLevel(level, cefr, irregulars, known) {
     const seen = new Map();
     const counts = new Map();
     for (const { text, own = "" } of all) {
-      if (seen.has(text)) continue;
+      const key = `${text}\u0000${own}`;
+      if (seen.has(key)) continue;
       const allowed = new Set([...known, ...tokenize(own)]);
       const words = aboveLevelWords(text, level, cefr, irregulars, allowed);
-      seen.set(text, words);
+      seen.set(key, words);
       for (const w of words) counts.set(w, (counts.get(w) ?? 0) + 1);
-      if (words.length) items.push({ kind, text: opening(text).replace(/…$/, words.length ? "…" : ""), words });
+      if (words.length) items.push({ kind, text: opening(text), words });
     }
     const flagged = [...seen.values()].filter((w) => w.length).length;
     const top = [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 8).map(([w, n]) => `${w} (${n})`);
@@ -137,7 +139,7 @@ function auditLevel(level, source, cefr, irregulars) {
     dailyReadings: repetition(readings),
     handWritten: written,
     fit: levelFit(firstOfEach.map((w) => String(w.word)), level, withOverrides(cefr, LEVEL_OVERRIDES), irregulars),
-    passages: passageStats(written.texts, level, cefr, irregulars),
+    passages: passageStats(written.texts, level, withOverrides(cefr, LEVEL_OVERRIDES), irregulars),
     incomplete: incompleteWords(firstOfEach),
     aboveLevel: aboveLevel(level, withOverrides(cefr, LEVEL_OVERRIDES), irregulars, taughtUpTo(level)),
     examplesMissingWord: firstOfEach

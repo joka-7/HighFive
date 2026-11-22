@@ -76,7 +76,7 @@ export const MORE_WORDS12 = {
     { word: "budget", partOfSpeech: "noun", definition: "תקציב, כמה כסף יש להוציא", example: "Our budget for the trip is small.", exampleHe: "התקציב שלנו לטיול קטן.", translation: "תקציב" },
     { word: "bulb", partOfSpeech: "noun", definition: "נורה", example: "We need a new light bulb.", exampleHe: "אנחנו צריכים נורה חדשה.", translation: "נורה" },
     { word: "bury", partOfSpeech: "verb", definition: "לקבור, לשים מתחת לאדמה", example: "The dog buries its bone in the garden.", exampleHe: "הכלב קובר את העצם שלו בגינה.", translation: "לקבור" },
-    { word: "bus station", partOfSpeech: "noun", definition: "תחנה מרכזית של אוטובוסים", example: "Meet me at the bus station.", exampleHe: "תפגוש אותי בתחנה המרכזית.", translation: "תחנה מרכזית" },
+    { word: "bus station", partOfSpeech: "noun", definition: "תחנה מרכזית של אוטובוסים", example: "Meet me at the bus station.", exampleHe: "תפגוש אותי בתחנת האוטובוסים.", translation: "תחנה מרכזית" },
     { word: "bush", partOfSpeech: "noun", definition: "שיח, צמח נמוך עם הרבה ענפים", example: "The cat is hiding in the bush.", exampleHe: "החתול מתחבא בשיח.", translation: "שיח" },
     { word: "businessman", partOfSpeech: "noun", definition: "איש עסקים", example: "My uncle is a businessman.", exampleHe: "הדוד שלי איש עסקים.", translation: "איש עסקים" },
     { word: "businesswoman", partOfSpeech: "noun", definition: "אשת עסקים", example: "Her mother is a successful businesswoman.", exampleHe: "אמא שלה אשת עסקים מצליחה.", translation: "אשת עסקים" },

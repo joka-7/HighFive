@@ -73,7 +73,7 @@ export const MORE_WORDS14 = {
     { word: "recycle", partOfSpeech: "verb", definition: "למחזר", example: "We recycle bottles and paper.", exampleHe: "אנחנו ממחזרים בקבוקים ונייר.", translation: "למחזר" },
     { word: "refrigerator", partOfSpeech: "noun", definition: "מקרר", example: "Put the milk in the refrigerator.", exampleHe: "תשים את החלב במקרר.", translation: "מקרר" },
     { word: "regret", partOfSpeech: "verb", definition: "להצטער על משהו שעשית", example: "I regret saying that.", exampleHe: "אני מצטער שאמרתי את זה.", translation: "להתחרט" },
-    { word: "regular", partOfSpeech: "adjective", definition: "רגיל, קבוע", example: "I have regular piano lessons on Monday.", exampleHe: "יש לי שיעורי פסנתר קבועים ביום שני.", translation: "רגיל, קבוע" },
+    { word: "regular", partOfSpeech: "adjective", definition: "רגיל, קבוע", example: "I have regular piano lessons on Mondays.", exampleHe: "יש לי שיעורי פסנתר קבועים בימי שני.", translation: "רגיל, קבוע" },
     { word: "regularly", partOfSpeech: "adverb", definition: "באופן קבוע", example: "I visit my grandparents regularly.", exampleHe: "אני מבקר את סבא וסבתא שלי באופן קבוע.", translation: "באופן קבוע" },
     { word: "relax", partOfSpeech: "verb", definition: "לנוח, להירגע", example: "I relax by reading a book.", exampleHe: "אני נרגע כשאני קורא ספר.", translation: "להירגע" },
     { word: "relaxed", partOfSpeech: "adjective", definition: "רגוע", example: "I feel relaxed on vacation.", exampleHe: "אני מרגיש רגוע בחופשה.", translation: "רגוע" },

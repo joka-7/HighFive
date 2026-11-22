@@ -230,19 +230,19 @@ export const MORE_LISTENINGS8 = {
     L("Look, it is snowing! Let's put on our coats and gloves. We can make a snowman in the garden. It will be cold but fun.",
       "תראו, יורד שלג! בואו נלבש מעילים וכפפות. אנחנו יכולים לבנות איש שלג בגינה. יהיה קר אבל כיף.",
       [
-        q("What is the weather?", "מה מזג האוויר?", ["Sunny", "Snowing", "Rainy", "Windy"], ["שמשי", "יורד שלג", "גשום", "סוער"], 1, "'it is snowing'."),
+        q("What is the weather?", "מה מזג האוויר?", ["Sunny", "Snowing", "Rainy", "Cloudy"], ["שמשי", "יורד שלג", "גשום", "מעונן"], 1, "'it is snowing'."),
         q("What will they make?", "מה הם יבנו?", ["A cake", "A snowman", "A fire", "A house"], ["עוגה", "איש שלג", "מדורה", "בית"], 1, "'make a snowman in the garden'."),
       ]),
     L("Good night, Sami. Put your toys in the box, please. Then we read one story. Sweet dreams!",
       "לילה טוב, סמי. בבקשה שים את הצעצועים שלך בקופסה. אחר כך נקרא סיפור אחד. חלומות מתוקים!",
       [
         q("Where should the toys go?", "איפה צריך לשים את הצעצועים?", ["On the bed", "In the box", "On the floor", "Outside"], ["על המיטה", "בקופסה", "על הרצפה", "בחוץ"], 1, "'Put your toys in the box'."),
-        q("How many stories?", "כמה סיפורים?", ["One", "Two", "Three", "None"], ["אחד", "שניים", "שלושה", "אף אחד"], 0, "'we read one story'."),
+        q("How many stories?", "כמה סיפורים?", ["One", "Two", "Three", "Four"], ["אחד", "שניים", "שלושה", "ארבעה"], 0, "'we read one story'."),
       ]),
     L("Welcome to the café. We have apple juice, milk and water for children. The cakes are very good today. What would you like?",
       "ברוכים הבאים לבית הקפה. יש לנו מיץ תפוחים, חלב ומים לילדים. העוגות טובות מאוד היום. מה תרצו?",
       [
-        q("Which drink is for children?", "איזה משקה מיועד לילדים?", ["Coffee", "Apple juice, milk and water", "Tea", "Cola"], ["קפה", "מיץ תפוחים, חלב ומים", "תה", "קולה"], 1, "'apple juice, milk and water for children'."),
+        q("Which drink is for children?", "איזה משקה מיועד לילדים?", ["Coffee", "Apple juice, milk and water", "Tea", "Hot chocolate"], ["קפה", "מיץ תפוחים, חלב ומים", "תה", "שוקו חם"], 1, "'apple juice, milk and water for children'."),
         q("What is very good today?", "מה טוב מאוד היום?", ["The bread", "The cakes", "The fruit", "The soup"], ["הלחם", "העוגות", "הפירות", "המרק"], 1, "'The cakes are very good today'."),
       ]),
   ],

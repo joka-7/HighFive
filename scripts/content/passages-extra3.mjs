@@ -88,7 +88,7 @@ export const MORE_LISTENINGS3 = {
       [q("What is happening tomorrow?", "מה קורה מחר?", ["A test", "No classes", "A trip", "A party"], ["מבחן", "אין לימודים", "טיול", "מסיבה"], 1, "'there are no classes'."), q("When will they meet again?", "מתי הם ייפגשו שוב?", ["Tomorrow", "On Monday", "On Sunday", "Next month"], ["מחר", "ביום שני", "ביום ראשון", "בחודש הבא"], 1, "'See you on Monday'.")]),
     L("Good morning. It is sunny today. Don't forget your hat. We will go to the park after lunch.",
       "בוקר טוב. היום שמשי. אל תשכחו את הכובע. נלך לפארק אחרי ארוחת הצהריים.",
-      [q("What is the weather like?", "איך מזג האוויר?", ["Rainy", "Sunny", "Cold", "Windy"], ["גשום", "שמשי", "קר", "סוער"], 1, "'It is sunny today'."), q("When will they go to the park?", "מתי הם ילכו לפארק?", ["Before lunch", "After lunch", "At night", "Tomorrow"], ["לפני ארוחת הצהריים", "אחרי ארוחת הצהריים", "בלילה", "מחר"], 1, "'after lunch'.")]),
+      [q("What is the weather like?", "איך מזג האוויר?", ["Rainy", "Sunny", "Cold", "Cloudy"], ["גשום", "שמשי", "קר", "מעונן"], 1, "'It is sunny today'."), q("When will they go to the park?", "מתי הם ילכו לפארק?", ["Before lunch", "After lunch", "At night", "Tomorrow"], ["לפני ארוחת הצהריים", "אחרי ארוחת הצהריים", "בלילה", "מחר"], 1, "'after lunch'.")]),
   ],
   A2: [
     L("Hi, this is the library. The book you reserved is now available. Please collect it within five days, or we'll return it to the shelf.",

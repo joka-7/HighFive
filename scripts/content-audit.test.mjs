@@ -156,6 +156,7 @@ describe("content-audit", () => {
       { name: "finds a capitalised word mid-sentence", text: "My dog Max is big.", expected: ["max"] },
       { name: "ignores the first word of a sentence", text: "Study now. Go home.", expected: [] },
       { name: "finds a name after a comma", text: "Hi, Dan is here.", expected: ["dan"] },
+      { name: "ignores options written as their own sentences", text: "Who is it?. Sam. Dan.", expected: [] },
     ])("$name", ({ text, expected }) => {
       expect([...namesIn(text)]).toEqual(expected);
     });

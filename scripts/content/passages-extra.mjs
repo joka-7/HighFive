@@ -14,7 +14,7 @@ export const MORE_READINGS = {
       "בשבת אנחנו הולכים לפארק. אבא שלי משחק איתי כדורגל. אמא שלי יושבת וקוראת ספר. אחר כך אנחנו אוכלים כריכים על הדשא. אני אוהב את ימי שבת.",
       [g("park", "noun", "שטח ירוק ציבורי", "We play in the park.", "פארק"), g("football", "noun", "משחק כדור פופולרי", "I like football.", "כדורגל"), g("grass", "noun", "הצמח הירוק שעל הקרקע", "Sit on the grass.", "דשא")],
       [q("What does the father do at the park?", "מה אבא עושה בפארק?", ["Reads", "Plays football", "Sleeps", "Cooks"], ["קורא", "משחק כדורגל", "ישן", "מבשל"], 1, "'plays football with me'."),
-       q("Where do they eat?", "איפה הם אוכלים?", ["At home", "On the grass", "In a café", "On a chair"], ["בבית", "על הדשא", "בבית קפה", "על ספסל"], 1, "'eat sandwiches on the grass'.")]),
+       q("Where do they eat?", "איפה הם אוכלים?", ["At home", "On the grass", "In a café", "On a chair"], ["בבית", "על הדשא", "בבית קפה", "על כיסא"], 1, "'eat sandwiches on the grass'.")]),
     R("My School Bag (התיק שלי)",
       "This is my school bag. It is blue. Inside I have three books, two pens and an apple. The bag is heavy, but I carry it every day.",
       "זה תיק בית הספר שלי. הוא כחול. בתוכו יש לי שלושה ספרים, שני עטים ותפוח. התיק כבד, אבל אני סוחב אותו כל יום.",
