@@ -8,7 +8,7 @@ curated pool (`src/data/offline/<level>.reading.curated.json` /
 Whether the app shows an item is checked with
 `node scripts/check-curated.mjs <LEVEL> --from <first new index>`.
 
-## A1 — readings (86)
+## A1 — readings (136)
 
 0. My Morning
 1. My Friend Lia
@@ -96,8 +96,58 @@ Whether the app shows an item is checked with
 83. Movie Night
 84. At the Bakery
 85. My Hometown
+86. The Ice Cream Man
+87. A New Haircut
+88. Science Class
+89. The Bus Driver
+90. A Big Storm
+91. A Letter from My Cousin
+92. Feeding the Ducks
+93. Tea for Grandpa
+94. Our Class Party
+95. A Gift for Mom
+96. My Mother the Nurse
+97. A Saturday Walk
+98. The Old Clock
+99. My Favourite Song
+100. The Broken Cup
+101. A Call to My Friend
+102. The Tall Tree
+103. My Little Sister's Doll
+104. Sending a Card
+105. The Lemon Tree
+106. Visiting My Aunt
+107. The Street Where I Live
+108. Counting Stars
+109. A Picnic by the Lake
+110. My First Day at School
+111. The Last Day of School
+112. Snow on the Mountain
+113. A Bath for the Dog
+114. The Little Boat
+115. Learning to Cook Eggs
+116. Watching the Game on TV
+117. The Boy and the Bird
+118. At the Supermarket
+119. Buying a Ticket
+120. A Blue Bird at My Window
+121. A Cold Morning at the Bus Stop
+122. Art Class: A Poster
+123. My Uncle's Taxi
+124. The Moon Tonight
+125. The Old Watch
+126. The Soup Is Too Hot
+127. The Lost Dog
+128. Our Classroom
+129. A Sunday at Home
+130. Helping Dad in the Garden
+131. Tomorrow Is a Holiday
+132. The Swimming Race
+133. My Favourite Day
+134. A Card for My Teacher
+135. Going to Bed Early
 
-## A1 — listenings (86, first two sentences)
+## A1 — listenings (136, first two sentences)
 
 0. Hi, I'm Dan. I have a sister and a dog.
 1. Good morning. The shop opens at nine and closes at six.
@@ -185,3 +235,53 @@ Whether the app shows an item is checked with
 83. This weekend we have a lot of plans. On Saturday we go to the beach.
 84. Today is my father's birthday. My sister and I have a gift for him.
 85. Welcome on board. Please sit down and put on your seat belt.
+86. Good morning, class. Please stand up.
+87. Hello, parents. Tomorrow the children need three pencils and a red pen.
+88. This is my best friend. He is tall and he has short black hair.
+89. Here is the weather for Wednesday. It is sunny and very hot all day.
+90. This is the bus to the hospital. The next stop is the school.
+91. Good afternoon. A cup of tea and a piece of cake, please.
+92. Help! I can't find my dog.
+93. The library is open from nine to five, from Sunday to Thursday. On Friday it is open from nine to one.
+94. Hi, it is me. I am sorry, but I am late.
+95. Hello! Do you want to play football with us?
+96. Class, open your books at page eight. Look at the picture of the farm.
+97. Welcome to our shoe shop. Today all shoes are cheap.
+98. Bananas, bananas! Three bananas for two dollars.
+99. Hello. Please sit down.
+100. Welcome to the zoo. The lions eat at four o'clock.
+101. It is cold outside. Put on your coat and your hat.
+102. I am a student. My school is near the park.
+103. Let's make a sandwich. First take two pieces of bread.
+104. Good evening. This is the weather for tonight.
+105. Hello, everyone. The train to the city is late today.
+106. The swimming pool is open every day from eight to six. On Friday it closes at two.
+107. Class, listen. Tomorrow we have a math test.
+108. Happy birthday to you! Happy birthday to you!
+109. Hello. Can I speak to your mother, please?
+110. Hello, do you have these shoes in a bigger size? These are too small for me.
+111. Good evening. A table for two, please.
+112. Welcome to Sports Day! Running is at ten o'clock.
+113. Hello, class. Today in our lesson we make posters.
+114. These are our class rules. Come to school on time.
+115. Every day I go to school with my father. He is a driver and his bus stops near my school.
+116. Time to go home, everyone! The park closes in ten minutes.
+117. Now at the cinema: a funny film about a little dog and a big cat. It starts every day at five and at seven.
+118. Hello. You can visit your grandfather at the hospital every day from four to six.
+119. Welcome to the beach cafe. We have cold water, orange juice and ice cream.
+120. To go to the zoo, take bus number nine. It stops in front of the school.
+121. Look at this picture. There is a house with a big garden.
+122. At the weekend I like to sleep late. Then I eat breakfast with my family.
+123. I like to draw. I draw animals, houses and people.
+124. This is my dog. His name is Rex.
+125. Dear parents, the class trip is on Monday. We go to the museum by bus.
+126. Big sale today at the supermarket! Milk is one dollar.
+127. Please stop here. This is my house.
+128. Good morning. Breakfast is from seven to ten in the restaurant.
+129. My friend sleeps at my house tonight. We eat pizza and watch a film.
+130. On Saturday I have a birthday. I am ten years old.
+131. Hello, dear. Dinner is at seven o'clock tonight.
+132. Hi. The homework for tomorrow is on page eleven.
+133. Today the weather is hot and the sky is blue. Many children are at the beach.
+134. Goodbye party! Tomorrow is the last day of school.
+135. Mom, can I have a party on Friday? I want to ask ten friends to come.
