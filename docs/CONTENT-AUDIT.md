@@ -18,6 +18,13 @@ source, the regenerated `src/data/offline/` files and this report together.
 The CEFR lists are a guide, not a verdict: a word one level off is normal, and
 a word in neither list may simply be British spelling or a phrase.
 
+**Will the app show a new passage?** The audit does not say. The app only shows a
+hand-written reading or listening when few of its words fall outside the level's
+word cards (`CURATED_TOLERANCE` in `src/services/content.ts`; names and past-tense
+forms count). After `npm run content`, run `node scripts/check-curated.mjs A1
+--from <first new index>`; it exits 1 and lists the unknown words of every item the
+app would skip. Track topics in `docs/CONTENT-TOPICS.md`.
+
 <!-- BEGIN GENERATED: npm run content:audit -->
 ## Summary
 
@@ -25,7 +32,7 @@ A year is 365 days: 1,825 word slots (five a day) and 1,825 quiz questions per l
 
 | Level | Unique words | Each word shown | Grammar topics | Unique quiz questions | Unique daily readings | Readings shown / written | Listenings shown / written | Speaking sentences shown / written |
 |---|---|---|---|---|---|---|---|---|
-| A1 | 779 | 2.3× | 7 | 736 | 365 / 365 | 36 / 36 | 36 / 36 | 40 / 42 |
+| A1 | 779 | 2.3× | 7 | 736 | 365 / 365 | 86 / 86 | 86 / 86 | 40 / 42 |
 | A2 | 991 | 1.8× | 7 | 981 | 365 / 365 | 36 / 36 | 36 / 36 | 40 / 42 |
 | B1 | 420 | 4.3× | 6 | 427 | 365 / 365 | 37 / 37 | 36 / 36 | 40 / 42 |
 | B2 | 264 | 6.9× | 7 | 268 | 264 / 365 | 31 / 31 | 30 / 30 | 40 / 42 |
@@ -90,7 +97,7 @@ All hand-written readings and listening transcripts, shown or not. "Above level"
 
 | Level | Passages | Words per sentence | Above level | In neither list |
 |---|---|---|---|---|
-| A1 | 72 | 6.2 | 1.8% | 1.8% |
+| A1 | 172 | 6.3 | 1.8% | 1.3% |
 | A2 | 72 | 8.6 | 2.7% | 2.1% |
 | B1 | 73 | 11.2 | 1.9% | 2.1% |
 | B2 | 61 | 15.1 | 0.8% | 4.1% |
@@ -106,8 +113,8 @@ Every sentence a learner sees, checked word by word: a word counts when the list
 | A1 | word example | 779 | 0 | none |
 | A1 | daily quiz | 1833 | 0 | none |
 | A1 | grammar question | 929 | 0 | none |
-| A1 | reading | 401 | 0 | none |
-| A1 | listening | 401 | 0 | none |
+| A1 | reading | 451 | 0 | none |
+| A1 | listening | 451 | 0 | none |
 | A1 | speaking | 807 | 0 | none |
 | A2 | word example | 991 | 0 | none |
 | A2 | daily quiz | 1834 | 0 | none |
