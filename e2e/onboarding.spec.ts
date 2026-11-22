@@ -33,9 +33,9 @@ test("hash deep link opens settings after onboarding", async ({ page }) => {
 
 test("daily lesson loads and can start the practice quiz", async ({ page }) => {
   await onboard(page, "Lesson", "A1");
-  // The lesson is reached from the hub tile (and from חמש ביום); it is
-  // deliberately not in the bottom nav.
-  await page.getByRole("button", { name: /שיעור יומי/ }).click();
+  // The lesson is the "understand" finger of the hub's hand (and a card on
+  // חמש ביום); it is deliberately not in the bottom nav.
+  await page.getByRole("button", { name: /להבין/ }).click();
   await expect(page.getByRole("button", { name: /בוא נתרגל/ })).toBeVisible({
     timeout: 30_000,
   });
