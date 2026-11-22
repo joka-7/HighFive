@@ -8,7 +8,7 @@ curated pool (`src/data/offline/<level>.reading.curated.json` /
 Whether the app shows an item is checked with
 `node scripts/check-curated.mjs <LEVEL> --from <first new index>`.
 
-## A1 — readings (186)
+## A1 — readings (236)
 
 0. My Morning
 1. My Friend Lia
@@ -196,8 +196,58 @@ Whether the app shows an item is checked with
 183. Building with Blocks
 184. Waking Up Late
 185. Washing the Dishes
+186. The Birthday Surprise
+187. At the Dentist
+188. My Walk to School
+189. Our School Play
+190. A Trip to the Sea
+191. Packing My Bag
+192. The Stairs at My House
+193. Dad's Old Car
+194. The Surprise Dinner
+195. Visiting Grandpa
+196. The Dog Next Door
+197. The Postman
+198. The Fire Truck
+199. My Swimming Hat
+200. The Four Seasons
+201. My Favourite Month
+202. Counting Days to My Birthday
+203. The Calendar on the Wall
+204. Monday Morning
+205. The Long Wednesday
+206. Thursday Shopping
+207. A Quiet Friday Morning
+208. Saturday with Grandma
+209. Sunday Lunch with the Family
+210. A Paper Boat
+211. A Card Trick
+212. The Funny Hat
+213. The Big Box
+214. The Rain on the Window
+215. Selling Juice
+216. A Bag at the Station
+217. The Boy Across the Street
+218. The Shopping List
+219. Buying Bread
+220. The Fruit Seller
+221. My Uncle the Cook
+222. The Night Bus
+223. A Walk with Grandpa
+224. Time for Tea
+225. The Hot Day at School
+226. Five Minutes of Quiet
+227. A Window Seat
+228. The Long Road
+229. Fishing at the Lake
+230. A Glass of Water
+231. My Cat Sleeps All Day
+232. Goodbye, Summer
+233. The Class Photo
+234. My Favourite Cartoon
+235. The Pencil Case
 
-## A1 — listenings (186, first two sentences)
+## A1 — listenings (236, first two sentences)
 
 0. Hi, I'm Dan. I have a sister and a dog.
 1. Good morning. The shop opens at nine and closes at six.
@@ -385,3 +435,53 @@ Whether the app shows an item is checked with
 183. I have some news. We move to a new house next month.
 184. Good night, my dear. It is time to sleep.
 185. When I grow up I want to be a doctor. I like to help sick people.
+186. Hi, it is me. Do you want to see a movie on Saturday?
+187. Good afternoon, class. Tomorrow is Sports Day.
+188. Come on, kids, put on your shoes. We go to the park now.
+189. Good morning, this is your radio. The next song is about the sea and a little boat.
+190. Please move to the back of the bus. There is room for five more people.
+191. Hello, everyone. The shop closes in ten minutes.
+192. Hello. Please open your mouth and look at me.
+193. Welcome to the zoo. A family ticket is twelve dollars.
+194. This is my room. It is small, but I like it.
+195. My best day is Saturday. In the morning I play football with my friends.
+196. My family has an old car. It is blue and it is very small.
+197. Hi, it is Mom. I am on my way home from work.
+198. Hello, it is me. Can I take your book about animals?
+199. Please help me with my homework. I do not understand this question.
+200. Good morning, class. Open your books at page twelve.
+201. Hello, welcome to our cafe. I am sorry, we have no more chocolate cake today.
+202. Welcome to our hotel. The pool is on the roof and it is open until eight o'clock tonight.
+203. Good morning. Please put your bags on the table.
+204. Hello, everyone. This train goes to the city.
+205. I am sorry, this bus is full. Please wait for the next one.
+206. Apples, apples! Sweet red apples, three dollars for a big bag.
+207. I am afraid of the dark. When I go to bed, I want the light on.
+208. When my father was a boy, he lived in a small village. He walked to school every day and it took one hour.
+209. Here is my grandmother's fruit salad. Take two apples, two bananas and one orange.
+210. Good morning, kids. Today we draw our families.
+211. Hello, kids. Before lunch please wash your hands.
+212. Dear parents, please read this paper. On Thursday our class goes to the farm.
+213. Hello, team. Here is the list for tomorrow's game.
+214. Welcome to the farm. Here you can see cows, horses, sheep and chickens.
+215. Dad makes eggs for breakfast. He uses three eggs and a little butter.
+216. Guess what! I have a new bike.
+217. Today I am nine years old. It is my birthday!
+218. Good morning, class. On Monday we have a short test.
+219. Hello, everyone. The film starts in five minutes.
+220. Hello, everyone. Please do not run near the pool.
+221. Come to the table, everyone. The soup is ready.
+222. Hello, my name is Ella. I live in a small town near the sea.
+223. Time for cake, everyone! Come and stand around the table.
+224. Hello? Oh, I am sorry.
+225. Good morning. Please put on your seat belts.
+226. Excuse me, where is the library? Go straight on this road.
+227. Good morning, class. We start with a run.
+228. My favourite animal is the horse. It is big and strong, and it is very kind.
+229. Come and buy hot bread! A big bag is one dollar and a small bag is half a dollar.
+230. Wait, do not forget your lunch box! It is on the table next to the door.
+231. Good news, everyone! On Friday we go to the beach.
+232. Class, who knows the answer? Put your hand up, please.
+233. Happy holidays, my dear friends! I want you to have a lot of fun with your families.
+234. When I grow up I want to be a teacher. I like kids and I like to read.
+235. Time to go home, kids. Please put your books in your bags and push your chairs under the desks.
