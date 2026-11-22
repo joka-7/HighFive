@@ -2,28 +2,20 @@ import { useLingo } from "../store/useLingo";
 import { isAIReady } from "../services/ai";
 import { usePwaInstall } from "../services/pwa";
 import { isReviewDay, WEEK_WORD_COUNT, WORDS_PER_DAY } from "../utils/cycle";
+import HandBoard from "../components/HandBoard";
 import Tile, { type TileSpec } from "../components/Tile";
 import type { Screen } from "../types";
 
-// The hub. Tiles are grouped so the grid reads as four intents instead of one
-// flat wall of thirteen, and nothing here repeats what another surface already
-// owns: points/streak/level live in the top bar, the day's words live in the
-// words box on חמש ביום, and שינון is reached from that box.
+// The hub. The hand board up top is the day: its five fingers are the five
+// operations (which own the reading / listening / speaking / lesson screens)
+// and its palm is the day's words. The tiles below are only what the hand
+// doesn't reach. Points/streak/level live in the top bar, and שינון is reached
+// from the palm on review days.
 
 const DASHBOARD_SECTIONS: { title: string; tiles: TileSpec[] }[] = [
   {
-    title: "היום",
+    title: "עוד תרגול",
     tiles: [
-      { screen: "missions", emoji: "🎯", title: "חמש ביום", sub: "5 פעולות + מילים" },
-      { screen: "lesson", emoji: "📚", title: "שיעור יומי", sub: "לימוד + תרגול" },
-    ],
-  },
-  {
-    title: "תרגול",
-    tiles: [
-      { screen: "reading", emoji: "📖", title: "קריאה", sub: "טקסטים אמיתיים" },
-      { screen: "listening", emoji: "🎧", title: "האזנה", sub: "הבנת הנשמע" },
-      { screen: "speaking", emoji: "🎤", title: "דיבור", sub: "תרגול הגייה" },
       { screen: "dialogue", emoji: "💬", title: "מאמן שיחה", sub: "תרגול דיבור" },
       { screen: "quiz", emoji: "🧠", title: "חידון", sub: "בחן את עצמך" },
     ],
@@ -97,6 +89,8 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
           </button>
         </div>
       )}
+
+      <HandBoard go={go} />
 
       {DASHBOARD_SECTIONS.map((section) => (
         <section key={section.title}>

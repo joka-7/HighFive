@@ -352,6 +352,198 @@ button {
   border-color: var(--skill-speaking);
 }
 
+/* --- Hand board (dashboard): five fingers = five operations, palm = the day's words --- */
+.hand-board {
+  margin-bottom: 20px;
+}
+
+.hand-progress {
+  text-align: center;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.hand {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.fingers {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 0 10px;
+}
+
+.finger {
+  --finger-color: var(--primary);
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: 10px 2px 12px;
+  border: 2px solid var(--finger-color);
+  border-bottom: none;
+  border-radius: 999px 999px 8px 8px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.1s ease, background 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.finger:active {
+  transform: scale(0.95);
+}
+
+.finger-see {
+  --finger-color: var(--primary);
+  min-height: 112px;
+}
+.finger-listen {
+  --finger-color: var(--skill-listening);
+  min-height: 140px;
+}
+.finger-talk {
+  --finger-color: var(--skill-speaking);
+  min-height: 156px;
+}
+.finger-read {
+  --finger-color: var(--skill-reading);
+  min-height: 140px;
+}
+.finger-understand {
+  --finger-color: var(--skill-review);
+  min-height: 112px;
+}
+
+.fingertip {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  font-weight: 800;
+  background: color-mix(in srgb, var(--finger-color) 14%, var(--surface));
+}
+
+.finger-label {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.finger-done {
+  background: var(--finger-color);
+  color: #fff;
+}
+
+.finger-done .fingertip {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.palm {
+  position: relative;
+  z-index: 2;
+  margin-top: -2px;
+  display: grid;
+  place-items: center;
+  padding: 22px 0;
+  border: 2px solid var(--primary);
+  border-radius: 28px 28px 70px 70px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  color: var(--text);
+}
+
+.palm-ring {
+  width: 124px;
+  height: 124px;
+  transform: rotate(-90deg);
+  grid-area: 1 / 1;
+}
+
+.palm-ring-track,
+.palm-ring-fill {
+  fill: none;
+  stroke-width: 9;
+}
+
+.palm-ring-track {
+  stroke: var(--surface-3);
+}
+
+.palm-ring-fill {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.4s ease;
+}
+
+.palm-center {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.1;
+}
+
+.palm-count {
+  font-size: 26px;
+  font-weight: 800;
+  font-family: var(--font-en);
+}
+
+.palm-sub {
+  font-size: 13px;
+  color: var(--text-soft);
+}
+
+.palm-emoji {
+  font-size: 40px;
+}
+
+.palm-done {
+  border-color: var(--accent);
+}
+
+.hand-next {
+  margin-top: 14px;
+}
+
+@keyframes hand-wave {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(-4deg);
+  }
+  75% {
+    transform: rotate(4deg);
+  }
+}
+
+.hand-celebrate {
+  transform-origin: 50% 100%;
+  animation: hand-wave 0.9s ease-in-out 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hand-celebrate {
+    animation: none;
+  }
+  .finger,
+  .palm-ring-fill {
+    transition: none;
+  }
+}
+
 /* --- Credit line under the screen; bottom padding clears the fixed nav --- */
 .app-credit {
   display: flex;

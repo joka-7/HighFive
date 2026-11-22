@@ -211,6 +211,8 @@ HighFive/
 │   │   ├── ErrorBoundary.test.tsx
 │   │   ├── ErrorBoundary.tsx
 │   │   ├── GithubIcon.tsx
+│   │   ├── HandBoard.test.tsx
+│   │   ├── HandBoard.tsx
 │   │   ├── MiniBarChart.tsx
 │   │   ├── QuizRunner.tsx
 │   │   ├── Spinner.tsx
