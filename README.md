@@ -359,7 +359,7 @@ keep the key server-side.
 
 <!-- BEGIN GENERATED TREE (depth=1 entries=all) -->
 ```text
-highfive/
+HighFive/
 ├── .github/
 ├── android/               # Capacitor Android project wrapping the web build (see LLD, Android app)
 ├── api/                   # Vercel Serverless Functions — built independently of the Vite app,…
