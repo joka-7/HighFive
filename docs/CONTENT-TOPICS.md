@@ -8,7 +8,7 @@ curated pool (`src/data/offline/<level>.reading.curated.json` /
 Whether the app shows an item is checked with
 `node scripts/check-curated.mjs <LEVEL> --from <first new index>`.
 
-## A1 — readings (136)
+## A1 — readings (186)
 
 0. My Morning
 1. My Friend Lia
@@ -146,8 +146,58 @@ Whether the app shows an item is checked with
 133. My Favourite Day
 134. A Card for My Teacher
 135. Going to Bed Early
+136. Grandma's Chicken Soup
+137. My Cousin's Wedding
+138. My New Baby Sister
+139. Dad Comes Home Late
+140. A Photo of Our Family
+141. Uncle's Birthday
+142. The School Bell
+143. Picture Day
+144. Who Sits Next to Me
+145. Our Class Fish
+146. Learning to Read
+147. The School Garden
+148. Where Is My Pencil?
+149. Reading Time
+150. Pizza at Home
+151. Pancakes on Sunday
+152. A New Fruit
+153. A Cup of Hot Chocolate
+154. Watermelon on a Hot Day
+155. Grandpa's Fish
+156. Running in the Park
+157. Playing Tennis
+158. The Football Shoes
+159. Volleyball on the Beach
+160. The Sports Shop
+161. Planting Trees
+162. Passover at Grandma's
+163. A Fire at Night
+164. Cheese Cake for Shavuot
+165. The Quiet Day
+166. A Foggy Morning
+167. The Rainbow
+168. A Day in the Desert
+169. The Sea at Night
+170. Flowers for Mom
+171. The Toy Shop
+172. The Bookshop
+173. At the Cafe
+174. At the Hotel
+175. The Bus Station
+176. The Dog in the Park
+177. Grandpa's Horse
+178. The Snake at the Zoo
+179. The Cow on the Farm
+180. Cards with Grandpa
+181. My Photo Album
+182. Singing in the Shower
+183. Building with Blocks
+184. Waking Up Late
+185. Washing the Dishes
 
-## A1 — listenings (136, first two sentences)
+## A1 — listenings (186, first two sentences)
 
 0. Hi, I'm Dan. I have a sister and a dog.
 1. Good morning. The shop opens at nine and closes at six.
@@ -285,3 +335,53 @@ Whether the app shows an item is checked with
 133. Today the weather is hot and the sky is blue. Many children are at the beach.
 134. Goodbye party! Tomorrow is the last day of school.
 135. Mom, can I have a party on Friday? I want to ask ten friends to come.
+136. Hello, it is Grandma. Come to my house on Friday for dinner.
+137. Welcome to the zoo. On your right you can see the monkeys.
+138. Hello, everyone. A little girl in a red coat is at the information desk.
+139. Hello, is this the pizza shop? I want one big pizza with cheese and tomatoes.
+140. Good morning, class. Tomorrow is a holiday, so we have no school.
+141. Come to the new toy shop! We have dolls, cars, balls and teddy bears.
+142. Let's make orange juice. Take three big oranges and cut them in half.
+143. To get to the hotel, go straight for two minutes. Turn left at the school.
+144. Dear Aunt, thank you very much for the gift. The blue shirt is beautiful and it is my size.
+145. I am very sorry I am late. The bus did not come.
+146. Hello, everyone. The school bus leaves at two o'clock from the big door.
+147. Hello, this is room six. Can you bring two towels, please?
+148. This is my grandmother. She is seventy years old, but she is very strong.
+149. My school is big and old. It has two floors and a large yard.
+150. This is my Wednesday. I get up at seven.
+151. Good work, team! That was a good game.
+152. The museum is open from nine to five, Sunday to Friday. On Saturday it is closed.
+153. Welcome to the snack bar. We have ice cream, juice and cookies.
+154. Hi! On Sunday we have a picnic in the park.
+155. Hello, dear. I am at work.
+156. Good morning, children. Today we learn the colors.
+157. Listen, children. Brush your teeth two times a day.
+158. Hello. Please take us to the airport.
+159. Good morning, welcome to the airport. Please give me your tickets and your bags.
+160. Fish, fish! Big fish today, only five dollars.
+161. Welcome to the bike shop. This blue bike is ten dollars a day.
+162. Welcome to the park. Please read the rules.
+163. Big sale at the sports shop! All shoes are half price.
+164. Children, come to the library on Wednesday. At four o'clock there is story time.
+165. Hello, can you help me? I go away for two days.
+166. This is my week. On Monday I go to school.
+167. Good evening, everyone. Tonight we sleep outside.
+168. Children, after dinner please wash the dishes. Put soap on the plates and wash them with warm water.
+169. Hello. One ticket to the city, please.
+170. Good morning. Your name, please?
+171. Hello, can I help you? Yes, I want a shirt for my brother.
+172. Listen, class. We have a test.
+173. I have a pet cat. She is white and her eyes are green.
+174. Happy New Year, everyone! I hope you have a sweet and happy year.
+175. Today we make a salad. Wash the tomatoes and cut them into pieces.
+176. Hello, what time is it? It is half past three.
+177. Hello! Two ice creams, please.
+178. Good morning! It is time to get up.
+179. Hello, can I speak to Dan, please? He is not here?
+180. Hi, it is Dad. I am at the shop now.
+181. Welcome on our boat. Please sit down and hold on.
+182. Class, please close your books. Put your pencils in your bags.
+183. I have some news. We move to a new house next month.
+184. Good night, my dear. It is time to sleep.
+185. When I grow up I want to be a doctor. I like to help sick people.
