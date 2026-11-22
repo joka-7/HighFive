@@ -1,7 +1,6 @@
 import { useLingo } from "../store/useLingo";
 import { isAIReady } from "../services/ai";
 import { usePwaInstall } from "../services/pwa";
-import { isReviewDay, WEEK_WORD_COUNT, WORDS_PER_DAY } from "../utils/cycle";
 import HandBoard from "../components/HandBoard";
 import Tile, { type TileSpec } from "../components/Tile";
 import type { Screen } from "../types";
@@ -48,12 +47,6 @@ export default function Dashboard({ go }: { go: (s: Screen) => void }) {
     <div>
       <div className="card hero-card">
         <h2>שלום, {progress.userName}! 👋</h2>
-        <button className="hero-today" onClick={() => go("missions")}>
-          {isReviewDay()
-            ? `סוף שבוע — חוזרים על ${WEEK_WORD_COUNT} מילות השבוע`
-            : `היום: ${WORDS_PER_DAY} מילים חדשות + 5 פעולות`}{" "}
-          ←
-        </button>
       </div>
 
       {levelUpNotice && (

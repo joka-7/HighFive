@@ -356,119 +356,168 @@ button {
   border-color: var(--skill-speaking);
 }
 
-/* --- Hand board (dashboard): five fingers = five operations, palm = the day's words --- */
+/* --- Hand board (dashboard): five fingers = five operations, palm = the day's words ---
+ * One silhouette: fingers and palm share a fill and a single drop-shadow on
+ * the container, so the shadow follows the union of all shapes. Geometry is
+ * absolute and direction-independent (dir=ltr); the thumb is the first
+ * operation and sits on the right, matching the RTL reading order. */
 .hand-board {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .hand-progress {
   text-align: center;
-  font-weight: 700;
-  margin: 0 0 10px;
+  font-weight: 800;
+  font-size: 17px;
+  margin: 0 0 6px;
+  color: var(--primary-strong);
 }
 
 .hand {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
+  --hand-fill: #ece9ff;
+  position: relative;
+  direction: ltr;
+  width: 100%;
+  max-width: 390px;
+  height: 336px;
+  margin: 0 auto;
+  filter: drop-shadow(0 14px 18px rgba(108, 92, 231, 0.22));
+}
+
+html[data-theme="dark"] .hand {
+  --hand-fill: #2a2f45;
+  filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.45));
 }
 
 .fingers {
-  display: flex;
-  align-items: flex-end;
-  gap: 6px;
-  padding: 0 10px;
+  display: contents;
 }
 
 .finger {
   --finger-color: var(--primary);
-  flex: 1 1 0;
-  min-width: 0;
+  position: absolute;
+  bottom: 120px;
+  width: 18%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
   gap: 6px;
-  padding: 10px 2px 12px;
-  border: 2px solid var(--finger-color);
-  border-bottom: none;
-  border-radius: 999px 999px 8px 8px;
-  background: var(--surface);
+  padding: 9px 2px 0;
+  border-radius: 999px;
+  background: var(--hand-fill);
   color: var(--text);
-  box-shadow: var(--shadow-sm);
-  transition: transform 0.1s ease, background 0.2s ease;
-  position: relative;
+  transform-origin: 50% 100%;
+  transition: transform 0.15s ease, background 0.25s ease;
   z-index: 1;
 }
 
 .finger:active {
-  transform: scale(0.95);
+  transform: var(--finger-rot) scale(0.95);
 }
 
-.finger-see {
-  --finger-color: var(--primary);
-  min-height: 112px;
-}
-.finger-listen {
-  --finger-color: var(--skill-listening);
-  min-height: 140px;
-}
-.finger-talk {
-  --finger-color: var(--skill-speaking);
-  min-height: 156px;
+/* left → right in physical space: pinky, ring, middle, index, thumb */
+.finger-understand {
+  --finger-color: var(--skill-review);
+  --finger-rot: rotate(-13deg);
+  left: 1%;
+  height: 118px;
+  bottom: 124px;
 }
 .finger-read {
   --finger-color: var(--skill-reading);
-  min-height: 140px;
+  --finger-rot: rotate(-6deg);
+  left: 20%;
+  height: 150px;
+  bottom: 132px;
 }
-.finger-understand {
-  --finger-color: var(--skill-review);
-  min-height: 112px;
+.finger-talk {
+  --finger-color: var(--skill-speaking);
+  --finger-rot: rotate(0deg);
+  left: 39%;
+  height: 168px;
+  bottom: 136px;
+}
+.finger-listen {
+  --finger-color: var(--skill-listening);
+  --finger-rot: rotate(7deg);
+  left: 58%;
+  height: 150px;
+  bottom: 132px;
+}
+.finger-see {
+  --finger-color: var(--primary);
+  --finger-rot: rotate(55deg);
+  left: 59%;
+  height: 104px;
+  bottom: 54px;
+}
+
+.finger {
+  transform: var(--finger-rot);
 }
 
 .fingertip {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: grid;
   place-items: center;
   font-size: 22px;
   font-weight: 800;
-  background: color-mix(in srgb, var(--finger-color) 14%, var(--surface));
+  background: #fff;
+  box-shadow: 0 0 0 3px var(--finger-color);
+  /* keep emoji upright inside a rotated finger */
+  transform: rotate(calc(var(--finger-tilt, 0deg) * -1));
 }
 
 .finger-label {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 800;
+  color: var(--finger-color);
+  transform: rotate(calc(var(--finger-tilt, 0deg) * -1));
+}
+
+.finger-understand { --finger-tilt: -13deg; }
+.finger-read { --finger-tilt: -6deg; }
+.finger-listen { --finger-tilt: 7deg; }
+.finger-see { --finger-tilt: 55deg; }
+
+/* The thumb's body is partly under the palm, so shift its label out. */
+.finger-see .finger-label {
+  transform: translateX(16px) rotate(-55deg);
 }
 
 .finger-done {
   background: var(--finger-color);
-  color: #fff;
 }
 
 .finger-done .fingertip {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: none;
+  color: #fff;
+}
+
+.finger-done .finger-label {
   color: #fff;
 }
 
 .palm {
-  position: relative;
+  position: absolute;
   z-index: 2;
-  margin-top: -2px;
+  left: 5%;
+  right: 27%;
+  bottom: 0;
+  height: 168px;
   display: grid;
   place-items: center;
-  padding: 22px 0;
-  border: 2px solid var(--primary);
-  border-radius: 28px 28px 70px 70px;
-  background: var(--surface);
-  box-shadow: var(--shadow);
+  border-radius: 34% 34% 44% 44% / 24% 24% 52% 52%;
+  background: var(--hand-fill);
   color: var(--text);
 }
 
 .palm-ring {
-  width: 124px;
-  height: 124px;
+  width: 120px;
+  height: 120px;
   transform: rotate(-90deg);
   grid-area: 1 / 1;
 }
@@ -480,6 +529,10 @@ button {
 }
 
 .palm-ring-track {
+  stroke: #fff;
+}
+
+html[data-theme="dark"] .palm-ring-track {
   stroke: var(--surface-3);
 }
 
@@ -498,9 +551,10 @@ button {
 }
 
 .palm-count {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
   font-family: var(--font-en);
+  color: var(--primary-strong);
 }
 
 .palm-sub {
@@ -509,15 +563,15 @@ button {
 }
 
 .palm-emoji {
-  font-size: 40px;
+  font-size: 42px;
 }
 
-.palm-done {
-  border-color: var(--accent);
+.palm-done .palm-count {
+  color: var(--accent);
 }
 
 .hand-next {
-  margin-top: 14px;
+  margin-top: 16px;
 }
 
 @keyframes hand-wave {
@@ -1444,21 +1498,6 @@ pre.explanation-text {
 .words-box {
   border-inline-start: 4px solid var(--accent);
 }
-.hero-today {
-  background: none;
-  border: 0;
-  padding: 0;
-  margin-top: 6px;
-  font: inherit;
-  font-size: 14px;
-  color: inherit;
-  opacity: 0.9;
-  text-align: start;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
 .footer-links {
   display: flex;
   justify-content: center;
