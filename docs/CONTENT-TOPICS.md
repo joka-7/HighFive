@@ -8,7 +8,7 @@ curated pool (`src/data/offline/<level>.reading.curated.json` /
 Whether the app shows an item is checked with
 `node scripts/check-curated.mjs <LEVEL> --from <first new index>`.
 
-## A1 — readings (236)
+## A1 — readings (260)
 
 0. My Morning
 1. My Friend Lia
@@ -246,8 +246,32 @@ Whether the app shows an item is checked with
 233. The Class Photo
 234. My Favourite Cartoon
 235. The Pencil Case
+236. The Red Umbrella
+237. Drawing a House
+238. The Pet Shop
+239. Feeding the Birds
+240. The Roof Garden
+241. The Mirror
+242. The Picnic Basket
+243. A Bowl of Fruit
+244. The Lift in Our Building
+245. Swimming with Dad
+246. The Kite Festival
+247. Grandma's Apron
+248. A Walk in the Rain
+249. The Library Card
+250. Lemon Tea
+251. A Birthday Card
+252. The Candy Shop
+253. My Pillow
+254. A Warm Blanket
+255. Ice on the Window
+256. The Last Piece of Cake
+257. The Moon Over the Sea
+258. The Old Chair
+259. Counting Sheep
 
-## A1 — listenings (236, first two sentences)
+## A1 — listenings (260, first two sentences)
 
 0. Hi, I'm Dan. I have a sister and a dog.
 1. Good morning. The shop opens at nine and closes at six.
@@ -485,3 +509,27 @@ Whether the app shows an item is checked with
 233. Happy holidays, my dear friends! I want you to have a lot of fun with your families.
 234. When I grow up I want to be a teacher. I like kids and I like to read.
 235. Time to go home, kids. Please put your books in your bags and push your chairs under the desks.
+236. Hi, it is Dad. I am at the station.
+237. Good evening. This is the hotel.
+238. Welcome to the pet shop. We have dogs, rabbits and birds.
+239. Every morning I feed the birds. I put bread on the roof and some water in a cup.
+240. Good morning, class. Today we draw our houses.
+241. This is our building. It is tall and old.
+242. We have a big mirror in our hall. Every day I look in the mirror before I go to school.
+243. Come on, it is time for our picnic. Take the basket and the blanket.
+244. Welcome to the library. You can get your first library card today.
+245. Hello. I want to buy sweets for my friends.
+246. My friend has a birthday on Saturday. I make him a card with a ball on it.
+247. It is raining, so take your umbrella. Put on your shoes and your coat.
+248. Look at this picture. Four kids play with a kite on a hill.
+249. Good evening, everyone. The pool closes in ten minutes.
+250. Today is the kite festival. We go to the big hill at ten o'clock.
+251. My grandmother has a blue apron. She wears it when she cooks.
+252. I love the rain. When it rains, I put on my coat and walk in the street.
+253. I do not feel well. I have a cold.
+254. I sleep well with my blanket. It is white.
+255. It is a cold night, so take a warm blanket. Put it on your bed and cover your feet.
+256. Look, there is one piece of cake left. Who wants it?
+257. On summer nights we sit on the beach. The moon is big and the stars are bright.
+258. In our garden there is an old brown chair. My grandfather sits on it in the afternoon.
+259. I do not sleep well tonight. My mother says, think about sheep.
