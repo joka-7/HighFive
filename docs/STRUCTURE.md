@@ -129,6 +129,7 @@ highfive/
 │   │   └── vocabulary.png
 │   ├── .structure-notes.toml
 │   ├── CONTENT-AUDIT.md                          # Content audit
+│   ├── CONTENT-TOPICS.md                         # Hand-written passage topics
 │   ├── HLD.md                                    # High-Level Design
 │   ├── LLD.md                                    # Low-Level Design
 │   └── STRUCTURE.md                              # Repository structure
@@ -160,6 +161,7 @@ highfive/
 │   │   ├── level-overrides.mjs
 │   │   ├── passages-2026.mjs                     # Two bilingual 2026 reading passages built on the new Band III words
 │   │   ├── passages-extra.mjs
+│   │   ├── passages-extra10.mjs
 │   │   ├── passages-extra2.mjs
 │   │   ├── passages-extra3.mjs
 │   │   ├── passages-extra4.mjs
@@ -187,6 +189,8 @@ highfive/
 │   │   ├── wordbank-extra9.mjs
 │   │   └── wordbank-level-moves.mjs
 │   ├── audit-content.mjs                         # `npm run content:audit`: loads the shipped content and writes…
+│   ├── check-curated.mjs
+│   ├── check-curated.test.mjs
 │   ├── content-audit.mjs                         # The audit's pure rules: CEFR list parsing, level fit, inflection-aware…
 │   ├── content-audit.test.mjs
 │   ├── content-questions.mjs                     # Seeded reordering of hand-written quiz options, so the right answer isn't…
