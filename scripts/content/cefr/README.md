@@ -3,7 +3,8 @@
 Used by `scripts/audit-content.mjs` to check that each word is taught at a
 sensible level, and as the word source for new rounds: rounds 11–14
 (`../wordbank-extra11.mjs` to `../wordbank-extra14.mjs`) teach the CEFR-J A1 and
-A2 nouns, verbs, adjectives and adverbs that no earlier round taught. Copied unchanged from
+A2 nouns, verbs, adjectives and adverbs that no earlier round taught. Where the
+app disagrees with CEFR-J, `../level-overrides.mjs` records the reviewed level. Copied unchanged from
 [openlanguageprofiles/olp-en-cefrj](https://github.com/openlanguageprofiles/olp-en-cefrj)
 (commit `d4e45b7`).
 

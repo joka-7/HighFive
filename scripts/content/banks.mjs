@@ -85,6 +85,7 @@ export const ADJECTIVES = [
 ];
 
 // Nouns tagged with their correct indefinite article (a/an), for article drills.
+// `lvl` (an index into LEVELS) holds back nouns above A1 until that level.
 export const ARTICLE_NOUNS = [
   { noun: "apple", art: "an", he: "תפוח" },
   { noun: "orange", art: "an", he: "תפוז" },
@@ -97,11 +98,11 @@ export const ARTICLE_NOUNS = [
   { noun: "book", art: "a", he: "ספר" },
   { noun: "car", art: "a", he: "מכונית" },
   { noun: "house", art: "a", he: "בית" },
-  { noun: "university", art: "a", he: "אוניברסיטה" },
+  { noun: "university", art: "a", he: "אוניברסיטה", lvl: 1 },
   { noun: "dog", art: "a", he: "כלב" },
   { noun: "table", art: "a", he: "שולחן" },
-  { noun: "European", art: "a", he: "אירופי" },
-  { noun: "uniform", art: "a", he: "מדים" },
+  { noun: "European", art: "a", he: "אירופי", lvl: 1 },
+  { noun: "uniform", art: "a", he: "מדים", lvl: 1 },
 ];
 
 // Preposition items: a sentence with a blank, the correct preposition, and
@@ -116,11 +117,11 @@ export const PREP_ITEMS = [
   { before: "The picture is ", after: " the wall.", correct: "on", wrong: ["in", "at", "by"], he: "'on the wall' = על הקיר." },
   { before: "She arrived ", after: " Monday.", correct: "on", wrong: ["in", "at", "to"], he: "'on' לימים ותאריכים." },
   { before: "I was born ", after: " May.", correct: "in", wrong: ["on", "at", "of"], he: "'in' לחודשים ולשנים." },
-  { before: "He's afraid ", after: " spiders.", correct: "of", wrong: ["from", "to", "at"], he: "'afraid of' = מפחד מ־." },
+  { before: "He's afraid ", after: " dogs.", correct: "of", wrong: ["from", "to", "at"], he: "'afraid of' = מפחד מ־." },
   { before: "This gift is ", after: " you.", correct: "for", wrong: ["to", "at", "of"], he: "'for' = עבור." },
   { before: "We talked ", after: " the problem.", correct: "about", wrong: ["on", "of", "for"], he: "'talk about' = לדבר על." },
   { before: "She's interested ", after: " art.", correct: "in", wrong: ["on", "at", "for"], he: "'interested in' = מתעניין ב־." },
-  { before: "It depends ", after: " the weather.", correct: "on", wrong: ["of", "in", "at"], he: "'depend on' = תלוי ב־." },
+  { before: "It depends ", after: " the weather.", correct: "on", wrong: ["of", "in", "at"], he: "'depend on' = תלוי ב־.", lvl: 1 },
 ];
 
 // Irregular plurals for the plural-formation drill.
@@ -255,7 +256,6 @@ export const WORD_BANKS = {
     { word: "although", partOfSpeech: "conjunction", definition: "למרות ש — מציין ניגוד", example: "Although it rained, we went out.", translation: "למרות ש" },
     { word: "develop", partOfSpeech: "verb", definition: "לפתח — לגרום לצמיחה או הרחבה", example: "The company will develop a new app.", translation: "לפתח" },
     { word: "purpose", partOfSpeech: "noun", definition: "מטרה — הסיבה שעושים משהו", example: "The purpose of the meeting was clear.", translation: "מטרה" },
-    { word: "available", partOfSpeech: "adjective", definition: "זמין — קיים ואפשר להשתמש בו", example: "Tickets are available online.", translation: "זמין" },
     { word: "increase", partOfSpeech: "verb", definition: "להגדיל או לגדול בכמות", example: "Prices increased last year.", translation: "להגדיל/לעלות" },
     { word: "depend", partOfSpeech: "verb", definition: "להיות תלוי במשהו אחר", example: "The answer depends on the situation.", translation: "להיות תלוי" },
     { word: "consider", partOfSpeech: "verb", definition: "לשקול — לחשוב על משהו ברצינות", example: "Please consider my offer.", translation: "לשקול" },

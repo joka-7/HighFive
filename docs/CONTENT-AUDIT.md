@@ -25,37 +25,37 @@ A year is 365 days: 1,825 word slots (five a day) and 1,825 quiz questions per l
 
 | Level | Unique words | Each word shown | Grammar topics | Unique quiz questions | Unique daily readings | Readings shown / written | Listenings shown / written | Speaking sentences shown / written |
 |---|---|---|---|---|---|---|---|---|
-| A1 | 786 | 2.3× | 7 | 745 | 365 / 365 | 36 / 36 | 36 / 36 | 40 / 42 |
-| A2 | 980 | 1.9× | 7 | 972 | 365 / 365 | 36 / 36 | 36 / 36 | 40 / 42 |
-| B1 | 415 | 4.4× | 6 | 421 | 365 / 365 | 37 / 37 | 36 / 36 | 40 / 42 |
-| B2 | 278 | 6.6× | 7 | 281 | 278 / 365 | 31 / 31 | 30 / 30 | 40 / 42 |
-| C1 | 245 | 7.4× | 11 | 244 | 245 / 365 | 30 / 30 | 30 / 30 | 40 / 42 |
+| A1 | 779 | 2.3× | 7 | 736 | 365 / 365 | 36 / 36 | 36 / 36 | 40 / 42 |
+| A2 | 991 | 1.8× | 7 | 981 | 365 / 365 | 36 / 36 | 36 / 36 | 40 / 42 |
+| B1 | 420 | 4.3× | 6 | 427 | 365 / 365 | 37 / 37 | 36 / 36 | 40 / 42 |
+| B2 | 264 | 6.9× | 7 | 268 | 264 / 365 | 31 / 31 | 30 / 30 | 40 / 42 |
+| C1 | 258 | 7.1× | 11 | 257 | 258 / 365 | 30 / 30 | 30 / 30 | 40 / 42 |
 | C2 | 237 | 7.7× | 4 | 225 | 237 / 365 | 30 / 30 | 30 / 30 | 40 / 42 |
 
 Hand-written items are only shown once they have a Hebrew translation (`textHe` / `transcriptHe`, `questionHe` on every question; speaking sentences in full rounds of four).
 
 ## Words against the CEFR lists
 
-Reference: CEFR-J 1.5 (A1–B2) and Octanove C1/C2 1.0 (`scripts/content/cefr/`). One level off is within the lists' own uncertainty.
+Reference: CEFR-J 1.5 (A1–B2) and Octanove C1/C2 1.0 (`scripts/content/cefr/`), with the app's reviewed exceptions in `scripts/content/level-overrides.mjs`. One level off is within the lists' own uncertainty.
 
 | Level | Same level | One level off | 2+ harder | 2+ easier | In neither list |
 |---|---|---|---|---|---|
-| A1 | 709 | 45 | 10 | 0 | 22 |
-| A2 | 744 | 206 | 10 | 0 | 20 |
-| B1 | 184 | 182 | 0 | 21 | 28 |
-| B2 | 103 | 83 | 14 | 8 | 70 |
-| C1 | 34 | 67 | 0 | 8 | 136 |
+| A1 | 712 | 45 | 0 | 0 | 22 |
+| A2 | 744 | 227 | 0 | 0 | 20 |
+| B1 | 181 | 190 | 0 | 21 | 28 |
+| B2 | 103 | 83 | 0 | 8 | 70 |
+| C1 | 34 | 80 | 0 | 8 | 136 |
 | C2 | 27 | 9 | 0 | 1 | 200 |
 
 ### A1
 
-- **Two or more levels harder:** finger (B1), boot (B1), foot (B1), pillow (B1), rest (B1), pot (B1), sand (B1), candle (B1), sometimes (B1), proud (B1)
+- **Two or more levels harder:** none
 - **Two or more levels easier:** none
 - **In neither list:** goodbye, wake up, snowman, lace, blow out, teddy bear, a bit, at all, at least, by the wall, cross the street, find out, go on a trip, in fact, in front of, in the end, interested in, lie down, on my own, pick up, the same, wait for
 
 ### A2
 
-- **Two or more levels harder:** friendly (B2), rub (B2), squeeze (B2), ceiling (B2), salty (B2), decorate (B2), colleague (B2), employee (B2), employer (B2), postpone (B2)
+- **Two or more levels harder:** none
 - **Two or more levels easier:** none
 - **In neither list:** allergy, chore, by accident, on purpose, supposed to, willing to, break down, can't stand, carry on, carry out, deal with, depend on, fill in, get rid of, in charge of, look after, look forward to, make a difference, play a trick on, quite a while
 
@@ -67,7 +67,7 @@ Reference: CEFR-J 1.5 (A1–B2) and Octanove C1/C2 1.0 (`scripts/content/cefr/`)
 
 ### B2
 
-- **Two or more levels harder:** hypothesis (C2), commodity (C2), diminish (C2), correlate (C2), adhere (C2), embody (C2), fluctuate (C2), induce (C2), denote (C2), mediate (C2), stipulate (C2), substantiate (C2), correlation (C2), embed (C2)
+- **Two or more levels harder:** none
 - **Two or more levels easier:** significant (A2), establish (A2), consequence (A2), appropriate (A2), indicate (A2), release (A2), reveal (A2), context (A2)
 - **In neither list:** framework, distinct, allocate, variable, domain, notably, bias, terminate, validate, verify, comprehend, ratio, accommodate, adjacent, amend, ascertain, augment, confer, consolidate, counteract, devise, differentiate, affirm, analogous, autonomy, bolster, brisk, consecutive, contingent, deviate, discrete, accelerate, accountable, designate, deter, disclose, dispose, distort, incorporate, inhibit, negate, postulate, supersede, warrant, underpin, optimize, streamline, pinpoint, optimal, rigorous, rationale, surplus, spectrum, hierarchy, infrastructure, magnitude, criterion, benchmark, breach, commence, conclusive, condense, counterpart, curb, deploy, equate, exhaustive, inception, iterate, rub out
 
@@ -90,12 +90,55 @@ All hand-written readings and listening transcripts, shown or not. "Above level"
 
 | Level | Passages | Words per sentence | Above level | In neither list |
 |---|---|---|---|---|
-| A1 | 72 | 6.2 | 2.2% | 1.8% |
-| A2 | 72 | 8.6 | 3.6% | 2.1% |
+| A1 | 72 | 6.2 | 1.9% | 1.8% |
+| A2 | 72 | 8.6 | 2.9% | 2.1% |
 | B1 | 73 | 11.2 | 1.9% | 2.1% |
 | B2 | 61 | 15.1 | 0.8% | 4.1% |
 | C1 | 60 | 16 | 0.4% | 4.7% |
 | C2 | 60 | 17.9 | 0% | 6.6% |
+
+## Words above the learner's level
+
+Every sentence a learner sees, checked word by word: a word counts when the lists put it above the level and it is not taught at or below the level (question terms such as "plural", names, and reading glossaries pass). Word levels follow the lists, with the app's own decisions in `scripts/content/level-overrides.mjs`. A1 and A2 must be clean (see the rules below); higher levels are information.
+
+| Level | Part of the app | Items | Items with a word above level | Most common such words |
+|---|---|---|---|---|
+| A1 | word example | 768 | 0 | none |
+| A1 | daily quiz | 1833 | 0 | none |
+| A1 | grammar question | 929 | 0 | none |
+| A1 | reading | 401 | 0 | none |
+| A1 | listening | 401 | 0 | none |
+| A1 | speaking | 807 | 0 | none |
+| A2 | word example | 991 | 0 | none |
+| A2 | daily quiz | 1834 | 0 | none |
+| A2 | grammar question | 890 | 0 | none |
+| A2 | reading | 401 | 0 | none |
+| A2 | listening | 401 | 0 | none |
+| A2 | speaking | 1002 | 0 | none |
+| B1 | word example | 420 | 0 | none |
+| B1 | daily quiz | 1835 | 2 | explodes (1), exploding (1), explosive (1), project (1) |
+| B1 | grammar question | 817 | 0 | none |
+| B1 | reading | 402 | 8 | calmly (1), concrete (1), decades (1), enforce (1), expectation (1), faith (1), fluency (1), headquarters (1) |
+| B1 | listening | 401 | 14 | reminder (3), client (2), estate (1), expired (1), inspect (1), laptop (1), medication (1), output (1) |
+| B1 | speaking | 462 | 0 | none |
+| B2 | word example | 264 | 0 | none |
+| B2 | daily quiz | 1833 | 0 | none |
+| B2 | grammar question | 856 | 0 | none |
+| B2 | reading | 396 | 7 | conditional (1), ego (1), indefinitely (1), limitless (1), remotely (1), resent (1), scrolling (1) |
+| B2 | listening | 395 | 5 | enormously (1), norms (1), notable (1), patchy (1), scrutiny (1) |
+| B2 | speaking | 314 | 1 | cons (1) |
+| C1 | word example | 258 | 0 | none |
+| C1 | daily quiz | 1825 | 0 | none |
+| C1 | grammar question | 923 | 0 | none |
+| C1 | reading | 395 | 3 | automating (1), paradoxically (1), practitioners (1) |
+| C1 | listening | 395 | 3 | curator (1), fallacy (1), remit (1) |
+| C1 | speaking | 298 | 1 | merit (1) |
+| C2 | word example | 237 | 0 | none |
+| C2 | daily quiz | 1825 | 0 | none |
+| C2 | grammar question | 1004 | 0 | none |
+| C2 | reading | 395 | 0 | none |
+| C2 | listening | 395 | 0 | none |
+| C2 | speaking | 279 | 0 | none |
 
 ## Words taught at more than one level
 
@@ -115,9 +158,7 @@ All hand-written readings and listening transcripts, shown or not. "Above level"
 - complain: A2, B1
 - consequence: B1, B2
 - cook: A1, A2
-- decorate: A2, B1
 - delicious: A1, A2
-- diminish: B2, C1
 - drop: A1, A2
 - excited: A1, A2
 - explain: A2, B1
@@ -138,11 +179,9 @@ All hand-written readings and listening transcripts, shown or not. "Above level"
 - money: A1, A2
 - notice: A2, B1
 - pragmatic: C1, C2
-- proud: A1, A2
 - quiet: A1, A2
 - realize: A2, B1
 - recommend: A2, B1
-- rest: A1, A2
 - restaurant: A1, A2
 - river: A1, A2
 - share: A1, A2
@@ -164,7 +203,7 @@ None.
 
 ## Rules CI enforces
 
-Every word entry has a word, part of speech, definition, example and translation, and its example uses the word.
+Every word entry has a word, part of speech, definition, example and translation, and its example uses the word. At A1 and A2, every word card example, quiz, grammar question, reading, listening and speaking sentence uses only words at or below the level, words already taught at or below it, or (in a reading) words in its glossary.
 
 All pass.
 <!-- END GENERATED -->

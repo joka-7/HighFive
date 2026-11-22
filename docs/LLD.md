@@ -607,7 +607,13 @@ stepping back through screens.
   `screens/Settings.integration.test.tsx` (provider save/clear flow).
 - **Content audit:** `scripts/content-audit.test.mjs` covers the audit's
   rules with small fixtures; `node scripts/audit-content.mjs --check` (CI's
-  "Content audit is current") runs them on the shipped content.
+  "Content audit is current") runs them on the shipped content. One rule checks
+  every English sentence a learner sees (word examples, quizzes, grammar
+  questions, readings, listening, speaking): at A1 and A2 it fails on any word
+  the CEFR lists put above the level unless it is taught at or below the level,
+  a question term ("plural", "speaker"), a name, or in the reading's glossary.
+  Word levels come from the lists in `scripts/content/cefr/` with the reviewed
+  exceptions in `scripts/content/level-overrides.mjs`; B1–C2 are reported only.
 - **E2E** (`e2e/*.spec.ts`) run against a production build via `vite preview`,
   driven by Playwright; CI installs Chromium with `--with-deps` since GitHub's
   runners need the system libraries Playwright doesn't bundle.

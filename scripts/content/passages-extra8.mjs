@@ -21,13 +21,13 @@ export const MORE_READINGS8 = {
       "הכלב שלי, רקס, אוהב את הכדור האדום הקטן שלו. אני זורק אותו והוא רץ מהר. הוא מחזיר לי אותו כל פעם. אנחנו משחקים בגינה עד שהשמש שוקעת.",
       [g("throw", "verb", "לזרוק", "I throw the ball.", "לזרוק"), g("fast", "adverb", "מהר", "He runs fast.", "מהר"), g("bring", "verb", "להביא", "He brings it back.", "להביא")],
       [
-        q("What does Rex love?", "מה רקס אוהב?", ["A bone", "His little red ball", "A stick", "Food"], ["עצם", "את הכדור האדום הקטן שלו", "מקל", "אוכל"], 1, "'his little red ball'."),
+        q("What does Rex love?", "מה רקס אוהב?", ["A bone", "His little red ball", "A shoe", "Food"], ["עצם", "את הכדור האדום הקטן שלו", "נעל", "אוכל"], 1, "'his little red ball'."),
         q("Where do they play?", "איפה הם משחקים?", ["In the park", "In the garden", "Inside", "On the street"], ["בפארק", "בגינה", "בתוך הבית", "ברחוב"], 1, "'We play in the garden'."),
       ]),
     R("Brushing My Teeth (מצחצח שיניים)",
       "Every morning and every night I brush my teeth. I use a green toothbrush and white toothpaste. It takes two minutes. Clean teeth are healthy and strong.",
       "כל בוקר וכל ערב אני מצחצח שיניים. אני משתמש במברשת שיניים ירוקה ובמשחת שיניים לבנה. זה לוקח שתי דקות. שיניים נקיות הן בריאות וחזקות.",
-      [g("brush", "verb", "לצחצח, להבריש", "Brush your teeth.", "לצחצח"), g("teeth", "noun", "שיניים", "Clean teeth.", "שיניים"), g("healthy", "adjective", "בריא", "Healthy teeth.", "בריא")],
+      [g("brush", "verb", "לצחצח, להבריש", "Brush your teeth.", "לצחצח"), g("teeth", "noun", "שיניים", "Clean teeth.", "שיניים"), g("healthy", "adjective", "בריא", "Healthy teeth.", "בריא"), g("toothbrush", "noun", "מברשת שיניים", "A green toothbrush.", "מברשת שיניים"), g("toothpaste", "noun", "משחת שיניים", "White toothpaste.", "משחת שיניים")],
       [
         q("How often does the child brush?", "כמה פעמים הילד מצחצח שיניים?", ["Once a day", "Morning and night", "Once a week", "Never"], ["פעם ביום", "בבוקר ובערב", "פעם בשבוע", "אף פעם"], 1, "'Every morning and every night'."),
         q("How long does it take?", "כמה זמן זה לוקח?", ["One minute", "Two minutes", "Five minutes", "Ten minutes"], ["דקה אחת", "שתי דקות", "חמש דקות", "עשר דקות"], 1, "'It takes two minutes'."),
@@ -35,7 +35,7 @@ export const MORE_READINGS8 = {
     R("A Visit to the Farm (ביקור בחווה)",
       "On the farm we see cows, sheep and a brown horse. The farmer gives us fresh milk. I feed the chickens with corn. The farm smells of grass and animals.",
       "בחווה אנחנו רואים פרות, כבשים וסוס חום. החוואי נותן לנו חלב טרי. אני מאכיל את התרנגולות בתירס. בחווה יש ריח של דשא ושל בעלי חיים.",
-      [g("farm", "noun", "חווה, משק", "On the farm.", "חווה/משק"), g("sheep", "noun", "כבשה/כבשים", "We see sheep.", "כבשה/כבשים"), g("feed", "verb", "להאכיל", "I feed the chickens.", "להאכיל")],
+      [g("farm", "noun", "חווה, משק", "On the farm.", "חווה/משק"), g("sheep", "noun", "כבשה/כבשים", "We see sheep.", "כבשה/כבשים"), g("feed", "verb", "להאכיל", "I feed the chickens.", "להאכיל"), g("fresh", "adjective", "טרי, חדש", "Fresh milk.", "טרי")],
       [
         q("What colour is the horse?", "באיזה צבע הסוס?", ["Black", "Brown", "White", "Grey"], ["שחור", "חום", "לבן", "אפור"], 1, "'a brown horse'."),
         q("What does the child feed the chickens?", "במה הילד מאכיל את התרנגולות?", ["Bread", "Corn", "Grass", "Milk"], ["בלחם", "בתירס", "בדשא", "בחלב"], 1, "'I feed the chickens with corn'."),
@@ -69,7 +69,7 @@ export const MORE_READINGS8 = {
     R("Planting a Tree (שותלים עץ)",
       "On Saturday our class planted a tree in the schoolyard. We dug a hole, placed the young tree inside, and covered the roots with soil. The teacher said that one day it will give shade to other children.",
       "בשבת הכיתה שלנו שתלה עץ בחצר בית הספר. חפרנו בור, הכנסנו לתוכו את העץ הצעיר וכיסינו את השורשים באדמה. המורה אמרה שיום אחד הוא ייתן צל לילדים אחרים.",
-      [g("plant", "verb", "לשתול", "Plant a tree.", "לשתול"), g("dig", "verb", "לחפור", "We dug a hole.", "לחפור"), g("shade", "noun", "צל", "Give shade.", "צל")],
+      [g("plant", "verb", "לשתול", "Plant a tree.", "לשתול"), g("dig", "verb", "לחפור", "We dug a hole.", "לחפור"), g("shade", "noun", "צל", "Give shade.", "צל"), g("soil", "noun", "אדמה שבה צמחים גדלים", "Cover the roots with soil.", "אדמה")],
       [
         q("Where did they plant the tree?", "איפה הם שתלו את העץ?", ["In a park", "In the schoolyard", "At home", "In a field"], ["בפארק", "בחצר בית הספר", "בבית", "בשדה"], 1, "'planted a tree in the schoolyard'."),
         q("What will the tree give one day?", "מה העץ ייתן יום אחד?", ["Fruit", "Shade", "Flowers", "Wood"], ["פירות", "צל", "פרחים", "עצים להסקה"], 1, "'it will give shade to other children'."),
@@ -239,18 +239,18 @@ export const MORE_LISTENINGS8 = {
         q("Where should the toys go?", "איפה צריך לשים את הצעצועים?", ["On the bed", "In the box", "On the floor", "Outside"], ["על המיטה", "בקופסה", "על הרצפה", "בחוץ"], 1, "'Put your toys in the box'."),
         q("How many stories?", "כמה סיפורים?", ["One", "Two", "Three", "None"], ["אחד", "שניים", "שלושה", "אף אחד"], 0, "'we read one story'."),
       ]),
-    L("Welcome to the café. We have apple juice, milk and water for children. The cakes are fresh today. What would you like?",
-      "ברוכים הבאים לבית הקפה. יש לנו מיץ תפוחים, חלב ומים לילדים. העוגות טריות היום. מה תרצו?",
+    L("Welcome to the café. We have apple juice, milk and water for children. The cakes are very good today. What would you like?",
+      "ברוכים הבאים לבית הקפה. יש לנו מיץ תפוחים, חלב ומים לילדים. העוגות טובות מאוד היום. מה תרצו?",
       [
-        q("Which drink is for children?", "איזה משקה מיועד לילדים?", ["Coffee", "Apple juice, milk and water", "Tea", "Soda"], ["קפה", "מיץ תפוחים, חלב ומים", "תה", "משקה מוגז"], 1, "'apple juice, milk and water for children'."),
-        q("What is fresh today?", "מה טרי היום?", ["The bread", "The cakes", "The fruit", "The soup"], ["הלחם", "העוגות", "הפירות", "המרק"], 1, "'The cakes are fresh today'."),
+        q("Which drink is for children?", "איזה משקה מיועד לילדים?", ["Coffee", "Apple juice, milk and water", "Tea", "Cola"], ["קפה", "מיץ תפוחים, חלב ומים", "תה", "קולה"], 1, "'apple juice, milk and water for children'."),
+        q("What is very good today?", "מה טוב מאוד היום?", ["The bread", "The cakes", "The fruit", "The soup"], ["הלחם", "העוגות", "הפירות", "המרק"], 1, "'The cakes are very good today'."),
       ]),
   ],
   A2: [
     L("Good afternoon. Because of road work, bus number five will not stop at Main Street today. Please use the stop on Park Road instead.",
       "צהריים טובים. בגלל עבודות בכביש, קו אוטובוס מספר 5 לא יעצור היום ברחוב הראשי. בבקשה השתמשו במקום זאת בתחנה ברחוב פארק.",
       [
-        q("Why is the stop changed?", "למה התחנה שונתה?", ["An accident", "Road work", "A holiday", "A parade"], ["תאונה", "עבודות בכביש", "חג", "מצעד"], 1, "'Because of road work'."),
+        q("Why is the stop changed?", "למה התחנה שונתה?", ["An accident", "Road work", "A holiday", "A festival"], ["תאונה", "עבודות בכביש", "חג", "פסטיבל"], 1, "'Because of road work'."),
         q("Which stop should people use?", "באיזו תחנה צריכים האנשים להשתמש?", ["Main Street", "Park Road", "City Hall", "The station"], ["הרחוב הראשי", "רחוב פארק", "בניין העירייה", "התחנה המרכזית"], 1, "'use the stop on Park Road instead'."),
       ]),
     L("Hi, this is the library. The book you reserved has arrived. Please collect it within seven days, or it will go back on the shelf.",

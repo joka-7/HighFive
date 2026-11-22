@@ -96,6 +96,7 @@ export const MORE_READINGS9 = {
         g("space", "noun", "מקום פנוי", "There is space for two.", "מקום"),
         g("careful", "adjective", "זהיר, שם לב", "Be careful with the knife.", "זהיר"),
         g("taste", "verb", "להיות בעל טעם מסוים", "The food tastes good.", "להיות בטעם"),
+        g("somehow", "adverb", "איכשהו, בדרך שלא ברור איך", "Somehow it works.", "איכשהו"),
       ],
       [
         q("How big is the kitchen?", "כמה גדול המטבח?", ["Very large", "Small", "Medium", "It is not said"], ["מאוד גדול", "קטן", "בינוני", "לא נאמר"], 1, "כתוב 'Our kitchen is small'."),
@@ -113,7 +114,7 @@ export const MORE_READINGS9 = {
       ],
       [
         q("What was the writer's problem?", "מה הייתה הבעיה של הכותב?", ["Too little work", "Saying yes to everything", "Rude friends", "No friends"], ["מעט מדי עבודה", "אמירת כן להכול", "חברים גסי רוח", "אין חברים"], 1, "כתוב 'I said yes to everything'."),
-        q("How did people react?", "איך אנשים הגיבו?", ["They were angry", "Nobody was angry", "They stopped calling", "They complained"], ["הם כעסו", "אף אחד לא כעס", "הם הפסיקו להתקשר", "הם התלוננו"], 1, "כתוב 'nobody was angry'."),
+        q("How did people feel?", "איך אנשים הרגישו?", ["They were angry", "Nobody was angry", "They stopped calling", "They complained"], ["הם כעסו", "אף אחד לא כעס", "הם הפסיקו להתקשר", "הם התלוננו"], 1, "כתוב 'nobody was angry'."),
       ],
     ),
     R(
@@ -411,10 +412,10 @@ export const MORE_LISTENINGS9 = {
       ],
     ),
     L(
-      "Welcome to the museum. Photography is allowed, but please turn off the flash. The last rooms close half an hour before the main entrance.",
-      "ברוכים הבאים למוזיאון. מותר לצלם, אבל נא לכבות את המבזק. החדרים האחרונים נסגרים חצי שעה לפני הכניסה הראשית.",
+      "Welcome to the museum. Photography is allowed, but please do not touch the pictures. The last rooms close half an hour before the main entrance.",
+      "ברוכים הבאים למוזיאון. מותר לצלם, אבל נא לא לגעת בתמונות. החדרים האחרונים נסגרים חצי שעה לפני הכניסה הראשית.",
       [
-        q("What is not allowed?", "מה אסור?", ["Photography", "Using the flash", "Bags", "Talking"], ["צילום", "שימוש במבזק", "תיקים", "דיבור"], 1, "נאמר 'please turn off the flash'."),
+        q("What is not allowed?", "מה אסור?", ["Photography", "Touching the pictures", "Bags", "Talking"], ["צילום", "לגעת בתמונות", "תיקים", "דיבור"], 1, "נאמר 'please do not touch the pictures'."),
         q("When do the last rooms close?", "מתי נסגרים החדרים האחרונים?", ["At the same time", "Half an hour earlier", "An hour earlier", "Later"], ["באותו זמן", "חצי שעה קודם", "שעה קודם", "מאוחר יותר"], 1, "נאמר 'half an hour before the main entrance'."),
       ],
     ),
