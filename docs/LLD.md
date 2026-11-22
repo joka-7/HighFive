@@ -509,7 +509,10 @@ plus a quarter-local index) and only the current quarter is downloaded.
   Friday/Saturday (`utils/cycle.ts`), tracked by the `words` / `memorization`
   flags respectively. Each operation card offers its in-app path *and* an
   external one: quick links to other apps, a "what did you do?" field, and a
-  mark-as-done button that calls `completeMission(flag, note)`.
+  mark-as-done button that calls `completeMission(flag, note)`. The quick links
+  are filtered to the learner's level by `linksForLevel(op, level)`: a link with
+  `levels` shows only at those levels (e.g. a kids' video search at A1, TED from
+  B2), one without shows at every level.
 - **`Memorize`** ("שינון") — loads the words of the current week's learning
   days (`utils/cycle.ts`), shows them as a tap-to-reveal self-test list, then
   runs `buildMemorizationQuiz` (`utils/memorize.ts`) through `QuizRunner` and

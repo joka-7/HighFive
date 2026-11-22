@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { useLingo } from "../store/useLingo";
 import { videoForToday, youtubeEmbedUrl } from "../data/videos";
-import { isOperationDone, OPERATIONS, type Operation } from "../data/operations";
+import { isOperationDone, linksForLevel, OPERATIONS, type ExternalLink, type Operation } from "../data/operations";
 import {
   isReviewDay,
   LEARNING_DAYS,
@@ -25,9 +25,11 @@ import type { DailyMissionFlag, Screen } from "../types";
 /** The "I did it in another app" path: quick links + what-did-you-do + mark. */
 function ExternalPanel({
   op,
+  links,
   onComplete,
 }: {
   op: Operation;
+  links: ExternalLink[];
   onComplete: (note: string) => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -44,9 +46,9 @@ function ExternalPanel({
 
   return (
     <div className="external-panel">
-      {op.links.length > 0 && (
+      {links.length > 0 && (
         <div className="external-links">
-          {op.links.map((l) => (
+          {links.map((l) => (
             <a
               key={l.url}
               className="external-link"
@@ -89,6 +91,7 @@ function ExternalPanel({
 
 function OperationCard({
   op,
+  links,
   number,
   done,
   note,
@@ -97,6 +100,7 @@ function OperationCard({
   extra,
 }: {
   op: Operation;
+  links: ExternalLink[];
   number: number;
   done: boolean;
   note?: string;
@@ -126,7 +130,7 @@ function OperationCard({
           {op.altCta}
         </button>
       )}
-      <ExternalPanel op={op} onComplete={onComplete} />
+      <ExternalPanel op={op} links={links} onComplete={onComplete} />
     </MissionCard>
   );
 }
@@ -254,6 +258,7 @@ export default function DailyMissions({ go }: { go: (s: Screen) => void }) {
         <OperationCard
           key={op.id}
           op={op}
+          links={linksForLevel(op, level)}
           number={i + 1}
           done={isOperationDone(op, flags)}
           note={notes[op.flag]}
