@@ -115,7 +115,7 @@ function ensureListeningHebrew(listening: GemListening): GemListening {
 // Per skill: Reading tolerates the most, because its glossary explains new
 // words on the spot; Speaking the least, since the learner has to pronounce
 // every word aloud.
-const CURATED_TOLERANCE: Record<Level, { reading: number; listening: number; speaking: number }> = {
+export const CURATED_TOLERANCE: Record<Level, { reading: number; listening: number; speaking: number }> = {
   A1: { reading: 3, listening: 2, speaking: 1 },
   A2: { reading: 6, listening: 4, speaking: 2 },
   B1: { reading: 10, listening: 6, speaking: 3 },
