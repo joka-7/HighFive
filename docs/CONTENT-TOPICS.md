@@ -533,3 +533,181 @@ Whether the app shows an item is checked with
 257. On summer nights we sit on the beach. The moon is big and the stars are bright.
 258. In our garden there is an old brown chair. My grandfather sits on it in the afternoon.
 259. I do not sleep well tonight. My mother says, think about sheep.
+
+## A2 — readings (86)
+
+0. A Day at the Market
+1. Learning to Swim
+2. A New Phone
+3. Weekend Plans
+4. My Grandmother's Recipe
+5. The Job Interview
+6. Cooking Together
+7. Lost in the City
+8. A New Language
+9. The Broken Phone
+10. Saving for a Trip
+11. A Change of Plans
+12. My First Job
+13. Learning to Cook
+14. The Neighbour's Cat
+15. A Surprise Party
+16. Learning to Drive
+17. Lost and Found
+18. The Farmers' Market
+19. Learning to Swim
+20. A Letter from Grandma
+21. Moving to a New Town
+22. The First Day at Work
+23. A Camping Trip
+24. My Noisy Neighbours
+25. Learning to Cook
+26. The Train Was Late
+27. The Power Cut
+28. A Job Interview
+29. Planting a Tree
+30. The Wrong Bus
+31. A Gift for My Mother
+32. The Long Walk Home
+33. A Small Kitchen
+34. Learning to Say No
+35. The Old Bicycle
+36. The Science Fair
+37. A Group Project
+38. Choosing a Subject
+39. Exam Week
+40. A New Classmate
+41. The School Choir
+42. The Football Final
+43. A Late Bus
+44. Homework Club
+45. My Grandfather's Stories
+46. Moving Rooms
+47. Family Photo Day
+48. Sunday Cleaning Day
+49. A Quiet Evening at Home
+50. My Aunt's Wedding
+51. A Family Trip to the North
+52. A Bad Day in the Kitchen
+53. Trying Sushi
+54. The Best Hummus
+55. A Picnic in the Rain
+56. Shabbat Dinner Preparations
+57. The Fruit Stall
+58. Pizza Night
+59. Learning to Surf
+60. The Marathon
+61. Beach Cleaning Day
+62. A Day at the Water Park
+63. Basketball Practice
+64. Table Tennis with Dad
+65. Hanukkah Candles
+66. Purim Costumes
+67. Sukkot Week
+68. Independence Day Barbecue
+69. Cleaning for Passover
+70. A Day in Jerusalem
+71. The Night Market
+72. The Airport Delay
+73. A Town in the North
+74. The Alarm Clock
+75. Losing My Wallet
+76. A Broken Window
+77. A Rainy Saturday
+78. A Visit to the Doctor
+79. Shopping Online
+80. The Piano Lesson
+81. The Neighbour's Garden
+82. The Photo Contest
+83. Saving Money
+84. The Fire Drill
+85. Alone on the Bus
+
+## A2 — listenings (86, first two sentences)
+
+0. Hello, this is the dentist's office. Your appointment is on Tuesday at half past three.
+1. Attention passengers. The train to Haifa will leave from platform two, not platform four.
+2. Hi, it's Tom. I'm calling about the dinner on Saturday.
+3. Welcome to the museum. Photos are allowed, but please do not touch the paintings.
+4. Please remember: the library closes early today, at four o'clock. Please return your books before you leave.
+5. Thank you for calling Sunny Gym. We are open from six in the morning to ten at night.
+6. Hi, it's the cinema. Your booking for tonight is confirmed: two tickets for the eight o'clock film.
+7. Attention, please. The supermarket will close in fifteen minutes.
+8. Good evening. The film starts at eight, but the doors open at half past seven.
+9. Hello, this is the garage. Your car is ready.
+10. Attention, please. The 9:15 train to Tel Aviv is delayed by twenty minutes.
+11. Hi, this is the library. The book you reserved is now available.
+12. Welcome to the ferry to the island. The trip takes about forty minutes.
+13. Hi, this is the pharmacy. Your medicine is ready.
+14. Welcome to the gym. New members get a free class on Monday.
+15. Hi, this is the school office. Tomorrow's trip is cancelled because of the rain.
+16. Welcome to the museum. Please note that you can take photos, but food and drink are not allowed in the galleries.
+17. Attention, please: the supermarket will close in fifteen minutes. Please bring your items to the cash desk now.
+18. Hello, this is Dr Levi's office. Your appointment is on Thursday at three o'clock.
+19. Welcome to the train to the city centre. The next stop is Market Street.
+20. Thanks for calling the cinema. Tonight's film starts at eight.
+21. Good afternoon. Because of the storm, today's outdoor concert has been moved inside to the main hall.
+22. Good evening. Please remember that the swimming pool closes early tomorrow, at four o'clock, for cleaning.
+23. Hi, it's Dana. I'm running about twenty minutes late because of traffic.
+24. Attention passengers: the flight to Rome is now boarding at gate twelve. Please have your passport and boarding pass ready.
+25. Thank you for calling the dentist. We are closed now.
+26. Welcome to the gym. New members get a free class this week.
+27. Good afternoon. Because of road work, bus number five will not stop at Main Street today.
+28. Hi, this is the library. The book you reserved has arrived.
+29. Attention, please. The museum closes in thirty minutes.
+30. Hello, it's the garage. Your car is ready.
+31. Welcome to the cooking class. Tonight we make a simple tomato soup.
+32. I started running last winter, mostly because I wanted to sleep better. The first weeks were hard and I almost stopped.
+33. Welcome to the museum. Photography is allowed, but please do not touch the pictures.
+34. I ordered a jacket online and the wrong size arrived. I called the shop and they were very polite about it.
+35. My neighbour leaves for work before six every morning, so the building is quiet after that. I used to find it strange, but now I like the early hours too.
+36. Hello, this is the swimming pool. Your son left his towel and goggles in the changing room yesterday.
+37. Good morning, everyone. This is your captain speaking.
+38. Hi, it is Maya. I am calling about Saturday.
+39. Welcome to the water park. Please read the rules before you go in.
+40. Hello, team. Tomorrow's basketball practice is moved from the school hall to the sports centre because of the exams.
+41. Good evening. Tonight is the first night of Hanukkah.
+42. Hi, it is Dad. I am on the highway, and the cars are not moving because of an accident.
+43. Welcome to the tour of the old city. First we will walk down this street to the market.
+44. This is a message for passengers on bus number twelve. Because of road works, the bus will not stop at the hospital today.
+45. Hello, welcome to the cooking class. Today we are going to make vegetable soup.
+46. Hi, this is the doctor's office. I am calling to remind you about your appointment tomorrow at ten fifteen.
+47. I am calling about the lost wallet. It is brown, and it has a student card and some money inside.
+48. This is your radio weather report. Today will be hot and sunny in the south and the centre, with temperatures up to thirty-five degrees.
+49. Hi, it is Noam. I am sorry I could not come to the party last night.
+50. Welcome to the national park. The path to the river is about two kilometres long and takes forty minutes.
+51. Good afternoon, students. I have some news about next week's trip.
+52. Hello, welcome to the new library. You can borrow up to five books for three weeks.
+53. I want to tell you about my grandmother's house. It is old, but it is warm and comfortable.
+54. Hello, this is a message from the school office. Tomorrow is the photo day, and every student should wear the school uniform.
+55. Hi, it is me. I am at the mall and I saw a jacket that you would love.
+56. Attention, all passengers. The train to the airport is now arriving at platform three.
+57. Good evening, ladies and gentlemen. Welcome to the school concert.
+58. Hello, this is the garage. Your car is ready.
+59. Hi, it is the dentist's office. I am calling to change your appointment.
+60. Welcome to the museum of science. The exhibition about space is on the second floor, and the dinosaurs are on the ground floor.
+61. This is a message for everyone in class nine. The history work is for next Wednesday, not Friday.
+62. Hi, this is the sports shop. The shoes you ordered have arrived.
+63. Good morning, and welcome to the airport. The check-in desks for the flight to Paris are numbers one to five.
+64. Hi, it is Mom. I forgot to tell you this morning that I will be late.
+65. Hello, passengers on the ferry to the island. Please make sure that your bags are not blocking the doors.
+66. Hi, this is the pharmacy. Your medicine is ready.
+67. Welcome to the gym. Before you use the machines, please fill in this form and sign it.
+68. Hi, it is me. Do you remember the old bicycle I wanted to sell?
+69. Good afternoon. This is the supermarket.
+70. I have a busy week. On Monday I have a maths test, and on Tuesday I play in a football match.
+71. Hello, this is a short message for the neighbours in the building. On Sunday the water will be turned off between nine and one, because the workers need to repair the water system.
+72. Hi, it is me. I am so excited about our trip to the mountains next week.
+73. Welcome to the town cinema. Tonight's film starts at eight and lasts two hours.
+74. Hello! I am twelve years old.
+75. Hello, farmers' market visitors. The fruit and vegetable shops are on the left and the cheese and bread shops are on the right.
+76. Dear students, this is your headteacher. Tomorrow there will be no school because of the strong storm.
+77. Hi, it is me. I am at the airport and my flight is two hours late.
+78. I really love my school, but there are a few things I would like to change. First, the lessons start too early, at seven thirty.
+79. Hello. I would like to make a reservation for dinner on Friday evening, please.
+80. Hello, and welcome back to the radio show for teenagers. Our topic today is sleep.
+81. Hi, it is Grandma. I made your favourite cake, and I want to bring it to you tomorrow.
+82. Hello, this is the school bus company. Because of the holiday, bus number five will not run on Thursday and Friday.
+83. Last summer I worked in my uncle's ice cream shop. I got up at six every morning and washed the floors before we opened.
+84. Good evening, this is the local news. A young boy from our town saw a wallet with a lot of money on the street yesterday.
+85. Hello, I am calling about the lesson tomorrow. I am sorry, but I can't come because I am ill.

@@ -33,7 +33,7 @@ A year is 365 days: 1,825 word slots (five a day) and 1,825 quiz questions per l
 | Level | Unique words | Each word shown | Grammar topics | Unique quiz questions | Unique daily readings | Readings shown / written | Listenings shown / written | Speaking sentences shown / written |
 |---|---|---|---|---|---|---|---|---|
 | A1 | 779 | 2.3× | 7 | 736 | 365 / 365 | 260 / 260 | 260 / 260 | 40 / 42 |
-| A2 | 991 | 1.8× | 7 | 981 | 365 / 365 | 36 / 36 | 36 / 36 | 40 / 42 |
+| A2 | 991 | 1.8× | 7 | 981 | 365 / 365 | 86 / 86 | 86 / 86 | 40 / 42 |
 | B1 | 420 | 4.3× | 6 | 427 | 365 / 365 | 37 / 37 | 36 / 36 | 40 / 42 |
 | B2 | 264 | 6.9× | 7 | 268 | 264 / 365 | 31 / 31 | 30 / 30 | 40 / 42 |
 | C1 | 258 | 7.1× | 11 | 257 | 258 / 365 | 30 / 30 | 30 / 30 | 40 / 42 |
@@ -98,7 +98,7 @@ All hand-written readings and listening transcripts, shown or not. "Above level"
 | Level | Passages | Words per sentence | Above level | In neither list |
 |---|---|---|---|---|
 | A1 | 520 | 6.8 | 1.8% | 0.8% |
-| A2 | 72 | 8.6 | 2.7% | 2.1% |
+| A2 | 172 | 10 | 1.8% | 1.9% |
 | B1 | 73 | 11.2 | 1.9% | 2.1% |
 | B2 | 61 | 15.1 | 0.8% | 4.1% |
 | C1 | 60 | 16 | 0.4% | 4.7% |
@@ -119,8 +119,8 @@ Every sentence a learner sees, checked word by word: a word counts when the list
 | A2 | word example | 991 | 0 | none |
 | A2 | daily quiz | 1834 | 0 | none |
 | A2 | grammar question | 890 | 0 | none |
-| A2 | reading | 401 | 0 | none |
-| A2 | listening | 401 | 0 | none |
+| A2 | reading | 451 | 0 | none |
+| A2 | listening | 451 | 0 | none |
 | A2 | speaking | 1002 | 0 | none |
 | B1 | word example | 420 | 0 | none |
 | B1 | daily quiz | 1835 | 2 | explodes (1), exploding (1), explosive (1), project (1) |
