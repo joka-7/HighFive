@@ -157,8 +157,9 @@ try {
   roleplay conversation can't be canned) and throws if no provider is
   configured; the `DialogueCoach` screen catches this and prompts the user to
   add a key. `scenario` is a `DialogueScenario`: when it has a `brief` or
-  `targetPhrases` (the 2026 scripts in `data/topics.ts`), both go into the
-  prompt, and the partner bolds target phrases the learner uses.
+  `targetPhrases` (every A1/A2 scenario and the 2026 scripts in
+  `data/topics.ts`), both go into the prompt, and the partner bolds target
+  phrases the learner uses.
 
 The first three fall back to `loadOfflineContent(level).{vocabulary,lessons,
 quizzes}`. Reading/Listening/Speaking pick from two bundled pools, in order:
@@ -521,8 +522,9 @@ plus a quarter-local index) and only the current quarter is downloaded.
   shows the Hebrew explanation, runs the 3-question quiz, then `completeLesson`.
 - **`Vocabulary`** — 5 level-adaptive flashcards with a "new words" refresh;
   save/unsave via `toggleSaveWord`.
-- **`DialogueCoach`** — AI roleplay chat over 16 scenarios; requires a key
-  (shows a CTA to Settings otherwise); filters chat by scenario+level; shows
+- **`DialogueCoach`** — AI roleplay chat over 20 scenarios; requires a key
+  (shows a CTA to Settings otherwise); shows the scenario's target phrases as
+  "נסו להשתמש: …" above the chat; filters chat by scenario+level; shows
   Hebrew corrections; TTS on assistant replies. On a failed reply, offers the
   shared package's `EXTERNAL_CHAT_PROVIDERS` (ChatGPT/Claude/Gemini/Groq) as
   direct links pre-filled with the failed message — a free escape hatch that

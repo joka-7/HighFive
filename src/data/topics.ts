@@ -111,16 +111,89 @@ export interface DialogueScenario {
   targetPhrases?: readonly string[];
 }
 
+// Every A1 and A2 scenario has a script and target phrases (topics.test.ts).
 export const DIALOGUE_SCENARIOS: DialogueScenario[] = [
-  { id: "cafe", label: "☕ בבית קפה", en: "Ordering at a cafe", minLevel: "A1" },
-  { id: "friends", label: "👋 שיחה עם חבר", en: "Chatting with a friend", minLevel: "A1" },
-  { id: "shopping", label: "🛍️ בקניות", en: "Shopping for clothes", minLevel: "A1" },
-  { id: "restaurant", label: "🍝 הזמנה במסעדה", en: "Ordering at a restaurant", minLevel: "A1" },
-  { id: "directions", label: "🗺️ בקשת הכוונה", en: "Asking for directions", minLevel: "A1" },
-  { id: "airport", label: "✈️ בשדה התעופה", en: "At the airport", minLevel: "A2" },
-  { id: "doctor", label: "🩺 אצל הרופא", en: "At the doctor", minLevel: "A2" },
-  { id: "phone", label: "📞 שיחת טלפון", en: "Making a phone call", minLevel: "A2" },
-  { id: "pharmacy", label: "💊 בבית מרקחת", en: "At the pharmacy", minLevel: "A2" },
+  {
+    id: "cafe",
+    label: "☕ בבית קפה",
+    en: "Ordering at a cafe",
+    minLevel: "A1",
+    brief:
+      "You are a friendly waiter at a café in Tel Aviv, talking to a Hebrew-speaking learner. Ask what they would like to drink and eat, and if they want it hot or cold, then tell them the price. Keep your sentences short and simple for the learner's level and ask one question at a time. If they make a mistake, praise the effort; the correction goes in the corrections field.",
+    targetPhrases: ["I would like", "a cup of", "can I have", "how much is it", "thank you"],
+  },
+  {
+    id: "friends",
+    label: "👋 שיחה עם חבר",
+    en: "Chatting with a friend",
+    minLevel: "A1",
+    brief:
+      "You are a new classmate chatting with a Hebrew-speaking learner after school. Ask their name, where they live, what they like to do and their favourite food. Say a little about yourself too. Keep your sentences short and simple for the learner's level and ask one question at a time. If they make a mistake, praise the effort; the correction goes in the corrections field.",
+    targetPhrases: ["my name is", "I live in", "I like", "my favourite", "what about you"],
+  },
+  {
+    id: "shopping",
+    label: "🛍️ בקניות",
+    en: "Shopping for clothes",
+    minLevel: "A1",
+    brief:
+      "You are a shop assistant in a clothes shop, helping a Hebrew-speaking learner. Ask what they want and which colour and size; when they ask, tell them the price and if you have it in another colour. Keep your sentences short and simple for the learner's level and ask one question at a time. If they make a mistake, praise the effort; the correction goes in the corrections field.",
+    targetPhrases: ["I want", "do you have it in", "how much is it", "it is too big", "I will take it"],
+  },
+  {
+    id: "restaurant",
+    label: "🍝 הזמנה במסעדה",
+    en: "Ordering at a restaurant",
+    minLevel: "A1",
+    brief:
+      "You are a waiter in a family restaurant, serving a Hebrew-speaking learner. Ask how many people are coming, take their order, ask if the food is good, and bring the bill when they ask to pay. Keep your sentences short and simple for the learner's level and ask one question at a time. If they make a mistake, praise the effort; the correction goes in the corrections field.",
+    targetPhrases: ["a table for two", "can I have", "I would like", "it is very good", "can we pay"],
+  },
+  {
+    id: "directions",
+    label: "🗺️ בקשת הכוונה",
+    en: "Asking for directions",
+    minLevel: "A1",
+    brief:
+      "You are a friendly local in a city. A Hebrew-speaking tourist asks you the way. Ask where they want to go and explain the way in short steps with left, right, near and next to. Keep your sentences short and simple for the learner's level and ask one question at a time. If they make a mistake, praise the effort; the correction goes in the corrections field.",
+    targetPhrases: ["excuse me", "where is", "how do I get to", "is it near here", "thank you"],
+  },
+  {
+    id: "airport",
+    label: "✈️ בשדה התעופה",
+    en: "At the airport",
+    minLevel: "A2",
+    brief:
+      "You are a check-in agent at Ben Gurion Airport, talking to a Hebrew-speaking learner. Ask for their passport and where they are flying, how many bags they have, and if they want a window or an aisle seat; tell them the gate when they ask. Keep your sentences short and simple for the learner's level and ask one question at a time. If they make a mistake, praise the effort; the correction goes in the corrections field.",
+    targetPhrases: ["here is my passport", "I am flying to", "a window seat, please", "which gate", "thank you for your help"],
+  },
+  {
+    id: "doctor",
+    label: "🩺 אצל הרופא",
+    en: "At the doctor",
+    minLevel: "A2",
+    brief:
+      "You are a kind family doctor seeing a Hebrew-speaking learner. Ask what the problem is, how long they have felt ill and if they have a temperature, then give simple advice: rest, drink water, take medicine. Keep your sentences short and simple for the learner's level and ask one question at a time. If they make a mistake, praise the effort; the correction goes in the corrections field.",
+    targetPhrases: ["I feel", "it hurts", "since yesterday", "I have a headache", "a temperature"],
+  },
+  {
+    id: "phone",
+    label: "📞 שיחת טלפון",
+    en: "Making a phone call",
+    minLevel: "A2",
+    brief:
+      "You are a receptionist at a sports centre answering a phone call from a Hebrew-speaking learner who wants to book a class. Ask their name, which class and day they want, and their phone number, and repeat the details to check. Keep your sentences short and simple for the learner's level and ask one question at a time. If they make a mistake, praise the effort; the correction goes in the corrections field.",
+    targetPhrases: ["I am calling about", "I would like to book", "could you repeat", "my number is", "see you then"],
+  },
+  {
+    id: "pharmacy",
+    label: "💊 בבית מרקחת",
+    en: "At the pharmacy",
+    minLevel: "A2",
+    brief:
+      "You are a pharmacist talking to a Hebrew-speaking learner who has a cold. Ask how they feel, suggest a medicine, and explain clearly how many times a day to take it and when. Keep your sentences short and simple for the learner's level and ask one question at a time. If they make a mistake, praise the effort; the correction goes in the corrections field.",
+    targetPhrases: ["I have a cold", "do you have", "something for a cold", "is it safe", "how many times"],
+  },
   { id: "hotel", label: "🏨 צ'ק-אין במלון", en: "Checking in at a hotel", minLevel: "B1" },
   { id: "bank", label: "🏦 בבנק", en: "At the bank", minLevel: "B1" },
   { id: "complaint", label: "😟 הגשת תלונה", en: "Making a complaint", minLevel: "B1" },
