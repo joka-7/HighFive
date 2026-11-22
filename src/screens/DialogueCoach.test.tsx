@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { LingoProvider, useLingo } from "../store/useLingo";
 import DialogueCoach from "./DialogueCoach";
@@ -119,5 +119,15 @@ describe("DialogueCoach — conversation intro", () => {
     renderCoach();
     fireEvent.click(screen.getByText("☕ בבית קפה"));
     expect(screen.getByRole("note")).toHaveTextContent("אתם משוחחים עם AI");
+  });
+
+  it("lists the scenario's target phrases to practise, marked as English", () => {
+    renderCoach();
+    fireEvent.click(screen.getByText("☕ בבית קפה"));
+    const phrases = within(screen.getByRole("list", { name: "נסו להשתמש:" })).getAllByRole("listitem");
+    expect(phrases.map((li) => [li.textContent, li.getAttribute("lang"), li.getAttribute("dir")]).slice(0, 2)).toEqual([
+      ["I would like", "en", "ltr"],
+      ["a cup of", "en", "ltr"],
+    ]);
   });
 });

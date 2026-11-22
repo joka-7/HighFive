@@ -124,6 +124,21 @@ export default function DialogueCoach({ go }: { go: (s: Screen) => void }) {
         </button>
       </div>
 
+      {scenario.targetPhrases && scenario.targetPhrases.length > 0 && (
+        <>
+          <p className="muted m-0" id="target-phrases-label">
+            נסו להשתמש:
+          </p>
+          <ul className="plain-list flex-wrap mb-2_5" aria-labelledby="target-phrases-label">
+            {scenario.targetPhrases.map((phrase) => (
+              <li key={phrase} className="tag" lang="en" dir="ltr">
+                {phrase}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
       <div className="chat-log" ref={logRef}>
         {messages.length === 0 && (
           <>
