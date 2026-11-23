@@ -1,12 +1,15 @@
 // Would the app actually show each hand-written reading / listening?
 //
-//   npm run content && node scripts/check-curated.mjs A1 [--from 36]
+//   npm run content && node scripts/check-curated.mjs A1 [--from 36] [--lessons]
 //
 // Applies the app's own rule (CURATED_TOLERANCE + unknownWordsIn, loaded from
 // src/ through Vite so it cannot drift) to the generated curated pools, for a
 // learner who has studied the level's word cards but nothing else. Exits 1
 // when an item is over the tolerance, i.e. when the app would skip it and
 // fall back to generated text. `--from N` only checks items from index N on.
+// `--lessons` instead checks the written A1 grammar lessons: each must have no
+// unknown word at all, or the app would skip to the next lesson and break the
+// syllabus order.
 
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -36,6 +39,16 @@ async function main() {
     const allowed = vocab.buildAllowedVocabulary(level, [], [], below);
     const tol = content.CURATED_TOLERANCE[level];
     let bad = 0;
+    if (rest.includes("--lessons")) {
+      const { A1_GRAMMAR } = await import("./content/a1-grammar.mjs");
+      const quarters = [1, 2, 3, 4].flatMap((n) => JSON.parse(readFileSync(join(OFFLINE, `a1.q${n}.json`), "utf8")).lessons);
+      const written = quarters.slice(0, A1_GRAMMAR.length);
+      const over = overTolerance(written, content.lessonTexts ?? vocab.lessonTexts, allowed, 0, vocab.unknownWordsIn);
+      for (const r of over) console.log(`A1 lesson #${r.index} ${written[r.index].title}: ${r.unknown.join(", ")}`);
+      console.log(`A1 lessons: ${written.length - over.length}/${written.length} shown in order`);
+      process.exitCode = over.length ? 1 : 0;
+      return;
+    }
     for (const [kind, textsOf, max] of [
       ["reading", vocab.readingTexts, tol.reading],
       ["listening", vocab.listeningTexts, tol.listening],

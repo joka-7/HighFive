@@ -48,6 +48,7 @@ import { blankWordInText, wordFormInText } from "./content-text.mjs";
 import { wordIndicesForDay } from "./content-schedule.mjs";
 import { applyCurriculumOrder } from "./content-order.mjs";
 import { A1_ORDER } from "./content/a1-order.mjs";
+import { A1_GRAMMAR } from "./content/a1-grammar.mjs";
 import { shuffleOptions } from "./content-questions.mjs";
 import { MORE_READINGS, MORE_LISTENINGS } from "./content/passages-extra.mjs";
 import { MORE_READINGS2, MORE_LISTENINGS2, MORE_SPEAKING } from "./content/passages-extra2.mjs";
@@ -686,6 +687,9 @@ function buildLevel(level, levelIdx) {
     const questions = genDistinct(() => GEN[topic.key](rng, ctx), 3);
     lessons.push({ title: topic.title, explanation: topic.explanation, questions });
   }
+  // The written A1 syllabus takes the first course days; later days keep the
+  // generated rotation until their weeks are written.
+  if (level === "A1") A1_GRAMMAR.forEach((l, d) => (lessons[d] = l));
 
   // Quizzes: 365 progressive sets using today's vocabulary words, plus one
   // rotating 2026 skill question (second meaning, word family, confusing pair)
