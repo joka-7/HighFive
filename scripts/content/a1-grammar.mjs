@@ -88,7 +88,7 @@ export const A1_GRAMMAR = [
   ),
   lesson(
     "We are / they are (אנחנו, הם)",
-    "עם we (אנחנו) ו-they (הם, הן) משתמשים ב-are: We are friends. They are at school. גם עם שלושה אנשים או יותר: My mother and my father are in the house.",
+    "עם we (אנחנו) ו-they (הם, הן) משתמשים ב-are: We are friends. They are at school. גם עם שני אנשים או יותר: My mother and my father are in the house.",
     [
       gap("We ___ friends.", ["is", "am", "are", "be"], 2, "עם we הצורה היא are: We are friends."),
       gap("They ___ at school.", ["are", "is", "am", "be"], 0, "עם they הצורה היא are: They are at school."),
@@ -172,18 +172,18 @@ export const A1_GRAMMAR = [
     "A or an (תווית לא מיודעת)",
     "לפני שם עצם ביחיד משתמשים ב-a או an. a לפני צליל עיצור: a book, a girl. an לפני צליל של תנועה: an apple, an egg. עם שמות עצם ברבים לא משתמשים בהם.",
     [
-      gap("I have ___ apple.", ["a", "an", "the", "two"], 1, "apple מתחיל בתנועה, לכן an."),
+      gap("I have ___ apple.", ["a", "an", "is", "two"], 1, "apple מתחיל בתנועה, לכן an."),
       gap("She is ___ girl.", ["an", "a", "two", "is"], 1, "girl מתחיל בעיצור, לכן a."),
-      gap("He has ___ egg.", ["a", "the", "an", "is"], 2, "egg מתחיל בתנועה, לכן an."),
+      gap("He has ___ egg.", ["a", "two", "an", "is"], 2, "egg מתחיל בתנועה, לכן an."),
     ],
   ),
   lesson(
     "The (התווית המיודעת)",
     "משתמשים ב-the כשמדברים על דבר מסוים, שכבר הזכרנו או שכולם יודעים מהו: I have a dog. The dog is brown. אותה מילה לכל המספרים: the dog, the dogs.",
     [
-      gap("I have a dog. ___ dog is brown.", ["A", "An", "The", "Is"], 2, "הכלב כבר הוזכר, לכן the."),
-      gap("I see a cat. ___ cat is big.", ["The", "An", "Is", "A"], 0, "החתול כבר הוזכר, לכן the."),
-      gap("Open ___ door, please.", ["a", "the", "an", "is"], 1, "מדובר בדלת מסוימת, לכן the."),
+      gap("I have a dog. ___ dog is brown.", ["Two", "An", "The", "Is"], 2, "הכלב כבר הוזכר, לכן the."),
+      gap("I see a cat. ___ cat is big.", ["The", "An", "Is", "Two"], 0, "החתול כבר הוזכר, לכן the."),
+      gap("Open ___ door, please.", ["the", "an", "is", "two"], 0, "מדובר בדלת מסוימת, לכן the."),
     ],
   ),
   lesson(
@@ -197,7 +197,7 @@ export const A1_GRAMMAR = [
   ),
   lesson(
     "-es and -ies (רבים מיוחדים)",
-    "בשמות כמו bus ו-box מוסיפים בסוף עוד הברה: buses, boxes. בשמות כמו baby משנים את סוף המילה: babies. בשמות כמו boy רק מוסיפים s: boys.",
+    "בשמות כמו bus ו-box מוסיפים בסוף עוד הברה: buses, boxes. בשמות כמו baby (עיצור לפני סוף המילה) משנים את סוף המילה: babies. אחרי תנועה, כמו ב-boy, רק מוסיפים s: boys.",
     [
       gap("one box, two ___", ["boxs", "boxes", "box", "a box"], 1, "אחרי הצליל האחרון של box מוסיפים סיומת נוספת: boxes."),
       gap("one baby, three ___", ["babys", "babyes", "babies", "baby"], 2, "האות האחרונה של baby מוחלפת: babies."),
@@ -208,7 +208,7 @@ export const A1_GRAMMAR = [
     "Fish and people (רבים בלי שינוי)",
     "יש שמות עצם שלא משתנים ברבים: one fish, two fish. המילה people היא כבר רבים, ולכן הפועל אחריה הוא are: The people are happy. לא אומרים peoples.",
     [
-      gap("one fish, three ___", ["fish", "fishes", "fish's", "a fish"], 0, "fish נשארת אותה מילה ברבים: three fish."),
+      gap("one fish, three ___", ["fish", "fishs", "fish's", "a fish"], 0, "fish נשארת אותה מילה ברבים: three fish."),
       gap("The people ___ happy.", ["is", "am", "are", "be"], 2, "people הוא רבים, לכן are."),
       pick(
         "Which sentence is right?",
@@ -232,7 +232,7 @@ export const A1_GRAMMAR = [
   ),
   lesson(
     "These and those (אלה, ההם)",
-    "these ו-those הם הרבים של this ו-that: These are my shoes (קרוב). Those are birds (רחוק). אחריהם בא are, ושם העצם ברבים.",
+    "these ו-those הם הרבים של this ו-that: These are my shoes (קרוב). Those are birds (רחוק). אחריהם בא are (These are shoes) או שם עצם ברבים (These shoes are big).",
     [
       gap("___ are my shoes. (they are near me)", ["This", "That", "Those", "These"], 3, "הנעליים קרובות ורבים: these."),
       gap("___ are birds. (they are not here)", ["Those", "These", "That", "This"], 0, "הציפורים רחוקות ורבים: those."),
@@ -243,25 +243,25 @@ export const A1_GRAMMAR = [
     "My, your, his, her (של מי?)",
     "מילות שייכות באות לפני שם עצם: my (שלי), your (שלך), his (שלו), her (שלה). I have a dog. My dog is big. He is a boy. His mother is here.",
     [
-      gap("She is my sister. ___ name is on the book.", ["His", "Her", "My", "Their"], 1, "אחות היא בת, לכן her."),
-      gap("I have a dog. ___ dog is big.", ["My", "Your", "Her", "His"], 0, "הכלב שלי: my dog."),
-      gap("He is a boy. ___ mother is here.", ["Her", "My", "His", "Your"], 2, "הוא בן, לכן his."),
+      gap("She is my sister. ___ name is on the book. (the name of my sister)", ["His", "Her", "My", "Their"], 1, "אחות היא בת, לכן her."),
+      gap("I have a dog. ___ dog is big. (the dog is mine)", ["My", "Your", "Her", "His"], 0, "הכלב שלי: my dog."),
+      gap("He is a boy. ___ mother is here. (the mother of the boy)", ["Her", "My", "His", "Your"], 2, "הוא בן, לכן his."),
     ],
   ),
   lesson(
     "Our and their (שלנו, שלהם)",
     "our הוא “שלנו” ו-their הוא “שלהם” או “שלהן”: We have a house. Our house is big. The girls have bags. Their bags are red.",
     [
-      gap("We have a house. ___ house is big.", ["Their", "My", "Our", "Her"], 2, "הבית שלנו: our house."),
-      gap("The girls have bags. ___ bags are red.", ["Our", "Their", "His", "Your"], 1, "התיקים שלהן: their bags."),
-      gap("You and I are friends. ___ teacher is here.", ["Their", "Her", "Your", "Our"], 3, "החברות שלנו, של אני ואתה: our."),
+      gap("We have a house. ___ house is big. (the house of us)", ["Their", "My", "Our", "Her"], 2, "הבית שלנו: our house."),
+      gap("The girls have bags. ___ bags are red. (the bags of the girls)", ["Our", "Their", "His", "Your"], 1, "התיקים שלהן: their bags."),
+      gap("You and I are friends. ___ teacher is here. (the teacher of you and me)", ["Their", "Her", "Your", "Our"], 3, "המורה של שנינו, אני ואתה: our teacher."),
     ],
   ),
   lesson(
     "'s for owners (הבית של...)",
     "כדי לומר שמשהו שייך למישהו מוסיפים 's לבעלים: the girl's book (הספר של הילדה), my brother's room (החדר של אחי). זה הסדר ההפוך מהעברית.",
     [
-      gap("the book of the girl = the ___ book", ["girls", "girl's", "girl", "girls'"], 1, "מוסיפים גרש ו-s: the girl's book."),
+      gap("the book of the girl = the ___ book", ["girls", "girl's", "girl", "girl is"], 1, "מוסיפים גרש ו-s: the girl's book."),
       gap("the room of my brother = my ___ room", ["brother", "brothers", "brother is", "brother's"], 3, "מוסיפים גרש ו-s: my brother's room."),
       pick(
         "Which sentence is right?",
@@ -302,7 +302,7 @@ export const A1_GRAMMAR = [
     "There is, there are (יש)",
     "כדי לומר שיש משהו במקום מסוים: There is a book on the table (יחיד). There are three chairs in the room (רבים). הפועל מתאים לשם העצם שאחריו.",
     [
-      gap("___ is a book on the table.", ["It", "There", "Here", "They"], 1, "פותחים ב-there is: There is a book."),
+      gap("___ is a book on the table.", ["There", "They", "We", "I"], 0, "פותחים ב-there is: There is a book."),
       gap("There ___ three chairs.", ["is", "am", "are", "be"], 2, "three chairs הוא רבים, לכן are."),
       gap("There ___ a cat in the house.", ["are", "is", "am", "have"], 1, "a cat הוא יחיד, לכן is."),
     ],
