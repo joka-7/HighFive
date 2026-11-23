@@ -385,7 +385,7 @@ export const A1_GRAMMAR = [
   ),
   lesson(
     "Watches, goes (סיומות מיוחדות)",
-    "בפעלים שנגמרים בצליל כמו watch או go מוסיפים בסוף עוד הברה: He watches TV. She goes to school. בשאר הפעלים מוסיפים רק s.",
+    "בפעלים כמו watch ו-go מוסיפים בסוף שתי אותיות ולא רק אחת: He watches TV. She goes to school. בשאר הפעלים מוסיפים רק s.",
     [
       gap("He ___ TV at night.", ["watch", "watchs", "watches", "watching"], 2, "אחרי watch מוסיפים עוד הברה: watches."),
       gap("She ___ to school.", ["go", "gos", "goes", "going"], 2, "go הופך ל-goes."),
@@ -394,7 +394,7 @@ export const A1_GRAMMAR = [
   ),
   lesson(
     "Study becomes studies (שינוי סוף הפועל)",
-    "פועל שנגמר בעיצור ואחריו האות האחרונה משנה את הסוף: study → studies. אבל אחרי תנועה רק מוסיפים s: play → plays. She studies at school. He plays football.",
+    "בפועל כמו study, שיש עיצור לפני האות האחרונה שלו, משנים את סוף המילה: study → studies. בפועל כמו play, שיש תנועה לפני האות האחרונה שלו, רק מוסיפים s: play → plays. She studies at school. He plays football.",
     [
       gap("She ___ at school.", ["study", "studys", "studies", "studying"], 2, "study הופך ל-studies."),
       gap("She ___ football.", ["plays", "plaies", "playes", "play"], 0, "אחרי תנועה רק מוסיפים s: plays."),
@@ -412,7 +412,7 @@ export const A1_GRAMMAR = [
   ),
   lesson(
     "Who gets the s? (מי מקבל s)",
-    "אחד: he, she, it ושם עצם ביחיד מקבלים s. רבים, I ו-you לא. My sister lives here. My brothers play football. The dog sleeps in the garden.",
+    "יחיד: he, she, it ושם עצם ביחיד מקבלים s. רבים, I ו-you לא. My sister lives here. My brothers play football. The dog sleeps in the garden.",
     [
       gap("My sister ___ in a big house.", ["live", "lives", "living", "are live"], 1, "my sister הוא she: lives."),
       gap("My brothers ___ football.", ["plays", "playing", "is play", "play"], 3, "my brothers הם they: play."),
@@ -472,7 +472,7 @@ export const A1_GRAMMAR = [
     "Do you...? (שאלות)",
     "כדי לשאול בהווה פשוט מתחילים ב-do לפני הנושא: Do you like milk? Do they play football? אחרי הנושא בא פועל בצורה הבסיסית.",
     [
-      gap("___ you like milk?", ["Do", "Does", "Are", "Is"], 0, "שאלה עם you מתחילה ב-Do."),
+      gap("___ you like rice?", ["Do", "Does", "Are", "Is"], 0, "שאלה עם you מתחילה ב-Do."),
       gap("___ they play football?", ["Do", "Does", "Are", "Is"], 0, "שאלה עם they מתחילה ב-Do."),
       gap("Do you ___ to him?", ["speak", "speaks", "speaking", "to speak"], 0, "אחרי Do you בא פועל בצורה הבסיסית."),
     ],
@@ -499,7 +499,7 @@ export const A1_GRAMMAR = [
     "Word order in questions (סדר המילים)",
     "הסדר בשאלה הוא: Do או Does, אחריו הנושא, ואחריו הפועל בצורה הבסיסית. Do you like milk? Does she play football? לא אומרים Does she plays.",
     [
-      pick("Which question is right? (milk)", "איזו שאלה נכונה? (חלב)", ["Do you like milk?", "You do like milk?", "Like you milk?", "Do like you milk?"], 0, "הסדר: Do + נושא + פועל."),
+      pick("Which question is right? (milk)", "איזו שאלה נכונה? (חלב)", ["Do you like milk?", "Do you milk like?", "Like you milk?", "Do like you milk?"], 0, "הסדר: Do + נושא + פועל."),
       pick("Which question is right? (football)", "איזו שאלה נכונה? (כדורגל)", ["Does she plays football?", "Does she play football?", "Do she play football?", "She does plays football?"], 1, "אחרי Does she בא פועל בלי s."),
       gap("___ your friends live here?", ["Do", "Does", "Is", "Are"], 0, "your friends הם they: Do."),
     ],
@@ -538,7 +538,7 @@ export const A1_GRAMMAR = [
     "when שואל על זמן: When do you wake up? אפשר לשאול גם What time...? בתשובה שעה: At seven. What time is it? It is ten.",
     [
       gap("___ do you wake up? At seven.", ["When", "Where", "Who", "Why"], 0, "התשובה היא זמן, לכן when."),
-      gap("What ___ is it? It is ten.", ["time", "day", "where", "who"], 0, "שואלים על השעה: What time is it?"),
+      gap("What ___ is it? It is ten.", ["time", "year", "where", "who"], 0, "שואלים על השעה: What time is it?"),
       gap("When ___ she play? On Monday.", ["do", "does", "is", "are"], 1, "עם she: does."),
     ],
   ),
@@ -553,7 +553,7 @@ export const A1_GRAMMAR = [
   ),
   lesson(
     "How (איך)",
-    "how שואל איך עושים משהו, או כמה: How do you go to school? By bus. How old are you? I am ten. שימו לב לסדר: מילת שאלה, do או does, נושא, פועל.",
+    "how שואל איך עושים משהו, וגם שואל על גיל או על תדירות (How old, How often): How do you go to school? By bus. How old are you? I am ten. שימו לב לסדר: מילת שאלה, do או does, נושא, פועל.",
     [
       gap("___ do you go to school? By bus.", ["How", "Who", "Why", "When"], 0, "התשובה היא איך נוסעים, לכן how."),
       gap("How ___ are you?", ["old", "time", "who", "what"], 0, "שואלים על גיל: How old are you?"),
@@ -620,7 +620,7 @@ export const A1_GRAMMAR = [
   ),
   lesson(
     "At (ב-, נקודת מקום)",
-    "at משמש למקום כנקודה: at school, at home, at the door. בעברית אומרים “בבית ספר” ו“בבית”. Is he at home? She is at school.",
+    "at משמש למקום כנקודה: at school, at home, at the door. Is he at home? She is at school.",
     [
       gap("My brother is ___ school.", ["at", "on", "under", "between"], 0, "at school."),
       gap("I am ___ home.", ["in", "at", "on", "to"], 1, "at home."),
@@ -651,7 +651,7 @@ export const A1_GRAMMAR = [
     [
       gap("Where is the cat? It is ___ the bed. (below it)", ["under", "on", "between", "behind"], 0, "מתחת הוא under."),
       gap("Where are my books? They are ___ the bag. (inside it)", ["in", "on", "at", "under"], 0, "בתוך התיק הוא in."),
-      pick("Which answer is right? Where is the dog?", "איזו תשובה נכונה? Where is the dog?", ["It is in front of the house.", "It is in front the house.", "It is front of the house.", "It in front of the house."], 0, "in front of בשלמותו."),
+      pick("Which answer is right? Where is the dog?", "איזו תשובה נכונה? Where is the dog?", ["It is in front of the house.", "It is in front the house.", "It is front of the house.", "It in front of the house."], 0, "צריך לכתוב את כל הביטוי: in front of."),
     ],
   ),
 
@@ -660,16 +660,16 @@ export const A1_GRAMMAR = [
     "At seven (על שעה)",
     "עם שעה משתמשים ב-at: I wake up at seven. The lesson is at ten. We eat lunch at twelve.",
     [
-      gap("I wake up ___ seven.", ["at", "on", "in", "to"], 0, "עם שעה: at."),
+      gap("I eat breakfast ___ seven.", ["at", "on", "in", "to"], 0, "עם שעה: at."),
       gap("The lesson is ___ ten.", ["on", "at", "in", "to"], 1, "עם שעה: at."),
       gap("We eat lunch ___ twelve.", ["in", "on", "to", "at"], 3, "עם שעה: at."),
     ],
   ),
   lesson(
     "On Monday (על יום)",
-    "עם ימי השבוע משתמשים ב-on: I play football on Sunday. She works on Monday. The shop is open on Saturday.",
+    "עם ימי השבוע משתמשים ב-on: I read a book on Sunday. She works on Monday. The shop is open on Saturday.",
     [
-      gap("I play football ___ Sunday.", ["on", "at", "in", "to"], 0, "עם יום: on."),
+      gap("I read a book ___ Sunday.", ["on", "at", "in", "to"], 0, "עם יום: on."),
       gap("She works ___ Monday.", ["at", "in", "on", "to"], 2, "עם יום: on."),
       gap("The shop is open ___ Saturday.", ["on", "at", "in", "to"], 0, "עם יום: on."),
     ],
@@ -689,7 +689,7 @@ export const A1_GRAMMAR = [
     [
       gap("I eat breakfast ___ the morning.", ["in", "at", "on", "by"], 0, "in the morning."),
       gap("I sleep ___ night.", ["at", "in", "on", "by"], 0, "at night."),
-      gap("We watch TV ___ the evening.", ["at", "on", "by", "in"], 3, "in the evening."),
+      gap("We watch TV ___ the evening.", ["at", "on", "to", "in"], 3, "in the evening."),
     ],
   ),
   lesson(
@@ -698,7 +698,7 @@ export const A1_GRAMMAR = [
     [
       gap("She plays ___ the afternoon.", ["in", "on", "at", "by"], 0, "in the afternoon."),
       gap("We go to school ___ Sunday.", ["in", "at", "on", "by"], 2, "עם יום: on."),
-      gap("My mother wakes up ___ six.", ["at", "on", "in", "by"], 0, "עם שעה: at."),
+      gap("My mother wakes up ___ six.", ["at", "on", "in", "to"], 0, "עם שעה: at."),
     ],
   ),
 
@@ -707,8 +707,8 @@ export const A1_GRAMMAR = [
     "I can swim (יכולת)",
     "can אומר שאפשר או שיודעים לעשות משהו: I can swim. She can sing. אחרי can בא פועל בצורה הבסיסית, בלי s ובלי to, גם עם he ו-she.",
     [
-      gap("I ___ swim.", ["can", "cans", "am", "do"], 0, "can + פועל: I can swim."),
-      gap("She ___ sing.", ["can", "cans", "is", "does"], 0, "גם עם she: can, בלי s."),
+      gap("I ___ swim.", ["can", "cans", "am", "to"], 0, "can + פועל: I can swim."),
+      gap("She ___ sing.", ["can", "cans", "is", "to"], 0, "גם עם she: can, בלי s."),
       gap("Fish ___ swim.", ["can", "cans", "are", "does"], 0, "גם עם רבים: can swim."),
     ],
   ),
@@ -716,7 +716,7 @@ export const A1_GRAMMAR = [
     "I can't swim (אי-יכולת)",
     "השלילה היא can't: I can't swim. She can't sing. אחרי can't הפועל בצורה הבסיסית.",
     [
-      gap("I ___ swim. (I do not know how to)", ["can't", "can", "don't", "am not"], 0, "אי-יכולת: can't."),
+      gap("I ___ swim, so I do not go in the water.", ["can't", "can", "doesn't", "not"], 0, "אם אי אפשר לשחות, לא נכנסים למים: can't."),
       gap("He can ___ to me.", ["speak", "speaks", "speaking", "to speak"], 0, "אחרי can פועל בצורה הבסיסית."),
       pick("Which sentence is right?", "איזה משפט נכון?", ["She can't sings.", "She can't sing.", "She doesn't can sing.", "She can't to sing."], 1, "can't + פועל בצורה הבסיסית."),
     ],
@@ -736,12 +736,12 @@ export const A1_GRAMMAR = [
     [
       gap("___ I open the door, please?", ["Can", "Are", "Is", "Does"], 0, "בקשת רשות: Can I...?"),
       gap("Can you ___ the door, please?", ["open", "opens", "opening", "to open"], 0, "אחרי Can you: open."),
-      pick("Which sentence is right?", "איזה משפט נכון?", ["Can I to open the window?", "Can I open the window?", "Can I opens the window?", "I can open the window?"], 1, "Can I + פועל בצורה הבסיסית."),
+      pick("Which sentence is right?", "איזה משפט נכון?", ["Can I to open the window?", "Can I open the window?", "Can I opens the window?", "Can I opening the window?"], 1, "Can I + פועל בצורה הבסיסית."),
     ],
   ),
   lesson(
     "Can, can't, do, don't (שילוב)",
-    "חזרה: can לא משתנה ואחריו פועל בצורה הבסיסית. עם פועל רגיל משתמשים ב-do או does.",
+    "חזרה: can לא משתנה ואחריו פועל בצורה הבסיסית. בשאלה ובשלילה עם פועל רגיל משתמשים ב-do או does.",
     [
       gap("My brother ___ swim, but he can't sing.", ["can", "cans", "does", "is"], 0, "can בלי s."),
       gap("___ your sister sing?", ["Can", "Are", "Is", "Am"], 0, "שאלה על יכולת: Can."),
@@ -772,7 +772,7 @@ export const A1_GRAMMAR = [
     "Please (בבקשה)",
     "כדי להיות מנומסים מוסיפים please בתחילת ההוראה או בסופה: Please open the window. Close the door, please.",
     [
-      pick("Which sentence has please?", "באיזה משפט יש please?", ["Open the door, please.", "Open the door.", "You open the door!", "Door open!"], 0, "please עושה את ההוראה לנימוסית."),
+      pick("Which sentence is good to say to a teacher?", "איזה משפט טוב לומר למורה?", ["Please open the door.", "Open the door!", "Door open!", "Open it now!"], 0, "please עושה את ההוראה לנימוסית."),
       gap("___ open the window.", ["Please", "Pleasing", "Pleased", "Pleases"], 0, "please בתחילת ההוראה."),
       gap("Sit here, ___.", ["please", "pleasing", "pleased", "pleases"], 0, "please בסוף ההוראה."),
     ],
@@ -791,7 +791,7 @@ export const A1_GRAMMAR = [
     "חזרה: הוראה היא פועל בצורה הבסיסית, איסור מתחיל ב-don't, בקשה מנומסת עם please, והצעה משותפת עם Let's.",
     [
       gap("It is hot. ___ the window, please.", ["Open", "Opens", "Opening", "To open"], 0, "הוראה: Open."),
-      gap("It is late. ___ run!", ["Don't", "Doesn't", "Not", "No"], 0, "איסור: Don't run."),
+      gap("The baby is in bed. ___ run here!", ["Don't", "Doesn't", "Not", "No"], 0, "איסור: Don't run."),
       gap("___ read a book!", ["Let's", "Let", "Is", "Does"], 0, "הצעה משותפת: Let's read."),
     ],
   ),
