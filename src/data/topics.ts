@@ -245,10 +245,14 @@ export function dialogueScenariosForLevel(level: Level): DialogueScenario[] {
   return DIALOGUE_SCENARIOS.filter((s) => LEVELS.indexOf(s.minLevel) <= max);
 }
 
-export function topicForToday(topics: string[]): string {
-  return topics[dayIndex() % topics.length];
+export function topicForToday(topics: string[], day = dayIndex()): string {
+  return topics[day % topics.length];
 }
 
-export function topicForTodayByLevel(topicsByLevel: Record<Level, string[]>, level: Level): string {
-  return topicForToday(topicsByLevel[level]);
+export function topicForTodayByLevel(
+  topicsByLevel: Record<Level, string[]>,
+  level: Level,
+  day = dayIndex(),
+): string {
+  return topicForToday(topicsByLevel[level], day);
 }

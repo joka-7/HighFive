@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { StrictMode, type ReactNode } from "react";
 import { LingoProvider, useLingo } from "./useLingo";
@@ -255,6 +255,46 @@ describe("useLingo — streak, SRS, and mission auto-complete", () => {
       result.current.completeMission("video");
     });
     expect(result.current.progress!.points).toBe(before + 30);
+  });
+});
+
+describe("useLingo — course position", () => {
+  const MONDAY_NOON = new Date(2026, 6, 27, 12).getTime();
+  const FRIDAY_NOON = new Date(2026, 6, 31, 12).getTime();
+
+  afterEach(() => vi.useRealTimers());
+
+  it.each([
+    ["a learning day", MONDAY_NOON, 1],
+    ["a review day", FRIDAY_NOON, 0],
+  ])("finishing the words mission on %s moves the course only on learning days", (_name, now, expectedDone) => {
+    vi.useFakeTimers({ toFake: ["Date"], now });
+    const result = renderRegisteredLingo();
+    act(() => {
+      result.current.completeMission("words");
+    });
+    expect(result.current.courseDaysDone).toBe(expectedDone);
+  });
+
+  it("keeps showing the finished lesson until the next learning day", () => {
+    vi.useFakeTimers({ toFake: ["Date"], now: MONDAY_NOON });
+    const result = renderRegisteredLingo();
+    act(() => {
+      result.current.completeMission("words");
+    });
+    expect(result.current.courseDay).toBe(0);
+  });
+
+  it("restarts the course from the first lesson", () => {
+    vi.useFakeTimers({ toFake: ["Date"], now: MONDAY_NOON });
+    const result = renderRegisteredLingo();
+    act(() => {
+      result.current.completeMission("words");
+    });
+    act(() => {
+      result.current.restartCourse("A1");
+    });
+    expect(result.current.courseDaysDone).toBe(0);
   });
 });
 

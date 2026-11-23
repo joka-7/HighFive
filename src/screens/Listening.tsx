@@ -10,7 +10,7 @@ import { loadDailyCache, saveDailyCache } from "../utils/dailyCache";
 const CACHE_KEY = "high5.listening_today.v5";
 
 export default function Listening() {
-  const { progress, completeQuiz, learnedWords } = useLingo();
+  const { progress, completeQuiz, learnedWords, courseDay } = useLingo();
   const level = progress?.currentLevel ?? "A1";
   const learnedKey = useMemo(
     () => Object.keys(learnedWords).sort().join(","),
@@ -40,6 +40,7 @@ export default function Listening() {
       generateListening(
         level,
         learnedKey ? learnedKey.split(",") : [],
+        courseDay,
       )
         .then((c) => {
           if (!active) return;
@@ -58,7 +59,7 @@ export default function Listening() {
         active = false;
       };
     },
-    [level, learnedKey],
+    [level, learnedKey, courseDay],
   );
 
   useEffect(() => {

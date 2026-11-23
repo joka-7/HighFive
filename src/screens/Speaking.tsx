@@ -16,9 +16,9 @@ const CACHE_KEY = "high5.speaking_today.v5";
 // never actually speak. ASR is a graceful enhancement; unsupported browsers
 // still see the sentences and can practise with the model audio.
 export default function Speaking() {
-  const { progress, awardSpeakingPoints, logMission, learnedWords } = useLingo();
+  const { progress, awardSpeakingPoints, logMission, learnedWords, courseDay } = useLingo();
   const level = progress?.currentLevel ?? "A1";
-  const topic = topicForTodayByLevel(SPEAKING_TOPICS_BY_LEVEL, level);
+  const topic = topicForTodayByLevel(SPEAKING_TOPICS_BY_LEVEL, level, courseDay);
   const learnedKey = useMemo(
     () => Object.keys(learnedWords).sort().join(","),
     [learnedWords],
@@ -48,7 +48,7 @@ export default function Speaking() {
 
       let active = true;
       const controller = new AbortController();
-      generateSpeaking(level, topic, learnedKey ? learnedKey.split(",") : [], undefined, controller.signal)
+      generateSpeaking(level, topic, learnedKey ? learnedKey.split(",") : [], courseDay, controller.signal)
         .then((set) => {
           if (!active) return;
           setSpeakingSet(set);
@@ -68,7 +68,7 @@ export default function Speaking() {
         controller.abort();
       };
     },
-    [level, topic, learnedKey],
+    [level, topic, learnedKey, courseDay],
   );
 
   useEffect(() => {

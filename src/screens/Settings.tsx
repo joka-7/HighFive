@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { loadCourseLength } from "../data/course-length";
 import AppUpdateCard from "../components/AppUpdateCard";
 import GithubIcon from "../components/GithubIcon";
 import {
@@ -235,6 +236,8 @@ function LegacyAiSettingsCard() {
 export default function Settings() {
   const {
     resetAll,
+    courseDaysDone,
+    restartCourse,
     cloudConfigured,
     user,
     cloudLinked,
@@ -252,6 +255,18 @@ export default function Settings() {
   const [authBusy, setAuthBusy] = useState(false);
   const [authError, setAuthError] = useState("");
   const [backupMsg, setBackupMsg] = useState("");
+  const [courseLength, setCourseLength] = useState<number | null>(null);
+  const courseLevel = progress?.currentLevel;
+  useEffect(() => {
+    if (!courseLevel) return;
+    let active = true;
+    loadCourseLength(courseLevel)
+      .then((n) => active && setCourseLength(n))
+      .catch(() => active && setCourseLength(null));
+    return () => {
+      active = false;
+    };
+  }, [courseLevel]);
 
   const [prefs, setPrefs] = useState(() => loadPrefs());
   const { canInstall, installed, install } = usePwaInstall();
@@ -478,6 +493,27 @@ export default function Settings() {
               onClick={() => navigateHash("progress")}
             >
               רמה {progress.currentLevel} ←
+            </button>
+          </div>
+        )}
+
+        {progress && (
+          <div className="row-between my-prefs">
+            <div>
+              <div className="fw-700">📚 קורס רמה {progress.currentLevel}</div>
+              <div className="muted fs-13">
+                {courseLength !== null && courseDaysDone >= courseLength
+                  ? "סיימתם את כל שיעורי הקורס! אפשר להתחיל אותו מחדש."
+                  : `סיימתם ${courseDaysDone}${courseLength === null ? "" : ` מתוך ${courseLength}`} שיעורים.`}
+              </div>
+            </div>
+            <button
+              className="btn ghost small"
+              onClick={() => {
+                if (window.confirm("להתחיל את הקורס מהשיעור הראשון?")) restartCourse(progress.currentLevel);
+              }}
+            >
+              התחלה מחדש
             </button>
           </div>
         )}

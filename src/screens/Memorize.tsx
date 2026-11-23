@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { getTodaysWords } from "../data/todays-words";
 import { dayIndex } from "../utils/daily";
-import { isReviewDay, WEEK_WORD_COUNT, weekLearningDays } from "../utils/cycle";
+import { isReviewDay, WEEK_WORD_COUNT } from "../utils/cycle";
+import { reviewWindow } from "../utils/course";
 import { MEMORIZATION_TOPIC } from "../utils/missions";
 import { buildMemorizationQuiz } from "../utils/memorize";
 import type { GemWord } from "../types";
@@ -16,7 +17,7 @@ import { speak } from "../services/tts";
 // Reachable earlier in the week too, over the words met so far.
 
 export default function Memorize() {
-  const { progress, completeQuiz, markWordsLearned } = useLingo();
+  const { progress, completeQuiz, markWordsLearned, courseDay } = useLingo();
   const level = progress?.currentLevel ?? "A1";
   const today = dayIndex();
 
@@ -25,12 +26,9 @@ export default function Memorize() {
   const [revealed, setRevealed] = useState<Set<string>>(new Set());
   const [result, setResult] = useState({ score: 0, total: 0 });
 
-  // Only days that have already happened — on a review day that is the full
-  // week, earlier in the week it is what the learner has met so far.
-  const days = useMemo(
-    () => weekLearningDays().filter((d) => d <= today),
-    [today],
-  );
+  // The last five course days up to the current one — on a review day that is
+  // the week's lessons, earlier on it is what the learner has met so far.
+  const days = useMemo(() => reviewWindow(courseDay), [courseDay]);
 
   useEffect(() => {
     let active = true;

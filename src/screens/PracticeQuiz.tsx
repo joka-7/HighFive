@@ -7,19 +7,19 @@ import QuizRunner from "../components/QuizRunner";
 import Spinner from "../components/Spinner";
 
 export default function PracticeQuiz() {
-  const { progress, completeQuiz, learnedWords } = useLingo();
+  const { progress, completeQuiz, learnedWords, courseDay } = useLingo();
   const [quiz, setQuiz] = useState<GemQuiz | null>(null);
   const [error, setError] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const [result, setResult] = useState<{ score: number; earned: number } | null>(null);
   const level = progress?.currentLevel ?? "A1";
-  const topic = topicForTodayByLevel(QUIZ_TOPICS_BY_LEVEL, level);
+  const topic = topicForTodayByLevel(QUIZ_TOPICS_BY_LEVEL, level, courseDay);
 
   useEffect(() => {
     let active = true;
     const controller = new AbortController();
     setError(false);
-    generatePracticeQuiz(level, topic, Object.keys(learnedWords), undefined, controller.signal)
+    generatePracticeQuiz(level, topic, Object.keys(learnedWords), courseDay, controller.signal)
       .then((q) => {
         if (active) setQuiz(q);
       })
@@ -30,7 +30,7 @@ export default function PracticeQuiz() {
       active = false;
       controller.abort();
     };
-  }, [level, topic, learnedWords, reloadKey]);
+  }, [level, topic, learnedWords, courseDay, reloadKey]);
 
   if (error) {
     return (

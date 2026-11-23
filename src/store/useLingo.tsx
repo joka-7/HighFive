@@ -22,6 +22,7 @@ import type {
   UserProgress,
 } from "../types";
 import { seedStarterEntries } from "../data/starter-words";
+import { contentDay, finishCourseDay, NEW_COURSE } from "../utils/course";
 import { isDue, isSrsMastered, scheduleNext } from "../utils/srs";
 import {
   isWordAtOrBelowLevel,
@@ -169,6 +170,10 @@ interface LingoContextValue {
   deleteCloudData: () => Promise<void>;
   registerUser: (userName: string, nativeLanguage: string, level: Level) => void;
   updateLevel: (level: Level) => void;
+  // 0-based lesson of the current level's course to show now, and a reset.
+  courseDay: number;
+  courseDaysDone: number;
+  restartCourse: (level: Level) => void;
   levelUpNotice: Level | null;
   clearLevelUpNotice: () => void;
   addPoints: (points: number) => void;
@@ -359,6 +364,12 @@ export function LingoProvider({ children }: { children: ReactNode }) {
 
   const updateLevel = useCallback((level: Level) => {
     setProgress((prev) => (prev ? { ...prev, currentLevel: level } : prev));
+  }, []);
+
+  const restartCourse = useCallback((level: Level) => {
+    setProgress((prev) =>
+      prev ? { ...prev, courses: { ...prev.courses, [level]: NEW_COURSE } } : prev,
+    );
   }, []);
 
   const clearLevelUpNotice = useCallback(() => setLevelUpNotice(null), []);
@@ -592,7 +603,17 @@ export function LingoProvider({ children }: { children: ReactNode }) {
           ? { ...current.externalNotes, [id]: trimmed }
           : current.externalNotes,
       });
-      setProgress((p) => (p ? { ...p, points: p.points + MISSION_POINTS } : p));
+      setProgress((p) => {
+        if (!p) return p;
+        const withPoints = { ...p, points: p.points + MISSION_POINTS };
+        if (id !== "words") return withPoints;
+        // Finishing the day's words is what moves the course on a lesson.
+        const course = p.courses?.[p.currentLevel] ?? NEW_COURSE;
+        return {
+          ...withPoints,
+          courses: { ...p.courses, [p.currentLevel]: finishCourseDay(course) },
+        };
+      });
 
       // Log missions that aren't already tracked elsewhere: the checklist-only
       // ones (video, talk, words) and anything done outside the app — an
@@ -754,6 +775,10 @@ export function LingoProvider({ children }: { children: ReactNode }) {
     [dailyMissions],
   );
 
+  const course = (currentLevel && progress?.courses?.[currentLevel]) || NEW_COURSE;
+  const courseDay = contentDay(course);
+  const courseDaysDone = course.daysDone;
+
   const value = useMemo<LingoContextValue>(
     () => ({
       progress,
@@ -776,6 +801,9 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       deleteCloudData,
       registerUser,
       updateLevel,
+      courseDay,
+      courseDaysDone,
+      restartCourse,
       levelUpNotice,
       clearLevelUpNotice,
       addPoints,
@@ -816,6 +844,9 @@ export function LingoProvider({ children }: { children: ReactNode }) {
       deleteCloudData,
       registerUser,
       updateLevel,
+      courseDay,
+      courseDaysDone,
+      restartCourse,
       levelUpNotice,
       clearLevelUpNotice,
       addPoints,

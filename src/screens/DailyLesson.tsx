@@ -14,7 +14,7 @@ const CACHE_KEY = "high5.lesson_today.v2";
 type Phase = "reading" | "quiz" | "done";
 
 export default function DailyLesson() {
-  const { progress, completeLesson, learnedWords } = useLingo();
+  const { progress, completeLesson, learnedWords, courseDay } = useLingo();
   const [lesson, setLesson] = useState<GemLesson | null>(null);
   const [error, setError] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
@@ -35,9 +35,9 @@ export default function DailyLesson() {
     }
     generateDailyLesson(
       level,
-      topicForTodayByLevel(LESSON_TOPICS_BY_LEVEL, level),
+      topicForTodayByLevel(LESSON_TOPICS_BY_LEVEL, level, courseDay),
       Object.keys(learnedWords),
-      undefined,
+      courseDay,
       controller.signal,
     )
       .then((l) => {
@@ -56,7 +56,7 @@ export default function DailyLesson() {
       active = false;
       controller.abort();
     };
-  }, [progress?.currentLevel, learnedWords, reloadKey]);
+  }, [progress?.currentLevel, learnedWords, courseDay, reloadKey]);
 
   if (error) {
     return (

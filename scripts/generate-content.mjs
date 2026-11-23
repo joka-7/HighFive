@@ -746,6 +746,7 @@ function main() {
   // against everything the curriculum teaches up to that point rather than
   // against the current level's bank alone.
   const vocabIndex = {};
+  const courseLength = {};
   for (let i = 0; i < LEVELS.length; i++) {
     const level = LEVELS[i];
 
@@ -770,6 +771,8 @@ function main() {
         mergedBank.flatMap((w) => w.word.toLowerCase().split(/\s+/).filter(Boolean)),
       ),
     ].sort();
+
+    courseLength[level] = Math.ceil(mergedBank.length / 5);
 
     const { vocabulary, lessons, quizzes, readings, listenings, speakings } = buildLevel(level, i);
 
@@ -877,6 +880,8 @@ function main() {
     });
   }
   writeFileSync(join(OUT_DIR, "vocab-index.json"), JSON.stringify(vocabIndex, null, 0));
+  // Lessons in a level's course (five words each); the app offers a restart after the last.
+  writeFileSync(join(OUT_DIR, "course-length.json"), JSON.stringify(courseLength, null, 0));
 
   console.table(summary);
   const total = summary.reduce(
