@@ -25,6 +25,13 @@ forms count). After `npm run content`, run `node scripts/check-curated.mjs A1
 --from <first new index>`; it exits 1 and lists the unknown words of every item the
 app would skip. Track topics in `docs/CONTENT-TOPICS.md`.
 
+**A1 word order.** The A1 cards are taught in the themed order of
+`scripts/content/a1-order.mjs` (greetings, family, numbers, time, home, food, body,
+clothes, … five words a day, 25 a week), not in bank order. The generator
+(`applyCurriculumOrder` in `scripts/content-order.mjs`) fails when a bank word is
+missing from that file, listed twice, or not in the bank, so adding an A1 word
+means adding it to a theme there too.
+
 <!-- BEGIN GENERATED: npm run content:audit -->
 ## Summary
 
@@ -32,7 +39,7 @@ A year is 365 days: 1,825 word slots (five a day) and 1,825 quiz questions per l
 
 | Level | Unique words | Each word shown | Grammar topics | Unique quiz questions | Unique daily readings | Readings shown / written | Listenings shown / written | Speaking sentences shown / written |
 |---|---|---|---|---|---|---|---|---|
-| A1 | 779 | 2.3× | 7 | 736 | 365 / 365 | 260 / 260 | 260 / 260 | 40 / 42 |
+| A1 | 875 | 2.1× | 7 | 830 | 365 / 365 | 260 / 260 | 260 / 260 | 40 / 42 |
 | A2 | 991 | 1.8× | 7 | 981 | 365 / 365 | 86 / 86 | 86 / 86 | 40 / 42 |
 | B1 | 420 | 4.3× | 6 | 427 | 365 / 365 | 37 / 37 | 36 / 36 | 40 / 42 |
 | B2 | 264 | 6.9× | 7 | 268 | 264 / 365 | 31 / 31 | 30 / 30 | 40 / 42 |
@@ -47,7 +54,7 @@ Reference: CEFR-J 1.5 (A1–B2) and Octanove C1/C2 1.0 (`scripts/content/cefr/`)
 
 | Level | Same level | One level off | 2+ harder | 2+ easier | In neither list |
 |---|---|---|---|---|---|
-| A1 | 712 | 45 | 0 | 0 | 22 |
+| A1 | 805 | 46 | 0 | 0 | 24 |
 | A2 | 744 | 227 | 0 | 0 | 20 |
 | B1 | 181 | 190 | 0 | 21 | 28 |
 | B2 | 103 | 83 | 0 | 8 | 70 |
@@ -58,7 +65,7 @@ Reference: CEFR-J 1.5 (A1–B2) and Octanove C1/C2 1.0 (`scripts/content/cefr/`)
 
 - **Two or more levels harder:** none
 - **Two or more levels easier:** none
-- **In neither list:** goodbye, wake up, snowman, lace, blow out, teddy bear, a bit, at all, at least, by the wall, cross the street, find out, go on a trip, in fact, in front of, in the end, interested in, lie down, on my own, pick up, the same, wait for
+- **In neither list:** goodbye, excuse me, lace, snowman, wake up, blow out, pick up, of course, a bit, at all, at least, by the wall, cross the street, find out, go on a trip, in fact, in front of, in the end, interested in, lie down, on my own, the same, wait for, teddy bear
 
 ### A2
 
@@ -110,12 +117,12 @@ Every sentence a learner sees, checked word by word: a word counts when the list
 
 | Level | Part of the app | Items | Items with a word above level | Most common such words |
 |---|---|---|---|---|
-| A1 | word example | 779 | 0 | none |
+| A1 | word example | 875 | 0 | none |
 | A1 | daily quiz | 1833 | 0 | none |
 | A1 | grammar question | 929 | 0 | none |
 | A1 | reading | 625 | 0 | none |
 | A1 | listening | 625 | 0 | none |
-| A1 | speaking | 807 | 0 | none |
+| A1 | speaking | 904 | 0 | none |
 | A2 | word example | 991 | 0 | none |
 | A2 | daily quiz | 1834 | 0 | none |
 | A2 | grammar question | 890 | 0 | none |

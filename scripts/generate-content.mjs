@@ -39,12 +39,15 @@ import { MORE_WORDS12 } from "./content/wordbank-extra12.mjs";
 import { MORE_WORDS13 } from "./content/wordbank-extra13.mjs";
 import { MORE_WORDS14 } from "./content/wordbank-extra14.mjs";
 import { MORE_WORDS15 } from "./content/wordbank-extra15.mjs";
+import { MORE_WORDS16 } from "./content/wordbank-extra16.mjs";
 import { LEVEL_MOVES } from "./content/wordbank-level-moves.mjs";
 import { WORDS_2026, TAGS_2026 } from "./content/wordbank-2026.mjs";
 import { READINGS_2026 } from "./content/passages-2026.mjs";
 import { GRAMMAR_2026, GRAMMAR_2026_RULES, SKILL_QUIZ_2026 } from "./content/exercises-2026.mjs";
 import { blankWordInText, wordFormInText } from "./content-text.mjs";
 import { wordIndicesForDay } from "./content-schedule.mjs";
+import { applyCurriculumOrder } from "./content-order.mjs";
+import { A1_ORDER } from "./content/a1-order.mjs";
 import { shuffleOptions } from "./content-questions.mjs";
 import { MORE_READINGS, MORE_LISTENINGS } from "./content/passages-extra.mjs";
 import { MORE_READINGS2, MORE_LISTENINGS2, MORE_SPEAKING } from "./content/passages-extra2.mjs";
@@ -63,7 +66,7 @@ import { MORE_READINGS14, MORE_LISTENINGS14 } from "./content/passages-extra14.m
 import { MORE_READINGS15, MORE_LISTENINGS15 } from "./content/passages-extra15.mjs";
 
 // All extra vocabulary rounds, merged in order. Append new rounds here.
-const WORD_ROUNDS = [MORE_WORDS, MORE_WORDS2, MORE_WORDS3, MORE_WORDS4, MORE_WORDS5, MORE_WORDS6, MORE_WORDS7, MORE_WORDS8, MORE_WORDS9, MORE_WORDS10, MORE_WORDS11, MORE_WORDS12, MORE_WORDS13, MORE_WORDS14, MORE_WORDS15, LEVEL_MOVES, WORDS_2026];
+const WORD_ROUNDS = [MORE_WORDS, MORE_WORDS2, MORE_WORDS3, MORE_WORDS4, MORE_WORDS5, MORE_WORDS6, MORE_WORDS7, MORE_WORDS8, MORE_WORDS9, MORE_WORDS10, MORE_WORDS11, MORE_WORDS12, MORE_WORDS13, MORE_WORDS14, MORE_WORDS15, MORE_WORDS16, LEVEL_MOVES, WORDS_2026];
 const READING_ROUNDS = [MORE_READINGS, MORE_READINGS2, MORE_READINGS3, MORE_READINGS4, MORE_READINGS5, MORE_READINGS6, MORE_READINGS7, MORE_READINGS8, MORE_READINGS9, MORE_READINGS10, MORE_READINGS11, MORE_READINGS12, MORE_READINGS13, MORE_READINGS14, MORE_READINGS15, READINGS_2026];
 const LISTENING_ROUNDS = [MORE_LISTENINGS, MORE_LISTENINGS2, MORE_LISTENINGS3, MORE_LISTENINGS4, MORE_LISTENINGS5, MORE_LISTENINGS6, MORE_LISTENINGS7, MORE_LISTENINGS8, MORE_LISTENINGS9, MORE_LISTENINGS10, MORE_LISTENINGS11, MORE_LISTENINGS12, MORE_LISTENINGS13, MORE_LISTENINGS14, MORE_LISTENINGS15];
 const SPEAKING_ROUNDS = [MORE_SPEAKING, MORE_SPEAKING3, MORE_SPEAKING4, MORE_SPEAKING5, MORE_SPEAKING6, MORE_SPEAKING7, MORE_SPEAKING8, MORE_SPEAKING9];
@@ -650,7 +653,8 @@ function curriculum(levelIdx) {
 
 // --- Build everything for one level ------------------------------------------
 function buildLevel(level, levelIdx) {
-  const allWords = [...WORD_BANKS[level], ...merge(WORD_ROUNDS, level)];
+  const bankWords = [...WORD_BANKS[level], ...merge(WORD_ROUNDS, level)];
+  const allWords = level === "A1" ? applyCurriculumOrder(bankWords, A1_ORDER, level) : bankWords;
   const ctx = {
     verbs: VERBS.filter((v) => v.lvl <= levelIdx),
     adjs: ADJECTIVES.filter((a) => a.lvl <= levelIdx),
