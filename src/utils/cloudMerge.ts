@@ -20,6 +20,7 @@
 // - A word saved on two devices gets two ids. After a merge the newest copy
 //   per word stays and the other is deleted, so it stays gone.
 
+import { isValidCourses } from "./course";
 import type {
   ChatMessage,
   DailyMissionsState,
@@ -222,7 +223,13 @@ function isLearnedRecord(v: unknown): v is SyncItem & LearnedWordEntry {
 }
 
 function isProgress(v: unknown): v is UserProgress {
-  return isObject(v) && isString(v.currentLevel) && isNumber(v.points) && isNumber(v.streak);
+  return (
+    isObject(v) &&
+    isString(v.currentLevel) &&
+    isNumber(v.points) &&
+    isNumber(v.streak) &&
+    (v.courses === undefined || isValidCourses(v.courses))
+  );
 }
 
 function isDailyMissions(v: unknown): v is DailyMissionsState {

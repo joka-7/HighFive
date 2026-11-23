@@ -1,13 +1,13 @@
 import { describe, it, expect } from "vitest";
 import type { CourseProgress } from "../types";
-import { contentDay, finishCourseDay, NEW_COURSE, reviewWindow } from "./course";
-import { dayIndex } from "./daily";
+import { contentDay, finishCourseDay, isValidCourses, NEW_COURSE, reviewWindow } from "./course";
+import { dateKeyFromTs } from "./missions";
 
 // 2026-07-26 is a Sunday; local midnight of each weekday wherever tests run.
 const at = (offset: number) => new Date(2026, 6, 26 + offset).getTime();
 const done = (daysDone: number, lastOffset: number | null): CourseProgress => ({
   daysDone,
-  lastDoneDay: lastOffset === null ? null : dayIndex(at(lastOffset)),
+  lastDoneDate: lastOffset === null ? null : dateKeyFromTs(at(lastOffset)),
 });
 
 describe("contentDay", () => {
@@ -40,6 +40,21 @@ describe("finishCourseDay", () => {
   it("advances again the next learning day", () => {
     const monday = finishCourseDay(NEW_COURSE, at(1));
     expect(finishCourseDay(monday, at(2)).daysDone).toBe(2);
+  });
+});
+
+describe("isValidCourses", () => {
+  it.each([
+    ["an empty map", {}, true],
+    ["a finished-days record", { A1: { daysDone: 3, lastDoneDate: "2026-07-27" } }, true],
+    ["a fresh record", { A1: NEW_COURSE }, true],
+    ["a string daysDone", { A1: { daysDone: "3", lastDoneDate: null } }, false],
+    ["a negative daysDone", { A1: { daysDone: -1, lastDoneDate: null } }, false],
+    ["a missing lastDoneDate", { A1: { daysDone: 1 } }, false],
+    ["an array", [], false],
+    ["null", null, false],
+  ])("%s -> %s", (_name, value, expected) => {
+    expect(isValidCourses(value)).toBe(expected);
   });
 });
 

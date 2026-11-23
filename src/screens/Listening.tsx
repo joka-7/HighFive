@@ -28,7 +28,7 @@ export default function Listening() {
       setShowText(false);
 
       if (!force) {
-        const cached = loadDailyCache<GemListening>(CACHE_KEY, level);
+        const cached = loadDailyCache<GemListening>(CACHE_KEY, `${level}:day${courseDay}`);
         if (cached?.transcript) {
           setClip(cached);
           setLoading(false);
@@ -45,7 +45,7 @@ export default function Listening() {
         .then((c) => {
           if (!active) return;
           setClip(c);
-          saveDailyCache(CACHE_KEY, level, c);
+          saveDailyCache(CACHE_KEY, `${level}:day${courseDay}`, c);
         })
         .catch(() => {
           if (!active) return;

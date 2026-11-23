@@ -434,7 +434,8 @@ Which lesson of a level's course to show. The lesson no longer follows the
 calendar: it follows the number of finished lessons, so a learner who starts
 mid-year, or is away for a month, resumes where they stopped.
 
-- `CourseProgress { daysDone, lastDoneDay }` (in `types.ts`), stored per level in
+- `CourseProgress { daysDone, lastDoneDate }` (in `types.ts`; the date is the local
+  `dateKeyFromTs` key, the same day boundary the missions use), stored per level in
   `UserProgress.courses`; `NEW_COURSE` is the empty state.
 - `contentDay(course, now)` — the 0-based lesson to show: the next unfinished
   one on a learning day (the one just finished, until midnight), the latest
@@ -444,6 +445,8 @@ mid-year, or is away for a month, resumes where they stopped.
 - `finishCourseDay(course, now)` — advances by one; a no-op on Friday/Saturday
   or when today's lesson is already finished. `useLingo`'s `awardMission` calls it
   when the `words` mission completes.
+- `isValidCourses(v)` — shape check applied to `courses` in backups and Drive pulls.
+  Screens that cache daily content key it by level *and* course day.
 - `reviewWindow(day)` — the up-to-five lessons ending at `day`, which
   `screens/Memorize.tsx` reviews.
 - `restartCourse(level)` (Settings) resets a level's position. The number of

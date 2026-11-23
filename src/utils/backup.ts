@@ -8,6 +8,7 @@ import type {
   UserProgress,
 } from "../types";
 import { LEVELS } from "../types";
+import { isValidCourses } from "./course";
 
 export const BACKUP_VERSION = 1 as const;
 
@@ -46,6 +47,9 @@ export function parseProgressBackup(raw: unknown): ProgressBackup {
   }
   if (raw.progress && !isLevel(raw.progress.currentLevel)) {
     throw new Error("invalid backup: progress.currentLevel");
+  }
+  if (raw.progress && raw.progress.courses !== undefined && !isValidCourses(raw.progress.courses)) {
+    throw new Error("invalid backup: progress.courses");
   }
   if (!Array.isArray(raw.savedWords)) throw new Error("invalid backup: savedWords");
   if (!isObject(raw.learnedWords)) throw new Error("invalid backup: learnedWords");

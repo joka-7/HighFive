@@ -37,7 +37,7 @@ export default function Speaking() {
       setError(null);
 
       if (!force) {
-        const cached = loadDailyCache<GemSpeaking>(CACHE_KEY, level);
+        const cached = loadDailyCache<GemSpeaking>(CACHE_KEY, `${level}:day${courseDay}`);
         if (cached?.prompts?.length) {
           setSpeakingSet(cached);
           setIndex(0);
@@ -53,7 +53,7 @@ export default function Speaking() {
           if (!active) return;
           setSpeakingSet(set);
           setIndex(0);
-          saveDailyCache(CACHE_KEY, level, set);
+          saveDailyCache(CACHE_KEY, `${level}:day${courseDay}`, set);
         })
         .catch(() => {
           if (!active) return;

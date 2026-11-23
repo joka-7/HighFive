@@ -88,8 +88,8 @@ export interface OfflineLevelContent {
 export interface CourseProgress {
   /** Course days finished so far. */
   readonly daysDone: number;
-  /** Calendar day index of the most recent finish, null before the first. */
-  readonly lastDoneDay: number | null;
+  /** Local date key (see dateKeyFromTs) of the most recent finish, null before the first. */
+  readonly lastDoneDate: string | null;
 }
 
 export type CourseByLevel = Partial<Record<Level, CourseProgress>>;

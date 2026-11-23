@@ -28,7 +28,7 @@ export default function DailyLesson() {
     const controller = new AbortController();
     setError(false);
     const level = progress?.currentLevel ?? "A1";
-    const cached = loadDailyCache<GemLesson>(CACHE_KEY, level);
+    const cached = loadDailyCache<GemLesson>(CACHE_KEY, `${level}:day${courseDay}`);
     if (cached) {
       setLesson(cached);
       return;
@@ -43,7 +43,7 @@ export default function DailyLesson() {
       .then((l) => {
         if (active) {
           setLesson(l);
-          saveDailyCache(CACHE_KEY, level, l);
+          saveDailyCache(CACHE_KEY, `${level}:day${courseDay}`, l);
         }
       })
       .catch(() => {
