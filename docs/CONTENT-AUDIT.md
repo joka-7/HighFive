@@ -48,7 +48,7 @@ A year is 365 days: 1,825 word slots (five a day) and 1,825 quiz questions per l
 
 | Level | Unique words | Each word shown | Grammar topics | Unique quiz questions | Unique daily readings | Readings shown / written | Listenings shown / written | Speaking sentences shown / written |
 |---|---|---|---|---|---|---|---|---|
-| A1 | 875 | 2.1× | 32 | 830 | 365 / 365 | 260 / 260 | 260 / 260 | 40 / 42 |
+| A1 | 875 | 2.1× | 82 | 830 | 365 / 365 | 260 / 260 | 260 / 260 | 40 / 42 |
 | A2 | 991 | 1.8× | 7 | 981 | 365 / 365 | 86 / 86 | 86 / 86 | 40 / 42 |
 | B1 | 420 | 4.3× | 6 | 427 | 365 / 365 | 37 / 37 | 36 / 36 | 40 / 42 |
 | B2 | 264 | 6.9× | 7 | 268 | 264 / 365 | 31 / 31 | 30 / 30 | 40 / 42 |
@@ -128,7 +128,7 @@ Every sentence a learner sees, checked word by word: a word counts when the list
 |---|---|---|---|---|
 | A1 | word example | 875 | 0 | none |
 | A1 | daily quiz | 1833 | 0 | none |
-| A1 | grammar question | 948 | 0 | none |
+| A1 | grammar question | 994 | 0 | none |
 | A1 | reading | 625 | 0 | none |
 | A1 | listening | 625 | 0 | none |
 | A1 | speaking | 904 | 0 | none |
