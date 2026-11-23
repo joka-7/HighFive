@@ -6,7 +6,7 @@
 // words (the audit and `node scripts/check-curated.mjs A1 --lessons` check it).
 //
 // Each lesson: a Hebrew explanation with English examples, then 3 questions.
-// Weeks 1–5 are written; the rest of the 35 weeks in A1_GRAMMAR_WEEKS follow in
+// Weeks 1–15 are written; the rest of the 35 weeks in A1_GRAMMAR_WEEKS follow in
 // later batches and fall back to the generated lessons until then.
 
 const gap = (sentence, options, correctIndex, explanation) => ({
@@ -323,6 +323,476 @@ export const A1_GRAMMAR = [
       gap("She ___ an apple and two books.", ["have", "has", "is", "are"], 1, "she has: She has an apple and two books."),
       gap("___ are my friends. (near me)", ["This", "That", "These", "Those"], 2, "רבים וקרובים: these."),
       gap("There ___ five boys in the room.", ["is", "has", "are", "am"], 2, "five boys זה רבים: There are five boys."),
+    ],
+  ),
+
+  // --- Week 6: present simple, I / you / we / they -------------------------
+  lesson(
+    "I play, you play (הווה פשוט)",
+    "הווה פשוט מתאר הרגלים, שגרה ודברים שתמיד נכונים: I play football on Sunday. You eat at home. עם I ו-you הפועל נשאר בצורה הבסיסית, בלי סיומת.",
+    [
+      gap("I ___ football on Sunday.", ["play", "plays", "playing", "am play"], 0, "עם I הפועל נשאר בצורה הבסיסית: I play."),
+      gap("You ___ milk in the morning.", ["drinks", "drink", "drinking", "is drink"], 1, "עם you הפועל נשאר בצורה הבסיסית: You drink."),
+      gap("I ___ at school.", ["study", "studies", "studying", "am study"], 0, "עם I אין סיומת: I study."),
+    ],
+  ),
+  lesson(
+    "We eat, they live (אנחנו והם)",
+    "גם עם we ו-they הפועל נשאר בצורה הבסיסית: We eat bread for breakfast. They live in a big house. שני אנשים, כמו my friend and I, הם we.",
+    [
+      gap("We ___ bread for breakfast.", ["eats", "eating", "eat", "is eat"], 2, "עם we הפועל נשאר בצורה הבסיסית: We eat."),
+      gap("They ___ in a big house.", ["live", "lives", "living", "are live"], 0, "עם they הפועל נשאר בצורה הבסיסית: They live."),
+      gap("My friend and I ___ games.", ["plays", "play", "playing", "is play"], 1, "my friend and I הם we, לכן: play."),
+    ],
+  ),
+  lesson(
+    "Every day (שגרה)",
+    "הווה פשוט מתאים לשגרה, ובדרך כלל מוסיפים מתי: in the morning, at night, on Monday. I wake up at seven. They watch TV in the evening.",
+    [
+      gap("I ___ up at seven.", ["wake", "wakes", "waking", "am wake"], 0, "עם I: I wake up."),
+      gap("We ___ lunch at school.", ["eats", "eating", "is eat", "eat"], 3, "עם we: We eat."),
+      gap("They ___ TV in the evening.", ["watch", "watches", "watching", "is watch"], 0, "עם they: They watch."),
+    ],
+  ),
+  lesson(
+    "Things that are always true (עובדות)",
+    "משתמשים בהווה פשוט גם לעובדות: Fish swim. Dogs drink water. People live in houses. שמות עצם ברבים מתנהגים כמו they, והפועל בצורה הבסיסית.",
+    [
+      gap("Dogs ___ water.", ["drink", "drinks", "drinking", "is drink"], 0, "dogs הוא רבים: Dogs drink."),
+      gap("People ___ in houses.", ["lives", "living", "live", "is live"], 2, "people הוא רבים: People live."),
+      gap("Fish ___ in water.", ["swim", "swims", "swimming", "is swim"], 0, "fish כאן הוא רבים: Fish swim."),
+    ],
+  ),
+  lesson(
+    "I, you, we, they together (חזרה)",
+    "חזרה: עם I, you, we ו-they הפועל בצורה הבסיסית. אין am, is או are לפני פועל רגיל, ואין סיומת של פעולה מתמשכת בהווה פשוט.",
+    [
+      pick("Which sentence is right?", "איזה משפט נכון?", ["I plays football.", "I play football.", "I am play football.", "I playing football."], 1, "עם I: I play football."),
+      gap("You ___ to school.", ["go", "goes", "going", "is go"], 0, "עם you: You go."),
+      gap("They ___ a book at night.", ["reads", "reading", "read", "is read"], 2, "עם they: They read."),
+    ],
+  ),
+
+  // --- Week 7: present simple, he / she / it ---------------------------------
+  lesson(
+    "She plays, he plays (s בגוף שלישי)",
+    "עם he, she ו-it מוסיפים s לפועל: She plays football. He speaks to me. The cat drinks milk. זה הכלל הכי חשוב בהווה פשוט.",
+    [
+      gap("She ___ football.", ["play", "plays", "playing", "is play"], 1, "עם she מוסיפים s: She plays."),
+      gap("He ___ to me.", ["speak", "speaking", "speaks", "is speak"], 2, "עם he מוסיפים s: He speaks."),
+      gap("The cat ___ milk.", ["drinks", "drink", "drinking", "is drink"], 0, "the cat הוא it, לכן מוסיפים s: drinks."),
+    ],
+  ),
+  lesson(
+    "Watches, goes (סיומות מיוחדות)",
+    "בפעלים שנגמרים בצליל כמו watch או go מוסיפים בסוף עוד הברה: He watches TV. She goes to school. בשאר הפעלים מוסיפים רק s.",
+    [
+      gap("He ___ TV at night.", ["watch", "watchs", "watches", "watching"], 2, "אחרי watch מוסיפים עוד הברה: watches."),
+      gap("She ___ to school.", ["go", "gos", "goes", "going"], 2, "go הופך ל-goes."),
+      gap("My brother ___ football on Sunday.", ["play", "plays", "playing", "is play"], 1, "בפועל רגיל מוסיפים רק s: plays."),
+    ],
+  ),
+  lesson(
+    "Study becomes studies (שינוי סוף הפועל)",
+    "פועל שנגמר בעיצור ואחריו האות האחרונה משנה את הסוף: study → studies. אבל אחרי תנועה רק מוסיפים s: play → plays. She studies at school. He plays football.",
+    [
+      gap("She ___ at school.", ["study", "studys", "studies", "studying"], 2, "study הופך ל-studies."),
+      gap("She ___ football.", ["plays", "plaies", "playes", "play"], 0, "אחרי תנועה רק מוסיפים s: plays."),
+      pick("Which sentence is right?", "איזה משפט נכון?", ["He studys at school.", "He studies at school.", "He study at school.", "He is studies at school."], 1, "study הופך ל-studies עם he."),
+    ],
+  ),
+  lesson(
+    "Has and does (פעלים מיוחדים)",
+    "שני פעלים משתנים לגמרי עם he, she, it: have → has, do → does. She has a dog. He does his work at home.",
+    [
+      gap("She ___ a dog.", ["have", "has", "haves", "having"], 1, "have הופך ל-has: She has a dog."),
+      gap("He ___ his work at home.", ["do", "does", "dos", "doing"], 1, "do הופך ל-does: He does his work."),
+      pick("Which sentence is right?", "איזה משפט נכון?", ["My sister haves a cat.", "My sister has a cat.", "My sister have a cat.", "My sister is has a cat."], 1, "עם my sister (she): has."),
+    ],
+  ),
+  lesson(
+    "Who gets the s? (מי מקבל s)",
+    "אחד: he, she, it ושם עצם ביחיד מקבלים s. רבים, I ו-you לא. My sister lives here. My brothers play football. The dog sleeps in the garden.",
+    [
+      gap("My sister ___ in a big house.", ["live", "lives", "living", "are live"], 1, "my sister הוא she: lives."),
+      gap("My brothers ___ football.", ["plays", "playing", "is play", "play"], 3, "my brothers הם they: play."),
+      gap("The dog ___ in the garden.", ["sleep", "sleeping", "sleeps", "are sleep"], 2, "the dog הוא it: sleeps."),
+    ],
+  ),
+
+  // --- Week 8: present simple, don't / doesn't -------------------------------
+  lesson(
+    "I don't, you don't (שלילה)",
+    "כדי לשלול בהווה פשוט משתמשים ב-don't לפני הפועל: I don't like milk. You don't eat bread. אחרי don't הפועל בצורה הבסיסית. don't הוא do not.",
+    [
+      gap("I ___ like milk.", ["don't", "doesn't", "am not", "not"], 0, "עם I שוללים עם don't."),
+      gap("You ___ eat bread.", ["doesn't", "don't", "aren't", "isn't"], 1, "עם you שוללים עם don't."),
+      gap("I don't ___ TV.", ["watch", "watches", "watching", "to watch"], 0, "אחרי don't הפועל בצורה הבסיסית: watch."),
+    ],
+  ),
+  lesson(
+    "She doesn't, he doesn't (שלילה בגוף שלישי)",
+    "עם he, she ו-it שוללים עם doesn't. הפועל אחריו חוזר לצורה הבסיסית, בלי s: She doesn't like fish. He doesn't speak to me.",
+    [
+      gap("She ___ like fish.", ["don't", "doesn't", "isn't", "not"], 1, "עם she שוללים עם doesn't."),
+      gap("He doesn't ___ to me.", ["speak", "speaks", "speaking", "is speak"], 0, "אחרי doesn't אין s: speak."),
+      pick("Which sentence is right?", "איזה משפט נכון?", ["She doesn't likes tea.", "She doesn't like tea.", "She don't like tea.", "She not like tea."], 1, "doesn't + פועל בלי s: She doesn't like tea."),
+    ],
+  ),
+  lesson(
+    "We don't, they don't (שלילה ברבים)",
+    "עם we, they ושמות עצם ברבים שוללים עם don't: We don't live in a big house. They don't play football. My friends don't like milk.",
+    [
+      gap("We ___ live in a big house.", ["doesn't", "don't", "isn't", "not"], 1, "עם we שוללים עם don't."),
+      gap("They ___ play football.", ["don't", "doesn't", "aren't", "isn't"], 0, "עם they שוללים עם don't."),
+      gap("My friends ___ like milk.", ["doesn't", "don't", "aren't", "isn't"], 1, "my friends הם they: don't."),
+    ],
+  ),
+  lesson(
+    "Don't or doesn't? (בחירה)",
+    "בוחרים לפי הנושא: don't עם I, you, we, they ורבים. doesn't עם he, she, it ויחיד. My mother doesn't work on Sunday. My brother and I don't eat fish.",
+    [
+      gap("My mother ___ work on Sunday.", ["don't", "doesn't", "isn't", "aren't"], 1, "my mother היא she: doesn't."),
+      gap("My brother and I ___ eat fish.", ["doesn't", "isn't", "don't", "aren't"], 2, "my brother and I הם we: don't."),
+      gap("The cat ___ drink water.", ["don't", "doesn't", "isn't", "aren't"], 1, "the cat הוא it: doesn't."),
+    ],
+  ),
+  lesson(
+    "Do not, does not (צורה מלאה)",
+    "don't הוא do not, ו-doesn't הוא does not. בכתיבה מלאה אומרים: I do not like cold water. She does not like tea. תמיד אחריהם פועל בצורה הבסיסית.",
+    [
+      gap("She does ___ like tea.", ["not", "no", "don't", "isn't"], 0, "does not = doesn't."),
+      gap("We do ___ play here.", ["not", "no", "doesn't", "isn't"], 0, "do not = don't."),
+      gap("I ___ not like cold water.", ["do", "does", "am", "is"], 0, "עם I: I do not."),
+    ],
+  ),
+
+  // --- Week 9: present simple questions --------------------------------------
+  lesson(
+    "Do you...? (שאלות)",
+    "כדי לשאול בהווה פשוט מתחילים ב-do לפני הנושא: Do you like milk? Do they play football? אחרי הנושא בא פועל בצורה הבסיסית.",
+    [
+      gap("___ you like milk?", ["Do", "Does", "Are", "Is"], 0, "שאלה עם you מתחילה ב-Do."),
+      gap("___ they play football?", ["Do", "Does", "Are", "Is"], 0, "שאלה עם they מתחילה ב-Do."),
+      gap("Do you ___ to him?", ["speak", "speaks", "speaking", "to speak"], 0, "אחרי Do you בא פועל בצורה הבסיסית."),
+    ],
+  ),
+  lesson(
+    "Does she...? (שאלות בגוף שלישי)",
+    "עם he, she ו-it שואלים עם does: Does she live here? Does he have a dog? אחרי does הפועל בצורה הבסיסית, בלי s, כי does כבר נושא את ה-s.",
+    [
+      gap("___ she live here?", ["Do", "Does", "Is", "Are"], 1, "שאלה עם she מתחילה ב-Does."),
+      gap("Does he ___ a dog?", ["have", "has", "having", "is"], 0, "אחרי does: have, לא has."),
+      gap("___ your mother work at home?", ["Do", "Does", "Is", "Are"], 1, "your mother היא she: Does."),
+    ],
+  ),
+  lesson(
+    "Yes, I do / No, she doesn't (תשובות קצרות)",
+    "עונים בקצרה עם do או does, בלי לחזור על הפועל: Do you like tea? Yes, I do. Does she live here? No, she doesn't.",
+    [
+      gap("Do you like tea? Yes, I ___.", ["do", "does", "like", "am"], 0, "עונים: Yes, I do."),
+      gap("Does she live here? No, she ___.", ["don't", "doesn't", "isn't", "not"], 1, "עונים: No, she doesn't."),
+      gap("Do they play? Yes, they ___.", ["do", "does", "play", "are"], 0, "עונים: Yes, they do."),
+    ],
+  ),
+  lesson(
+    "Word order in questions (סדר המילים)",
+    "הסדר בשאלה הוא: Do או Does, אחריו הנושא, ואחריו הפועל בצורה הבסיסית. Do you like milk? Does she play football? לא אומרים Does she plays.",
+    [
+      pick("Which question is right? (milk)", "איזו שאלה נכונה? (חלב)", ["Do you like milk?", "You do like milk?", "Like you milk?", "Do like you milk?"], 0, "הסדר: Do + נושא + פועל."),
+      pick("Which question is right? (football)", "איזו שאלה נכונה? (כדורגל)", ["Does she plays football?", "Does she play football?", "Do she play football?", "She does plays football?"], 1, "אחרי Does she בא פועל בלי s."),
+      gap("___ your friends live here?", ["Do", "Does", "Is", "Are"], 0, "your friends הם they: Do."),
+    ],
+  ),
+  lesson(
+    "Is, are, do or does? (שילוב)",
+    "עם to be (am, is, are) שואלים בלי do: Is she a teacher? Are they at home? עם פועל רגיל שואלים עם do או does: Does she like school?",
+    [
+      gap("___ she a teacher?", ["Is", "Does", "Do", "Are"], 0, "עם to be: Is she a teacher?"),
+      gap("___ she like school?", ["Is", "Does", "Do", "Are"], 1, "עם פועל רגיל: Does she like school?"),
+      gap("___ they at home?", ["Do", "Does", "Are", "Is"], 2, "עם to be: Are they at home?"),
+    ],
+  ),
+
+  // --- Week 10: question words ------------------------------------------------
+  lesson(
+    "What (מה)",
+    "what שואל על דבר. אחריו בא do או does ואז הנושא: What do you eat? What does she drink? What do you do on Sunday?",
+    [
+      gap("___ do you eat? I eat bread.", ["What", "Where", "Who", "When"], 0, "התשובה היא דבר, לכן what."),
+      gap("What ___ she drink? She drinks milk.", ["do", "does", "is", "are"], 1, "עם she: does."),
+      gap("What ___ you do on Sunday? I play football.", ["do", "does", "are", "is"], 0, "עם you: do."),
+    ],
+  ),
+  lesson(
+    "Where (איפה)",
+    "where שואל על מקום: Where do you live? Where does your father work? Where do they play? גם כאן do או does אחרי מילת השאלה.",
+    [
+      gap("___ do you live? I live in a house.", ["Where", "What", "Who", "Why"], 0, "התשובה היא מקום, לכן where."),
+      gap("Where ___ your father work?", ["do", "does", "is", "are"], 1, "your father הוא he: does."),
+      gap("Where ___ they play? They play in the park.", ["do", "does", "is", "are"], 0, "עם they: do."),
+    ],
+  ),
+  lesson(
+    "When and what time (מתי)",
+    "when שואל על זמן: When do you wake up? אפשר לשאול גם What time...? בתשובה שעה: At seven. What time is it? It is ten.",
+    [
+      gap("___ do you wake up? At seven.", ["When", "Where", "Who", "Why"], 0, "התשובה היא זמן, לכן when."),
+      gap("What ___ is it? It is ten.", ["time", "day", "where", "who"], 0, "שואלים על השעה: What time is it?"),
+      gap("When ___ she play? On Monday.", ["do", "does", "is", "are"], 1, "עם she: does."),
+    ],
+  ),
+  lesson(
+    "Who and why (מי ולמה)",
+    "who שואל על אדם: Who lives here? why שואל על סיבה, והתשובה מתחילה ב-because: Why do you like it? Because it is big.",
+    [
+      gap("___ lives here? My sister.", ["Who", "Where", "What", "When"], 0, "התשובה היא אדם, לכן who."),
+      gap("___ do you like it? Because it is big.", ["Why", "Who", "Where", "When"], 0, "התשובה היא סיבה, לכן why."),
+      gap("Who ___ the girl? She is my friend.", ["is", "does", "do", "are"], 0, "עם the girl: Who is the girl?"),
+    ],
+  ),
+  lesson(
+    "How (איך)",
+    "how שואל איך עושים משהו, או כמה: How do you go to school? By bus. How old are you? I am ten. שימו לב לסדר: מילת שאלה, do או does, נושא, פועל.",
+    [
+      gap("___ do you go to school? By bus.", ["How", "Who", "Why", "When"], 0, "התשובה היא איך נוסעים, לכן how."),
+      gap("How ___ are you?", ["old", "time", "who", "what"], 0, "שואלים על גיל: How old are you?"),
+      pick("Which question is right?", "איזו שאלה נכונה?", ["What you do on Sunday?", "What do you do on Sunday?", "What you are do on Sunday?", "What does you do on Sunday?"], 1, "הסדר: What + do + you + פועל."),
+    ],
+  ),
+
+  // --- Week 11: how often ------------------------------------------------------
+  lesson(
+    "Always, usually, sometimes, never (תדירות)",
+    "מילות תדירות אומרות כמה פעמים עושים משהו: always (תמיד), usually (בדרך כלל), often (לעיתים קרובות), sometimes (לפעמים), never (אף פעם).",
+    [
+      gap("I ___ eat bread for breakfast. (every day)", ["always", "never", "sometimes", "usually"], 0, "כל יום הוא always."),
+      gap("She ___ drinks coffee. (not at all)", ["never", "always", "usually", "often"], 0, "בכלל לא הוא never."),
+      pick("What does never mean?", "מה פירוש never?", ["אף פעם", "תמיד", "לפעמים", "בדרך כלל"], 0, "never = אף פעם."),
+    ],
+  ),
+  lesson(
+    "Before the verb (מקום המילה)",
+    "מילת התדירות באה לפני הפועל הרגיל: I always play football. He never watches TV. They sometimes go to school by bus.",
+    [
+      pick("Which sentence is right? (always)", "איזה משפט נכון? (always)", ["I always play football.", "I play always football.", "I play football always is.", "I always am play football."], 0, "מילת התדירות לפני הפועל: I always play."),
+      pick("Which sentence is right? (never)", "איזה משפט נכון? (never)", ["He never watches TV.", "He watches never TV.", "He never watch TV.", "He is never watches TV."], 0, "He never watches TV."),
+      gap("They ___ go to school by bus.", ["sometimes", "are sometimes", "is sometimes", "am sometimes"], 0, "sometimes לפני הפועל."),
+    ],
+  ),
+  lesson(
+    "After am, is, are (עם to be)",
+    "עם to be המילה באה אחרי הפועל: She is always happy. We are often at school. I am never late.",
+    [
+      pick("Which sentence is right? (always happy)", "איזה משפט נכון? (always happy)", ["She is always happy.", "She always is happy.", "She always happy.", "She is happy always is."], 0, "אחרי is: She is always happy."),
+      pick("Which sentence is right? (often at school)", "איזה משפט נכון? (often at school)", ["We are often at school.", "We often are at school.", "We often at school.", "We are at school often is."], 0, "אחרי are: We are often at school."),
+      gap("I am ___ happy at school. (every day)", ["always", "never", "sometimes", "often"], 0, "אחרי am: I am always happy."),
+    ],
+  ),
+  lesson(
+    "How often? (כל כמה זמן)",
+    "How often...? שואל על תדירות: How often do you play football? Sometimes. How often does she go to school? Always. עונים עם מילת תדירות.",
+    [
+      gap("___ do you play football? Sometimes.", ["How often", "How old", "What time", "Where"], 0, "התשובה היא תדירות: How often."),
+      gap("How often ___ she go to school? Always.", ["do", "does", "is", "are"], 1, "עם she: does."),
+      gap("How often do you eat fish? ___.", ["Never", "Yes, I do", "At home", "By bus"], 0, "תשובה על תדירות: Never."),
+    ],
+  ),
+  lesson(
+    "Always, often, never: practice (חזרה)",
+    "חזרה: מילת תדירות לפני פועל רגיל ואחרי to be. אם אפשר, הוסיפו גם מתי: I usually wake up at seven.",
+    [
+      pick("Which sentence is right? (usually)", "איזה משפט נכון? (usually)", ["I usually wake up at seven.", "I wake usually up at seven.", "Usually wake I up at seven.", "I am usually wake up at seven."], 0, "מילת התדירות לפני הפועל."),
+      pick("Which sentence is right? (often)", "איזה משפט נכון? (often)", ["My father is often at home.", "My father often is at home.", "My father often at home.", "My father is at home often is."], 0, "אחרי is: is often."),
+      gap("She ___ drinks milk in the morning. (every day)", ["always", "never", "sometimes", "often"], 0, "כל יום הוא always."),
+    ],
+  ),
+
+  // --- Week 12: prepositions of place ------------------------------------------
+  lesson(
+    "In and on (ב-, על)",
+    "in אומר שמשהו בתוך משהו: in the box, in the house. on אומר שמשהו על משטח: on the table, on the bed.",
+    [
+      gap("The book is ___ the table. (on top of it)", ["in", "on", "at", "by"], 1, "על השולחן הוא on."),
+      gap("The milk is ___ the box. (inside it)", ["in", "on", "at", "next"], 0, "בתוך הקופסה הוא in."),
+      gap("The cat is ___ the chair. (on top of it)", ["in", "at", "on", "by"], 2, "על הכיסא הוא on."),
+    ],
+  ),
+  lesson(
+    "At (ב-, נקודת מקום)",
+    "at משמש למקום כנקודה: at school, at home, at the door. בעברית אומרים “בבית ספר” ו“בבית”. Is he at home? She is at school.",
+    [
+      gap("My brother is ___ school.", ["at", "on", "under", "between"], 0, "at school."),
+      gap("I am ___ home.", ["in", "at", "on", "to"], 1, "at home."),
+      gap("She is ___ the door. (she stands near it)", ["at", "in", "under", "between"], 0, "at the door."),
+    ],
+  ),
+  lesson(
+    "Under, behind, in front of (מתחת, מאחורי, לפני)",
+    "under הוא מתחת, behind הוא מאחורי, in front of הוא לפני. The dog is under the table. The garden is behind the house. The bus is in front of the school.",
+    [
+      gap("The dog is ___ the table. (below it)", ["under", "on", "in", "at"], 0, "מתחת הוא under."),
+      gap("The garden is ___ the house. (at the back of it)", ["behind", "in front of", "under", "on"], 0, "מאחורי הוא behind."),
+      gap("The bus is ___ the school. (at the front of it)", ["in front of", "behind", "under", "on"], 0, "לפני הוא in front of."),
+    ],
+  ),
+  lesson(
+    "Next to and between (ליד, בין)",
+    "next to הוא ליד, between הוא בין שני דברים: The shop is next to the school. The park is between the shop and the school.",
+    [
+      gap("The shop is ___ the school. (at its side)", ["next to", "between", "under", "behind"], 0, "ליד הוא next to."),
+      gap("The park is ___ the shop and the school. (in the middle)", ["between", "next", "in", "at"], 0, "בין שניים הוא between."),
+      gap("The girl is ___ her mother. (at her side)", ["under", "between", "next to", "behind"], 2, "ליד הוא next to."),
+    ],
+  ),
+  lesson(
+    "Where is it? (איפה זה)",
+    "עונים על Where? עם to be ומילת יחס: Where is the cat? It is under the bed. Where are my books? They are in the bag.",
+    [
+      gap("Where is the cat? It is ___ the bed. (below it)", ["under", "on", "between", "behind"], 0, "מתחת הוא under."),
+      gap("Where are my books? They are ___ the bag. (inside it)", ["in", "on", "at", "under"], 0, "בתוך התיק הוא in."),
+      pick("Which answer is right? Where is the dog?", "איזו תשובה נכונה? Where is the dog?", ["It is in front of the house.", "It is in front the house.", "It is front of the house.", "It in front of the house."], 0, "in front of בשלמותו."),
+    ],
+  ),
+
+  // --- Week 13: prepositions of time --------------------------------------------
+  lesson(
+    "At seven (על שעה)",
+    "עם שעה משתמשים ב-at: I wake up at seven. The lesson is at ten. We eat lunch at twelve.",
+    [
+      gap("I wake up ___ seven.", ["at", "on", "in", "to"], 0, "עם שעה: at."),
+      gap("The lesson is ___ ten.", ["on", "at", "in", "to"], 1, "עם שעה: at."),
+      gap("We eat lunch ___ twelve.", ["in", "on", "to", "at"], 3, "עם שעה: at."),
+    ],
+  ),
+  lesson(
+    "On Monday (על יום)",
+    "עם ימי השבוע משתמשים ב-on: I play football on Sunday. She works on Monday. The shop is open on Saturday.",
+    [
+      gap("I play football ___ Sunday.", ["on", "at", "in", "to"], 0, "עם יום: on."),
+      gap("She works ___ Monday.", ["at", "in", "on", "to"], 2, "עם יום: on."),
+      gap("The shop is open ___ Saturday.", ["on", "at", "in", "to"], 0, "עם יום: on."),
+    ],
+  ),
+  lesson(
+    "In winter, in January (בחודש ובעונה)",
+    "עם חודשים ועונות משתמשים ב-in: It is cold in winter. My birthday is in January. It is hot in summer.",
+    [
+      gap("It is cold ___ winter.", ["in", "on", "at", "to"], 0, "עם עונה: in."),
+      gap("My birthday is ___ January.", ["on", "at", "in", "to"], 2, "עם חודש: in."),
+      gap("It is hot ___ summer.", ["in", "on", "at", "to"], 0, "עם עונה: in."),
+    ],
+  ),
+  lesson(
+    "In the morning, at night (חלקי היום)",
+    "אומרים in the morning, in the afternoon, in the evening, אבל at night. I eat breakfast in the morning. I sleep at night.",
+    [
+      gap("I eat breakfast ___ the morning.", ["in", "at", "on", "by"], 0, "in the morning."),
+      gap("I sleep ___ night.", ["at", "in", "on", "by"], 0, "at night."),
+      gap("We watch TV ___ the evening.", ["at", "on", "by", "in"], 3, "in the evening."),
+    ],
+  ),
+  lesson(
+    "At, on or in? (בחירה)",
+    "חזרה: at לשעה, on ליום, in לחודש, לעונה ולחלקי היום (חוץ מ-at night).",
+    [
+      gap("She plays ___ the afternoon.", ["in", "on", "at", "by"], 0, "in the afternoon."),
+      gap("We go to school ___ Sunday.", ["in", "at", "on", "by"], 2, "עם יום: on."),
+      gap("My mother wakes up ___ six.", ["at", "on", "in", "by"], 0, "עם שעה: at."),
+    ],
+  ),
+
+  // --- Week 14: can / can't --------------------------------------------------------
+  lesson(
+    "I can swim (יכולת)",
+    "can אומר שאפשר או שיודעים לעשות משהו: I can swim. She can sing. אחרי can בא פועל בצורה הבסיסית, בלי s ובלי to, גם עם he ו-she.",
+    [
+      gap("I ___ swim.", ["can", "cans", "am", "do"], 0, "can + פועל: I can swim."),
+      gap("She ___ sing.", ["can", "cans", "is", "does"], 0, "גם עם she: can, בלי s."),
+      gap("Fish ___ swim.", ["can", "cans", "are", "does"], 0, "גם עם רבים: can swim."),
+    ],
+  ),
+  lesson(
+    "I can't swim (אי-יכולת)",
+    "השלילה היא can't: I can't swim. She can't sing. אחרי can't הפועל בצורה הבסיסית.",
+    [
+      gap("I ___ swim. (I do not know how to)", ["can't", "can", "don't", "am not"], 0, "אי-יכולת: can't."),
+      gap("He can ___ to me.", ["speak", "speaks", "speaking", "to speak"], 0, "אחרי can פועל בצורה הבסיסית."),
+      pick("Which sentence is right?", "איזה משפט נכון?", ["She can't sings.", "She can't sing.", "She doesn't can sing.", "She can't to sing."], 1, "can't + פועל בצורה הבסיסית."),
+    ],
+  ),
+  lesson(
+    "Can you...? (שאלה)",
+    "בשאלה can עובר לפני הנושא: Can you swim? Can she sing? תשובה קצרה: Yes, I can. No, I can't.",
+    [
+      gap("___ you swim?", ["Can", "Does", "Are", "Is"], 0, "שאלה על יכולת: Can you swim?"),
+      gap("Can she ___ to you?", ["speak", "speaks", "speaking", "to speak"], 0, "אחרי Can she: פועל בצורה הבסיסית."),
+      gap("Can you ride a bike? Yes, I ___.", ["can", "do", "am", "does"], 0, "עונים: Yes, I can."),
+    ],
+  ),
+  lesson(
+    "Can I...? (בקשה ורשות)",
+    "can משמש גם לבקשה ולרשות: Can I open the door, please? Can you open the window, please? כך מבקשים בנימוס.",
+    [
+      gap("___ I open the door, please?", ["Can", "Are", "Is", "Does"], 0, "בקשת רשות: Can I...?"),
+      gap("Can you ___ the door, please?", ["open", "opens", "opening", "to open"], 0, "אחרי Can you: open."),
+      pick("Which sentence is right?", "איזה משפט נכון?", ["Can I to open the window?", "Can I open the window?", "Can I opens the window?", "I can open the window?"], 1, "Can I + פועל בצורה הבסיסית."),
+    ],
+  ),
+  lesson(
+    "Can, can't, do, don't (שילוב)",
+    "חזרה: can לא משתנה ואחריו פועל בצורה הבסיסית. עם פועל רגיל משתמשים ב-do או does.",
+    [
+      gap("My brother ___ swim, but he can't sing.", ["can", "cans", "does", "is"], 0, "can בלי s."),
+      gap("___ your sister sing?", ["Can", "Are", "Is", "Am"], 0, "שאלה על יכולת: Can."),
+      gap("I ___ like milk, but I can drink water.", ["don't", "can", "am", "isn't"], 0, "אומרים don't like."),
+    ],
+  ),
+
+  // --- Week 15: commands and let's -----------------------------------------------
+  lesson(
+    "Open the door (ציווי)",
+    "כדי לתת הוראה מתחילים בפועל, בלי נושא: Open the door. Read your book. Sit here. הפועל בצורה הבסיסית.",
+    [
+      gap("___ the door, please.", ["Open", "Opens", "Opening", "To open"], 0, "הוראה: Open."),
+      gap("___ your book.", ["Read", "Reads", "Reading", "To read"], 0, "הוראה: Read."),
+      gap("___ here.", ["Sit", "Sits", "Sitting", "Is sit"], 0, "הוראה: Sit."),
+    ],
+  ),
+  lesson(
+    "Don't run (איסור)",
+    "כדי לאסור מתחילים ב-don't: Don't run in the school. Don't sit here. אחרי don't פועל בצורה הבסיסית.",
+    [
+      gap("___ run in the school.", ["Don't", "Doesn't", "Not", "No"], 0, "איסור: Don't."),
+      gap("Don't ___ here.", ["sit", "sits", "sitting", "to sit"], 0, "אחרי Don't: sit."),
+      pick("Which sentence is right?", "איזה משפט נכון?", ["Don't to run.", "Don't run.", "No run.", "Not run."], 1, "Don't run."),
+    ],
+  ),
+  lesson(
+    "Please (בבקשה)",
+    "כדי להיות מנומסים מוסיפים please בתחילת ההוראה או בסופה: Please open the window. Close the door, please.",
+    [
+      pick("Which sentence has please?", "באיזה משפט יש please?", ["Open the door, please.", "Open the door.", "You open the door!", "Door open!"], 0, "please עושה את ההוראה לנימוסית."),
+      gap("___ open the window.", ["Please", "Pleasing", "Pleased", "Pleases"], 0, "please בתחילת ההוראה."),
+      gap("Sit here, ___.", ["please", "pleasing", "pleased", "pleases"], 0, "please בסוף ההוראה."),
+    ],
+  ),
+  lesson(
+    "Let's play! (בואו)",
+    "Let's הוא let us ופירושו “בואו”: Let's play football. Let's go to the park. אחרי Let's פועל בצורה הבסיסית.",
+    [
+      gap("Let's ___ football.", ["play", "plays", "playing", "to play"], 0, "אחרי Let's: play."),
+      gap("It is hot. ___ go to the park!", ["Let's", "Does", "Is", "Am"], 0, "הצעה משותפת: Let's."),
+      pick("Which sentence is right?", "איזה משפט נכון?", ["Let's to go home.", "Let's go home.", "Lets goes home.", "Let's going home."], 1, "Let's + פועל בצורה הבסיסית."),
+    ],
+  ),
+  lesson(
+    "Commands and let's together (חזרה)",
+    "חזרה: הוראה היא פועל בצורה הבסיסית, איסור מתחיל ב-don't, בקשה מנומסת עם please, והצעה משותפת עם Let's.",
+    [
+      gap("It is hot. ___ the window, please.", ["Open", "Opens", "Opening", "To open"], 0, "הוראה: Open."),
+      gap("It is late. ___ run!", ["Don't", "Doesn't", "Not", "No"], 0, "איסור: Don't run."),
+      gap("___ read a book!", ["Let's", "Let", "Is", "Does"], 0, "הצעה משותפת: Let's read."),
     ],
   ),
 ];
