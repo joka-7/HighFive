@@ -155,6 +155,7 @@ HighFive/
 │   │   │   ├── README.md                         # CEFR reference word lists
 │   │   │   ├── cefrj-vocabulary-profile-1.5.csv
 │   │   │   └── octanove-vocabulary-profile-c1c2-1.0.csv
+│   │   ├── a1-order.mjs
 │   │   ├── banks.mjs
 │   │   ├── example-he.mjs
 │   │   ├── exercises-2026.mjs                    # 2026 B2–C1 grammar items and A1–B2 skill quiz questions (second meanings,…
@@ -184,6 +185,7 @@ HighFive/
 │   │   ├── wordbank-extra13.mjs
 │   │   ├── wordbank-extra14.mjs
 │   │   ├── wordbank-extra15.mjs
+│   │   ├── wordbank-extra16.mjs
 │   │   ├── wordbank-extra2.mjs
 │   │   ├── wordbank-extra3.mjs
 │   │   ├── wordbank-extra4.mjs
@@ -198,6 +200,8 @@ HighFive/
 │   ├── check-curated.test.mjs
 │   ├── content-audit.mjs                         # The audit's pure rules: CEFR list parsing, level fit, inflection-aware…
 │   ├── content-audit.test.mjs
+│   ├── content-order.mjs
+│   ├── content-order.test.mjs
 │   ├── content-questions.mjs                     # Seeded reordering of hand-written quiz options, so the right answer isn't…
 │   ├── content-questions.test.mjs
 │   ├── content-schedule.mjs                      # Which bank words each day teaches (wordIndicesForDay), so day sets don't…
