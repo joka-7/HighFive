@@ -32,4 +32,9 @@ describe("parseProgressBackup", () => {
     expect(() => parseProgressBackup({ ...valid, version: 99 })).toThrow(/unsupported version/);
     expect(() => parseProgressBackup({ ...valid, savedWords: "nope" })).toThrow(/savedWords/);
   });
+
+  it("rejects malformed course progress", () => {
+    const progress = { currentLevel: "A1", courses: { A1: { daysDone: "3", lastDoneDate: null } } };
+    expect(() => parseProgressBackup({ ...valid, progress })).toThrow(/progress.courses/);
+  });
 });

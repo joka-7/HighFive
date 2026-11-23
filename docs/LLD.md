@@ -428,6 +428,31 @@ can pin a weekday:
   lives with. A week boundary can land an hour off far from UTC, which nothing
   here depends on.
 
+## `src/utils/course.ts`
+
+Which lesson of a level's course to show. The lesson no longer follows the
+calendar: it follows the number of finished lessons, so a learner who starts
+mid-year, or is away for a month, resumes where they stopped.
+
+- `CourseProgress { daysDone, lastDoneDate }` (in `types.ts`; the date is the local
+  `dateKeyFromTs` key, the same day boundary the missions use), stored per level in
+  `UserProgress.courses`; `NEW_COURSE` is the empty state.
+- `contentDay(course, now)` — the 0-based lesson to show: the next unfinished
+  one on a learning day (the one just finished, until midnight), the latest
+  finished one on a review day. This is the `day` every content loader takes
+  (`getTodaysWords`, `generateReading`, `topicForToday`, …); screens read it as
+  `courseDay` from `useLingo()`.
+- `finishCourseDay(course, now)` — advances by one; a no-op on Friday/Saturday
+  or when today's lesson is already finished. `useLingo`'s `awardMission` calls it
+  when the `words` mission completes.
+- `isValidCourses(v)` — shape check applied to `courses` in backups and Drive pulls.
+  Screens that cache daily content key it by level *and* course day.
+- `reviewWindow(day)` — the up-to-five lessons ending at `day`, which
+  `screens/Memorize.tsx` reviews.
+- `restartCourse(level)` (Settings) resets a level's position. The number of
+  lessons is `ceil(words / 5)`, written to `src/data/offline/course-length.json`
+  by `scripts/generate-content.mjs` and read by `data/course-length.ts`.
+
 ## `src/utils/score.ts`
 
 - `normalizeWords(text)` — lowercases, strips punctuation (keeps letters/
@@ -530,8 +555,8 @@ plus a quarter-local index) and only the current quarter is downloaded.
   are filtered to the learner's level by `linksForLevel(op, level)`: a link with
   `levels` shows only at those levels (e.g. a kids' video search at A1, TED from
   B2), one without shows at every level.
-- **`Memorize`** ("שינון") — loads the words of the current week's learning
-  days (`utils/cycle.ts`), shows them as a tap-to-reveal self-test list, then
+- **`Memorize`** ("שינון") — loads the words of the last five course days
+  (`reviewWindow` in `utils/course.ts`), shows them as a tap-to-reveal self-test list, then
   runs `buildMemorizationQuiz` (`utils/memorize.ts`) through `QuizRunner` and
   scores it as the `Memorization` quiz topic, which completes the mission.
 - **`DailyLesson`** — phases `reading → quiz → done`; fetches today's lesson,

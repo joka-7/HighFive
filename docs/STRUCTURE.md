@@ -342,7 +342,9 @@ HighFive/
 │   │   │   ├── c2.speaking.q2.json
 │   │   │   ├── c2.speaking.q3.json
 │   │   │   ├── c2.speaking.q4.json
+│   │   │   ├── course-length.json
 │   │   │   └── vocab-index.json
+│   │   ├── course-length.ts
 │   │   ├── extras.ts
 │   │   ├── level-vocabulary.ts
 │   │   ├── offline.test.ts
@@ -428,6 +430,8 @@ HighFive/
 │   │   ├── backup.ts
 │   │   ├── cloudMerge.test.ts
 │   │   ├── cloudMerge.ts
+│   │   ├── course.test.ts
+│   │   ├── course.ts
 │   │   ├── cycle.test.ts
 │   │   ├── cycle.ts
 │   │   ├── daily.test.ts

@@ -46,6 +46,11 @@ Thursday are learning days, five new words each (25 for the week); Friday and
 Saturday are **review days**, where the whole week's 25 words come back for
 recall practice instead of new ones arriving (`screens/Memorize.tsx`).
 
+*Which* lessons come is not calendar-driven: each level is a course, and the
+lesson shown is the number of lessons finished so far (`utils/course.ts`), so a
+learner can start or pause whenever they like. The calendar only decides on
+which days a lesson can be finished.
+
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
 │                              Browser (SPA, RTL)                        │

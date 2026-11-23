@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useLingo } from "../store/useLingo";
 import { generateLevelAdaptiveWords } from "../services/content";
-import { dayIndex } from "../utils/daily";
 import type { GemWord } from "../types";
 import WordCard from "../components/WordCard";
 import Spinner from "../components/Spinner";
 
 export default function Vocabulary() {
-  const { progress, isWordSaved, toggleSaveWord, markWordsLearned } = useLingo();
+  const { progress, isWordSaved, toggleSaveWord, markWordsLearned, courseDay } = useLingo();
   const [words, setWords] = useState<GemWord[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -30,7 +29,7 @@ export default function Vocabulary() {
     const controller = new AbortController();
     setLoading(true);
     setError(false);
-    generateLevelAdaptiveWords(level, dayIndex() + dayOffset, controller.signal)
+    generateLevelAdaptiveWords(level, courseDay + dayOffset, controller.signal)
       .then((list) => {
         if (!active) return;
         setWords(list.words);
@@ -46,7 +45,7 @@ export default function Vocabulary() {
       active = false;
       controller.abort();
     };
-  }, [level, dayOffset, markWordsLearned]);
+  }, [level, courseDay, dayOffset, markWordsLearned]);
 
   if (loading) return <Spinner label="טוען מילות היום..." />;
 

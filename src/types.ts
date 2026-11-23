@@ -84,6 +84,16 @@ export interface OfflineLevelContent {
 
 // --- Persisted entities (localStorage / optional Firestore) ---
 
+/** Position in a level's course (lesson N follows N-1 finished lessons). */
+export interface CourseProgress {
+  /** Course days finished so far. */
+  readonly daysDone: number;
+  /** Local date key (see dateKeyFromTs) of the most recent finish, null before the first. */
+  readonly lastDoneDate: string | null;
+}
+
+export type CourseByLevel = Partial<Record<Level, CourseProgress>>;
+
 export interface UserProgress {
   currentLevel: Level;
   userName: string;
@@ -92,6 +102,8 @@ export interface UserProgress {
   streak: number;
   lastActiveTimestamp: number;
   dailyLessonCompletedText: string; // date key — prevents multiple daily claims
+  /** Per-level course position (see utils/course.ts); absent until a first lesson is finished. */
+  courses?: CourseByLevel;
 }
 
 /** A word the learner has seen in the app (vocabulary screen or saved). */

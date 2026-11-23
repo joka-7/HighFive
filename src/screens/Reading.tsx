@@ -10,7 +10,7 @@ import { loadDailyCache, saveDailyCache } from "../utils/dailyCache";
 const CACHE_KEY = "high5.reading_today.v5";
 
 export default function Reading() {
-  const { progress, isWordSaved, toggleSaveWord, completeQuiz, learnedWords } = useLingo();
+  const { progress, isWordSaved, toggleSaveWord, completeQuiz, learnedWords, courseDay } = useLingo();
   const level = progress?.currentLevel ?? "A1";
   // A stable string key rather than depending on the `learnedWords` object
   // directly — that object gets a new identity every time a word is saved
@@ -34,7 +34,7 @@ export default function Reading() {
       setOpen(null);
       setShowHe(true);
       if (!force) {
-        const cached = loadDailyCache<GemReading>(CACHE_KEY, level);
+        const cached = loadDailyCache<GemReading>(CACHE_KEY, `${level}:day${courseDay}`);
         if (cached) {
           setReading(cached);
           setLoading(false);
@@ -44,15 +44,16 @@ export default function Reading() {
       generateReading(
         level,
         learnedKey ? learnedKey.split(",") : [],
+        courseDay,
       )
         .then((r) => {
           setReading(r);
-          saveDailyCache(CACHE_KEY, level, r);
+          saveDailyCache(CACHE_KEY, `${level}:day${courseDay}`, r);
         })
         .catch(() => setReading(null))
         .finally(() => setLoading(false));
     },
-    [level, learnedKey],
+    [level, learnedKey, courseDay],
   );
 
   useEffect(() => {
