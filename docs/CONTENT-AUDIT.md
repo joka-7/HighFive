@@ -32,6 +32,15 @@ clothes, … five words a day, 25 a week), not in bank order. The generator
 missing from that file, listed twice, or not in the bank, so adding an A1 word
 means adding it to a theme there too.
 
+**A1 grammar syllabus.** The A1 daily lesson is written, not generated, for the
+course days covered by `A1_GRAMMAR` in `scripts/content/a1-grammar.mjs`: one lesson
+per learning day, five a week, following the 35 weekly foci in `A1_GRAMMAR_WEEKS`.
+Later days keep the generated rotation until their weeks are written. The app
+shows the first lesson whose words are all known, so a lesson with a word outside
+the A1 cards (a misspelt answer option counts, and so does an apostrophe used as a
+Hebrew quotation mark) would be skipped and the order would break;
+`node scripts/check-curated.mjs A1 --lessons` fails on any such lesson.
+
 <!-- BEGIN GENERATED: npm run content:audit -->
 ## Summary
 
@@ -39,7 +48,7 @@ A year is 365 days: 1,825 word slots (five a day) and 1,825 quiz questions per l
 
 | Level | Unique words | Each word shown | Grammar topics | Unique quiz questions | Unique daily readings | Readings shown / written | Listenings shown / written | Speaking sentences shown / written |
 |---|---|---|---|---|---|---|---|---|
-| A1 | 875 | 2.1× | 7 | 830 | 365 / 365 | 260 / 260 | 260 / 260 | 40 / 42 |
+| A1 | 875 | 2.1× | 32 | 830 | 365 / 365 | 260 / 260 | 260 / 260 | 40 / 42 |
 | A2 | 991 | 1.8× | 7 | 981 | 365 / 365 | 86 / 86 | 86 / 86 | 40 / 42 |
 | B1 | 420 | 4.3× | 6 | 427 | 365 / 365 | 37 / 37 | 36 / 36 | 40 / 42 |
 | B2 | 264 | 6.9× | 7 | 268 | 264 / 365 | 31 / 31 | 30 / 30 | 40 / 42 |
@@ -119,7 +128,7 @@ Every sentence a learner sees, checked word by word: a word counts when the list
 |---|---|---|---|---|
 | A1 | word example | 875 | 0 | none |
 | A1 | daily quiz | 1833 | 0 | none |
-| A1 | grammar question | 929 | 0 | none |
+| A1 | grammar question | 948 | 0 | none |
 | A1 | reading | 625 | 0 | none |
 | A1 | listening | 625 | 0 | none |
 | A1 | speaking | 904 | 0 | none |
