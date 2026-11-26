@@ -28,6 +28,15 @@ every A1 reading and listening and fails if one would be skipped or two readings
 title. Spellings follow the word cards (color, mom, gray, center). Track topics in
 `docs/CONTENT-TOPICS.md`.
 
+**A1 passages follow the weeks.** `alignToWeeks` in `scripts/content-align.mjs` reorders the
+A1 reading and listening pools so that, for each course week, the five passages that use the
+most of that week's 25 words come first (the A1 order in `a1-order.mjs` decides the week's
+words). Nothing is added or removed, and the pick rule is unchanged: day N still reads item N.
+
+**A1 speaking scripts.** `A1_SPEAKING` in `scripts/content/a1-speaking.mjs` holds one round of
+four sentences for each course day, practising the structure of that day's grammar lesson. It
+replaces the sentence-chunked curated speaking pool at A1, so the pool index is the course day.
+
 **A1 word order.** The A1 cards are taught in the themed order of
 `scripts/content/a1-order.mjs` (greetings, family, numbers, time, home, food, body,
 clothes, … five words a day, 25 a week), not in bank order. The generator
@@ -134,7 +143,7 @@ Every sentence a learner sees, checked word by word: a word counts when the list
 | A1 | grammar question | 1052 | 0 | none |
 | A1 | reading | 625 | 0 | none |
 | A1 | listening | 625 | 0 | none |
-| A1 | speaking | 904 | 0 | none |
+| A1 | speaking | 1518 | 0 | none |
 | A2 | word example | 991 | 0 | none |
 | A2 | daily quiz | 1834 | 0 | none |
 | A2 | grammar question | 890 | 0 | none |

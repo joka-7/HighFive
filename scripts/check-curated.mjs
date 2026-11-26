@@ -52,6 +52,7 @@ async function main() {
     for (const [kind, textsOf, max] of [
       ["reading", vocab.readingTexts, tol.reading],
       ["listening", vocab.listeningTexts, tol.listening],
+      ["speaking", vocab.speakingTexts, tol.speaking],
     ]) {
       const items = JSON.parse(readFileSync(join(OFFLINE, `${level.toLowerCase()}.${kind}.curated.json`), "utf8"));
       const over = overTolerance(items.slice(from), textsOf, allowed, max, vocab.unknownWordsIn)

@@ -161,6 +161,8 @@ HighFive/
 │   │   ├── a1-grammar.mjs
 │   │   ├── a1-grammar.test.mjs
 │   │   ├── a1-order.mjs
+│   │   ├── a1-speaking.mjs
+│   │   ├── a1-speaking.test.mjs
 │   │   ├── banks.mjs
 │   │   ├── example-he.mjs
 │   │   ├── exercises-2026.mjs                    # 2026 B2–C1 grammar items and A1–B2 skill quiz questions (second meanings,…
@@ -203,6 +205,8 @@ HighFive/
 │   ├── audit-content.mjs                         # `npm run content:audit`: loads the shipped content and writes…
 │   ├── check-curated.mjs
 │   ├── check-curated.test.mjs
+│   ├── content-align.mjs
+│   ├── content-align.test.mjs
 │   ├── content-audit.mjs                         # The audit's pure rules: CEFR list parsing, level fit, inflection-aware…
 │   ├── content-audit.test.mjs
 │   ├── content-order.mjs

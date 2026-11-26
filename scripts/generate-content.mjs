@@ -49,6 +49,8 @@ import { wordIndicesForDay } from "./content-schedule.mjs";
 import { applyCurriculumOrder } from "./content-order.mjs";
 import { A1_ORDER } from "./content/a1-order.mjs";
 import { A1_GRAMMAR } from "./content/a1-grammar.mjs";
+import { A1_SPEAKING } from "./content/a1-speaking.mjs";
+import { alignToWeeks } from "./content-align.mjs";
 import { shuffleOptions } from "./content-questions.mjs";
 import { MORE_READINGS, MORE_LISTENINGS } from "./content/passages-extra.mjs";
 import { MORE_READINGS2, MORE_LISTENINGS2, MORE_SPEAKING } from "./content/passages-extra2.mjs";
@@ -815,9 +817,18 @@ function main() {
     speakings.forEach((s, d) => { if (s.prompts.length !== 4) throw new Error(`${level} speaking ${d}: need 4 prompts`); });
 
     // Curated (hand-written) pools, validated to the same standard.
-    const readingPool = curatedReadings(level);
-    const listeningPool = curatedListenings(level);
-    const speakingPool = curatedSpeaking(level);
+    let readingPool = curatedReadings(level);
+    let listeningPool = curatedListenings(level);
+    if (level === "A1") {
+      // Day d reads pool[d]; order the passages so each course week follows its word theme.
+      const ordered = applyCurriculumOrder(mergedBank, A1_ORDER, level).map((w) => w.word);
+      const weekWords = Array.from({ length: Math.floor(ordered.length / 25) }, (_, w) => ordered.slice(w * 25, w * 25 + 25));
+      readingPool = alignToWeeks(readingPool, (r) => `${r.title} ${r.text}`, weekWords, 5);
+      listeningPool = alignToWeeks(listeningPool, (l) => l.transcript, weekWords, 5);
+    }
+    // A1 has one written round per course day (index = course day), so it replaces the
+    // sentence-chunked pool.
+    const speakingPool = level === "A1" ? A1_SPEAKING : curatedSpeaking(level);
     readingPool.forEach((r, d) => {
       if (!r.text || !r.textHe) throw new Error(`${level} curated reading ${d}: missing text`);
       if (!Array.isArray(r.glossary) || r.glossary.length === 0) {
