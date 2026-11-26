@@ -131,7 +131,7 @@ export const MORE_READINGS15 = {
     ),
     R(
       "Homework Club (מועדון שיעורי בית)",
-      "After school I go to the homework club in the library. A student from the university helps us with maths and English. It is quiet there, and I can finish my work before dinner. I think my marks are getting better because of it.",
+      "After school I go to the homework club in the library. A student from the university helps us with math and English. It is quiet there, and I can finish my work before dinner. I think my marks are getting better because of it.",
       "אחרי בית הספר אני הולך למועדון שיעורי הבית בספרייה. סטודנט מהאוניברסיטה עוזר לנו בחשבון ובאנגלית. שקט שם, ואני יכול לסיים את העבודה לפני ארוחת הערב. אני חושב שהציונים שלי משתפרים בזכות זה.",
       [
         g("club", "noun", "קבוצה שנפגשת לפעילות", "I go to the homework club.", "מועדון"),
@@ -756,10 +756,10 @@ export const MORE_LISTENINGS15 = {
       ],
     ),
     L(
-      "Hello, team. Tomorrow's basketball practice is moved from the school hall to the sports centre because of the exams. We start at six, not five. Please bring your own water and a clean shirt. If you cannot come, call me by tonight. See you there!",
+      "Hello, team. Tomorrow's basketball practice is moved from the school hall to the sports center because of the exams. We start at six, not five. Please bring your own water and a clean shirt. If you cannot come, call me by tonight. See you there!",
       "שלום, קבוצה. האימון של מחר בכדורסל עובר מאולם בית הספר למרכז הספורט בגלל המבחנים. אנחנו מתחילים בשש, לא בחמש. בבקשה הביאו מים משלכם וחולצה נקייה. אם אתם לא יכולים לבוא, התקשרו אליי עד הערב. נתראה שם!",
       [
-        q("Where is the practice tomorrow?", "איפה האימון מחר?", ["At the sports centre", "At the school hall", "At the park", "At the pool"], ["במרכז הספורט", "באולם בית הספר", "בפארק", "בבריכה"], 0, "נאמר 'to the sports centre'."),
+        q("Where is the practice tomorrow?", "איפה האימון מחר?", ["At the sports center", "At the school hall", "At the park", "At the pool"], ["במרכז הספורט", "באולם בית הספר", "בפארק", "בבריכה"], 0, "נאמר 'to the sports center'."),
         q("What time does it start?", "באיזו שעה זה מתחיל?", ["At six", "At five", "At seven", "At four"], ["בשש", "בחמש", "בשבע", "בארבע"], 0, "נאמר 'We start at six'."),
       ],
     ),
@@ -815,12 +815,12 @@ export const MORE_LISTENINGS15 = {
       "I am calling about the lost wallet. It is brown, and it has a student card and some money inside. I think I lost it on the number nine bus yesterday afternoon. Could you please check if someone handed it in? Please call me if you find it. Thank you very much.",
       "אני מתקשר בקשר לארנק שאבד. הוא חום, ובתוכו כרטיס סטודנט וקצת כסף. אני חושב שאיבדתי אותו באוטובוס מספר תשע אתמול אחר הצהריים. אפשר בבקשה לבדוק אם מישהו מסר אותו? אם תמצאו אותו, בבקשה התקשרו אליי. תודה רבה.",
       [
-        q("What colour is the wallet?", "באיזה צבע הארנק?", ["Brown", "Black", "Red", "Blue"], ["חום", "שחור", "אדום", "כחול"], 0, "נאמר 'It is brown'."),
+        q("What color is the wallet?", "באיזה צבע הארנק?", ["Brown", "Black", "Red", "Blue"], ["חום", "שחור", "אדום", "כחול"], 0, "נאמר 'It is brown'."),
         q("Where did he lose it?", "איפה הוא איבד אותו?", ["On bus number nine", "In a shop", "At school", "In the park"], ["באוטובוס מספר תשע", "בחנות", "בבית הספר", "בפארק"], 0, "נאמר 'on the number nine bus'."),
       ],
     ),
     L(
-      "This is your radio weather report. Today will be hot and sunny in the south and the centre, with temperatures up to thirty-five degrees. In the north it will be cooler, and there may be a few clouds in the afternoon. Remember to drink plenty of water and wear a hat. Tomorrow will be the same.",
+      "This is your radio weather report. Today will be hot and sunny in the south and the center, with temperatures up to thirty-five degrees. In the north it will be cooler, and there may be a few clouds in the afternoon. Remember to drink plenty of water and wear a hat. Tomorrow will be the same.",
       "זה דוח מזג האוויר שלכם ברדיו. היום יהיה חם ושמשי בדרום ובמרכז, עם טמפרטורות של עד שלושים וחמש מעלות. בצפון יהיה קריר יותר, ואולי יהיו כמה עננים אחר הצהריים. זכרו לשתות הרבה מים ולחבוש כובע. מחר יהיה אותו דבר.",
       [
         q("How is the weather in the north?", "איך מזג האוויר בצפון?", ["Cooler, with a few clouds", "Rainy", "Very hot", "Snowy"], ["קריר יותר, עם כמה עננים", "גשום", "חם מאוד", "מושלג"], 0, "נאמר 'cooler' ו-'a few clouds'."),
@@ -996,10 +996,10 @@ export const MORE_LISTENINGS15 = {
       ],
     ),
     L(
-      "I have a busy week. On Monday I have a maths test, and on Tuesday I play in a football match. On Wednesday I go to the dentist, and on Thursday we have a school trip to the zoo. By Friday I will be very tired, so I plan to sleep until noon on Saturday.",
+      "I have a busy week. On Monday I have a math test, and on Tuesday I play in a football match. On Wednesday I go to the dentist, and on Thursday we have a school trip to the zoo. By Friday I will be very tired, so I plan to sleep until noon on Saturday.",
       "יש לי שבוע עמוס. ביום שני יש לי מבחן חשבון, וביום שלישי אני משחק במשחק כדורגל. ביום רביעי אני הולך לרופא השיניים, וביום חמישי יש לנו טיול בית ספר לגן החיות. עד יום שישי אהיה עייף מאוד, ולכן אני מתכנן לישון עד הצהריים בשבת.",
       [
-        q("What does he have on Wednesday?", "מה יש לו ביום רביעי?", ["A visit to the dentist", "A football match", "A maths test", "A school trip"], ["ביקור אצל רופא השיניים", "משחק כדורגל", "מבחן חשבון", "טיול בית ספר"], 0, "נאמר 'On Wednesday I go to the dentist'."),
+        q("What does he have on Wednesday?", "מה יש לו ביום רביעי?", ["A visit to the dentist", "A football match", "A math test", "A school trip"], ["ביקור אצל רופא השיניים", "משחק כדורגל", "מבחן חשבון", "טיול בית ספר"], 0, "נאמר 'On Wednesday I go to the dentist'."),
         q("What does he plan for Saturday?", "מה הוא מתכנן לשבת?", ["To sleep until noon", "To play football", "To study", "To go to the zoo"], ["לישון עד הצהריים", "לשחק כדורגל", "ללמוד", "ללכת לגן החיות"], 0, "נאמר 'sleep until noon on Saturday'."),
       ],
     ),

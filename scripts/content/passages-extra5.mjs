@@ -13,10 +13,10 @@ export const MORE_READINGS5 = {
       [g("morning", "noun", "תחילת היום", "Every morning.", "בוקר"), g("next to", "phrase", "ליד", "Sit next to me.", "ליד/לצד"), g("start", "verb", "להתחיל", "School starts.", "מתחיל")],
       [q("When does the bus come?", "מתי מגיע האוטובוס?", ["At seven", "At eight", "At nine", "At ten"], ["בשבע", "בשמונה", "בתשע", "בעשר"], 1, "'The bus comes at eight'."), q("Who sits next to the writer?", "מי יושב ליד הכותב?", ["The teacher", "Noa", "The driver", "No one"], ["המורה", "נועה", "הנהג", "אף אחד"], 1, "'My friend Noa sits next to me'.")]),
     R("A Rainy Afternoon (אחר צהריים גשום)",
-      "It is raining today. I cannot go to the park. So I stay home with my brother. We play a game and then we draw. Later, Mum makes hot soup. It is a nice day after all.",
+      "It is raining today. I cannot go to the park. So I stay home with my brother. We play a game and then we draw. Later, Mom makes hot soup. It is a nice day after all.",
       "היום יורד גשם. אני לא יכול ללכת לפארק. אז אני נשאר בבית עם אחי. אנחנו משחקים במשחק ואחר כך מציירים. מאוחר יותר אמא מכינה מרק חם. בסך הכול, זה יום נחמד.",
       [g("raining", "verb", "יורד גשם", "It is raining.", "יורד גשם"), g("stay", "verb", "להישאר", "Stay home.", "להישאר"), g("soup", "noun", "מרק", "Hot soup.", "מרק")],
-      [q("Why does the child stay home?", "למה הילד נשאר בבית?", ["It is hot", "It is raining", "It is late", "It is a holiday"], ["חם", "יורד גשם", "מאוחר", "יש חג"], 1, "'It is raining today'."), q("What does Mum make?", "מה אמא מכינה?", ["Cake", "Hot soup", "Bread", "Tea"], ["עוגה", "מרק חם", "לחם", "תה"], 1, "'Mum makes hot soup'.")]),
+      [q("Why does the child stay home?", "למה הילד נשאר בבית?", ["It is hot", "It is raining", "It is late", "It is a holiday"], ["חם", "יורד גשם", "מאוחר", "יש חג"], 1, "'It is raining today'."), q("What does Mom make?", "מה אמא מכינה?", ["Cake", "Hot soup", "Bread", "Tea"], ["עוגה", "מרק חם", "לחם", "תה"], 1, "'Mom makes hot soup'.")]),
   ],
   A2: [
     R("A Surprise Party (מסיבת הפתעה)",

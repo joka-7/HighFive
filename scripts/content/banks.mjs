@@ -346,7 +346,7 @@ export const WORD_BANKS = {
     { word: "constitute", partOfSpeech: "verb", definition: "להוות — להרכיב או להיחשב כ־", example: "These acts constitute a crime.", translation: "להוות" },
     { word: "explicit", partOfSpeech: "adjective", definition: "מפורש — נאמר באופן ברור וישיר", example: "She gave explicit instructions.", translation: "מפורש" },
     { word: "facilitate", partOfSpeech: "verb", definition: "להקל ולסייע לתהליך להתקדם", example: "The app facilitates communication.", translation: "להקל/לאפשר" },
-    { word: "predominant", partOfSpeech: "adjective", definition: "השולט — הבולט או הנפוץ ביותר", example: "Blue was the predominant colour.", translation: "השולט/הבולט" },
+    { word: "predominant", partOfSpeech: "adjective", definition: "השולט — הבולט או הנפוץ ביותר", example: "Blue was the predominant color.", translation: "השולט/הבולט" },
     { word: "subsequent", partOfSpeech: "adjective", definition: "מאוחר יותר — שבא אחרי", example: "In subsequent years, things changed.", translation: "שלאחר מכן" },
     { word: "render", partOfSpeech: "verb", definition: "להפוך למצב מסוים; לגרום ל־", example: "The injury rendered him helpless.", translation: "להפוך/לעשות" },
     { word: "albeit", partOfSpeech: "conjunction", definition: "אם כי — למרות ש (פורמלי)", example: "It was successful, albeit costly.", translation: "אם כי" },

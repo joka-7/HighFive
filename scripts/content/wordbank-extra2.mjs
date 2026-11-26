@@ -25,7 +25,7 @@ export const MORE_WORDS2 = {
     { word: "cow", partOfSpeech: "noun", definition: "חיה שנותנת חלב", example: "The cow eats grass.", translation: "פרה" },
     { word: "flower", partOfSpeech: "noun", definition: "החלק היפה והצבעוני של צמח", example: "She picked a flower.", translation: "פרח" },
     { word: "garden", partOfSpeech: "noun", definition: "שטח עם צמחים ליד הבית", example: "We sat in the garden.", translation: "גינה" },
-    { word: "kitchen", partOfSpeech: "noun", definition: "החדר שבו מבשלים", example: "Mum is in the kitchen.", translation: "מטבח" },
+    { word: "kitchen", partOfSpeech: "noun", definition: "החדר שבו מבשלים", example: "Mom is in the kitchen.", translation: "מטבח" },
     { word: "street", partOfSpeech: "noun", definition: "דרך בעיר עם בתים", example: "Cross the street carefully.", translation: "רחוב" },
     { word: "shop", partOfSpeech: "noun", definition: "מקום שבו קונים דברים", example: "The shop is open.", translation: "חנות" },
     { word: "bus", partOfSpeech: "noun", definition: "כלי תחבורה ציבורי גדול", example: "I take the bus to work.", translation: "אוטובוס" },

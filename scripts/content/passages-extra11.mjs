@@ -388,7 +388,7 @@ export const MORE_READINGS11 = {
       ],
       [
         q("What do they make?", "מה הם בונים?", ["A snowman", "A house", "A boat", "A kite"], ["איש שלג", "בית", "סירה", "עפיפון"], 0, "כתוב 'make a big snowman'."),
-        q("What colour is the scarf?", "באיזה צבע הצעיף?", ["Red", "Blue", "Green", "Yellow"], ["אדום", "כחול", "ירוק", "צהוב"], 0, "כתוב 'a red scarf'."),
+        q("What color is the scarf?", "באיזה צבע הצעיף?", ["Red", "Blue", "Green", "Yellow"], ["אדום", "כחול", "ירוק", "צהוב"], 0, "כתוב 'a red scarf'."),
       ],
     ),
     R(
@@ -499,7 +499,7 @@ export const MORE_READINGS11 = {
         g("photo", "noun", "תמונה מצולמת", "I take a photo.", "תמונה"),
       ],
       [
-        q("What colour is the bird?", "באיזה צבע הציפור?", ["Blue", "Red", "Yellow", "Green"], ["כחולה", "אדומה", "צהובה", "ירוקה"], 0, "כתוב 'a blue bird'."),
+        q("What color is the bird?", "באיזה צבע הציפור?", ["Blue", "Red", "Yellow", "Green"], ["כחולה", "אדומה", "צהובה", "ירוקה"], 0, "כתוב 'a blue bird'."),
         q("What does the writer do with the photo?", "מה הכותב עושה עם התמונה?", ["He shows it to his class", "He gives it to his mother", "He loses it", "He draws it"], ["הוא מראה אותה לכיתה", "הוא נותן אותה לאמא", "הוא מאבד אותה", "הוא מצייר אותה"], 0, "כתוב 'I show it to my class'."),
       ],
     ),
@@ -541,7 +541,7 @@ export const MORE_READINGS11 = {
         g("front", "noun", "הצד הקדמי", "I sit in the front.", "מלפנים"),
       ],
       [
-        q("What colour is the taxi?", "באיזה צבע המונית?", ["Yellow", "Red", "White", "Black"], ["צהובה", "אדומה", "לבנה", "שחורה"], 0, "כתוב 'His taxi is yellow'."),
+        q("What color is the taxi?", "באיזה צבע המונית?", ["Yellow", "Red", "White", "Black"], ["צהובה", "אדומה", "לבנה", "שחורה"], 0, "כתוב 'His taxi is yellow'."),
         q("Where does the writer sit?", "איפה הכותב יושב?", ["In the front", "In the back", "On the roof", "Outside"], ["מלפנים", "מאחור", "על הגג", "בחוץ"], 0, "כתוב 'I sit in the front'."),
       ],
     ),
@@ -597,7 +597,7 @@ export const MORE_READINGS11 = {
         g("look for", "verb", "לנסות למצוא", "We look for the owner.", "לחפש"),
       ],
       [
-        q("What colour is the dog?", "באיזה צבע הכלב?", ["Brown", "Black", "White", "Grey"], ["חום", "שחור", "לבן", "אפור"], 0, "כתוב 'a little brown dog'."),
+        q("What color is the dog?", "באיזה צבע הכלב?", ["Brown", "Black", "White", "Gray"], ["חום", "שחור", "לבן", "אפור"], 0, "כתוב 'a little brown dog'."),
         q("What does the writer give the dog?", "מה הכותב נותן לכלב?", ["Water and bread", "A toy", "A bone", "A bath"], ["מים ולחם", "צעצוע", "עצם", "אמבטיה"], 0, "כתוב 'some water and a piece of bread'."),
       ],
     ),
@@ -820,7 +820,7 @@ export const MORE_LISTENINGS11 = {
       "בננות, בננות! שלוש בננות בשני דולרים. תפוחים אדומים ומתוקים, חמישה דולרים. בואו וראו! הכול טוב מאוד היום. בואו, בואו, בואו!",
       [
         q("How many bananas are two dollars?", "כמה בננות עולות שני דולרים?", ["Three", "Two", "Five", "Ten"], ["שלוש", "שתיים", "חמש", "עשר"], 0, "נאמר 'Three bananas for two dollars'."),
-        q("What colour are the apples?", "באיזה צבע התפוחים?", ["Red", "Green", "Yellow", "Brown"], ["אדומים", "ירוקים", "צהובים", "חומים"], 0, "נאמר 'Sweet red apples'."),
+        q("What color are the apples?", "באיזה צבע התפוחים?", ["Red", "Green", "Yellow", "Brown"], ["אדומים", "ירוקים", "צהובים", "חומים"], 0, "נאמר 'Sweet red apples'."),
       ],
     ),
     L(

@@ -21,7 +21,7 @@ export const MORE_READINGS2 = {
     R("Going to the Zoo (ביקור בגן החיות)",
       "On Sunday we go to the zoo. I see lions, monkeys and a big elephant. The monkeys are funny. My little brother likes the birds. We have a great day.",
       "ביום ראשון אנחנו הולכים לגן החיות. אני רואה אריות, קופים ופיל גדול. הקופים מצחיקים. אחי הקטן אוהב את הציפורים. יש לנו יום נהדר.",
-      [g("zoo", "noun", "מקום עם חיות לצפייה", "We go to the zoo.", "גן חיות"), g("elephant", "noun", "חיה גדולה מאוד", "A grey elephant.", "פיל"), g("funny", "adjective", "מצחיק", "A funny story.", "מצחיק")],
+      [g("zoo", "noun", "מקום עם חיות לצפייה", "We go to the zoo.", "גן חיות"), g("elephant", "noun", "חיה גדולה מאוד", "A gray elephant.", "פיל"), g("funny", "adjective", "מצחיק", "A funny story.", "מצחיק")],
       [q("What animal does the brother like?", "איזו חיה אוהב האח?", ["Lions", "Monkeys", "Birds", "Elephants"], ["אריות", "קופים", "ציפורים", "פילים"], 2, "'my little brother likes the birds'."), q("Which animal is described as big?", "איזו חיה מתוארת כגדולה?", ["The monkey", "The elephant", "The bird", "The lion"], ["הקוף", "הפיל", "הציפור", "האריה"], 1, "'a big elephant'.")]),
   ],
   A2: [
@@ -113,9 +113,9 @@ export const MORE_READINGS2 = {
 
 export const MORE_LISTENINGS2 = {
   A1: [
-    L("Hi, I'm Anna. This is my dog, Max. He is big and brown. We walk in the park every morning.",
-      "היי, אני אנה. זה הכלב שלי, מקס. הוא גדול וחום. אנחנו הולכים בפארק כל בוקר.",
-      [q("What is the dog's name?", "מה שם הכלב?", ["Anna", "Max", "Sam", "Rex"], ["אנה", "מקס", "סאם", "רקס"], 1, "'my dog, Max'."), q("When do they walk?", "מתי הם הולכים?", ["Every evening", "Every morning", "On Sunday", "At night"], ["כל ערב", "כל בוקר", "ביום ראשון", "בלילה"], 1, "'every morning'.")]),
+    L("Hi! This is my dog. He is big and brown. We walk in the park every morning.",
+      "היי! זה הכלב שלי. הוא גדול וחום. אנחנו הולכים בפארק כל בוקר.",
+      [q("What is the dog like?", "איך הכלב נראה?", ["Big and brown", "Small and white", "Black", "Small and brown"], ["גדול וחום", "קטן ולבן", "שחור", "קטן וחום"], 0, "'big and brown'."), q("When do they walk?", "מתי הם הולכים?", ["Every evening", "Every morning", "On Sunday", "At night"], ["כל ערב", "כל בוקר", "ביום ראשון", "בלילה"], 1, "'every morning'.")]),
     L("Welcome to the shop. Today apples are cheap. Three apples for two shekels. Have a nice day!",
       "ברוכים הבאים לחנות. היום התפוחים זולים. שלושה תפוחים בשני שקלים. שיהיה לכם יום נעים!",
       [q("What is cheap today?", "מה זול היום?", ["Bread", "Apples", "Milk", "Eggs"], ["לחם", "תפוחים", "חלב", "ביצים"], 1, "'apples are cheap'."), q("How much for three apples?", "כמה עולים שלושה תפוחים?", ["One shekel", "Two shekels", "Three shekels", "Five shekels"], ["שקל אחד", "שני שקלים", "שלושה שקלים", "חמישה שקלים"], 1, "'three apples for two shekels'.")]),
@@ -137,7 +137,7 @@ export const MORE_LISTENINGS2 = {
   B1: [
     L("Hi, this is the dry cleaner's. Your jacket is ready, but the stain on the sleeve didn't come out completely. Let us know if you'd like us to try again.",
       "היי, כאן מהניקוי היבש. הז׳קט שלך מוכן, אבל הכתם על השרוול לא ירד לגמרי. תודיע לנו אם תרצה שננסה שוב.",
-      [q("What item is ready?", "איזה פריט מוכן?", ["A shirt", "A jacket", "Trousers", "A coat"], ["חולצה", "ז׳קט", "מכנסיים", "מעיל"], 1, "'Your jacket is ready'."), q("What is the problem?", "מה הבעיה?", ["It's lost", "The stain didn't fully come out", "It shrank", "Wrong colour"], ["הוא אבד", "הכתם לא ירד לגמרי", "הוא התכווץ", "צבע לא נכון"], 1, "'the stain... didn't come out completely'.")]),
+      [q("What item is ready?", "איזה פריט מוכן?", ["A shirt", "A jacket", "Trousers", "A coat"], ["חולצה", "ז׳קט", "מכנסיים", "מעיל"], 1, "'Your jacket is ready'."), q("What is the problem?", "מה הבעיה?", ["It's lost", "The stain didn't fully come out", "It shrank", "Wrong color"], ["הוא אבד", "הכתם לא ירד לגמרי", "הוא התכווץ", "צבע לא נכון"], 1, "'the stain... didn't come out completely'.")]),
     L("Good morning, team. Quick update: the client moved the deadline forward by a week, so we'll need to prioritise. Let's meet at eleven to decide what to cut.",
       "בוקר טוב, צוות. עדכון קצר: הלקוח הקדים את מועד ההגשה בשבוע, אז נצטרך לקבוע סדרי עדיפויות. בואו ניפגש באחת־עשרה כדי להחליט על מה לוותר.",
       [q("What did the client do?", "מה עשה הלקוח?", ["Cancelled", "Moved the deadline forward", "Added budget", "Left"], ["ביטל", "הקדים את מועד ההגשה", "הוסיף תקציב", "עזב"], 1, "'moved the deadline forward by a week'."), q("Why meet at eleven?", "למה להיפגש באחת־עשרה?", ["To celebrate", "To decide what to cut", "To hire staff", "To rest"], ["כדי לחגוג", "כדי להחליט על מה לוותר", "כדי לגייס עובדים", "כדי לנוח"], 1, "'decide what to cut'.")]),
@@ -149,7 +149,7 @@ export const MORE_LISTENINGS2 = {
     L("A brief announcement before boarding: due to a tight connection schedule, we'll be boarding by group number today. Please wait for your group to be called to keep the gate area clear.",
       "הודעה קצרה לפני העלייה למטוס: בשל לוח זמנים צפוף של טיסות המשך, העלייה היום תתבצע לפי מספר קבוצה. אנא המתינו עד שתיקרא הקבוצה שלכם, כדי לשמור על אזור השער פנוי.",
       [q("How will boarding work today?", "איך תתבצע העלייה למטוס היום?", ["First come first served", "By group number", "By seat row", "Randomly"], ["כל הקודם זוכה", "לפי מספר קבוצה", "לפי שורת מושבים", "באופן אקראי"], 1, "'boarding by group number'."), q("Why the special procedure?", "למה הנוהל המיוחד?", ["Bad weather", "A tight connection schedule", "A VIP", "Staff shortage"], ["מזג אוויר גרוע", "לוח זמנים צפוף של טיסות המשך", "אורח VIP", "מחסור בעובדים"], 1, "'due to a tight connection schedule'.")]),
-    L("Quick reminder about the survey: it's completely anonymous, it takes about five minutes, and your honest feedback genuinely shapes next year's programme, so please don't just tick the middle box.",
+    L("Quick reminder about the survey: it's completely anonymous, it takes about five minutes, and your honest feedback genuinely shapes next year's program, so please don't just tick the middle box.",
       "תזכורת קצרה לגבי הסקר: הוא אנונימי לחלוטין, לוקח בערך חמש דקות, והמשוב הכן שלכם באמת מעצב את התוכנית של השנה הבאה, אז בבקשה אל תסמנו סתם את התיבה האמצעית.",
       [q("How long does the survey take?", "כמה זמן לוקח הסקר?", ["One minute", "Five minutes", "Ten minutes", "Half an hour"], ["דקה אחת", "חמש דקות", "עשר דקות", "חצי שעה"], 1, "'about five minutes'."), q("What does the speaker ask people not to do?", "מה הדובר מבקש מהאנשים לא לעשות?", ["Skip it", "Just tick the middle box", "Sign it", "Rush"], ["לדלג עליו", "לסמן סתם את התיבה האמצעית", "לחתום עליו", "למהר"], 1, "'don't just tick the middle box'.")]),
     L("I'll keep this short. The pilot project exceeded expectations, but scaling it will require hiring, and hiring requires budget we don't yet have. So the next step is a proposal to the board, not a launch.",
@@ -162,7 +162,7 @@ export const MORE_LISTENINGS2 = {
       [q("Where does the model perform well?", "היכן המודל מתפקד היטב?", ["On future data", "On historical data", "Everywhere", "Nowhere"], ["על נתונים עתידיים", "על נתונים היסטוריים", "בכל מקום", "בשום מקום"], 1, "'performs beautifully on historical data'."), q("What is the speaker's concern?", "מה מדאיג את הדובר?", ["It's too slow", "Strong past results may not predict the future", "It's expensive", "It's inaccurate everywhere"], ["הוא איטי מדי", "תוצאות חזקות בעבר עשויות לא לנבא את העתיד", "הוא יקר", "הוא לא מדויק בכל מקום"], 1, "'tell us less about the future than the dashboard implies'.")]),
     L("Let me reframe the complaint. It's not that customers dislike the new design; it's that we changed it without warning. People can adapt to almost anything except a surprise sprung on them.",
       "הרשו לי לנסח מחדש את התלונה. העניין הוא לא שהלקוחות לא אוהבים את העיצוב החדש, אלא ששינינו אותו בלי התראה. אנשים יכולים להסתגל כמעט לכל דבר, חוץ מהפתעה שנוחתת עליהם.",
-      [q("What is the real problem, per the speaker?", "מהי הבעיה האמיתית, לפי הדובר?", ["The design is ugly", "It was changed without warning", "It's too slow", "It costs more"], ["העיצוב מכוער", "הוא שונה בלי התראה", "הוא איטי מדי", "הוא עולה יותר"], 1, "'we changed it without warning'."), q("What can people not adapt to easily?", "למה אנשים לא מסתגלים בקלות?", ["New colours", "A surprise sprung on them", "Slower speed", "More features"], ["לצבעים חדשים", "להפתעה שנוחתת עליהם", "למהירות איטית יותר", "ליותר תכונות"], 1, "'except a surprise sprung on them'.")]),
+      [q("What is the real problem, per the speaker?", "מהי הבעיה האמיתית, לפי הדובר?", ["The design is ugly", "It was changed without warning", "It's too slow", "It costs more"], ["העיצוב מכוער", "הוא שונה בלי התראה", "הוא איטי מדי", "הוא עולה יותר"], 1, "'we changed it without warning'."), q("What can people not adapt to easily?", "למה אנשים לא מסתגלים בקלות?", ["New colors", "A surprise sprung on them", "Slower speed", "More features"], ["לצבעים חדשים", "להפתעה שנוחתת עליהם", "למהירות איטית יותר", "ליותר תכונות"], 1, "'except a surprise sprung on them'.")]),
     L("In fairness to the previous team, they were solving a different problem with the tools they had. It's easy to look back and call their choices shortsighted, but foresight is far rarer than hindsight pretends.",
       "למען ההגינות כלפי הצוות הקודם, הם פתרו בעיה אחרת עם הכלים שהיו להם. קל להביט לאחור ולכנות את ההחלטות שלהם קצרות ראות, אבל ראיית הנולד נדירה הרבה יותר ממה שהחוכמה שבדיעבד רוצה שנאמין.",
       [q("How does the speaker treat the previous team?", "איך הדובר מתייחס לצוות הקודם?", ["Blames them", "Defends them in fairness", "Ignores them", "Praises them fully"], ["מאשים אותם", "מגן עליהם מתוך הגינות", "מתעלם מהם", "משבח אותם לגמרי"], 1, "'In fairness to the previous team'."), q("What is the speaker's point about foresight?", "מהי הנקודה של הדובר לגבי ראיית הנולד?", ["It's common", "It's rarer than hindsight pretends", "It's useless", "It's easy"], ["היא נפוצה", "היא נדירה הרבה יותר ממה שהחוכמה שבדיעבד רוצה שנאמין", "היא חסרת תועלת", "היא קלה"], 1, "'foresight is far rarer than hindsight pretends'.")]),
@@ -186,7 +186,7 @@ export const MORE_SPEAKING = {
     { text: "I have a brother and a sister.", translation: "יש לי אח ואחות." },
     { text: "Can I have some water, please?", translation: "אפשר קצת מים, בבקשה?" },
     { text: "I don't understand. Can you help me?", translation: "אני לא מבין. תוכל לעזור לי?" },
-    { text: "My favourite colour is blue.", translation: "הצבע האהוב עליי הוא כחול." },
+    { text: "My favourite color is blue.", translation: "הצבע האהוב עליי הוא כחול." },
     { text: "See you tomorrow!", translation: "נתראה מחר!" },
     { text: "I am a little tired today.", translation: "אני קצת עייף היום." },
   ],

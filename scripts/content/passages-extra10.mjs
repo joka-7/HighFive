@@ -236,7 +236,7 @@ export const MORE_READINGS10 = {
         g("light", "noun", "אור, כמו הרמזור באדום", "Stop at the red light.", "אור"),
       ],
       [
-        q("What colour is the bike?", "באיזה צבע האופניים?", ["Red", "Green", "Blue", "Black"], ["אדום", "ירוק", "כחול", "שחור"], 1, "כתוב 'It is green'."),
+        q("What color is the bike?", "באיזה צבע האופניים?", ["Red", "Green", "Blue", "Black"], ["אדום", "ירוק", "כחול", "שחור"], 1, "כתוב 'It is green'."),
         q("When does the writer stop?", "מתי הכותב עוצר?", ["At the red light", "At the shop", "At the school", "At the tree"], ["ברמזור האדום", "בחנות", "בבית הספר", "ליד העץ"], 0, "כתוב 'I stop at the red light'."),
       ],
     ),
@@ -348,7 +348,7 @@ export const MORE_READINGS10 = {
         g("calm", "adjective", "רגוע", "I feel calm.", "רגוע"),
       ],
       [
-        q("What colour is the fish?", "באיזה צבע הדג?", ["Blue", "Orange", "Red", "White"], ["כחול", "כתום", "אדום", "לבן"], 1, "כתוב 'It is small and orange'."),
+        q("What color is the fish?", "באיזה צבע הדג?", ["Blue", "Orange", "Red", "White"], ["כחול", "כתום", "אדום", "לבן"], 1, "כתוב 'It is small and orange'."),
         q("Where does the fish live?", "איפה הדג חי?", ["In a glass bowl", "In a river", "In a pool", "In a box"], ["בקערת זכוכית", "בנהר", "בבריכה", "בקופסה"], 0, "כתוב 'in a glass bowl on my desk'."),
       ],
     ),
@@ -517,7 +517,7 @@ export const MORE_READINGS10 = {
       ],
       [
         q("Where do the brothers go?", "לאן האחים הולכים?", ["To the hill", "To the pool", "To school", "To the shop"], ["אל הגבעה", "לבריכה", "לבית הספר", "לחנות"], 0, "כתוב 'go to the hill with a kite'."),
-        q("What colour is the kite?", "באיזה צבע העפיפון?", ["Red", "Blue", "Yellow", "Green"], ["אדום", "כחול", "צהוב", "ירוק"], 2, "כתוב 'The kite is yellow'."),
+        q("What color is the kite?", "באיזה צבע העפיפון?", ["Red", "Blue", "Yellow", "Green"], ["אדום", "כחול", "צהוב", "ירוק"], 2, "כתוב 'The kite is yellow'."),
       ],
     ),
     R(
@@ -642,7 +642,7 @@ export const MORE_READINGS10 = {
         g("bee", "noun", "חרק שמכין דבש", "The bee likes flowers.", "דבורה"),
       ],
       [
-        q("What colour are the flowers?", "באילו צבעים הפרחים?", ["Red and yellow", "Blue and white", "Green and black", "Pink and purple"], ["אדום וצהוב", "כחול ולבן", "ירוק ושחור", "ורוד וסגול"], 0, "כתוב 'red and yellow flowers'."),
+        q("What color are the flowers?", "באילו צבעים הפרחים?", ["Red and yellow", "Blue and white", "Green and black", "Pink and purple"], ["אדום וצהוב", "כחול ולבן", "ירוק ושחור", "ורוד וסגול"], 0, "כתוב 'red and yellow flowers'."),
         q("What do the birds do?", "מה הציפורים עושות?", ["They sing", "They sleep", "They swim", "They eat"], ["הן שרות", "הן ישנות", "הן שוחות", "הן אוכלות"], 0, "כתוב 'the birds sing'."),
       ],
     ),
@@ -656,7 +656,7 @@ export const MORE_READINGS10 = {
         g("noise", "noun", "קול", "The leaves make a noise.", "רעש"),
       ],
       [
-        q("What colour are the leaves?", "באילו צבעים העלים?", ["Yellow and brown", "Red and blue", "Green and white", "Black and pink"], ["צהוב וחום", "אדום וכחול", "ירוק ולבן", "שחור וורוד"], 0, "כתוב 'yellow and brown'."),
+        q("What color are the leaves?", "באילו צבעים העלים?", ["Yellow and brown", "Red and blue", "Green and white", "Black and pink"], ["צהוב וחום", "אדום וכחול", "ירוק ולבן", "שחור וורוד"], 0, "כתוב 'yellow and brown'."),
         q("What does the writer take home?", "מה הכותב לוקח הביתה?", ["A big leaf", "A flower", "A stone", "A book"], ["עלה גדול", "פרח", "אבן", "ספר"], 0, "כתוב 'I take a big leaf home'."),
       ],
     ),
@@ -789,7 +789,7 @@ export const MORE_LISTENINGS10 = {
       "Hello. I can't find my bag. It is black and it is small. It has a book and a bottle of water inside. I am at the station near the bus stop. Please call me.",
       "שלום. אני לא מוצא את התיק שלי. הוא שחור וקטן. יש בו ספר ובקבוק מים. אני בתחנה ליד תחנת האוטובוס. בבקשה התקשרו אליי.",
       [
-        q("What colour is the bag?", "באיזה צבע התיק?", ["Black", "Blue", "Red", "White"], ["שחור", "כחול", "אדום", "לבן"], 0, "נאמר 'It is black and it is small'."),
+        q("What color is the bag?", "באיזה צבע התיק?", ["Black", "Blue", "Red", "White"], ["שחור", "כחול", "אדום", "לבן"], 0, "נאמר 'It is black and it is small'."),
         q("What is inside the bag?", "מה יש בתוך התיק?", ["A book and a bottle of water", "A phone and a key", "A hat and a coat", "A sandwich and an apple"], ["ספר ובקבוק מים", "טלפון ומפתח", "כובע ומעיל", "כריך ותפוח"], 0, "נאמר 'a book and a bottle of water inside'."),
       ],
     ),
@@ -941,7 +941,7 @@ export const MORE_LISTENINGS10 = {
       "I have a pet bird. It is small and yellow. Its name is Sunny. It sings every morning at seven o'clock. I give it water and I talk to it.",
       "יש לי ציפור מחמד. היא קטנה וצהובה. קוראים לה סאני. היא שרה כל בוקר בשבע. אני נותן לה מים ומדבר איתה.",
       [
-        q("What colour is the bird?", "באיזה צבע הציפור?", ["Yellow", "Red", "Blue", "Green"], ["צהובה", "אדומה", "כחולה", "ירוקה"], 0, "נאמר 'small and yellow'."),
+        q("What color is the bird?", "באיזה צבע הציפור?", ["Yellow", "Red", "Blue", "Green"], ["צהובה", "אדומה", "כחולה", "ירוקה"], 0, "נאמר 'small and yellow'."),
         q("When does the bird sing?", "מתי הציפור שרה?", ["Every morning", "Every night", "Every Friday", "Every afternoon"], ["כל בוקר", "כל לילה", "כל יום שישי", "כל אחר צהריים"], 0, "נאמר 'sings every morning'."),
       ],
     ),
@@ -1005,7 +1005,7 @@ export const MORE_LISTENINGS10 = {
       "I have a new phone! It is small and it is blue. It has a very good camera. I take photos of my cat and my friends. I love it.",
       "יש לי טלפון חדש! הוא קטן והוא כחול. יש לו מצלמה טובה מאוד. אני מצלם את החתול שלי ואת החברים שלי. אני אוהב אותו.",
       [
-        q("What colour is the phone?", "באיזה צבע הטלפון?", ["Blue", "Black", "Red", "White"], ["כחול", "שחור", "אדום", "לבן"], 0, "נאמר 'it is blue'."),
+        q("What color is the phone?", "באיזה צבע הטלפון?", ["Blue", "Black", "Red", "White"], ["כחול", "שחור", "אדום", "לבן"], 0, "נאמר 'it is blue'."),
         q("What does the speaker take photos of?", "את מה הדובר מצלם?", ["His cat and friends", "His food", "His school", "His house"], ["את החתול והחברים שלו", "את האוכל שלו", "את בית הספר שלו", "את הבית שלו"], 0, "נאמר 'photos of my cat and my friends'."),
       ],
     ),
@@ -1110,7 +1110,7 @@ export const MORE_LISTENINGS10 = {
       "היום יום ההולדת של אבא שלי. לאחותי ולי יש מתנה בשבילו. זו חולצה כחולה. אנחנו שמים אותה בקופסה עם סרט אדום. הוא יהיה מופתע מאוד!",
       [
         q("What is the gift?", "מהי המתנה?", ["A blue shirt", "A red hat", "A new phone", "A book"], ["חולצה כחולה", "כובע אדום", "טלפון חדש", "ספר"], 0, "נאמר 'It is a blue shirt'."),
-        q("What colour is the ribbon?", "באיזה צבע הסרט?", ["Red", "Blue", "Green", "Yellow"], ["אדום", "כחול", "ירוק", "צהוב"], 0, "נאמר 'a red ribbon'."),
+        q("What color is the ribbon?", "באיזה צבע הסרט?", ["Red", "Blue", "Green", "Yellow"], ["אדום", "כחול", "ירוק", "צהוב"], 0, "נאמר 'a red ribbon'."),
       ],
     ),
     L(

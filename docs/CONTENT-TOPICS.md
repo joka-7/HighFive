@@ -31,13 +31,13 @@ Whether the app shows an item is checked with
 18. At the Zoo
 19. Helping Mum Cook
 20. A Snowy Day
-21. My New Shoes
+21. A Pair of Shoes
 22. Feeding the Cat
 23. A Day at the Beach
 24. My Grandpa's Garden
 25. The Birthday Cake
 26. Waiting for the Rain to Stop
-27. My School Bag
+27. My Schoolbag
 28. The Little Red Ball
 29. Brushing My Teeth
 30. A Visit to the Farm
