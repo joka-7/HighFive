@@ -24,7 +24,7 @@ export const MORE_READINGS14 = {
         g("door", "noun", "מה שפותחים כדי להיכנס", "I put it near the door.", "דלת"),
       ],
       [
-        q("What colour is the umbrella?", "באיזה צבע המטרייה?", ["Red", "Blue", "Green", "Black"], ["אדומה", "כחולה", "ירוקה", "שחורה"], 0, "כתוב 'a big red umbrella'."),
+        q("What color is the umbrella?", "באיזה צבע המטרייה?", ["Red", "Blue", "Green", "Black"], ["אדומה", "כחולה", "ירוקה", "שחורה"], 0, "כתוב 'a big red umbrella'."),
         q("Who runs under it too?", "מי רץ מתחתיה גם כן?", ["His little brother", "His sister", "His friend", "His teacher"], ["אחיו הקטן", "אחותו", "חברו", "המורה שלו"], 0, "כתוב 'My little brother runs under it too'."),
       ],
     ),
@@ -38,7 +38,7 @@ export const MORE_READINGS14 = {
         g("picture", "noun", "ציור או תמונה", "The picture is on the wall.", "תמונה"),
       ],
       [
-        q("What colour is the roof?", "באיזה צבע הגג?", ["Red", "Green", "Blue", "Yellow"], ["אדום", "ירוק", "כחול", "צהוב"], 0, "כתוב 'a red roof'."),
+        q("What color is the roof?", "באיזה צבע הגג?", ["Red", "Green", "Blue", "Yellow"], ["אדום", "ירוק", "כחול", "צהוב"], 0, "כתוב 'a red roof'."),
         q("Where does the teacher put the picture?", "איפה המורה שמה את התמונה?", ["On the wall", "In a book", "In a box", "On the door"], ["על הקיר", "בספר", "בקופסה", "על הדלת"], 0, "כתוב 'on the wall'."),
       ],
     ),
@@ -123,7 +123,7 @@ export const MORE_READINGS14 = {
       ],
       [
         q("Where is the bowl of fruit?", "איפה קערת הפירות?", ["On the kitchen table", "In the fridge", "In the bag", "On the sofa"], ["על שולחן המטבח", "במקרר", "בתיק", "על הספה"], 0, "כתוב 'On our kitchen table'."),
-        q("What colour are the grapes?", "באיזה צבע הענבים?", ["Green", "Red", "Yellow", "Blue"], ["ירוקים", "אדומים", "צהובים", "כחולים"], 0, "כתוב 'green grapes'."),
+        q("What color are the grapes?", "באיזה צבע הענבים?", ["Green", "Red", "Yellow", "Blue"], ["ירוקים", "אדומים", "צהובים", "כחולים"], 0, "כתוב 'green grapes'."),
       ],
     ),
     R(
@@ -178,7 +178,7 @@ export const MORE_READINGS14 = {
         g("together", "adverb", "ביחד", "We cook together.", "ביחד"),
       ],
       [
-        q("What colour is Grandma's apron?", "באיזה צבע הסינר של סבתא?", ["Blue with white flowers", "Red", "Green", "Yellow"], ["כחול עם פרחים לבנים", "אדום", "ירוק", "צהוב"], 0, "כתוב 'an old blue apron with white flowers'."),
+        q("What color is Grandma's apron?", "באיזה צבע הסינר של סבתא?", ["Blue with white flowers", "Red", "Green", "Yellow"], ["כחול עם פרחים לבנים", "אדום", "ירוק", "צהוב"], 0, "כתוב 'an old blue apron with white flowers'."),
         q("What does Grandma give the writer now?", "מה סבתא נותנת לכותב עכשיו?", ["A small apron", "A big apron", "A book", "A hat"], ["סינר קטן", "סינר גדול", "ספר", "כובע"], 0, "כתוב 'a small apron'."),
       ],
     ),
@@ -240,7 +240,7 @@ export const MORE_READINGS14 = {
     ),
     R(
       "The Candy Shop (חנות הממתקים)",
-      "Next to the bus stop there is a small candy shop. The window is full of sweets in many colours. I have two dollars, so I buy one chocolate and some sweets. I share them with my friends on the bus.",
+      "Next to the bus stop there is a small candy shop. The window is full of sweets in many colors. I have two dollars, so I buy one chocolate and some sweets. I share them with my friends on the bus.",
       "ליד תחנת האוטובוס יש חנות ממתקים קטנה. החלון מלא בממתקים בצבעים רבים. יש לי שני דולרים, ולכן אני קונה שוקולד אחד וכמה ממתקים. אני חולק אותם עם החברים באוטובוס.",
       [
         g("candy", "noun", "ממתק", "I buy candy.", "ממתק"),
@@ -276,7 +276,7 @@ export const MORE_READINGS14 = {
         g("winter", "noun", "העונה הקרה", "In winter the nights are cold.", "חורף"),
       ],
       [
-        q("What colour is the blanket?", "באיזה צבע השמיכה?", ["Green", "Blue", "Red", "White"], ["ירוקה", "כחולה", "אדומה", "לבנה"], 0, "כתוב 'It is green'."),
+        q("What color is the blanket?", "באיזה צבע השמיכה?", ["Green", "Blue", "Red", "White"], ["ירוקה", "כחולה", "אדומה", "לבנה"], 0, "כתוב 'It is green'."),
         q("Why does the writer not want to get up?", "למה הכותב לא רוצה לקום?", ["The blanket is warm", "He is sick", "He is sad", "It is late"], ["השמיכה חמה", "הוא חולה", "הוא עצוב", "מאוחר"], 0, "כתוב 'a big warm blanket'."),
       ],
     ),
@@ -332,7 +332,7 @@ export const MORE_READINGS14 = {
         g("newspaper", "noun", "דפים עם חדשות", "He reads a newspaper.", "עיתון"),
       ],
       [
-        q("What colour is the chair?", "באיזה צבע הכיסא?", ["Brown", "Black", "White", "Green"], ["חום", "שחור", "לבן", "ירוק"], 0, "כתוב 'an old brown chair'."),
+        q("What color is the chair?", "באיזה צבע הכיסא?", ["Brown", "Black", "White", "Green"], ["חום", "שחור", "לבן", "ירוק"], 0, "כתוב 'an old brown chair'."),
         q("Who takes the chair when Grandpa goes home?", "מי תופס את הכיסא כשסבא הולך הביתה?", ["The cat", "The dog", "A bird", "The writer"], ["החתול", "הכלב", "ציפור", "הכותב"], 0, "כתוב 'the cat takes the chair'."),
       ],
     ),
@@ -369,7 +369,7 @@ export const MORE_LISTENINGS14 = {
       "ערב טוב. זה המלון. החברה שלכם מחכה לכם ליד הדלת. יש לה תיק אדום וכובע כחול. בבקשה רדו בעוד חמש דקות. תודה.",
       [
         q("Where is the friend waiting?", "איפה החברה מחכה?", ["At the door", "In the room", "In the car", "At the pool"], ["ליד הדלת", "בחדר", "במכונית", "ליד הבריכה"], 0, "נאמר 'waiting for you at the door'."),
-        q("What colour is her hat?", "באיזה צבע הכובע שלה?", ["Blue", "Red", "Green", "Black"], ["כחול", "אדום", "ירוק", "שחור"], 0, "נאמר 'a blue hat'."),
+        q("What color is her hat?", "באיזה צבע הכובע שלה?", ["Blue", "Red", "Green", "Black"], ["כחול", "אדום", "ירוק", "שחור"], 0, "נאמר 'a blue hat'."),
       ],
     ),
     L(
@@ -457,7 +457,7 @@ export const MORE_LISTENINGS14 = {
       "הסתכלו על התמונה הזאת. ארבעה ילדים משחקים עם עפיפון על גבעה. השמיים כחולים והעפיפון אדום. כלב רץ לידם. אישה יושבת מתחת לעץ וקוראת ספר.",
       [
         q("How many kids are in the picture?", "כמה ילדים יש בתמונה?", ["Four", "Two", "Six", "Three"], ["ארבעה", "שניים", "שישה", "שלושה"], 0, "נאמר 'Four children'."),
-        q("What colour is the kite?", "באיזה צבע העפיפון?", ["Red", "Blue", "Green", "Yellow"], ["אדום", "כחול", "ירוק", "צהוב"], 0, "נאמר 'the kite is red'."),
+        q("What color is the kite?", "באיזה צבע העפיפון?", ["Red", "Blue", "Green", "Yellow"], ["אדום", "כחול", "ירוק", "צהוב"], 0, "נאמר 'the kite is red'."),
       ],
     ),
     L(
@@ -480,7 +480,7 @@ export const MORE_LISTENINGS14 = {
       "My grandmother has a blue apron. She wears it when she cooks. I help her in the kitchen. We make soup and bread together. She says, \"You are my best friend.\" I am very happy.",
       "לסבתא שלי יש סינר כחול. היא לובשת אותו כשהיא מבשלת. אני עוזר לה במטבח. אנחנו מכינים מרק ולחם ביחד. היא אומרת: \"אתה החבר הכי טוב שלי.\" אני שמח מאוד.",
       [
-        q("What colour is the apron?", "באיזה צבע הסינר?", ["Blue", "Red", "Green", "White"], ["כחול", "אדום", "ירוק", "לבן"], 0, "נאמר 'a blue apron'."),
+        q("What color is the apron?", "באיזה צבע הסינר?", ["Blue", "Red", "Green", "White"], ["כחול", "אדום", "ירוק", "לבן"], 0, "נאמר 'a blue apron'."),
         q("What do they make together?", "מה הם מכינים ביחד?", ["Soup and bread", "Cake", "Salad", "Pizza"], ["מרק ולחם", "עוגה", "סלט", "פיצה"], 0, "נאמר 'soup and bread together'."),
       ],
     ),

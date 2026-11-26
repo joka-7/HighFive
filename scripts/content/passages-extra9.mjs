@@ -54,7 +54,7 @@ export const MORE_READINGS9 = {
         g("school", "noun", "מקום שבו לומדים", "I go to school.", "בית ספר"),
       ],
       [
-        q("What colour are the shoes?", "באיזה צבע הנעליים?", ["Red", "Blue", "Black", "White"], ["אדום", "כחול", "שחור", "לבן"], 1, "כתוב 'They are blue'."),
+        q("What color are the shoes?", "באיזה צבע הנעליים?", ["Red", "Blue", "Black", "White"], ["אדום", "כחול", "שחור", "לבן"], 1, "כתוב 'They are blue'."),
         q("Where does the writer wear them?", "לאן הכותב נועל אותן?", ["To work", "To school", "To the park", "To a party"], ["לעבודה", "לבית הספר", "לפארק", "למסיבה"], 1, "כתוב 'I wear them to school'."),
       ],
     ),
@@ -144,7 +144,7 @@ export const MORE_READINGS9 = {
       ],
       [
         q("Why is a cheap shirt not always cheap?", "למה חולצה זולה לא תמיד זולה?", ["It costs more in the shop", "It has to be replaced often", "It is hard to wash", "It is heavy"], ["היא עולה יותר בחנות", "צריך להחליף אותה לעיתים קרובות", "קשה לכבס אותה", "היא כבדה"], 1, "כתוב 'how often you replace it'."),
-        q("What other benefit does buying better have?", "איזו תועלת נוספת יש בקנייה איכותית?", ["More choice", "Less waste", "Faster delivery", "Better colours"], ["יותר בחירה", "פחות פסולת", "משלוח מהיר יותר", "צבעים טובים יותר"], 1, "כתוב 'it also produces far less waste'."),
+        q("What other benefit does buying better have?", "איזו תועלת נוספת יש בקנייה איכותית?", ["More choice", "Less waste", "Faster delivery", "Better colors"], ["יותר בחירה", "פחות פסולת", "משלוח מהיר יותר", "צבעים טובים יותר"], 1, "כתוב 'it also produces far less waste'."),
       ],
     ),
     R(
@@ -207,7 +207,7 @@ export const MORE_READINGS9 = {
     ),
     R(
       "Cities That Slow Cars Down (ערים שמאטות מכוניות)",
-      "Several European cities have lowered urban speed limits to thirty kilometres per hour, and the results have been striking. Serious injuries fell sharply, while average journey times barely changed, because in dense traffic the limiting factor is junctions rather than top speed. Residents who initially objected often became the policy's strongest defenders once the streets grew quieter. The case illustrates how strongly public opinion can shift after a measure is actually experienced.",
+      "Several European cities have lowered urban speed limits to thirty kilometers per hour, and the results have been striking. Serious injuries fell sharply, while average journey times barely changed, because in dense traffic the limiting factor is junctions rather than top speed. Residents who initially objected often became the policy's strongest defenders once the streets grew quieter. The case illustrates how strongly public opinion can shift after a measure is actually experienced.",
       "כמה ערים באירופה הורידו את מגבלת המהירות העירונית לשלושים קילומטרים לשעה, והתוצאות היו מרשימות. פציעות קשות ירדו בחדות, בעוד שזמני הנסיעה הממוצעים כמעט לא השתנו, משום שבתנועה צפופה הגורם המגביל הוא הצמתים ולא המהירות המרבית. תושבים שהתנגדו בתחילה הפכו לא פעם למגיניה החזקים ביותר של המדיניות ברגע שהרחובות נעשו שקטים יותר. המקרה ממחיש עד כמה דעת הקהל יכולה להשתנות אחרי שאמצעי כלשהו נחווה בפועל.",
       [
         g("striking", "adjective", "מרשים ובולט מאוד", "The results were striking.", "מרשים"),
@@ -323,7 +323,7 @@ export const MORE_READINGS9 = {
     ),
     R(
       "Translation as Loss (תרגום כאובדן)",
-      "The translator's predicament is that fidelity to sense and fidelity to sound are frequently incompatible, and no amount of ingenuity dissolves the conflict entirely. What distinguishes an accomplished translation is not the absence of loss but the coherence of the losses chosen. A version that sacrifices metre to preserve argument is defensible; one that sacrifices both to preserve literal wording rarely is. Readers, unaware of the negotiation, judge only its residue.",
+      "The translator's predicament is that fidelity to sense and fidelity to sound are frequently incompatible, and no amount of ingenuity dissolves the conflict entirely. What distinguishes an accomplished translation is not the absence of loss but the coherence of the losses chosen. A version that sacrifices meter to preserve argument is defensible; one that sacrifices both to preserve literal wording rarely is. Readers, unaware of the negotiation, judge only its residue.",
       "מצוקתו של המתרגם היא שנאמנות למשמעות ונאמנות לצליל אינן מתיישבות זו עם זו לעיתים קרובות, ושום כמות של תושייה אינה מפוגגת את הסתירה כליל. את התרגום המשובח מבדילה לא היעדר האובדן אלא הלכידות של האובדנים שנבחרו. גרסה שמקריבה משקל כדי לשמר טיעון היא בת הגנה; גרסה שמקריבה את שניהם כדי לשמר ניסוח מילולי כמעט אף פעם אינה כזאת. הקוראים, שאינם מודעים למשא ומתן, שופטים רק את שאריתו.",
       [
         g("fidelity", "noun", "נאמנות למקור", "Fidelity to sense and sound.", "נאמנות"),
@@ -423,7 +423,7 @@ export const MORE_LISTENINGS9 = {
       "I ordered a jacket online and the wrong size arrived. I called the shop and they were very polite about it. A new one is coming on Thursday and I keep the old one until then.",
       "הזמנתי מעיל באינטרנט והגיעה המידה הלא נכונה. התקשרתי לחנות והם היו מאוד אדיבים בעניין. חדש מגיע ביום חמישי ואני שומר את הישן עד אז.",
       [
-        q("What was the problem?", "מה הייתה הבעיה?", ["The wrong colour", "The wrong size", "A late delivery", "A high price"], ["צבע לא נכון", "מידה לא נכונה", "משלוח מאוחר", "מחיר גבוה"], 1, "נאמר 'the wrong size arrived'."),
+        q("What was the problem?", "מה הייתה הבעיה?", ["The wrong color", "The wrong size", "A late delivery", "A high price"], ["צבע לא נכון", "מידה לא נכונה", "משלוח מאוחר", "מחיר גבוה"], 1, "נאמר 'the wrong size arrived'."),
         q("When is the new jacket coming?", "מתי מגיע המעיל החדש?", ["Tuesday", "Thursday", "Friday", "Sunday"], ["יום שלישי", "יום חמישי", "יום שישי", "יום ראשון"], 1, "נאמר 'coming on Thursday'."),
       ],
     ),
@@ -530,11 +530,11 @@ export const MORE_LISTENINGS9 = {
       ],
     ),
     L(
-      "The restoration took eleven years, largely because the team refused to guess. Where evidence for the original colour was missing, they left the surface deliberately blank rather than inventing a plausible answer.",
+      "The restoration took eleven years, largely because the team refused to guess. Where evidence for the original color was missing, they left the surface deliberately blank rather than inventing a plausible answer.",
       "השימור נמשך אחת עשרה שנים, בעיקר משום שהצוות סירב לנחש. במקומות שבהם חסרו עדויות לצבע המקורי, הם השאירו את המשטח ריק במכוון במקום להמציא תשובה סבירה.",
       [
         q("Why did the restoration take so long?", "למה השימור ארך זמן רב כל כך?", ["Lack of funding", "The team refused to guess", "Bad weather", "Legal disputes"], ["מחסור במימון", "הצוות סירב לנחש", "מזג אוויר רע", "סכסוכים משפטיים"], 1, "נאמר 'the team refused to guess'."),
-        q("What did they do where evidence was missing?", "מה הם עשו במקום שבו חסרו עדויות?", ["Guessed the colour", "Left the surface blank", "Copied another work", "Used modern paint"], ["ניחשו את הצבע", "השאירו את המשטח ריק", "העתיקו יצירה אחרת", "השתמשו בצבע מודרני"], 1, "נאמר 'they left the surface deliberately blank'."),
+        q("What did they do where evidence was missing?", "מה הם עשו במקום שבו חסרו עדויות?", ["Guessed the color", "Left the surface blank", "Copied another work", "Used modern paint"], ["ניחשו את הצבע", "השאירו את המשטח ריק", "העתיקו יצירה אחרת", "השתמשו בצבע מודרני"], 1, "נאמר 'they left the surface deliberately blank'."),
       ],
     ),
   ],

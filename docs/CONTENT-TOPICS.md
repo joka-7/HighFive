@@ -29,15 +29,15 @@ Whether the app shows an item is checked with
 16. A Rainy Afternoon
 17. My Favourite Toy
 18. At the Zoo
-19. Helping Mum Cook
+19. Helping Mom Cook
 20. A Snowy Day
-21. My New Shoes
+21. A Pair of Shoes
 22. Feeding the Cat
 23. A Day at the Beach
 24. My Grandpa's Garden
 25. The Birthday Cake
 26. Waiting for the Rain to Stop
-27. My School Bag
+27. Packing My Bag
 28. The Little Red Ball
 29. Brushing My Teeth
 30. A Visit to the Farm
@@ -280,7 +280,7 @@ Whether the app shows an item is checked with
 4. It is cold today. Take your coat.
 5. Hello, this is the library. The book you want is ready.
 6. Good morning, class. Today we will read a story and then draw a picture.
-7. Hi Mum, I'm at the bus stop. The bus is late.
+7. Hi Mom, I'm at the bus stop. The bus is late.
 8. Hi, I'm Anna. This is my dog, Max.
 9. Welcome to the shop. Today apples are cheap.
 10. It is my sister's birthday today. She is seven.
@@ -644,7 +644,7 @@ Whether the app shows an item is checked with
 16. Welcome to the museum. Please note that you can take photos, but food and drink are not allowed in the galleries.
 17. Attention, please: the supermarket will close in fifteen minutes. Please bring your items to the cash desk now.
 18. Hello, this is Dr Levi's office. Your appointment is on Thursday at three o'clock.
-19. Welcome to the train to the city centre. The next stop is Market Street.
+19. Welcome to the train to the city center. The next stop is Market Street.
 20. Thanks for calling the cinema. Tonight's film starts at eight.
 21. Good afternoon. Because of the storm, today's outdoor concert has been moved inside to the main hall.
 22. Good evening. Please remember that the swimming pool closes early tomorrow, at four o'clock, for cleaning.
@@ -665,7 +665,7 @@ Whether the app shows an item is checked with
 37. Good morning, everyone. This is your captain speaking.
 38. Hi, it is Maya. I am calling about Saturday.
 39. Welcome to the water park. Please read the rules before you go in.
-40. Hello, team. Tomorrow's basketball practice is moved from the school hall to the sports centre because of the exams.
+40. Hello, team. Tomorrow's basketball practice is moved from the school hall to the sports center because of the exams.
 41. Good evening. Tonight is the first night of Hanukkah.
 42. Hi, it is Dad. I am on the highway, and the cars are not moving because of an accident.
 43. Welcome to the tour of the old city. First we will walk down this street to the market.
@@ -673,9 +673,9 @@ Whether the app shows an item is checked with
 45. Hello, welcome to the cooking class. Today we are going to make vegetable soup.
 46. Hi, this is the doctor's office. I am calling to remind you about your appointment tomorrow at ten fifteen.
 47. I am calling about the lost wallet. It is brown, and it has a student card and some money inside.
-48. This is your radio weather report. Today will be hot and sunny in the south and the centre, with temperatures up to thirty-five degrees.
+48. This is your radio weather report. Today will be hot and sunny in the south and the center, with temperatures up to thirty-five degrees.
 49. Hi, it is Noam. I am sorry I could not come to the party last night.
-50. Welcome to the national park. The path to the river is about two kilometres long and takes forty minutes.
+50. Welcome to the national park. The path to the river is about two kilometers long and takes forty minutes.
 51. Good afternoon, students. I have some news about next week's trip.
 52. Hello, welcome to the new library. You can borrow up to five books for three weeks.
 53. I want to tell you about my grandmother's house. It is old, but it is warm and comfortable.
@@ -695,7 +695,7 @@ Whether the app shows an item is checked with
 67. Welcome to the gym. Before you use the machines, please fill in this form and sign it.
 68. Hi, it is me. Do you remember the old bicycle I wanted to sell?
 69. Good afternoon. This is the supermarket.
-70. I have a busy week. On Monday I have a maths test, and on Tuesday I play in a football match.
+70. I have a busy week. On Monday I have a math test, and on Tuesday I play in a football match.
 71. Hello, this is a short message for the neighbours in the building. On Sunday the water will be turned off between nine and one, because the workers need to repair the water system.
 72. Hi, it is me. I am so excited about our trip to the mountains next week.
 73. Welcome to the town cinema. Tonight's film starts at eight and lasts two hours.

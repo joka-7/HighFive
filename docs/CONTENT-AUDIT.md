@@ -23,7 +23,10 @@ hand-written reading or listening when few of its words fall outside the level's
 word cards (`CURATED_TOLERANCE` in `src/services/content.ts`; names and past-tense
 forms count). After `npm run content`, run `node scripts/check-curated.mjs A1
 --from <first new index>`; it exits 1 and lists the unknown words of every item the
-app would skip. Track topics in `docs/CONTENT-TOPICS.md`.
+app would skip. A unit test (`scripts/check-curated.test.mjs`) applies the same rule to
+every A1 reading and listening and fails if one would be skipped or two readings share a
+title. Spellings follow the word cards (color, mom, gray, center). Track topics in
+`docs/CONTENT-TOPICS.md`.
 
 **A1 word order.** The A1 cards are taught in the themed order of
 `scripts/content/a1-order.mjs` (greetings, family, numbers, time, home, food, body,
@@ -113,7 +116,7 @@ All hand-written readings and listening transcripts, shown or not. "Above level"
 
 | Level | Passages | Words per sentence | Above level | In neither list |
 |---|---|---|---|---|
-| A1 | 520 | 6.8 | 1.8% | 0.8% |
+| A1 | 520 | 6.8 | 1.8% | 0.7% |
 | A2 | 172 | 10 | 1.8% | 1.9% |
 | B1 | 73 | 11.2 | 1.9% | 2.1% |
 | B2 | 61 | 15.1 | 0.8% | 4.1% |

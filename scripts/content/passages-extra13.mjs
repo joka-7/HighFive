@@ -120,7 +120,7 @@ export const MORE_READINGS13 = {
         g("funny", "adjective", "מצחיק", "The noise is funny.", "מצחיק"),
       ],
       [
-        q("What colour is the car?", "באיזה צבע המכונית?", ["Blue", "Red", "White", "Black"], ["כחולה", "אדומה", "לבנה", "שחורה"], 0, "כתוב 'an old blue car'."),
+        q("What color is the car?", "באיזה צבע המכונית?", ["Blue", "Red", "White", "Black"], ["כחולה", "אדומה", "לבנה", "שחורה"], 0, "כתוב 'an old blue car'."),
         q("Where do they go in it every summer?", "לאן הם נוסעים בה בכל קיץ?", ["To the beach", "To school", "To the zoo", "To the farm"], ["לים", "לבית הספר", "לגן החיות", "לחווה"], 0, "כתוב 'to the beach in it every summer'."),
       ],
     ),
@@ -204,7 +204,7 @@ export const MORE_READINGS13 = {
         g("dry", "adjective", "לא רטוב", "My hair stays dry.", "יבש"),
       ],
       [
-        q("What colour is the hat?", "באיזה צבע הכובע?", ["Yellow with blue stars", "Red", "Green", "White"], ["צהוב עם כוכבים כחולים", "אדום", "ירוק", "לבן"], 0, "כתוב 'yellow with blue stars'."),
+        q("What color is the hat?", "באיזה צבע הכובע?", ["Yellow with blue stars", "Red", "Green", "White"], ["צהוב עם כוכבים כחולים", "אדום", "ירוק", "לבן"], 0, "כתוב 'yellow with blue stars'."),
         q("What stays dry?", "מה נשאר יבש?", ["Her hair", "Her shoes", "Her bag", "Her book"], ["השיער שלה", "הנעליים שלה", "התיק שלה", "הספר שלה"], 0, "כתוב 'my hair stays dry'."),
       ],
     ),
@@ -386,7 +386,7 @@ export const MORE_READINGS13 = {
         g("flower", "noun", "חלק יפה של צמח", "The hat has a flower.", "פרח"),
       ],
       [
-        q("What colour is the hat?", "באיזה צבע הכובע?", ["Green", "Blue", "Black", "Yellow"], ["ירוק", "כחול", "שחור", "צהוב"], 0, "כתוב 'big and green'."),
+        q("What color is the hat?", "באיזה צבע הכובע?", ["Green", "Blue", "Black", "Yellow"], ["ירוק", "כחול", "שחור", "צהוב"], 0, "כתוב 'big and green'."),
         q("Why is the hat a problem for the little brother?", "למה הכובע בעייתי לאח הקטן?", ["It is too big", "It is too small", "It is old", "It is dirty"], ["הוא גדול מדי", "הוא קטן מדי", "הוא ישן", "הוא מלוכלך"], 0, "כתוב 'It is too big for him'."),
       ],
     ),
@@ -802,7 +802,7 @@ export const MORE_LISTENINGS13 = {
       "My family has an old car. It is blue and it is very small. We go to the beach in it every summer. Dad drives, Mom reads the map and my brother and I sing songs.",
       "למשפחה שלי יש מכונית ישנה. היא כחולה וקטנה מאוד. אנחנו נוסעים בה לים בכל קיץ. אבא נוהג, אמא קוראת את המפה ואחי ואני שרים שירים.",
       [
-        q("What colour is the car?", "באיזה צבע המכונית?", ["Blue", "Red", "White", "Black"], ["כחולה", "אדומה", "לבנה", "שחורה"], 0, "נאמר 'It is blue'."),
+        q("What color is the car?", "באיזה צבע המכונית?", ["Blue", "Red", "White", "Black"], ["כחולה", "אדומה", "לבנה", "שחורה"], 0, "נאמר 'It is blue'."),
         q("What does Mom do in the car?", "מה אמא עושה במכונית?", ["Reads the map", "Drives", "Sings", "Sleeps"], ["קוראת את המפה", "נוהגת", "שרה", "ישנה"], 0, "נאמר 'Mom reads the map'."),
       ],
     ),
@@ -962,7 +962,7 @@ export const MORE_LISTENINGS13 = {
       "Guess what! I have a new bike. It is red and it has a bell. My father gives it to me for my birthday. Tomorrow I ride it to school. Come and see it after the lesson.",
       "נחשו מה! יש לי אופניים חדשים. הם אדומים ויש להם פעמון. אבא שלי נתן לי אותם ליום ההולדת. מחר אני רוכב עליהם לבית הספר. בואו לראות אותם אחרי השיעור.",
       [
-        q("What colour is the bike?", "באיזה צבע האופניים?", ["Red", "Blue", "Green", "Black"], ["אדומים", "כחולים", "ירוקים", "שחורים"], 0, "נאמר 'It is red'."),
+        q("What color is the bike?", "באיזה צבע האופניים?", ["Red", "Blue", "Green", "Black"], ["אדומים", "כחולים", "ירוקים", "שחורים"], 0, "נאמר 'It is red'."),
         q("Who gives him the bike?", "מי נותן לו את האופניים?", ["His father", "His mother", "His uncle", "His teacher"], ["אבא שלו", "אמא שלו", "הדוד שלו", "המורה שלו"], 0, "נאמר 'My father gives it to me'."),
       ],
     ),

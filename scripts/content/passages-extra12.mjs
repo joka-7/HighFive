@@ -246,7 +246,7 @@ export const MORE_READINGS12 = {
         g("try", "verb", "לטעום", "I try a piece.", "לטעום"),
       ],
       [
-        q("What colour is the fruit?", "באיזה צבע הפרי?", ["Orange", "Red", "Green", "Blue"], ["כתום", "אדום", "ירוק", "כחול"], 0, "כתוב 'big and orange'."),
+        q("What color is the fruit?", "באיזה צבע הפרי?", ["Orange", "Red", "Green", "Blue"], ["כתום", "אדום", "ירוק", "כחול"], 0, "כתוב 'big and orange'."),
         q("How is the fruit?", "איך הפרי?", ["Very sweet", "Very cold", "Very hot", "Very bad"], ["מתוק מאוד", "קר מאוד", "חם מאוד", "רע מאוד"], 0, "כתוב 'very sweet'."),
       ],
     ),
@@ -596,7 +596,7 @@ export const MORE_READINGS12 = {
         g("tight", "adverb", "חזק", "I hold on tight.", "חזק"),
       ],
       [
-        q("What colour is the horse?", "באיזה צבע הסוס?", ["Brown", "White", "Black", "Grey"], ["חום", "לבן", "שחור", "אפור"], 0, "כתוב 'a brown horse'."),
+        q("What color is the horse?", "באיזה צבע הסוס?", ["Brown", "White", "Black", "Gray"], ["חום", "לבן", "שחור", "אפור"], 0, "כתוב 'a brown horse'."),
         q("When does the writer ride the horse?", "מתי הכותב רוכב על הסוס?", ["Every summer", "Every winter", "Every night", "Every Friday"], ["בכל קיץ", "בכל חורף", "בכל לילה", "בכל יום שישי"], 0, "כתוב 'Every summer'."),
       ],
     ),
@@ -1018,7 +1018,7 @@ export const MORE_LISTENINGS12 = {
       "I have a pet cat. She is white and her eyes are green. She sleeps on my bed every night. In the morning she wakes me up. She wants her milk. I love my cat very much.",
       "יש לי חתולה. היא לבנה והעיניים שלה ירוקות. היא ישנה על המיטה שלי בכל לילה. בבוקר היא מעירה אותי. היא רוצה את החלב שלה. אני אוהב את החתולה שלי מאוד.",
       [
-        q("What colour are the cat's eyes?", "באיזה צבע העיניים של החתולה?", ["Green", "Blue", "Brown", "Black"], ["ירוקות", "כחולות", "חומות", "שחורות"], 0, "נאמר 'her eyes are green'."),
+        q("What color are the cat's eyes?", "באיזה צבע העיניים של החתולה?", ["Green", "Blue", "Brown", "Black"], ["ירוקות", "כחולות", "חומות", "שחורות"], 0, "נאמר 'her eyes are green'."),
         q("What does the cat want in the morning?", "מה החתולה רוצה בבוקר?", ["Her milk", "A fish", "A bone", "A ball"], ["את החלב שלה", "דג", "עצם", "כדור"], 0, "נאמר 'She wants her milk'."),
       ],
     ),

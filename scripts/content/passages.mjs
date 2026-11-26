@@ -24,7 +24,7 @@ export const READINGS = {
       "I have a small cat. Her name is Mimi. She is black and white. Mimi sleeps all day and plays at night. I give her food in the morning and in the evening.",
       "יש לי חתולה קטנה. קוראים לה מימי. היא שחורה ולבנה. מימי ישנה כל היום ומשחקת בלילה. אני נותן לה אוכל בבוקר ובערב.",
       [g("small", "adjective", "קטן בגודלו", "A small cat.", "קטן"), g("sleep", "verb", "לנוח עם עיניים עצומות", "I sleep at night.", "לישון"), g("evening", "noun", "החלק האחרון של היום", "Good evening.", "ערב")],
-      [q("What colour is Mimi?", "באיזה צבע מימי?", ["All black", "Black and white", "Brown", "Grey"], ["שחורה לגמרי", "שחורה ולבנה", "חומה", "אפורה"], 1, "כתוב 'She is black and white'."), q("When does Mimi play?", "מתי מימי משחקת?", ["In the morning", "In the afternoon", "At night", "Never"], ["בבוקר", "אחר הצהריים", "בלילה", "אף פעם"], 2, "כתוב 'plays at night'.")]),
+      [q("What color is Mimi?", "באיזה צבע מימי?", ["All black", "Black and white", "Brown", "Gray"], ["שחורה לגמרי", "שחורה ולבנה", "חומה", "אפורה"], 1, "כתוב 'She is black and white'."), q("When does Mimi play?", "מתי מימי משחקת?", ["In the morning", "In the afternoon", "At night", "Never"], ["בבוקר", "אחר הצהריים", "בלילה", "אף פעם"], 2, "כתוב 'plays at night'.")]),
     R("At the Shop (בחנות)",
       "On Sunday I go to the shop. I buy milk, eggs and apples. The shop is near my house. The woman at the shop is very nice and she always says hello.",
       "ביום ראשון אני הולך לחנות. אני קונה חלב, ביצים ותפוחים. החנות קרובה לבית שלי. האישה בחנות מאוד נחמדה, והיא תמיד אומרת שלום.",
@@ -176,9 +176,9 @@ export const READINGS = {
 // --- LISTENING --------------------------------------------------------------
 export const LISTENINGS = {
   A1: [
-    L("Hi, I'm Dan. I have a sister and a dog. We live in a small house near the park.",
-      "היי, אני דן. יש לי אחות וכלב. אנחנו גרים בבית קטן ליד הפארק.",
-      [q("What is the speaker's name?", "מה שמו של הדובר?", ["Sam", "Dan", "Tom", "Ben"], ["סאם", "דן", "טום", "בן"], 1, "'I'm Dan'."), q("Where do they live?", "איפה הם גרים?", ["Near the sea", "Near the park", "In the city", "On a farm"], ["ליד הים", "ליד הפארק", "בעיר", "בחווה"], 1, "'near the park'.")]),
+    L("Hi! I have a sister and a dog. We live in a small house near the park.",
+      "היי! יש לי אחות וכלב. אנחנו גרים בבית קטן ליד הפארק.",
+      [q("What do they have at home?", "מה יש להם בבית?", ["A sister and a dog", "A brother and a cat", "Two dogs", "A bird"], ["אחות וכלב", "אח וחתול", "שני כלבים", "ציפור"], 0, "'a sister and a dog'."), q("Where do they live?", "איפה הם גרים?", ["Near the sea", "Near the park", "In the city", "On a farm"], ["ליד הים", "ליד הפארק", "בעיר", "בחווה"], 1, "'near the park'.")]),
     L("Good morning. The shop opens at nine and closes at six. We are closed on Sunday.",
       "בוקר טוב. החנות נפתחת בתשע ונסגרת בשש. ביום ראשון אנחנו סגורים.",
       [q("What time does the shop open?", "באיזו שעה נפתחת החנות?", ["At eight", "At nine", "At six", "At ten"], ["בשמונה", "בתשע", "בשש", "בעשר"], 1, "'opens at nine'."), q("When is the shop closed?", "מתי החנות סגורה?", ["On Sunday", "On Monday", "On Friday", "Never"], ["ביום ראשון", "ביום שני", "ביום שישי", "אף פעם"], 0, "'closed on Sunday'.")]),
