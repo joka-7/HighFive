@@ -28,6 +28,10 @@ every A1 reading and listening and fails if one would be skipped or two readings
 title. Spellings follow the word cards (color, mom, gray, center). Track topics in
 `docs/CONTENT-TOPICS.md`.
 
+**A1 speaking scripts.** `A1_SPEAKING` in `scripts/content/a1-speaking.mjs` holds one round of
+four sentences for each course day, practising the structure of that day's grammar lesson. It
+replaces the sentence-chunked curated speaking pool at A1, so the pool index is the course day.
+
 **A1 word order.** The A1 cards are taught in the themed order of
 `scripts/content/a1-order.mjs` (greetings, family, numbers, time, home, food, body,
 clothes, … five words a day, 25 a week), not in bank order. The generator
@@ -134,7 +138,7 @@ Every sentence a learner sees, checked word by word: a word counts when the list
 | A1 | grammar question | 1052 | 0 | none |
 | A1 | reading | 625 | 0 | none |
 | A1 | listening | 625 | 0 | none |
-| A1 | speaking | 904 | 0 | none |
+| A1 | speaking | 1501 | 0 | none |
 | A2 | word example | 991 | 0 | none |
 | A2 | daily quiz | 1834 | 0 | none |
 | A2 | grammar question | 890 | 0 | none |

@@ -161,6 +161,8 @@ HighFive/
 │   │   ├── a1-grammar.mjs
 │   │   ├── a1-grammar.test.mjs
 │   │   ├── a1-order.mjs
+│   │   ├── a1-speaking.mjs
+│   │   ├── a1-speaking.test.mjs
 │   │   ├── banks.mjs
 │   │   ├── example-he.mjs
 │   │   ├── exercises-2026.mjs                    # 2026 B2–C1 grammar items and A1–B2 skill quiz questions (second meanings,…

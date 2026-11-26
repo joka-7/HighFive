@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { buildAllowedVocabulary, listeningTexts, lessonTexts, readingTexts, unknownWordsIn } from "../src/utils/vocabulary";
+import { buildAllowedVocabulary, listeningTexts, readingTexts, speakingTexts, unknownWordsIn } from "../src/utils/vocabulary";
 import { CURATED_TOLERANCE } from "../src/services/content";
 import { overTolerance } from "./check-curated.mjs";
 
@@ -40,7 +40,8 @@ describe("check-curated", () => {
     it.each([
       { kind: "reading", file: "a1.reading.curated.json", textsOf: readingTexts, max: tolerance.reading },
       { kind: "listening", file: "a1.listening.curated.json", textsOf: listeningTexts, max: tolerance.listening },
-    ])("shows every $kind passage to a learner who knows the A1 cards", ({ file, textsOf, max }) => {
+      { kind: "speaking", file: "a1.speaking.curated.json", textsOf: speakingTexts, max: tolerance.speaking },
+    ])("shows every $kind item to a learner who knows the A1 cards", ({ file, textsOf, max }) => {
       const over = overTolerance(read(file), textsOf, allowedA1, max, unknownWordsIn);
       expect(over.map((r) => `#${r.index}: ${r.unknown.join(", ")}`)).toEqual([]);
     });
