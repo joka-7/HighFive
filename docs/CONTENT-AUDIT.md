@@ -28,6 +28,11 @@ every A1 reading and listening and fails if one would be skipped or two readings
 title. Spellings follow the word cards (color, mom, gray, center). Track topics in
 `docs/CONTENT-TOPICS.md`.
 
+**A1 passages follow the weeks.** `alignToWeeks` in `scripts/content-align.mjs` reorders the
+A1 reading and listening pools so that, for each course week, the five passages that use the
+most of that week's 25 words come first (the A1 order in `a1-order.mjs` decides the week's
+words). Nothing is added or removed, and the pick rule is unchanged: day N still reads item N.
+
 **A1 speaking scripts.** `A1_SPEAKING` in `scripts/content/a1-speaking.mjs` holds one round of
 four sentences for each course day, practising the structure of that day's grammar lesson. It
 replaces the sentence-chunked curated speaking pool at A1, so the pool index is the course day.

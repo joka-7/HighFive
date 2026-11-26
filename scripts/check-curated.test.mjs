@@ -4,6 +4,8 @@ import { resolve } from "node:path";
 import { buildAllowedVocabulary, listeningTexts, readingTexts, speakingTexts, unknownWordsIn } from "../src/utils/vocabulary";
 import { CURATED_TOLERANCE } from "../src/services/content";
 import { overTolerance } from "./check-curated.mjs";
+import { themeScore } from "./content-align.mjs";
+import { A1_ORDER } from "./content/a1-order.mjs";
 
 const textsOf = (item) => [item.text];
 const allowed = new Set(["i", "see", "a", "and", "cat", "dog"]);
@@ -44,6 +46,16 @@ describe("check-curated", () => {
     ])("shows every $kind item to a learner who knows the A1 cards", ({ file, textsOf, max }) => {
       const over = overTolerance(read(file), textsOf, allowedA1, max, unknownWordsIn);
       expect(over.map((r) => `#${r.index}: ${r.unknown.join(", ")}`)).toEqual([]);
+    });
+
+    it("orders the A1 readings and listenings by the weekly word themes", () => {
+      const words = A1_ORDER.flatMap((theme) => theme.words);
+      const weekWords = (day) => words.slice(Math.floor(day / 5) * 25, Math.floor(day / 5) * 25 + 25);
+      const total = (items, textOf) => items.slice(0, 175).reduce((sum, item, day) => sum + themeScore(textOf(item), weekWords(day)), 0);
+      const readings = total(read("a1.reading.curated.json"), (r) => `${r.title} ${r.text}`);
+      const listenings = total(read("a1.listening.curated.json"), (l) => l.transcript);
+      // Written order scored 73 for readings; aligned order scores several times that.
+      expect([readings >= 300, listenings >= 150]).toEqual([true, true]);
     });
 
     it("gives every A1 reading a different title", () => {

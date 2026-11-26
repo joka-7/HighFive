@@ -2,9 +2,9 @@
 
 Ledger for the one-reading-and-one-listening-per-learning-day project (see
 `scripts/content/passages-extra*.mjs`). Check it before writing a new batch so
-no topic or storyline repeats. Numbers are the item's index in the generated
-curated pool (`src/data/offline/<level>.reading.curated.json` /
-`<level>.listening.curated.json`). Add every new batch here in the same commit.
+no topic or storyline repeats. Numbers are the item's position in the source files
+(the order it was written), not its index in the generated curated pool: the A1 pools are
+reordered by weekly word theme (`scripts/content-align.mjs`). Add every new batch here in the same commit.
 Whether the app shows an item is checked with
 `node scripts/check-curated.mjs <LEVEL> --from <first new index>`.
 

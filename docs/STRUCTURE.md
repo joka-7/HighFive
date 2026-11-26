@@ -205,6 +205,8 @@ HighFive/
 │   ├── audit-content.mjs                         # `npm run content:audit`: loads the shipped content and writes…
 │   ├── check-curated.mjs
 │   ├── check-curated.test.mjs
+│   ├── content-align.mjs
+│   ├── content-align.test.mjs
 │   ├── content-audit.mjs                         # The audit's pure rules: CEFR list parsing, level fit, inflection-aware…
 │   ├── content-audit.test.mjs
 │   ├── content-order.mjs
