@@ -143,7 +143,7 @@ Every sentence a learner sees, checked word by word: a word counts when the list
 | A1 | grammar question | 1052 | 0 | none |
 | A1 | reading | 625 | 0 | none |
 | A1 | listening | 625 | 0 | none |
-| A1 | speaking | 1501 | 0 | none |
+| A1 | speaking | 1518 | 0 | none |
 | A2 | word example | 991 | 0 | none |
 | A2 | daily quiz | 1834 | 0 | none |
 | A2 | grammar question | 890 | 0 | none |

@@ -677,11 +677,11 @@ export const A1_GRAMMAR = [
   ),
   lesson(
     "On Monday (על יום)",
-    "עם ימי השבוע משתמשים ב-on: I read a book on Sunday. She works on Monday. The shop is open on Saturday.",
+    "עם ימי השבוע משתמשים ב-on: I read a book on Sunday. She works on Monday. The shop is open on Friday.",
     [
       gap("I read a book ___ Sunday.", ["on", "at", "in", "to"], 0, "עם יום: on."),
       gap("She works ___ Monday.", ["at", "in", "on", "to"], 2, "עם יום: on."),
-      gap("The shop is open ___ Saturday.", ["on", "at", "in", "to"], 0, "עם יום: on."),
+      gap("The shop is open ___ Friday.", ["on", "at", "in", "to"], 0, "עם יום: on."),
     ],
   ),
   lesson(
@@ -1561,10 +1561,10 @@ export const A1_GRAMMAR = [
   // --- Week 32: because and so ---------------------------------------------------------------------------------
   lesson(
     "Because (כי)",
-    "because נותן סיבה: I eat bread because I am hungry. She is happy because it is Sunday.",
+    "because נותן סיבה: I eat bread because I am hungry. She is happy because it is Friday.",
     [
       gap("I eat bread ___ I am hungry.", ["because", "so", "but", "or"], 0, "סיבה: because."),
-      gap("She is happy ___ it is Sunday.", ["because", "so", "but", "or"], 0, "סיבה: because."),
+      gap("She is happy ___ it is Friday.", ["because", "so", "but", "or"], 0, "סיבה: because."),
       gap("We stay at home ___ it is cold. (reason)", ["because", "so", "but", "or"], 0, "סיבה: because."),
     ],
   ),
@@ -1579,9 +1579,9 @@ export const A1_GRAMMAR = [
   ),
   lesson(
     "Why? Because... (למה? כי)",
-    "שואלים Why...? ועונים Because...: Why are you happy? Because it is Sunday.",
+    "שואלים Why...? ועונים Because...: Why are you happy? Because it is Friday.",
     [
-      gap("Why are you happy? ___ it is Sunday.", ["Because", "So", "But", "Or"], 0, "עונים על why: Because."),
+      gap("Why are you happy? ___ it is Friday.", ["Because", "So", "But", "Or"], 0, "עונים על why: Because."),
       gap("___ do you eat? Because I am hungry.", ["Why", "Who", "Where", "When"], 0, "שואלים על סיבה: Why."),
       gap("Why is she at home? ___ she is tired.", ["Because", "So", "But", "Or"], 0, "עונים על why: Because."),
     ],
@@ -1682,11 +1682,11 @@ export const A1_GRAMMAR = [
   ),
   lesson(
     "Choosing the right answer (איזו תשובה)",
-    "התשובה צריכה להתאים לשאלה: Where do you live? In a house. When did you play? Yesterday. Why are you happy? Because it is Sunday.",
+    "התשובה צריכה להתאים לשאלה: Where do you live? In a house. When did you play? Yesterday. Why are you happy? Because it is Friday.",
     [
       pick("Where do you live?", "איזו תשובה מתאימה? Where do you live?", ["In a house.", "Yesterday.", "Because I am happy.", "My brother."], 0, "שאלה על מקום: In a house."),
       pick("When did you play?", "איזו תשובה מתאימה? When did you play?", ["Yesterday.", "In a house.", "Because I am happy.", "My brother."], 0, "שאלה על זמן: Yesterday."),
-      pick("Why are you happy?", "איזו תשובה מתאימה? Why are you happy?", ["Because it is Sunday.", "Yesterday.", "In a house.", "My brother."], 0, "שאלה על סיבה: Because..."),
+      pick("Why are you happy?", "איזו תשובה מתאימה? Why are you happy?", ["Because it is Friday.", "Yesterday.", "In a house.", "My brother."], 0, "שאלה על סיבה: Because..."),
     ],
   ),
   lesson(
