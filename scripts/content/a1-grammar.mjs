@@ -6,7 +6,7 @@
 // words (the audit and `node scripts/check-curated.mjs A1 --lessons` check it).
 //
 // Each lesson: a Hebrew explanation with English examples, then 3 questions.
-// Weeks 1–15 are written; the rest of the 35 weeks in A1_GRAMMAR_WEEKS follow in
+// Weeks 1–25 are written; the rest of the 35 weeks in A1_GRAMMAR_WEEKS follow in
 // later batches and fall back to the generated lessons until then.
 
 const gap = (sentence, options, correctIndex, explanation) => ({
@@ -46,14 +46,14 @@ export const A1_GRAMMAR_WEEKS = [
   { week: 15, title: "Commands and let's", titleHe: "ציווי והצעה" },
   { week: 16, title: "Some / any", titleHe: "some ו-any" },
   { week: 17, title: "How much / how many", titleHe: "כמה" },
-  { week: 18, title: "Like, love, hate", titleHe: "אוהב ושונא" },
+  { week: 18, title: "Like and love", titleHe: "אוהב ואוהב מאוד" },
   { week: 19, title: "Present continuous", titleHe: "הווה ממושך" },
   { week: 20, title: "Simple or continuous?", titleHe: "פשוט או ממושך" },
   { week: 21, title: "Adjectives", titleHe: "שמות תואר" },
   { week: 22, title: "Comparing two things", titleHe: "השוואה" },
   { week: 23, title: "The best, the biggest", titleHe: "הפלגה" },
   { week: 24, title: "Object pronouns", titleHe: "כינויי מושא" },
-  { week: 25, title: "Want, need, would like", titleHe: "רוצה וצריך" },
+  { week: 25, title: "Want and would like", titleHe: "רוצה ורוצה בנימוס" },
   { week: 26, title: "Was / were", titleHe: "to be בעבר" },
   { week: 27, title: "Past simple: -ed verbs", titleHe: "עבר פשוט" },
   { week: 28, title: "Past simple: questions and no", titleHe: "שאלות ושלילה בעבר" },
@@ -793,6 +793,476 @@ export const A1_GRAMMAR = [
       gap("It is hot. ___ the window, please.", ["Open", "Opens", "Opening", "To open"], 0, "הוראה: Open."),
       gap("The baby is in bed. ___ run here!", ["Don't", "Doesn't", "Not", "No"], 0, "איסור: Don't run."),
       gap("___ read a book!", ["Let's", "Let", "Is", "Does"], 0, "הצעה משותפת: Let's read."),
+    ],
+  ),
+
+  // --- Week 16: some / any -----------------------------------------------------
+  lesson(
+    "Some (קצת, כמה)",
+    "some אומר “כמה” או “קצת”, ומשתמשים בו במשפט חיובי: I have some apples. There is some milk. הוא מתאים גם לרבים וגם לדברים שלא סופרים.",
+    [
+      gap("I have ___ apples.", ["some", "any", "a", "an"], 0, "במשפט חיובי עם רבים: some apples."),
+      gap("There is ___ milk in the cup.", ["some", "a", "an", "many"], 0, "milk לא נספר, לכן some."),
+      gap("We eat ___ bread.", ["some", "a", "an", "two"], 0, "bread לא נספר, לכן some."),
+    ],
+  ),
+  lesson(
+    "Any (שלילה ושאלה)",
+    "במשפט שלילי ובשאלה משתמשים ב-any במקום some: I don't have any milk. Do you have any apples? There aren't any chairs.",
+    [
+      gap("I don't have ___ milk.", ["any", "some", "a", "an"], 0, "בשלילה: any."),
+      gap("Do you have ___ apples?", ["any", "a", "an", "one"], 0, "בשאלה: any."),
+      gap("There aren't ___ chairs.", ["any", "some", "a", "an"], 0, "בשלילה: any chairs."),
+    ],
+  ),
+  lesson(
+    "Some or any? (בחירה)",
+    "חיובי: some. שלילה ושאלה: any. She has some friends. She doesn't have any friends. Does she have any friends?",
+    [
+      pick("Which sentence is right? (books)", "איזה משפט נכון? (ספרים)", ["I have any books.", "I have some books.", "I don't have some books.", "Are you have some books?"], 1, "משפט חיובי: some."),
+      gap("There isn't ___ water.", ["any", "some", "an", "many"], 0, "בשלילה: any."),
+      gap("She has ___ friends at school.", ["some", "any", "an", "a"], 0, "משפט חיובי: some."),
+    ],
+  ),
+  lesson(
+    "A, an or some? (בחירה)",
+    "עם שם עצם ביחיד שנספר: a או an. עם רבים או עם דבר שלא נספר: some. I want an apple. I want some milk.",
+    [
+      gap("I want ___ apple.", ["an", "some", "any", "many"], 0, "apple ביחיד ומתחיל בתנועה: an."),
+      gap("I want ___ milk.", ["some", "an", "a", "many"], 0, "milk לא נספר: some."),
+      gap("Do you have ___ brother?", ["a", "some", "any", "many"], 0, "brother ביחיד: a brother."),
+    ],
+  ),
+  lesson(
+    "Some and any together (חזרה)",
+    "חזרה: some בחיובי, any בשלילה ובשאלה. a / an ליחיד שנספר.",
+    [
+      gap("We have ___ rice.", ["some", "any", "an", "a"], 0, "חיובי ולא נספר: some."),
+      gap("They don't have ___ bread.", ["some", "any", "an", "a"], 1, "בשלילה: any."),
+      gap("Is there ___ milk in the cup?", ["any", "some", "an", "many"], 0, "בשאלה: any."),
+    ],
+  ),
+
+  // --- Week 17: how much / how many ----------------------------------------------
+  lesson(
+    "Things we count (ספירה)",
+    "שמות עצם שאפשר לספור: one apple, two apples. שמות עצם שלא סופרים: milk, bread, rice. לא אומרים two milks.",
+    [
+      pick("Which word does not go with two?", "עם איזו מילה אי אפשר לומר two?", ["milk", "apple", "book", "dog"], 0, "milk לא נספר: לא אומרים two milk."),
+      pick("Which sentence is right? (bread)", "איזה משפט נכון? (bread)", ["I eat bread.", "I eat a bread.", "I eat two breads.", "I eat breads."], 0, "bread לא נספר: I eat bread."),
+      pick("Which word can go with two?", "עם איזו מילה אפשר לומר two?", ["rice", "milk", "apple", "bread"], 2, "apple נספר: one apple, two apples."),
+    ],
+  ),
+  lesson(
+    "How many? (כמה, לספירה)",
+    "How many שואלים עם שם עצם ברבים שנספר: How many apples do you have? How many brothers do you have?",
+    [
+      gap("How many ___ do you have?", ["apples", "apple", "milk", "water"], 0, "אחרי How many: רבים."),
+      gap("How ___ books do you have?", ["many", "much", "some", "any"], 0, "ספרים נספרים: How many."),
+      gap("How many brothers ___ you have?", ["do", "does", "are", "is"], 0, "עם you: do."),
+    ],
+  ),
+  lesson(
+    "How much? (כמה, לכמות)",
+    "How much שואלים עם דבר שלא נספר: How much milk do you drink? וגם כשהשאלה היא על מחיר: How much is the bag?",
+    [
+      gap("How ___ milk do you drink?", ["much", "many", "some", "any"], 0, "milk לא נספר: How much."),
+      gap("How ___ bread do you eat?", ["much", "many", "a", "an"], 0, "bread לא נספר: How much."),
+      gap("How ___ is the bag? (the price)", ["much", "many", "old", "time"], 0, "שואלים על מחיר: How much."),
+    ],
+  ),
+  lesson(
+    "A lot of (הרבה)",
+    "a lot of אומר “הרבה” ומתאים לשני הסוגים: I have a lot of books. There is a lot of milk. במשפט חיובי זה נשמע טבעי יותר מ-many ומ-much.",
+    [
+      gap("I have ___ friends.", ["a lot of", "a lot", "much", "a many"], 0, "a lot of + שם עצם."),
+      gap("There is ___ milk.", ["a lot of", "a lot", "many", "two"], 0, "a lot of + שם עצם."),
+      gap("We eat ___ bread.", ["a lot of", "a lot", "many", "a"], 0, "a lot of + שם עצם."),
+    ],
+  ),
+  lesson(
+    "How much or how many? (בחירה)",
+    "חזרה: How many לדברים שסופרים, How much לדברים שלא סופרים ולמחיר.",
+    [
+      gap("How ___ apples do you want?", ["many", "much", "any", "some"], 0, "apples נספר: How many."),
+      gap("How ___ rice do you want?", ["much", "many", "any", "an"], 0, "rice לא נספר: How much."),
+      gap("How ___ chairs are there?", ["many", "much", "any", "some"], 0, "chairs נספר: How many."),
+    ],
+  ),
+
+  // --- Week 18: like, love, hate ----------------------------------------------------
+  lesson(
+    "I like (אוהב)",
+    "like אומר “אוהב” או “מחבב”: I like milk. עם he, she, it מוסיפים s: She likes rice. They like music.",
+    [
+      gap("I ___ milk.", ["like", "likes", "am like", "liking"], 0, "עם I: like."),
+      gap("She ___ rice.", ["like", "likes", "is like", "liking"], 1, "עם she: likes."),
+      gap("They ___ music.", ["like", "likes", "are like", "liking"], 0, "עם they: like."),
+    ],
+  ),
+  lesson(
+    "Love (אוהב מאוד)",
+    "love חזק מ-like וזה “אוהב מאוד”: I love football. She loves her dog. גם כאן he, she, it מקבלים s.",
+    [
+      gap("I ___ football. (I like it very much)", ["love", "loves", "am love", "loving"], 0, "עם I: love."),
+      gap("She ___ her dog. (she likes it very much)", ["loves", "love", "is love", "loving"], 0, "עם she: loves."),
+      gap("We ___ our teacher.", ["love", "loves", "loving", "are love"], 0, "עם we: love."),
+    ],
+  ),
+  lesson(
+    "Like playing (אוהב לעשות)",
+    "אחרי like ו-love אפשר לשים פועל עם סיומת ממושכת, ובעברית זה “אוהב לעשות”: I like playing football. She likes reading books.",
+    [
+      gap("I like ___ football.", ["playing", "play", "plays", "played"], 0, "like + פועל עם סיומת: playing."),
+      gap("She likes ___ books.", ["reading", "read", "reads", "is read"], 0, "likes + reading."),
+      gap("They love ___ in the park.", ["running", "run", "runs", "is run"], 0, "love + running."),
+    ],
+  ),
+  lesson(
+    "Do you like...? (שאלות ושלילה)",
+    "שואלים עם do או does ושוללים עם don't או doesn't: Do you like rice? She doesn't like fish. Does he like football? Yes, he does.",
+    [
+      gap("___ you like rice?", ["Do", "Does", "Are", "Is"], 0, "שאלה עם you: Do."),
+      gap("She ___ like fish.", ["doesn't", "don't", "isn't", "aren't"], 0, "עם she: doesn't."),
+      gap("Does he like football? Yes, he ___.", ["does", "do", "likes", "is"], 0, "עונים: Yes, he does."),
+    ],
+  ),
+  lesson(
+    "Like and love together (חזרה)",
+    "חזרה: like ו-love עם s בגוף שלישי, don't / doesn't בשלילה ו-do / does בשאלה.",
+    [
+      gap("My brother ___ swimming.", ["likes", "like", "is like", "liking"], 0, "my brother הוא he: likes."),
+      gap("I ___ like cold milk.", ["don't", "doesn't", "isn't", "am not"], 0, "עם I: don't."),
+      pick("Which sentence is right?", "איזה משפט נכון?", ["I like swimming.", "I likes swimming.", "I am like swimming.", "I like swimming is."], 0, "עם I: like swimming."),
+    ],
+  ),
+
+  // --- Week 19: present continuous -------------------------------------------------------
+  lesson(
+    "I am playing (עכשיו)",
+    "הווה ממושך מתאר מה קורה עכשיו: am, is או are ואז הפועל עם סיומת ממושכת. I am playing football now. She is reading a book. They are watching TV.",
+    [
+      gap("I am ___ football now.", ["playing", "play", "plays", "played"], 0, "am + playing."),
+      gap("She is ___ a book.", ["reading", "read", "reads", "is read"], 0, "is + reading."),
+      gap("They are ___ TV.", ["watching", "watch", "watches", "watched"], 0, "are + watching."),
+    ],
+  ),
+  lesson(
+    "Am, is or are? (איזה to be)",
+    "בוחרים לפי הנושא, כמו תמיד: I am, he / she / it is, we / you / they are: I am eating. He is sleeping. We are playing.",
+    [
+      gap("I ___ eating.", ["am", "is", "are", "do"], 0, "עם I: am."),
+      gap("He ___ sleeping.", ["is", "am", "are", "does"], 0, "עם he: is."),
+      gap("We ___ playing.", ["are", "is", "am", "do"], 0, "עם we: are."),
+    ],
+  ),
+  lesson(
+    "Spelling: run → running (כתיב)",
+    "בדרך כלל מוסיפים את הסיומת ישר: play → playing. אם הפועל נגמר בעיצור אחרי תנועה קצרה, כופלים את העיצור: run → running, swim → swimming. אם הוא נגמר בתנועה שקטה, היא נעלמת: make → making.",
+    [
+      gap("run → ___", ["running", "run", "runs", "walking"], 0, "כופלים את העיצור: running."),
+      gap("make → ___", ["making", "make", "makes", "walking"], 0, "התנועה השקטה נעלמת: making."),
+      gap("swim → ___", ["swimming", "swim", "swims", "running"], 0, "כופלים את העיצור: swimming."),
+    ],
+  ),
+  lesson(
+    "I am not playing (שלילה)",
+    "שוללים עם not אחרי to be: I am not playing. He is not sleeping. They aren't watching TV.",
+    [
+      gap("I am ___ playing.", ["not", "no", "don't", "isn't"], 0, "אחרי am: not."),
+      gap("He ___ not sleeping.", ["is", "am", "are", "does"], 0, "עם he: is not."),
+      gap("They aren't ___ TV.", ["watching", "watch", "watches", "watched"], 0, "aren't + watching."),
+    ],
+  ),
+  lesson(
+    "Is she playing? (שאלה)",
+    "בשאלה to be עובר לפני הנושא: Is she reading? Are they playing? מילת שאלה בתחילת המשפט: What are you doing?",
+    [
+      gap("___ she reading?", ["Is", "Does", "Do", "Are"], 0, "עם she: Is."),
+      gap("___ they playing?", ["Are", "Is", "Do", "Does"], 0, "עם they: Are."),
+      gap("What are you ___?", ["doing", "do", "does", "to do"], 0, "are + doing."),
+    ],
+  ),
+
+  // --- Week 20: simple or continuous ------------------------------------------------------------
+  lesson(
+    "Every day or now? (שגרה או עכשיו)",
+    "הווה פשוט הוא לשגרה: I play football every Sunday. הווה ממושך הוא למה שקורה עכשיו: Now I am watching TV.",
+    [
+      gap("I play football every Sunday. Now I ___ TV.", ["am watching", "watch", "watches", "watched"], 0, "עכשיו: am watching."),
+      gap("She ___ milk every morning.", ["drinks", "is drinking", "drinking", "am drinking"], 0, "שגרה: drinks."),
+      gap("Now the dog ___.", ["is running", "runs", "run", "running"], 0, "עכשיו: is running."),
+    ],
+  ),
+  lesson(
+    "Now, today, every day (מילות זמן)",
+    "now ו-at the moment מצביעים על עכשיו (ממושך), ו-every day, always ו-on Sundays מצביעים על שגרה (פשוט).",
+    [
+      gap("___, I am at home. (this moment)", ["Now", "Every day", "Always", "Never"], 0, "now מתאים לעכשיו."),
+      gap("They ___ football on Sundays.", ["play", "are playing", "is playing", "playing"], 0, "on Sundays הוא שגרה: play."),
+      gap("I ___ at school every day.", ["am", "is", "are", "be"], 0, "עם I: am."),
+    ],
+  ),
+  lesson(
+    "Like, have, want (פעלים בלי סיומת ממושכת)",
+    "יש פעלים שלא באים בהווה ממושך, למשל like, have ו-want: I like rice (לא I am liking). She has a dog. We want a new bag.",
+    [
+      gap("I ___ rice.", ["like", "am liking", "is like", "liking"], 0, "like לא בהווה ממושך."),
+      gap("She ___ a dog. (she has one)", ["has", "is having", "have", "having"], 0, "has עם she."),
+      gap("We ___ a new bag.", ["want", "are wanting", "is want", "wanting"], 0, "want לא בהווה ממושך."),
+    ],
+  ),
+  lesson(
+    "What do you do? What are you doing? (שתי שאלות)",
+    "What do you do? שואל על מקצוע או שגרה. What are you doing? שואל מה עושים עכשיו. What does she do every day?",
+    [
+      gap("___ do you do? I am a teacher.", ["What", "Where", "Who", "How"], 0, "שואלים על מקצוע: What do you do?"),
+      gap("What are you ___ now?", ["doing", "do", "does", "to do"], 0, "are + doing."),
+      gap("What ___ she do every day?", ["does", "is", "do", "are"], 0, "שגרה עם she: does."),
+    ],
+  ),
+  lesson(
+    "Simple or continuous? (בחירה)",
+    "חזרה: שגרה היא הווה פשוט, עכשיו הוא הווה ממושך. לפעלים כמו like ו-have אין הווה ממושך.",
+    [
+      gap("My father ___ at home on Sunday.", ["works", "is working", "work", "working"], 0, "שגרה עם he: works."),
+      gap("Be quiet! The baby ___.", ["is sleeping", "sleeps", "sleep", "sleeping"], 0, "עכשיו: is sleeping."),
+      gap("I ___ milk.", ["like", "am liking", "likes", "liking"], 0, "like לא בהווה ממושך."),
+    ],
+  ),
+
+  // --- Week 21: adjectives ----------------------------------------------------------------------------
+  lesson(
+    "A big house (שם תואר לפני שם עצם)",
+    "באנגלית שם התואר בא לפני שם העצם: a big house, a small cat. בעברית הסדר הפוך: בית גדול.",
+    [
+      pick("Which sentence is right? (house)", "איזה משפט נכון? (בית)", ["It is a big house.", "It is a house big.", "It is big a house.", "It is a bigs house."], 0, "שם התואר לפני שם העצם."),
+      pick("Which sentence is right? (cat)", "איזה משפט נכון? (חתול)", ["I have a small cat.", "I have a cat small.", "I have small a cat.", "I have a cat is small."], 0, "a small cat."),
+      pick("Which sentence is right? (bag)", "איזה משפט נכון? (תיק)", ["She has a red bag.", "She has a bag red.", "She has red a bag.", "She has a reds bag."], 0, "a red bag."),
+    ],
+  ),
+  lesson(
+    "No s on adjectives (בלי s)",
+    "שם תואר לא משתנה ברבים: one small cat, two small cats. s מוסיפים רק לשם העצם.",
+    [
+      gap("two ___ cats", ["small", "smalls", "a small", "an small"], 0, "שם התואר לא מקבל s."),
+      gap("three ___ houses", ["big", "bigs", "a big", "an big"], 0, "שם התואר לא מקבל s."),
+      gap("four ___ apples", ["red", "reds", "a red", "an red"], 0, "שם התואר לא מקבל s."),
+    ],
+  ),
+  lesson(
+    "The house is big (אחרי to be)",
+    "שם תואר יכול לבוא גם אחרי to be: The house is big. The cats are small. כאן אין a ואין the לפני התואר.",
+    [
+      gap("The cats are ___.", ["small", "smalls", "a small", "the small"], 0, "אחרי are: small."),
+      gap("The house ___ big.", ["is", "are", "am", "be"], 0, "the house הוא יחיד: is."),
+      gap("My bags ___ red.", ["are", "is", "am", "be"], 0, "my bags הוא רבים: are."),
+    ],
+  ),
+  lesson(
+    "Very (מאוד)",
+    "very מחזק שם תואר: very big, very cold, very happy. הוא בא לפני התואר.",
+    [
+      gap("It is ___ cold.", ["very", "a", "an", "many"], 0, "very לפני התואר."),
+      gap("She is ___ happy.", ["very", "much", "many", "some"], 0, "very happy."),
+      gap("I am ___ tired.", ["very", "much", "many", "any"], 0, "very tired."),
+    ],
+  ),
+  lesson(
+    "An old house, a new house (a או an)",
+    "a או an נקבעים לפי המילה שאחריהם, גם אם זה שם תואר: an old house, a new house, an easy book, a big apple.",
+    [
+      gap("It is ___ old house.", ["an", "a", "the", "some"], 0, "old מתחיל בתנועה: an."),
+      gap("She is ___ happy girl.", ["a", "an", "some", "any"], 0, "happy מתחיל בעיצור: a."),
+      gap("It is ___ big apple.", ["a", "an", "some", "any"], 0, "big מתחיל בעיצור: a big apple."),
+    ],
+  ),
+
+  // --- Week 22: comparing two things --------------------------------------------------------------------
+  lesson(
+    "Bigger (השוואה בין שניים)",
+    "כדי להשוות שני דברים מוסיפים סיומת לשם התואר הקצר: big → bigger, small → smaller, tall → taller. The dog is bigger than the cat.",
+    [
+      gap("The dog is ___ than the cat.", ["bigger", "big", "biggest", "more big"], 0, "השוואה: bigger."),
+      gap("My bag is ___ than your bag. (it is small)", ["smaller", "small", "smallest", "more small"], 0, "השוואה: smaller."),
+      gap("He is ___ than me. (tall)", ["taller", "tall", "tallest", "more tall"], 0, "השוואה: taller."),
+    ],
+  ),
+  lesson(
+    "Spelling: hotter, bigger (כתיב)",
+    "אם שם התואר נגמר בעיצור אחרי תנועה קצרה, כופלים את העיצור: hot → hotter, big → bigger.",
+    [
+      gap("hot → ___", ["hotter", "hot", "hottest", "hots"], 0, "כופלים את העיצור: hotter."),
+      gap("small → ___", ["smaller", "small", "smallest", "smalls"], 0, "מוסיפים סיומת: smaller."),
+      gap("big → ___", ["bigger", "big", "biggest", "bigs"], 0, "כופלים את העיצור: bigger."),
+    ],
+  ),
+  lesson(
+    "More beautiful (שמות תואר ארוכים)",
+    "בשמות תואר ארוכים לא מוסיפים סיומת אלא שמים more לפניהם: more beautiful. The garden is more beautiful than the house.",
+    [
+      gap("The garden is ___ than the house. (beautiful)", ["more beautiful", "beautifuler", "beautiful", "most beautiful"], 0, "תואר ארוך: more beautiful."),
+      gap("This book is ___ than that book. (beautiful)", ["more beautiful", "beautifuler", "beautiful", "more beautifuler"], 0, "תואר ארוך: more beautiful."),
+      gap("Her bag is ___ than my bag. (beautiful)", ["more beautiful", "beautifuler", "most beautiful", "beautiful"], 0, "תואר ארוך: more beautiful."),
+    ],
+  ),
+  lesson(
+    "Than (מאשר)",
+    "אחרי ההשוואה בא than: The dog is bigger than the cat. My brother is older than me.",
+    [
+      gap("The dog is bigger ___ the cat.", ["than", "then", "that", "as"], 0, "בהשוואה: than."),
+      gap("My brother is older ___ me.", ["than", "then", "that", "of"], 0, "בהשוואה: than."),
+      pick("Which sentence is right?", "איזה משפט נכון?", ["She is taller than me.", "She is taller that me.", "She is more tall than me.", "She is taller as me."], 0, "taller than me."),
+    ],
+  ),
+  lesson(
+    "Comparing: practice (חזרה)",
+    "חזרה: שם תואר קצר מקבל סיומת, שם תואר ארוך מקבל more, ובשני המקרים אחריהם than.",
+    [
+      gap("My house is ___ than your house. (big)", ["bigger", "more big", "biggest", "bigs"], 0, "תואר קצר: bigger."),
+      gap("This bag is ___ than that bag. (beautiful)", ["more beautiful", "beautifuler", "most beautiful", "beautiful"], 0, "תואר ארוך: more beautiful."),
+      gap("It is ___ today than yesterday. (hot)", ["hotter", "hoter", "more hot", "hottest"], 0, "כופלים את העיצור: hotter."),
+    ],
+  ),
+
+  // --- Week 23: the best, the biggest ---------------------------------------------------------------------
+  lesson(
+    "The biggest (הכי)",
+    "כדי לומר “הכי” מוסיפים סיומת אחרת ו-the לפני התואר: big → the biggest, small → the smallest. This is the biggest house.",
+    [
+      gap("This is the ___ house.", ["biggest", "bigger", "big", "most big"], 0, "הכי: the biggest."),
+      gap("The dog is the ___ animal. (small)", ["smallest", "smaller", "small", "most small"], 0, "הכי: the smallest."),
+      gap("He is the ___ boy. (tall)", ["tallest", "taller", "tall", "most tall"], 0, "הכי: the tallest."),
+    ],
+  ),
+  lesson(
+    "Spelling: hottest, biggest (כתיב)",
+    "אותם כללי כתיב: hot → the hottest, big → the biggest, tall → the tallest.",
+    [
+      gap("hot → the ___", ["hottest", "hot", "hotter", "hots"], 0, "כופלים את העיצור: hottest."),
+      gap("tall → the ___", ["tallest", "tall", "taller", "talls"], 0, "מוסיפים סיומת: tallest."),
+      gap("big → the ___", ["biggest", "big", "bigger", "bigs"], 0, "כופלים את העיצור: biggest."),
+    ],
+  ),
+  lesson(
+    "The most beautiful (הכי, תואר ארוך)",
+    "בשמות תואר ארוכים אומרים the most: the most beautiful garden. The most תמיד בא לפני התואר.",
+    [
+      gap("This is the ___ garden. (beautiful)", ["most beautiful", "beautifulest", "more beautiful", "beautiful"], 0, "תואר ארוך: the most beautiful."),
+      gap("She has the ___ bag. (beautiful)", ["most beautiful", "beautifulest", "more beautiful", "beautiful"], 0, "תואר ארוך: the most beautiful."),
+      gap("That is the ___ house in the street. (beautiful)", ["most beautiful", "beautifulest", "more beautiful", "beautiful"], 0, "תואר ארוך: the most beautiful."),
+    ],
+  ),
+  lesson(
+    "In the class, in the world (בתוך קבוצה)",
+    "אחרי “הכי” אומרים in כשמדברים על מקום או קבוצה: the tallest girl in the class, the biggest house in the street.",
+    [
+      gap("She is the tallest girl ___ the class.", ["in", "of", "at", "on"], 0, "קבוצה: in the class."),
+      gap("This is the biggest house ___ the street.", ["in", "of", "at", "on"], 0, "מקום: in the street."),
+      gap("He is the oldest boy ___ the school.", ["in", "of", "at", "on"], 0, "מקום: in the school."),
+    ],
+  ),
+  lesson(
+    "Bigger or the biggest? (בחירה)",
+    "השוואה בין שניים: bigger than. הכי מכולם: the biggest. Mine is bigger than yours. Mine is the biggest.",
+    [
+      gap("My bag is ___ than your bag. (big)", ["bigger", "the biggest", "big", "most big"], 0, "בין שניים: bigger than."),
+      gap("This is ___ bag in the shop. (big)", ["the biggest", "bigger", "big", "more big"], 0, "הכי מכולם: the biggest."),
+      gap("She is ___ than her sister. (tall)", ["taller", "the tallest", "tall", "most tall"], 0, "בין שניים: taller than."),
+    ],
+  ),
+
+  // --- Week 24: object pronouns ----------------------------------------------------------------------------------
+  lesson(
+    "Me, you, him, her (אותי, אותך, אותו, אותה)",
+    "אחרי פועל משתמשים בכינוי מושא: me, you, him, her, it. I love my sister. I love her. I see my brother. I see him.",
+    [
+      gap("I love my sister. I love ___.", ["her", "she", "him", "he"], 0, "אחות היא בת, והיא מושא: her."),
+      gap("My brother is here. I see ___.", ["him", "he", "his", "her"], 0, "אח הוא בן, והוא מושא: him."),
+      gap("You are my friend. I like ___.", ["you", "your", "yours", "he"], 0, "המושא הוא you."),
+    ],
+  ),
+  lesson(
+    "Us and them (אותנו, אותם)",
+    "us הוא “אותנו” ו-them הוא “אותם” או “אותן”: We are friends. She likes us. My friends are here. I see them.",
+    [
+      gap("We are friends. She likes ___.", ["us", "we", "our", "them"], 0, "אותנו: us."),
+      gap("My friends are here. I see ___.", ["them", "they", "their", "him"], 0, "אותם: them."),
+      gap("My mother loves ___. (me and my brother)", ["us", "we", "our", "them"], 0, "אותנו: us."),
+    ],
+  ),
+  lesson(
+    "It (אותו, אותה, לדבר)",
+    "לדבר או לחיה מתייחסים ב-it גם כנושא וגם כמושא: I have a dog. I love it. She has a bag. She likes it.",
+    [
+      gap("I have a dog. I love ___.", ["it", "its", "he", "they"], 0, "דבר או חיה במושא: it."),
+      gap("She has a bag. She likes ___.", ["it", "its", "she", "they"], 0, "במושא: it."),
+      gap("We have a house. We like ___.", ["it", "its", "we", "they"], 0, "במושא: it."),
+    ],
+  ),
+  lesson(
+    "I or me? (נושא או מושא)",
+    "I, he, she, we, they הם הנושא לפני הפועל. me, him, her, us, them באים אחרי הפועל: She loves me. I love her.",
+    [
+      pick("Which sentence is right? (love)", "איזה משפט נכון? (love)", ["She loves me.", "She loves I.", "Her loves me.", "She loves my."], 0, "נושא: she. מושא: me."),
+      pick("Which sentence is right? (see)", "איזה משפט נכון? (see)", ["I see him.", "I see he.", "Me see him.", "I see his."], 0, "נושא: I. מושא: him."),
+      pick("Which sentence is right? (like)", "איזה משפט נכון? (like)", ["They like us.", "They like we.", "Them like us.", "They like our."], 0, "נושא: they. מושא: us."),
+    ],
+  ),
+  lesson(
+    "Object pronouns together (חזרה)",
+    "חזרה: me, you, him, her, it, us, them אחרי פועל או אחרי מילת יחס, כמו with me, to him.",
+    [
+      gap("My sister is here. I play with ___.", ["her", "she", "his", "he"], 0, "אחרי with: her."),
+      gap("My friends are here. We play with ___.", ["them", "they", "their", "he"], 0, "אחרי with: them."),
+      gap("You are here. I see ___.", ["you", "your", "yours", "he"], 0, "המושא הוא you."),
+    ],
+  ),
+
+  // --- Week 25: want and would like ---------------------------------------------------------------------------------
+  lesson(
+    "I want (רוצה)",
+    "want אומר “רוצה”: I want an apple. She wants some milk. עם he, she, it מוסיפים s.",
+    [
+      gap("I ___ an apple.", ["want", "wants", "am want", "wanting"], 0, "עם I: want."),
+      gap("She ___ some milk.", ["want", "wants", "is want", "wanting"], 1, "עם she: wants."),
+      gap("They ___ a new house.", ["want", "wants", "are want", "wanting"], 0, "עם they: want."),
+    ],
+  ),
+  lesson(
+    "Want to (רוצה לעשות)",
+    "כדי לומר “רוצה לעשות” אומרים want to ואז פועל בצורה הבסיסית: I want to play. She wants to read. We want to go home.",
+    [
+      gap("I want ___ play.", ["to", "for", "at", "of"], 0, "want to + פועל."),
+      gap("She wants ___ read a book.", ["to", "for", "at", "of"], 0, "wants to + פועל."),
+      gap("We want to ___ home.", ["go", "goes", "going", "to go"], 0, "אחרי want to: go."),
+    ],
+  ),
+  lesson(
+    "Don't want (לא רוצה)",
+    "שוללים עם don't או doesn't: I don't want milk. She doesn't want to play. אחרי doesn't אין s.",
+    [
+      gap("I ___ want milk.", ["don't", "doesn't", "isn't", "not"], 0, "עם I: don't."),
+      gap("She ___ want to play.", ["doesn't", "don't", "isn't", "aren't"], 0, "עם she: doesn't."),
+      pick("Which sentence is right?", "איזה משפט נכון?", ["He doesn't want to go.", "He doesn't wants to go.", "He don't want to go.", "He not want to go."], 0, "doesn't want."),
+    ],
+  ),
+  lesson(
+    "I would like (אשמח ל..., בנימוס)",
+    "would like הוא דרך מנומסת לומר want: I would like some milk, please. אותה צורה לכל הנושאים, ובלי s.",
+    [
+      gap("I ___ like some milk, please.", ["would", "wants", "do", "am"], 0, "בקשה מנומסת: would like."),
+      gap("She would ___ an apple.", ["like", "likes", "liking", "to like"], 0, "would like, בלי s."),
+      gap("We ___ like some bread, please.", ["would", "wants", "do", "are"], 0, "would like לכל הנושאים."),
+    ],
+  ),
+  lesson(
+    "Would you like...? (הצעה)",
+    "כך מציעים בנימוס: Would you like some milk? ועונים: Yes, please. או No, thank you.",
+    [
+      gap("___ you like some milk?", ["Would", "Do", "Are", "Is"], 0, "הצעה מנומסת: Would you like...?"),
+      gap("Would you like some rice? Yes, ___.", ["please", "I like", "I am", "would"], 0, "מקבלים בנימוס: Yes, please."),
+      gap("Would you like some bread? No, ___.", ["thank you", "please", "I would", "yes"], 0, "מסרבים בנימוס: No, thank you."),
     ],
   ),
 ];

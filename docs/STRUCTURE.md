@@ -8,6 +8,9 @@ to refresh it, and never edit between the markers by hand.
 ```text
 HighFive/
 ├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug.yml
+│   │   └── feature.yml
 │   ├── workflows/
 │   │   ├── android.yml
 │   │   ├── ci.yml
