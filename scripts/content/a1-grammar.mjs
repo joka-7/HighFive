@@ -6,12 +6,22 @@
 // words (the audit and `node scripts/check-curated.mjs A1 --lessons` check it).
 //
 // Each lesson: a Hebrew explanation with English examples, then 3 questions.
-// Weeks 1–25 are written; the rest of the 35 weeks in A1_GRAMMAR_WEEKS follow in
-// later batches and fall back to the generated lessons until then.
+// All 35 weeks are written: 175 lessons, one per learning day of the A1 course.
+
+// English hints in brackets are shown to the Hebrew reader in Hebrew.
+const HINTS_HE = {
+  both: "שניהם",
+  "different idea": "רעיון שונה",
+  result: "תוצאה",
+  reason: "סיבה",
+  "one, not both": "אחד, לא שניהם",
+};
+const hintInHebrew = (sentence) =>
+  sentence.replace(/\(([^)]+)\)\s*$/, (whole, hint) => (HINTS_HE[hint] ? `(${HINTS_HE[hint]})` : whole));
 
 const gap = (sentence, options, correctIndex, explanation) => ({
   question: sentence,
-  questionHe: `השלימו: ${sentence}`,
+  questionHe: `השלימו: ${hintInHebrew(sentence)}`,
   options,
   optionsHe: options,
   correctIndex,
@@ -1263,6 +1273,476 @@ export const A1_GRAMMAR = [
       gap("___ you like some milk?", ["Would", "Do", "Are", "Is"], 0, "הצעה מנומסת: Would you like...?"),
       gap("Would you like some rice? Yes, ___.", ["please", "I like", "I am", "would"], 0, "מקבלים בנימוס: Yes, please."),
       gap("Would you like some bread? No, ___.", ["thank you", "please", "I would", "yes"], 0, "מסרבים בנימוס: No, thank you."),
+    ],
+  ),
+
+  // --- Week 26: was / were -------------------------------------------------------------
+  lesson(
+    "I was, he was (הייתי, הוא היה)",
+    "בעבר to be הוא was ו-were. עם I, he, she, it משתמשים ב-was: Yesterday I was at home. Yesterday the cat was in the garden. yesterday אומר “אתמול”.",
+    [
+      gap("Yesterday I ___ at home.", ["was", "were", "am", "is"], 0, "עם I בעבר: was."),
+      gap("Yesterday she ___ happy.", ["was", "were", "is", "are"], 0, "עם she בעבר: was."),
+      gap("Yesterday the cat ___ in the garden.", ["was", "were", "is", "are"], 0, "the cat הוא it: was."),
+    ],
+  ),
+  lesson(
+    "We were, they were (היינו, הם היו)",
+    "עם we, you, they ורבים משתמשים ב-were: Yesterday we were at school. Yesterday they were at the park. Yesterday you were in the kitchen.",
+    [
+      gap("Yesterday we ___ at school.", ["were", "was", "are", "is"], 0, "עם we בעבר: were."),
+      gap("Yesterday they ___ at the park.", ["were", "was", "are", "is"], 0, "עם they בעבר: were."),
+      gap("Yesterday you ___ in the kitchen.", ["were", "was", "are", "is"], 0, "עם you בעבר: were."),
+    ],
+  ),
+  lesson(
+    "Wasn't, weren't (שלילה בעבר)",
+    "שוללים עם not אחרי was או were: I was not tired. They were not at home. מקצרים: wasn't, weren't.",
+    [
+      gap("Yesterday I ___ not tired.", ["was", "were", "am", "is"], 0, "עם I בעבר: was not."),
+      gap("He wasn't at school yesterday. He ___ at home.", ["was", "were", "is", "am"], 0, "עם he בעבר: was."),
+      gap("Yesterday they ___ not at home.", ["were", "was", "are", "is"], 0, "עם they בעבר: were not."),
+    ],
+  ),
+  lesson(
+    "Was he? Were you? (שאלה בעבר)",
+    "בשאלה was או were עובר לפני הנושא: Were you at home yesterday? Was she happy? עונים: Yes, I was. No, I wasn't.",
+    [
+      gap("___ you at home yesterday?", ["Were", "Was", "Are", "Is"], 0, "עם you בעבר: Were."),
+      gap("___ she happy yesterday?", ["Was", "Were", "Is", "Are"], 0, "עם she בעבר: Was."),
+      gap("Was he at school? Yes, he ___.", ["was", "were", "is", "does"], 0, "עונים: Yes, he was."),
+    ],
+  ),
+  lesson(
+    "Now or yesterday? (עכשיו או אתמול)",
+    "עכשיו: am, is, are. אתמול: was, were. Now I am at home. Yesterday I was at school.",
+    [
+      gap("Yesterday I ___ at school.", ["was", "am", "is", "are"], 0, "אתמול: was."),
+      gap("Now I ___ at home.", ["am", "was", "were", "is"], 0, "עכשיו עם I: am."),
+      gap("Yesterday we ___ at the park, but now we are at home.", ["were", "was", "are", "is"], 0, "אתמול עם we: were."),
+    ],
+  ),
+
+  // --- Week 27: past simple, regular verbs ----------------------------------------------------
+  lesson(
+    "Played (עבר פשוט)",
+    "בעבר פשוט פועל רגיל מקבל סיומת: play → played, watch → watched, walk → walked. Yesterday I played football.",
+    [
+      gap("Yesterday I ___ football.", ["played", "play", "plays", "playing"], 0, "בעבר: played."),
+      gap("Yesterday she ___ TV.", ["watched", "watch", "watches", "watching"], 0, "בעבר: watched."),
+      gap("Yesterday we ___ in the park.", ["walked", "walk", "walks", "walking"], 0, "בעבר: walked."),
+    ],
+  ),
+  lesson(
+    "The same for everyone (אותה צורה)",
+    "בעבר פשוט אין s בגוף שלישי: I played, he played, they played. הצורה זהה לכל הנושאים.",
+    [
+      gap("Yesterday he ___ rice.", ["cooked", "cooks", "cook", "cooking"], 0, "בעבר גם עם he: cooked."),
+      gap("Yesterday they ___ the door.", ["opened", "open", "opens", "opening"], 0, "בעבר: opened."),
+      gap("Yesterday my brother ___ his bag.", ["opened", "open", "opens", "opening"], 0, "בעבר: opened."),
+    ],
+  ),
+  lesson(
+    "Live → lived (כתיב)",
+    "אם הפועל נגמר בתנועה שקטה, כמו live, מוסיפים רק d: live → lived, like → liked, love → loved. בשאר הפעלים מוסיפים שתי אותיות: play → played.",
+    [
+      gap("live → ___", ["lived", "live", "lives", "living"], 0, "מוסיפים אות אחת: lived."),
+      gap("like → ___", ["liked", "like", "likes", "liking"], 0, "מוסיפים אות אחת: liked."),
+      gap("love → ___", ["loved", "love", "loves", "loving"], 0, "מוסיפים אות אחת: loved."),
+    ],
+  ),
+  lesson(
+    "Yesterday, last night (מילות זמן)",
+    "בעבר פשוט משתמשים במילות זמן כמו yesterday, last night, last week: I played football yesterday. We watched TV last night.",
+    [
+      gap("I played football ___.", ["yesterday", "tomorrow", "now", "next"], 0, "עבר: yesterday."),
+      gap("We watched TV ___ night.", ["last", "next", "now", "tomorrow"], 0, "עבר: last night."),
+      gap("She cooked rice ___ week.", ["last", "next", "now", "tomorrow"], 0, "עבר: last week."),
+    ],
+  ),
+  lesson(
+    "Now or before? (עכשיו או לפני)",
+    "עכשיו: הווה פשוט, לפני: עבר פשוט. Now I play. Yesterday I played.",
+    [
+      gap("Every day I play. Yesterday I ___.", ["played", "play", "plays", "playing"], 0, "אתמול: played."),
+      pick("Which sentence is right? (walk)", "איזה משפט נכון? (walk)", ["Yesterday we walked in the park.", "Yesterday we walk in the park.", "Yesterday we walks in the park.", "Yesterday we are walked in the park."], 0, "אתמול: walked."),
+      pick("Which sentence is right? (cook)", "איזה משפט נכון? (cook)", ["Last night she cooked rice.", "Last night she cooks rice.", "Last night she cooking rice.", "Last night she is cooked rice."], 0, "last night: cooked."),
+    ],
+  ),
+
+  // --- Week 28: past simple, questions and no ----------------------------------------------------
+  lesson(
+    "Didn't (שלילה בעבר)",
+    "שוללים בעבר עם didn't לפני הפועל: I didn't play football. She didn't watch TV. אחרי didn't הפועל בצורה הבסיסית.",
+    [
+      gap("Yesterday I ___ play football.", ["didn't", "don't", "doesn't", "wasn't"], 0, "בעבר: didn't."),
+      gap("She didn't ___ TV.", ["watch", "watched", "watches", "watching"], 0, "אחרי didn't: watch."),
+      gap("Yesterday they ___ cook rice.", ["didn't", "don't", "doesn't", "weren't"], 0, "בעבר: didn't."),
+    ],
+  ),
+  lesson(
+    "Didn't and the base verb (הפועל בצורה הבסיסית)",
+    "אחרי didn't אין סיומת בפועל, כי didn't כבר מראה שזה עבר: He didn't open the door. We didn't walk.",
+    [
+      pick("Which sentence is right? (open)", "איזה משפט נכון? (open)", ["He didn't open the door.", "He didn't opened the door.", "He didn't opens the door.", "He not opened the door."], 0, "didn't + open."),
+      gap("Yesterday we didn't ___ in the park.", ["walk", "walked", "walks", "walking"], 0, "didn't + walk."),
+      pick("Which sentence is right? (play)", "איזה משפט נכון? (play)", ["I didn't play.", "I didn't played.", "I don't played.", "I no play."], 0, "didn't + play."),
+    ],
+  ),
+  lesson(
+    "Did you...? (שאלה בעבר)",
+    "שואלים בעבר עם did לפני הנושא: Did you play football yesterday? Did she watch TV? אחרי הנושא הפועל בצורה הבסיסית.",
+    [
+      gap("___ you play football yesterday?", ["Did", "Do", "Does", "Were"], 0, "בעבר: Did."),
+      gap("___ she watch TV yesterday?", ["Did", "Does", "Do", "Was"], 0, "בעבר: Did."),
+      gap("Did you ___ the door?", ["open", "opened", "opens", "opening"], 0, "אחרי Did you: open."),
+    ],
+  ),
+  lesson(
+    "Yes, I did / No, I didn't (תשובות קצרות)",
+    "עונים בקצרה עם did או didn't, בלי לחזור על הפועל: Did you cook? Yes, I did. Did he play? No, he didn't.",
+    [
+      gap("Did you cook? Yes, I ___.", ["did", "do", "was", "cooked"], 0, "עונים: Yes, I did."),
+      gap("Did he play? No, he ___.", ["didn't", "doesn't", "wasn't", "don't"], 0, "עונים: No, he didn't."),
+      gap("Did they walk? Yes, they ___.", ["did", "do", "were", "walked"], 0, "עונים: Yes, they did."),
+    ],
+  ),
+  lesson(
+    "What did you do? (מילות שאלה בעבר)",
+    "מילת שאלה, ואחריה did, הנושא והפועל בצורה הבסיסית: What did you eat yesterday? Where did she play? Why did you open the door?",
+    [
+      gap("What ___ you eat yesterday?", ["did", "do", "does", "were"], 0, "בעבר: did."),
+      gap("Where ___ she play yesterday?", ["did", "does", "do", "was"], 0, "בעבר: did."),
+      gap("Why ___ you open the door yesterday?", ["did", "do", "does", "are"], 0, "בעבר: did."),
+    ],
+  ),
+
+  // --- Week 29: time words for the past ------------------------------------------------------------
+  lesson(
+    "Yesterday morning, yesterday evening (אתמול בבוקר)",
+    "אפשר לחבר את yesterday לחלק מהיום: yesterday morning, yesterday afternoon, yesterday evening. I watched TV yesterday evening.",
+    [
+      gap("I watched TV ___ evening.", ["yesterday", "tomorrow", "next", "soon"], 0, "עבר: yesterday evening."),
+      gap("We played football yesterday ___.", ["morning", "tomorrow", "next", "soon"], 0, "yesterday morning."),
+      gap("She cooked rice yesterday ___.", ["afternoon", "tomorrow", "next", "soon"], 0, "yesterday afternoon."),
+    ],
+  ),
+  lesson(
+    "Last week, last Sunday (בשבוע שעבר)",
+    "last אומר “שעבר”: last week, last month, last year, last Sunday. We played football last Sunday.",
+    [
+      gap("We played football ___ Sunday.", ["last", "next", "tomorrow", "now"], 0, "עבר: last Sunday."),
+      gap("I was at school ___ week.", ["last", "next", "tomorrow", "now"], 0, "עבר: last week."),
+      gap("They lived here ___ year.", ["last", "next", "tomorrow", "now"], 0, "עבר: last year."),
+    ],
+  ),
+  lesson(
+    "On Monday, in winter, at ten (מילות יחס בעבר)",
+    "מילות היחס של זמן זהות בעבר: at לשעה, on ליום, in לחודש ולעונה. I was at school on Monday. It was cold in winter.",
+    [
+      gap("I was at school ___ Monday.", ["on", "in", "at", "to"], 0, "עם יום: on."),
+      gap("It was cold ___ winter.", ["in", "on", "at", "to"], 0, "עם עונה: in."),
+      gap("We played football ___ ten.", ["at", "on", "in", "to"], 0, "עם שעה: at."),
+    ],
+  ),
+  lesson(
+    "When did you...? (מתי)",
+    "כדי לשאול מתי, אומרים When did you...? ועונים עם מילת זמן: When did you play? Yesterday.",
+    [
+      gap("When did you play? ___.", ["Yesterday", "Tomorrow", "Next week", "Now"], 0, "בעבר: Yesterday."),
+      gap("When ___ she cook rice? Last night.", ["did", "does", "do", "was"], 0, "בעבר: did."),
+      gap("When did he open the door? ___.", ["Last night", "Tomorrow", "Next week", "Now"], 0, "בעבר: Last night."),
+    ],
+  ),
+  lesson(
+    "Past or now? (עבר או עכשיו)",
+    "חזרה: yesterday ו-last הם עבר, now ו-every day הם הווה. התאימו את הפועל למילת הזמן.",
+    [
+      gap("I ___ football yesterday.", ["played", "play", "plays", "playing"], 0, "yesterday: עבר."),
+      gap("I ___ football every day.", ["play", "played", "playing", "was play"], 0, "every day: הווה פשוט."),
+      gap("Last week she ___ at home.", ["was", "is", "are", "am"], 0, "last week: עבר."),
+    ],
+  ),
+
+  // --- Week 30: going to -----------------------------------------------------------------------------
+  lesson(
+    "I am going to play (אני עומד ל...)",
+    "כדי לדבר על תוכניות לעתיד אומרים am / is / are going to ואחריהם פועל בצורה הבסיסית: Tomorrow I am going to play football.",
+    [
+      gap("Tomorrow I am going ___ play football.", ["to", "for", "at", "of"], 0, "going to + פועל."),
+      gap("She is going to ___ TV.", ["watch", "watches", "watching", "watched"], 0, "אחרי going to: watch."),
+      gap("We are going to ___ in the park.", ["walk", "walked", "walks", "walking"], 0, "אחרי going to: walk."),
+    ],
+  ),
+  lesson(
+    "Am, is or are going to? (איזה to be)",
+    "בוחרים לפי הנושא: I am going to, he is going to, we are going to.",
+    [
+      gap("Tomorrow I ___ going to cook.", ["am", "is", "are", "do"], 0, "עם I: am."),
+      gap("Tomorrow he ___ going to play.", ["is", "am", "are", "does"], 0, "עם he: is."),
+      gap("Tomorrow they ___ going to walk.", ["are", "is", "am", "do"], 0, "עם they: are."),
+    ],
+  ),
+  lesson(
+    "Not going to (שלילה)",
+    "שוללים עם not אחרי to be: I am not going to play. She isn't going to cook. They aren't going to watch TV.",
+    [
+      gap("Tomorrow I am not ___ to play.", ["going", "go", "goes", "to go"], 0, "am not going to."),
+      gap("Tomorrow she ___ not going to cook.", ["is", "am", "are", "does"], 0, "עם she: is not."),
+      gap("Tomorrow they aren't going to ___ TV.", ["watch", "watches", "watching", "watched"], 0, "aren't going to + watch."),
+    ],
+  ),
+  lesson(
+    "Are you going to...? (שאלה)",
+    "בשאלה to be עובר לפני הנושא: Are you going to play? Is she going to cook rice? מילת שאלה בהתחלה: What are you going to do?",
+    [
+      gap("___ you going to play tomorrow?", ["Are", "Is", "Do", "Did"], 0, "עם you: Are."),
+      gap("Is she going to ___ rice?", ["cook", "cooks", "cooking", "cooked"], 0, "going to + cook."),
+      gap("What are you going to ___ tomorrow?", ["do", "does", "doing", "did"], 0, "going to + do."),
+    ],
+  ),
+  lesson(
+    "Tomorrow, next week (מילות זמן לעתיד)",
+    "מילות זמן לעתיד: tomorrow, next week, next month. I am going to play football tomorrow. We are going to walk next week.",
+    [
+      gap("I am going to play football ___.", ["tomorrow", "yesterday", "last week", "now"], 0, "עתיד: tomorrow."),
+      gap("We are going to walk ___ week.", ["next", "last", "yesterday", "now"], 0, "עתיד: next week."),
+      gap("She is going to cook ___ night.", ["tomorrow", "last", "yesterday", "now"], 0, "עתיד: tomorrow night."),
+    ],
+  ),
+
+  // --- Week 31: and, but, or --------------------------------------------------------------------------------
+  lesson(
+    "And (ו-)",
+    "and מחבר שני דברים או שני משפטים: I have a cat and a dog. I like milk and I like rice.",
+    [
+      gap("I have a cat ___ a dog. (I have both)", ["and", "but", "or", "so"], 0, "שניהם יחד: and."),
+      gap("She likes milk ___ rice. (she likes both)", ["and", "but", "or", "so"], 0, "שניהם יחד: and."),
+      gap("We play football ___ we read books. (we do both)", ["and", "but", "or", "so"], 0, "שניהם יחד: and."),
+    ],
+  ),
+  lesson(
+    "But (אבל)",
+    "but מחבר שני רעיונות שונים: I like milk, but I don't like cold milk. She is small, but she is strong.",
+    [
+      gap("I like milk, ___ I don't like cold milk. (different idea)", ["but", "and", "or", "because"], 0, "רעיון שונה: but."),
+      gap("It is sunny, ___ it is cold. (different idea)", ["but", "and", "or", "so"], 0, "רעיון שונה: but."),
+      gap("I want to play, ___ I am tired. (different idea)", ["but", "and", "or", "so"], 0, "רעיון שונה: but."),
+    ],
+  ),
+  lesson(
+    "Or (או)",
+    "or נותן בחירה: Do you want milk or water? Is it a cat or a dog?",
+    [
+      gap("Do you want milk ___ water? (one, not both)", ["or", "and", "but", "so"], 0, "בחירה: or."),
+      gap("Is it a cat ___ a dog?", ["or", "and", "but", "so"], 0, "בחירה: or."),
+      gap("Do you play football ___ read a book? (one, not both)", ["or", "and", "but", "so"], 0, "בחירה: or."),
+    ],
+  ),
+  lesson(
+    "And, but or or? (בחירה)",
+    "חזרה: and מוסיף, but מנגיד, or נותן בחירה.",
+    [
+      gap("I have a bag ___ a book. (both)", ["and", "but", "or", "so"], 0, "שניהם יחד: and."),
+      gap("She is happy, ___ she is tired. (different idea)", ["but", "and", "or", "so"], 0, "רעיון שונה: but."),
+      gap("Is it big ___ small? (one, not both)", ["or", "and", "but", "so"], 0, "בחירה: or."),
+    ],
+  ),
+  lesson(
+    "Joining sentences (חיבור משפטים)",
+    "לפני and, but ו-or אפשר לשים פסיק כשמחברים שני משפטים שלמים: I play football, and she reads. I am small, but I am strong.",
+    [
+      pick("Which sentence is right? (and)", "איזה משפט נכון? (and)", ["I play football, and she reads.", "I play football, and she read.", "I play football and, she reads.", "I play football, and, she reads."], 0, "פסיק לפני and."),
+      pick("Which sentence is right? (but)", "איזה משפט נכון? (but)", ["I am small, but I am strong.", "I am small but, I am strong.", "I am small, but, I am strong.", "I am small, but I strong."], 0, "פסיק לפני but."),
+      gap("Do you want to play ___ read? (one, not both)", ["or", "and", "but", "so"], 0, "בחירה: or."),
+    ],
+  ),
+
+  // --- Week 32: because and so ---------------------------------------------------------------------------------
+  lesson(
+    "Because (כי)",
+    "because נותן סיבה: I eat bread because I am hungry. She is happy because it is Sunday.",
+    [
+      gap("I eat bread ___ I am hungry.", ["because", "so", "but", "or"], 0, "סיבה: because."),
+      gap("She is happy ___ it is Sunday.", ["because", "so", "but", "or"], 0, "סיבה: because."),
+      gap("We stay at home ___ it is cold. (reason)", ["because", "so", "but", "or"], 0, "סיבה: because."),
+    ],
+  ),
+  lesson(
+    "So (לכן)",
+    "so נותן תוצאה: I am hungry, so I eat bread. It is cold, so we stay at home.",
+    [
+      gap("I am hungry, ___ I eat bread.", ["so", "because", "but", "or"], 0, "תוצאה: so."),
+      gap("It is cold, ___ we stay at home. (result)", ["so", "because", "but", "or"], 0, "תוצאה: so."),
+      gap("She is tired, ___ she sleeps.", ["so", "because", "but", "or"], 0, "תוצאה: so."),
+    ],
+  ),
+  lesson(
+    "Why? Because... (למה? כי)",
+    "שואלים Why...? ועונים Because...: Why are you happy? Because it is Sunday.",
+    [
+      gap("Why are you happy? ___ it is Sunday.", ["Because", "So", "But", "Or"], 0, "עונים על why: Because."),
+      gap("___ do you eat? Because I am hungry.", ["Why", "Who", "Where", "When"], 0, "שואלים על סיבה: Why."),
+      gap("Why is she at home? ___ she is tired.", ["Because", "So", "But", "Or"], 0, "עונים על why: Because."),
+    ],
+  ),
+  lesson(
+    "Because or so? (בחירה)",
+    "because בא לפני הסיבה, ו-so בא לפני התוצאה: I eat because I am hungry. I am hungry, so I eat.",
+    [
+      pick("Which sentence is right? (because)", "איזה משפט נכון? (because)", ["I sleep because I am tired.", "I sleep so I am tired.", "I am sleep because tired.", "I sleep because am tired."], 0, "סיבה: because."),
+      pick("Which sentence is right? (so)", "איזה משפט נכון? (so)", ["I am tired, so I sleep.", "I am tired, so because I sleep.", "I am tired so, I sleep.", "I am tired, so, I sleep."], 0, "תוצאה: so."),
+      gap("It is hot, ___ I drink water.", ["so", "because", "but", "or"], 0, "תוצאה: so."),
+    ],
+  ),
+  lesson(
+    "And, but, or, because, so (חזרה)",
+    "חזרה על מילות החיבור: and מוסיף, but מנגיד, or בוחר, because נותן סיבה ו-so נותן תוצאה.",
+    [
+      gap("I like milk ___ I drink it every day. (result)", ["so", "because", "but", "or"], 0, "תוצאה: so."),
+      gap("I like milk ___ it is good. (reason)", ["because", "so", "but", "or"], 0, "סיבה: because."),
+      gap("I like tea, ___ I don't like cold tea. (different idea)", ["but", "and", "or", "so"], 0, "רעיון שונה: but."),
+    ],
+  ),
+
+  // --- Week 33: asking politely -------------------------------------------------------------------------------------
+  lesson(
+    "Can I have...? (אפשר לקבל)",
+    "כך מבקשים משהו בנימוס: Can I have some water, please? אחרי Can I בא פועל בצורה הבסיסית.",
+    [
+      gap("Can I ___ some water, please?", ["have", "has", "having", "to have"], 0, "Can I + have."),
+      gap("___ I have some bread, please?", ["Can", "Do", "Am", "Is"], 0, "בקשה: Can I."),
+      gap("Can I have some rice, ___?", ["please", "pleasing", "pleased", "pleases"], 0, "מוסיפים please."),
+    ],
+  ),
+  lesson(
+    "Can you give me...? (אפשר לתת לי)",
+    "כדי לבקש מאחר אומרים Can you...? Can you give me a pen, please? Can you open the door, please?",
+    [
+      gap("Can you ___ me a pen, please?", ["give", "gives", "giving", "to give"], 0, "Can you + give."),
+      gap("___ you open the door, please?", ["Can", "Do", "Are", "Is"], 0, "בקשה: Can you."),
+      gap("Can you give me a book, ___?", ["please", "pleasing", "pleased", "pleases"], 0, "מוסיפים please."),
+    ],
+  ),
+  lesson(
+    "Please and thank you (בבקשה ותודה)",
+    "אומרים please כשמבקשים ו-thank you כשמקבלים. עונים על תודה: You're welcome.",
+    [
+      gap("Here is your milk. — ___.", ["Thank you", "Sorry", "Please", "Hello"], 0, "מקבלים: Thank you."),
+      gap("Thank you! — ___.", ["You're welcome", "Sorry", "Hello", "Good night"], 0, "עונים על תודה: You're welcome."),
+      gap("Can I have some rice, ___?", ["please", "thank you", "you're welcome", "sorry"], 0, "מבקשים: please."),
+    ],
+  ),
+  lesson(
+    "Excuse me and sorry (סליחה)",
+    "Excuse me כדי לקרוא למישהו או לעבור, ו-Sorry כשטועים: Excuse me, where is the shop? Sorry, I am late.",
+    [
+      gap("___, where is the shop?", ["Excuse me", "Thank you", "You're welcome", "Good night"], 0, "קוראים למישהו: Excuse me."),
+      gap("___, I am late.", ["Sorry", "Thank you", "You're welcome", "Good night"], 0, "מתנצלים: Sorry."),
+      gap("Sorry! — That's ___.", ["OK", "please", "thank you", "welcome"], 0, "עונים: That's OK."),
+    ],
+  ),
+  lesson(
+    "Asking politely: practice (חזרה)",
+    "חזרה: Can I...? ו-Can you...? עם please, thank you ו-sorry.",
+    [
+      gap("___ I have some tea, please?", ["Can", "Do", "Am", "Is"], 0, "בקשה: Can I."),
+      gap("Can you ___ the window, please?", ["open", "opens", "opening", "to open"], 0, "Can you + open."),
+      gap("Here is your rice. — ___.", ["Thank you", "Sorry", "Excuse me", "Please"], 0, "מקבלים: Thank you."),
+    ],
+  ),
+
+  // --- Week 34: questions review ---------------------------------------------------------------------------------------------
+  lesson(
+    "Am, is, are questions (שאלות עם to be)",
+    "חזרה: בשאלה עם to be הפועל בא לפני הנושא: Is your brother at home? Am I late? Are the books on the table?",
+    [
+      gap("___ your brother at home?", ["Is", "Are", "Do", "Does"], 0, "your brother: Is."),
+      gap("___ I late?", ["Am", "Is", "Are", "Do"], 0, "עם I: Am."),
+      gap("___ the books on the table?", ["Are", "Is", "Do", "Does"], 0, "the books: Are."),
+    ],
+  ),
+  lesson(
+    "Do, does, did (שאלות עם פועל רגיל)",
+    "do בהווה עם I, you, we, they. does עם he, she, it. did בעבר, לכל הנושאים.",
+    [
+      gap("___ you like milk every day?", ["Do", "Does", "Did", "Are"], 0, "הווה עם you: Do."),
+      gap("___ she play football yesterday?", ["Did", "Does", "Do", "Was"], 0, "yesterday: Did."),
+      gap("___ he live here now?", ["Does", "Did", "Do", "Is"], 0, "now עם he: Does."),
+    ],
+  ),
+  lesson(
+    "Question words with different verbs (מילות שאלה)",
+    "מילת שאלה באה לפני הפועל העזר: Where were you yesterday? What does she eat every day? Who is your teacher?",
+    [
+      gap("Where ___ you yesterday?", ["were", "did", "do", "are"], 0, "to be בעבר: were."),
+      gap("What ___ she eat every day?", ["does", "did", "is", "are"], 0, "הווה עם she: does."),
+      gap("Who ___ your teacher?", ["is", "does", "do", "did"], 0, "to be: is."),
+    ],
+  ),
+  lesson(
+    "Choosing the right answer (איזו תשובה)",
+    "התשובה צריכה להתאים לשאלה: Where do you live? In a house. When did you play? Yesterday. Why are you happy? Because it is Sunday.",
+    [
+      pick("Where do you live?", "איזו תשובה מתאימה? Where do you live?", ["In a house.", "Yesterday.", "Because I am happy.", "My brother."], 0, "שאלה על מקום: In a house."),
+      pick("When did you play?", "איזו תשובה מתאימה? When did you play?", ["Yesterday.", "In a house.", "Because I am happy.", "My brother."], 0, "שאלה על זמן: Yesterday."),
+      pick("Why are you happy?", "איזו תשובה מתאימה? Why are you happy?", ["Because it is Sunday.", "Yesterday.", "In a house.", "My brother."], 0, "שאלה על סיבה: Because..."),
+    ],
+  ),
+  lesson(
+    "Questions: practice (חזרה)",
+    "חזרה על כל סוגי השאלות: to be, do / does / did, can ומילות שאלה.",
+    [
+      pick("Which question is right? (past)", "איזו שאלה נכונה? (עבר)", ["Did you play football yesterday?", "Do you played football yesterday?", "Did you played football yesterday?", "Were you play football yesterday?"], 0, "Did + פועל בצורה הבסיסית."),
+      pick("Which question is right? (can)", "איזו שאלה נכונה? (can)", ["Can she swim?", "Does she can swim?", "Can she swims?", "Can she to swim?"], 0, "Can + נושא + פועל."),
+      pick("Which question is right? (going to)", "איזו שאלה נכונה? (going to)", ["Are you going to play?", "Do you going to play?", "Is you going to play?", "Are you go to play?"], 0, "Are you going to + פועל."),
+    ],
+  ),
+
+  // --- Week 35: everything together ------------------------------------------------------------------------------------------------
+  lesson(
+    "To be and have (חזרה)",
+    "חזרה: to be (am, is, are, was, were) ו-have / has. הפועל מתאים לנושא ולזמן.",
+    [
+      gap("My sister ___ a dog.", ["has", "have", "does", "are"], 0, "my sister: has."),
+      gap("Yesterday we ___ at the park.", ["were", "was", "are", "is"], 0, "אתמול עם we: were."),
+      gap("They ___ a big house.", ["have", "has", "is", "am"], 0, "עם they: have."),
+    ],
+  ),
+  lesson(
+    "Present: simple or continuous? (חזרה)",
+    "חזרה: שגרה היא הווה פשוט, ומה שקורה עכשיו הוא הווה ממושך.",
+    [
+      gap("I ___ football every Sunday.", ["play", "am playing", "plays", "playing"], 0, "שגרה: play."),
+      gap("Now she ___ a book.", ["is reading", "reads", "read", "reading"], 0, "עכשיו: is reading."),
+      gap("My brother ___ rice every day.", ["cooks", "is cooking", "cook", "cooking"], 0, "שגרה עם he: cooks."),
+    ],
+  ),
+  lesson(
+    "Past and future (חזרה)",
+    "חזרה: עבר עם הפועל + סיומת או didn't, עתיד עם going to.",
+    [
+      gap("Yesterday I ___ TV.", ["watched", "watch", "am going to watch", "watching"], 0, "yesterday: watched."),
+      gap("Tomorrow I ___ going to play football.", ["am", "was", "go", "do"], 0, "tomorrow: am going to."),
+      gap("Last night we ___ cook.", ["didn't", "don't", "aren't", "weren't"], 0, "last night: didn't."),
+    ],
+  ),
+  lesson(
+    "Comparing and choosing (חזרה)",
+    "חזרה: בין שניים bigger than, הכי מכולם the biggest. בשלילה any, ועם דברים שסופרים how many ועם דברים שלא סופרים how much.",
+    [
+      gap("The dog is ___ than the cat.", ["bigger", "the biggest", "big", "most big"], 0, "בין שניים: bigger."),
+      gap("I don't have ___ milk.", ["any", "some", "an", "many"], 0, "בשלילה: any."),
+      gap("How ___ apples do you want?", ["many", "much", "some", "any"], 0, "apples נספר: many."),
+    ],
+  ),
+  lesson(
+    "The A1 grammar course: final review (סיכום)",
+    "כל הכבוד! סיימתם את כל הדקדוק של רמה A1. חזרה אחרונה: to be, הווה פשוט וממושך, עבר, going to, can, שאלות ושלילה, מילות חיבור.",
+    [
+      gap("Yesterday she ___ at home.", ["was", "were", "is", "are"], 0, "אתמול עם she: was."),
+      gap("I ___ like cold milk, so I drink hot milk.", ["don't", "doesn't", "am not", "isn't"], 0, "הווה עם I: don't."),
+      pick("Which sentence is right?", "איזה משפט נכון?", ["Tomorrow we are going to play football.", "Tomorrow we going to play football.", "Tomorrow we are go to play football.", "Tomorrow we goes to play football."], 0, "are going to + פועל."),
     ],
   ),
 ];

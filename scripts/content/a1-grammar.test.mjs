@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { A1_GRAMMAR, A1_GRAMMAR_WEEKS } from "./a1-grammar.mjs";
 
 describe("A1_GRAMMAR", () => {
-  it("has whole weeks of five lessons, within the 35-week plan", () => {
-    expect([A1_GRAMMAR.length % 5, A1_GRAMMAR.length <= A1_GRAMMAR_WEEKS.length * 5]).toEqual([0, true]);
+  it("covers every weekly focus with five lessons", () => {
+    expect(A1_GRAMMAR.length).toBe(A1_GRAMMAR_WEEKS.length * 5);
   });
 
   it.each(A1_GRAMMAR.map((l, day) => [day, l]))("lesson %i is a well-formed 3-question set", (_day, l) => {
