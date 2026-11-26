@@ -8,9 +8,20 @@
 // Each lesson: a Hebrew explanation with English examples, then 3 questions.
 // All 35 weeks are written: 175 lessons, one per learning day of the A1 course.
 
+// English hints in brackets are shown to the Hebrew reader in Hebrew.
+const HINTS_HE = {
+  both: "שניהם",
+  "different idea": "רעיון שונה",
+  result: "תוצאה",
+  reason: "סיבה",
+  "one, not both": "אחד, לא שניהם",
+};
+const hintInHebrew = (sentence) =>
+  sentence.replace(/\(([^)]+)\)\s*$/, (whole, hint) => (HINTS_HE[hint] ? `(${HINTS_HE[hint]})` : whole));
+
 const gap = (sentence, options, correctIndex, explanation) => ({
   question: sentence,
-  questionHe: `השלימו: ${sentence}`,
+  questionHe: `השלימו: ${hintInHebrew(sentence)}`,
   options,
   optionsHe: options,
   correctIndex,
@@ -1333,7 +1344,7 @@ export const A1_GRAMMAR = [
   ),
   lesson(
     "Live → lived (כתיב)",
-    "אם הפועל כבר נגמר בתנועה שקטה מוסיפים רק אות אחת בסוף: live → lived, like → liked, love → loved. בשאר הפעלים מוסיפים את הסיומת המלאה.",
+    "אם הפועל נגמר בתנועה שקטה, כמו live, מוסיפים רק d: live → lived, like → liked, love → loved. בשאר הפעלים מוסיפים שתי אותיות: play → played.",
     [
       gap("live → ___", ["lived", "live", "lives", "living"], 0, "מוסיפים אות אחת: lived."),
       gap("like → ___", ["liked", "like", "likes", "liking"], 0, "מוסיפים אות אחת: liked."),
@@ -1429,9 +1440,9 @@ export const A1_GRAMMAR = [
     "On Monday, in winter, at ten (מילות יחס בעבר)",
     "מילות היחס של זמן זהות בעבר: at לשעה, on ליום, in לחודש ולעונה. I was at school on Monday. It was cold in winter.",
     [
-      gap("I was at school ___ Monday.", ["on", "in", "at", "by"], 0, "עם יום: on."),
+      gap("I was at school ___ Monday.", ["on", "in", "at", "to"], 0, "עם יום: on."),
       gap("It was cold ___ winter.", ["in", "on", "at", "to"], 0, "עם עונה: in."),
-      gap("We played football ___ ten.", ["at", "on", "in", "by"], 0, "עם שעה: at."),
+      gap("We played football ___ ten.", ["at", "on", "in", "to"], 0, "עם שעה: at."),
     ],
   ),
   lesson(
@@ -1523,9 +1534,9 @@ export const A1_GRAMMAR = [
     "Or (או)",
     "or נותן בחירה: Do you want milk or water? Is it a cat or a dog?",
     [
-      gap("Do you want milk ___ water?", ["or", "and", "but", "so"], 0, "בחירה: or."),
+      gap("Do you want milk ___ water? (one, not both)", ["or", "and", "but", "so"], 0, "בחירה: or."),
       gap("Is it a cat ___ a dog?", ["or", "and", "but", "so"], 0, "בחירה: or."),
-      gap("Do you play football ___ read a book?", ["or", "and", "but", "so"], 0, "בחירה: or."),
+      gap("Do you play football ___ read a book? (one, not both)", ["or", "and", "but", "so"], 0, "בחירה: or."),
     ],
   ),
   lesson(
@@ -1534,7 +1545,7 @@ export const A1_GRAMMAR = [
     [
       gap("I have a bag ___ a book. (both)", ["and", "but", "or", "so"], 0, "שניהם יחד: and."),
       gap("She is happy, ___ she is tired. (different idea)", ["but", "and", "or", "so"], 0, "רעיון שונה: but."),
-      gap("Is it big ___ small?", ["or", "and", "but", "so"], 0, "בחירה: or."),
+      gap("Is it big ___ small? (one, not both)", ["or", "and", "but", "so"], 0, "בחירה: or."),
     ],
   ),
   lesson(
@@ -1543,7 +1554,7 @@ export const A1_GRAMMAR = [
     [
       pick("Which sentence is right? (and)", "איזה משפט נכון? (and)", ["I play football, and she reads.", "I play football, and she read.", "I play football and, she reads.", "I play football, and, she reads."], 0, "פסיק לפני and."),
       pick("Which sentence is right? (but)", "איזה משפט נכון? (but)", ["I am small, but I am strong.", "I am small but, I am strong.", "I am small, but, I am strong.", "I am small, but I strong."], 0, "פסיק לפני but."),
-      gap("Do you want to play ___ read?", ["or", "and", "but", "so"], 0, "בחירה: or."),
+      gap("Do you want to play ___ read? (one, not both)", ["or", "and", "but", "so"], 0, "בחירה: or."),
     ],
   ),
 
@@ -1554,7 +1565,7 @@ export const A1_GRAMMAR = [
     [
       gap("I eat bread ___ I am hungry.", ["because", "so", "but", "or"], 0, "סיבה: because."),
       gap("She is happy ___ it is Sunday.", ["because", "so", "but", "or"], 0, "סיבה: because."),
-      gap("We stay at home ___ it is cold.", ["because", "so", "but", "or"], 0, "סיבה: because."),
+      gap("We stay at home ___ it is cold. (reason)", ["because", "so", "but", "or"], 0, "סיבה: because."),
     ],
   ),
   lesson(
@@ -1562,7 +1573,7 @@ export const A1_GRAMMAR = [
     "so נותן תוצאה: I am hungry, so I eat bread. It is cold, so we stay at home.",
     [
       gap("I am hungry, ___ I eat bread.", ["so", "because", "but", "or"], 0, "תוצאה: so."),
-      gap("It is cold, ___ we stay at home.", ["so", "because", "but", "or"], 0, "תוצאה: so."),
+      gap("It is cold, ___ we stay at home. (result)", ["so", "because", "but", "or"], 0, "תוצאה: so."),
       gap("She is tired, ___ she sleeps.", ["so", "because", "but", "or"], 0, "תוצאה: so."),
     ],
   ),
@@ -1579,8 +1590,8 @@ export const A1_GRAMMAR = [
     "Because or so? (בחירה)",
     "because בא לפני הסיבה, ו-so בא לפני התוצאה: I eat because I am hungry. I am hungry, so I eat.",
     [
-      pick("Which sentence is right? (because)", "איזה משפט נכון? (because)", ["I sleep because I am tired.", "I sleep so I am tired.", "I am sleep because tired.", "Because I sleep I am tired."], 0, "סיבה: because."),
-      pick("Which sentence is right? (so)", "איזה משפט נכון? (so)", ["I am tired, so I sleep.", "I am tired, because I sleep.", "I am tired so, I sleep.", "I am tired, so, I sleep."], 0, "תוצאה: so."),
+      pick("Which sentence is right? (because)", "איזה משפט נכון? (because)", ["I sleep because I am tired.", "I sleep so I am tired.", "I am sleep because tired.", "I sleep because am tired."], 0, "סיבה: because."),
+      pick("Which sentence is right? (so)", "איזה משפט נכון? (so)", ["I am tired, so I sleep.", "I am tired, so because I sleep.", "I am tired so, I sleep.", "I am tired, so, I sleep."], 0, "תוצאה: so."),
       gap("It is hot, ___ I drink water.", ["so", "because", "but", "or"], 0, "תוצאה: so."),
     ],
   ),
@@ -1590,7 +1601,7 @@ export const A1_GRAMMAR = [
     [
       gap("I like milk ___ I drink it every day. (result)", ["so", "because", "but", "or"], 0, "תוצאה: so."),
       gap("I like milk ___ it is good. (reason)", ["because", "so", "but", "or"], 0, "סיבה: because."),
-      gap("I like milk, ___ I don't like cold milk. (different idea)", ["but", "and", "or", "so"], 0, "רעיון שונה: but."),
+      gap("I like tea, ___ I don't like cold tea. (different idea)", ["but", "and", "or", "so"], 0, "רעיון שונה: but."),
     ],
   ),
 
@@ -1619,15 +1630,15 @@ export const A1_GRAMMAR = [
     [
       gap("Here is your milk. — ___.", ["Thank you", "Sorry", "Please", "Hello"], 0, "מקבלים: Thank you."),
       gap("Thank you! — ___.", ["You're welcome", "Sorry", "Hello", "Good night"], 0, "עונים על תודה: You're welcome."),
-      gap("Can I have some water, ___?", ["please", "thank you", "you're welcome", "sorry"], 0, "מבקשים: please."),
+      gap("Can I have some rice, ___?", ["please", "thank you", "you're welcome", "sorry"], 0, "מבקשים: please."),
     ],
   ),
   lesson(
     "Excuse me and sorry (סליחה)",
     "Excuse me כדי לקרוא למישהו או לעבור, ו-Sorry כשטועים: Excuse me, where is the shop? Sorry, I am late.",
     [
-      gap("___, where is the shop?", ["Excuse me", "Sorry", "Thank you", "You're welcome"], 0, "קוראים למישהו: Excuse me."),
-      gap("___, I am late.", ["Sorry", "Excuse me", "You're welcome", "Please"], 0, "מתנצלים: Sorry."),
+      gap("___, where is the shop?", ["Excuse me", "Thank you", "You're welcome", "Good night"], 0, "קוראים למישהו: Excuse me."),
+      gap("___, I am late.", ["Sorry", "Thank you", "You're welcome", "Good night"], 0, "מתנצלים: Sorry."),
       gap("Sorry! — That's ___.", ["OK", "please", "thank you", "welcome"], 0, "עונים: That's OK."),
     ],
   ),
@@ -1635,9 +1646,9 @@ export const A1_GRAMMAR = [
     "Asking politely: practice (חזרה)",
     "חזרה: Can I...? ו-Can you...? עם please, thank you ו-sorry.",
     [
-      gap("___ I have some milk, please?", ["Can", "Do", "Am", "Is"], 0, "בקשה: Can I."),
+      gap("___ I have some tea, please?", ["Can", "Do", "Am", "Is"], 0, "בקשה: Can I."),
       gap("Can you ___ the window, please?", ["open", "opens", "opening", "to open"], 0, "Can you + open."),
-      gap("Here is your bread. — ___.", ["Thank you", "Sorry", "Excuse me", "Please"], 0, "מקבלים: Thank you."),
+      gap("Here is your rice. — ___.", ["Thank you", "Sorry", "Excuse me", "Please"], 0, "מקבלים: Thank you."),
     ],
   ),
 
@@ -1655,7 +1666,7 @@ export const A1_GRAMMAR = [
     "Do, does, did (שאלות עם פועל רגיל)",
     "do בהווה עם I, you, we, they. does עם he, she, it. did בעבר, לכל הנושאים.",
     [
-      gap("___ you like milk?", ["Do", "Does", "Did", "Are"], 0, "הווה עם you: Do."),
+      gap("___ you like milk every day?", ["Do", "Does", "Did", "Are"], 0, "הווה עם you: Do."),
       gap("___ she play football yesterday?", ["Did", "Does", "Do", "Was"], 0, "yesterday: Did."),
       gap("___ he live here now?", ["Does", "Did", "Do", "Is"], 0, "now עם he: Does."),
     ],
@@ -1673,18 +1684,18 @@ export const A1_GRAMMAR = [
     "Choosing the right answer (איזו תשובה)",
     "התשובה צריכה להתאים לשאלה: Where do you live? In a house. When did you play? Yesterday. Why are you happy? Because it is Sunday.",
     [
-      pick("Where do you live?", "Where do you live?", ["In a house.", "Yesterday.", "Because I am happy.", "My brother."], 0, "שאלה על מקום: In a house."),
-      pick("When did you play?", "When did you play?", ["Yesterday.", "In a house.", "Because I am happy.", "My brother."], 0, "שאלה על זמן: Yesterday."),
-      pick("Why are you happy?", "Why are you happy?", ["Because it is Sunday.", "Yesterday.", "In a house.", "My brother."], 0, "שאלה על סיבה: Because..."),
+      pick("Where do you live?", "איזו תשובה מתאימה? Where do you live?", ["In a house.", "Yesterday.", "Because I am happy.", "My brother."], 0, "שאלה על מקום: In a house."),
+      pick("When did you play?", "איזו תשובה מתאימה? When did you play?", ["Yesterday.", "In a house.", "Because I am happy.", "My brother."], 0, "שאלה על זמן: Yesterday."),
+      pick("Why are you happy?", "איזו תשובה מתאימה? Why are you happy?", ["Because it is Sunday.", "Yesterday.", "In a house.", "My brother."], 0, "שאלה על סיבה: Because..."),
     ],
   ),
   lesson(
     "Questions: practice (חזרה)",
     "חזרה על כל סוגי השאלות: to be, do / does / did, can ומילות שאלה.",
     [
-      pick("Which question is right? (past)", "איזו שאלה נכונה? (עבר)", ["Did you play football yesterday?", "Do you played football yesterday?", "Did you played football yesterday?", "You did play football yesterday?"], 0, "Did + פועל בצורה הבסיסית."),
-      pick("Which question is right? (can)", "איזו שאלה נכונה? (can)", ["Can she swim?", "Does she can swim?", "Can she swims?", "She can swim?"], 0, "Can + נושא + פועל."),
-      pick("Which question is right? (going to)", "איזו שאלה נכונה? (going to)", ["Are you going to play?", "Do you going to play?", "You are going to play?", "Are you go to play?"], 0, "Are you going to + פועל."),
+      pick("Which question is right? (past)", "איזו שאלה נכונה? (עבר)", ["Did you play football yesterday?", "Do you played football yesterday?", "Did you played football yesterday?", "Were you play football yesterday?"], 0, "Did + פועל בצורה הבסיסית."),
+      pick("Which question is right? (can)", "איזו שאלה נכונה? (can)", ["Can she swim?", "Does she can swim?", "Can she swims?", "Can she to swim?"], 0, "Can + נושא + פועל."),
+      pick("Which question is right? (going to)", "איזו שאלה נכונה? (going to)", ["Are you going to play?", "Do you going to play?", "Is you going to play?", "Are you go to play?"], 0, "Are you going to + פועל."),
     ],
   ),
 
@@ -1693,7 +1704,7 @@ export const A1_GRAMMAR = [
     "To be and have (חזרה)",
     "חזרה: to be (am, is, are, was, were) ו-have / has. הפועל מתאים לנושא ולזמן.",
     [
-      gap("My sister ___ a dog.", ["has", "have", "is", "are"], 0, "my sister: has."),
+      gap("My sister ___ a dog.", ["has", "have", "does", "are"], 0, "my sister: has."),
       gap("Yesterday we ___ at the park.", ["were", "was", "are", "is"], 0, "אתמול עם we: were."),
       gap("They ___ a big house.", ["have", "has", "is", "am"], 0, "עם they: have."),
     ],
@@ -1712,16 +1723,16 @@ export const A1_GRAMMAR = [
     "חזרה: עבר עם הפועל + סיומת או didn't, עתיד עם going to.",
     [
       gap("Yesterday I ___ TV.", ["watched", "watch", "am going to watch", "watching"], 0, "yesterday: watched."),
-      gap("Tomorrow I ___ to play football.", ["am going", "was going", "go", "going"], 0, "tomorrow: am going to."),
-      gap("Last night we ___ cook.", ["didn't", "don't", "aren't", "won't"], 0, "last night: didn't."),
+      gap("Tomorrow I ___ going to play football.", ["am", "was", "go", "do"], 0, "tomorrow: am going to."),
+      gap("Last night we ___ cook.", ["didn't", "don't", "aren't", "weren't"], 0, "last night: didn't."),
     ],
   ),
   lesson(
     "Comparing and choosing (חזרה)",
-    "חזרה: בין שניים bigger than, הכי מכולם the biggest, ואחרי מילים כמו some, any, how much ו-how many.",
+    "חזרה: בין שניים bigger than, הכי מכולם the biggest. בשלילה any, ועם דברים שסופרים how many ועם דברים שלא סופרים how much.",
     [
       gap("The dog is ___ than the cat.", ["bigger", "the biggest", "big", "most big"], 0, "בין שניים: bigger."),
-      gap("Do you have ___ milk?", ["any", "some", "an", "many"], 0, "בשאלה: any."),
+      gap("I don't have ___ milk.", ["any", "some", "an", "many"], 0, "בשלילה: any."),
       gap("How ___ apples do you want?", ["many", "much", "some", "any"], 0, "apples נספר: many."),
     ],
   ),
@@ -1729,8 +1740,8 @@ export const A1_GRAMMAR = [
     "The A1 grammar course: final review (סיכום)",
     "כל הכבוד! סיימתם את כל הדקדוק של רמה A1. חזרה אחרונה: to be, הווה פשוט וממושך, עבר, going to, can, שאלות ושלילה, מילות חיבור.",
     [
-      gap("Yesterday she ___ at home, but now she ___ at school.", ["was, is", "is, was", "were, are", "was, are"], 0, "אתמול was, עכשיו is."),
-      gap("I ___ like cold milk, so I don't drink it.", ["don't", "doesn't", "am not", "didn't"], 0, "הווה עם I: don't."),
+      gap("Yesterday she ___ at home.", ["was", "were", "is", "are"], 0, "אתמול עם she: was."),
+      gap("I ___ like cold milk, so I drink hot milk.", ["don't", "doesn't", "am not", "isn't"], 0, "הווה עם I: don't."),
       pick("Which sentence is right?", "איזה משפט נכון?", ["Tomorrow we are going to play football.", "Tomorrow we going to play football.", "Tomorrow we are go to play football.", "Tomorrow we goes to play football."], 0, "are going to + פועל."),
     ],
   ),
