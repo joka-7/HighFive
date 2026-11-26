@@ -1005,7 +1005,7 @@ export const A1_GRAMMAR = [
   ),
   lesson(
     "Like, have, want (פעלים בלי סיומת ממושכת)",
-    "יש פעלים שלא באים בהווה ממושך, למשל like, have ו-want: I like rice (לא I am liking). She has a dog. We want a new bag.",
+    "יש פעלים שבדרך כלל לא באים בהווה ממושך, למשל like, have ו-want: I like rice (לא I am liking). She has a dog. We want a new bag.",
     [
       gap("I ___ rice.", ["like", "am liking", "is like", "liking"], 0, "like לא בהווה ממושך."),
       gap("She ___ a dog. (she has one)", ["has", "is having", "have", "having"], 0, "has עם she."),
@@ -1017,7 +1017,7 @@ export const A1_GRAMMAR = [
     "What do you do? שואל על מקצוע או שגרה. What are you doing? שואל מה עושים עכשיו. What does she do every day?",
     [
       gap("___ do you do? I am a teacher.", ["What", "Where", "Who", "How"], 0, "שואלים על מקצוע: What do you do?"),
-      gap("What are you ___ now?", ["doing", "do", "does", "to do"], 0, "are + doing."),
+      gap("What is he ___ now?", ["doing", "do", "does", "to do"], 0, "is + doing."),
       gap("What ___ she do every day?", ["does", "is", "do", "are"], 0, "שגרה עם she: does."),
     ],
   ),
@@ -1025,9 +1025,9 @@ export const A1_GRAMMAR = [
     "Simple or continuous? (בחירה)",
     "חזרה: שגרה היא הווה פשוט, עכשיו הוא הווה ממושך. לפעלים כמו like ו-have אין הווה ממושך.",
     [
-      gap("My father ___ at home on Sunday.", ["works", "is working", "work", "working"], 0, "שגרה עם he: works."),
+      gap("My father ___ at home every Sunday.", ["works", "is working", "work", "working"], 0, "שגרה עם he: works."),
       gap("Be quiet! The baby ___.", ["is sleeping", "sleeps", "sleep", "sleeping"], 0, "עכשיו: is sleeping."),
-      gap("I ___ milk.", ["like", "am liking", "likes", "liking"], 0, "like לא בהווה ממושך."),
+      gap("We ___ a dog. (we have one)", ["have", "are having", "has", "having"], 0, "have לא בהווה ממושך."),
     ],
   ),
 
@@ -1072,7 +1072,7 @@ export const A1_GRAMMAR = [
     "An old house, a new house (a או an)",
     "a או an נקבעים לפי המילה שאחריהם, גם אם זה שם תואר: an old house, a new house, an easy book, a big apple.",
     [
-      gap("It is ___ old house.", ["an", "a", "the", "some"], 0, "old מתחיל בתנועה: an."),
+      gap("It is ___ old house.", ["an", "a", "many", "some"], 0, "old מתחיל בתנועה: an."),
       gap("She is ___ happy girl.", ["a", "an", "some", "any"], 0, "happy מתחיל בעיצור: a."),
       gap("It is ___ big apple.", ["a", "an", "some", "any"], 0, "big מתחיל בעיצור: a big apple."),
     ],
@@ -1090,11 +1090,11 @@ export const A1_GRAMMAR = [
   ),
   lesson(
     "Spelling: hotter, bigger (כתיב)",
-    "אם שם התואר נגמר בעיצור אחרי תנועה קצרה, כופלים את העיצור: hot → hotter, big → bigger.",
+    "אם שם התואר נגמר בעיצור אחרי תנועה קצרה, כופלים את העיצור: hot → hotter, big → bigger. אחרת מוסיפים רק סיומת: cold → colder.",
     [
       gap("hot → ___", ["hotter", "hot", "hottest", "hots"], 0, "כופלים את העיצור: hotter."),
-      gap("small → ___", ["smaller", "small", "smallest", "smalls"], 0, "מוסיפים סיומת: smaller."),
-      gap("big → ___", ["bigger", "big", "biggest", "bigs"], 0, "כופלים את העיצור: bigger."),
+      gap("cold → ___", ["colder", "cold", "coldest", "colds"], 0, "מוסיפים סיומת: colder."),
+      gap("old → ___", ["older", "old", "oldest", "olds"], 0, "מוסיפים סיומת: older."),
     ],
   ),
   lesson(
@@ -1102,7 +1102,7 @@ export const A1_GRAMMAR = [
     "בשמות תואר ארוכים לא מוסיפים סיומת אלא שמים more לפניהם: more beautiful. The garden is more beautiful than the house.",
     [
       gap("The garden is ___ than the house. (beautiful)", ["more beautiful", "beautifuler", "beautiful", "most beautiful"], 0, "תואר ארוך: more beautiful."),
-      gap("This book is ___ than that book. (beautiful)", ["more beautiful", "beautifuler", "beautiful", "more beautifuler"], 0, "תואר ארוך: more beautiful."),
+      gap("This book is ___ than that book. (difficult)", ["more difficult", "difficulter", "difficult", "more difficulter"], 0, "תואר ארוך: more beautiful."),
       gap("Her bag is ___ than my bag. (beautiful)", ["more beautiful", "beautifuler", "most beautiful", "beautiful"], 0, "תואר ארוך: more beautiful."),
     ],
   ),
@@ -1120,7 +1120,7 @@ export const A1_GRAMMAR = [
     "חזרה: שם תואר קצר מקבל סיומת, שם תואר ארוך מקבל more, ובשני המקרים אחריהם than.",
     [
       gap("My house is ___ than your house. (big)", ["bigger", "more big", "biggest", "bigs"], 0, "תואר קצר: bigger."),
-      gap("This bag is ___ than that bag. (beautiful)", ["more beautiful", "beautifuler", "most beautiful", "beautiful"], 0, "תואר ארוך: more beautiful."),
+      gap("This bag is ___ than that bag. (interesting)", ["more interesting", "interestinger", "most interesting", "interesting"], 0, "תואר ארוך: more interesting."),
       gap("It is ___ today than yesterday. (hot)", ["hotter", "hoter", "more hot", "hottest"], 0, "כופלים את העיצור: hotter."),
     ],
   ),
@@ -1130,9 +1130,9 @@ export const A1_GRAMMAR = [
     "The biggest (הכי)",
     "כדי לומר “הכי” מוסיפים סיומת אחרת ו-the לפני התואר: big → the biggest, small → the smallest. This is the biggest house.",
     [
-      gap("This is the ___ house.", ["biggest", "bigger", "big", "most big"], 0, "הכי: the biggest."),
-      gap("The dog is the ___ animal. (small)", ["smallest", "smaller", "small", "most small"], 0, "הכי: the smallest."),
-      gap("He is the ___ boy. (tall)", ["tallest", "taller", "tall", "most tall"], 0, "הכי: the tallest."),
+      gap("This is the ___ house of all.", ["biggest", "bigger", "big", "most big"], 0, "הכי: the biggest."),
+      gap("The mouse is the ___ animal in the house. (small)", ["smallest", "smaller", "small", "most small"], 0, "הכי: the smallest."),
+      gap("He is the ___ boy of all. (tall)", ["tallest", "taller", "tall", "most tall"], 0, "הכי: the tallest."),
     ],
   ),
   lesson(
@@ -1148,8 +1148,8 @@ export const A1_GRAMMAR = [
     "The most beautiful (הכי, תואר ארוך)",
     "בשמות תואר ארוכים אומרים the most: the most beautiful garden. The most תמיד בא לפני התואר.",
     [
-      gap("This is the ___ garden. (beautiful)", ["most beautiful", "beautifulest", "more beautiful", "beautiful"], 0, "תואר ארוך: the most beautiful."),
-      gap("She has the ___ bag. (beautiful)", ["most beautiful", "beautifulest", "more beautiful", "beautiful"], 0, "תואר ארוך: the most beautiful."),
+      gap("This is the ___ garden of all. (beautiful)", ["most beautiful", "beautifulest", "more beautiful", "beautiful"], 0, "תואר ארוך: the most beautiful."),
+      gap("She has the ___ book of all. (difficult)", ["most difficult", "difficultest", "more difficult", "difficult"], 0, "תואר ארוך: the most difficult."),
       gap("That is the ___ house in the street. (beautiful)", ["most beautiful", "beautifulest", "more beautiful", "beautiful"], 0, "תואר ארוך: the most beautiful."),
     ],
   ),
@@ -1157,9 +1157,9 @@ export const A1_GRAMMAR = [
     "In the class, in the world (בתוך קבוצה)",
     "אחרי “הכי” אומרים in כשמדברים על מקום או קבוצה: the tallest girl in the class, the biggest house in the street.",
     [
-      gap("She is the tallest girl ___ the class.", ["in", "of", "at", "on"], 0, "קבוצה: in the class."),
-      gap("This is the biggest house ___ the street.", ["in", "of", "at", "on"], 0, "מקום: in the street."),
-      gap("He is the oldest boy ___ the school.", ["in", "of", "at", "on"], 0, "מקום: in the school."),
+      gap("She is the tallest girl ___ the class.", ["in", "with", "to", "from"], 0, "קבוצה: in the class."),
+      gap("This is the biggest house ___ the street.", ["in", "with", "to", "from"], 0, "מקום: in the street."),
+      gap("He is the oldest boy ___ the school.", ["in", "with", "to", "from"], 0, "מקום: in the school."),
     ],
   ),
   lesson(
@@ -1179,21 +1179,21 @@ export const A1_GRAMMAR = [
     [
       gap("I love my sister. I love ___.", ["her", "she", "him", "he"], 0, "אחות היא בת, והיא מושא: her."),
       gap("My brother is here. I see ___.", ["him", "he", "his", "her"], 0, "אח הוא בן, והוא מושא: him."),
-      gap("You are my friend. I like ___.", ["you", "your", "yours", "he"], 0, "המושא הוא you."),
+      gap("You are my friend. I like ___.", ["you", "your", "they", "he"], 0, "המושא הוא you."),
     ],
   ),
   lesson(
     "Us and them (אותנו, אותם)",
     "us הוא “אותנו” ו-them הוא “אותם” או “אותן”: We are friends. She likes us. My friends are here. I see them.",
     [
-      gap("We are friends. She likes ___.", ["us", "we", "our", "them"], 0, "אותנו: us."),
-      gap("My friends are here. I see ___.", ["them", "they", "their", "him"], 0, "אותם: them."),
+      gap("We are friends. She likes ___. (me and you)", ["us", "we", "our", "them"], 0, "אותנו: us."),
+      gap("My friends are here. I see ___.", ["them", "they", "their", "us"], 0, "אותם: them."),
       gap("My mother loves ___. (me and my brother)", ["us", "we", "our", "them"], 0, "אותנו: us."),
     ],
   ),
   lesson(
     "It (אותו, אותה, לדבר)",
-    "לדבר או לחיה מתייחסים ב-it גם כנושא וגם כמושא: I have a dog. I love it. She has a bag. She likes it.",
+    "לדבר, ולרוב גם לחיה, מתייחסים ב-it גם כנושא וגם כמושא: I have a cat. I like it. She has a book. She reads it.",
     [
       gap("I have a dog. I love ___.", ["it", "its", "he", "they"], 0, "דבר או חיה במושא: it."),
       gap("She has a bag. She likes ___.", ["it", "its", "she", "they"], 0, "במושא: it."),
@@ -1251,14 +1251,14 @@ export const A1_GRAMMAR = [
     "I would like (אשמח ל..., בנימוס)",
     "would like הוא דרך מנומסת לומר want: I would like some milk, please. אותה צורה לכל הנושאים, ובלי s.",
     [
-      gap("I ___ like some milk, please.", ["would", "wants", "do", "am"], 0, "בקשה מנומסת: would like."),
+      gap("I ___ like some milk, please.", ["would", "wants", "does", "am"], 0, "בקשה מנומסת: would like."),
       gap("She would ___ an apple.", ["like", "likes", "liking", "to like"], 0, "would like, בלי s."),
-      gap("We ___ like some bread, please.", ["would", "wants", "do", "are"], 0, "would like לכל הנושאים."),
+      gap("We ___ like some bread, please.", ["would", "wants", "can", "are"], 0, "would like לכל הנושאים."),
     ],
   ),
   lesson(
     "Would you like...? (הצעה)",
-    "כך מציעים בנימוס: Would you like some milk? ועונים: Yes, please. או No, thank you.",
+    "כך מציעים בנימוס: Would you like some milk? בהצעה ובבקשה מנומסת משתמשים ב-some גם בשאלה. עונים: Yes, please. או No, thank you.",
     [
       gap("___ you like some milk?", ["Would", "Do", "Are", "Is"], 0, "הצעה מנומסת: Would you like...?"),
       gap("Would you like some rice? Yes, ___.", ["please", "I like", "I am", "would"], 0, "מקבלים בנימוס: Yes, please."),
