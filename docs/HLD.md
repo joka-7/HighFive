@@ -259,4 +259,20 @@ conjugation/article/comparative tables, so every `correctIndex` is correct by
 construction. These files must exist for the build and `offline.test.ts` to
 pass.
 
+### The A1 course
+
+A1 is a course of 175 lessons (875 words, five a day), not a year of calendar content. The
+learner's position is `contentDay` in `utils/course.ts`; every A1 daily item is indexed by it.
+All five operations of a course day are written, not generated:
+
+| Operation | Source | Order |
+| --- | --- | --- |
+| Words | `scripts/content/a1-order.mjs` | 35 themes of 25 words, applied by `content-order.mjs` |
+| Grammar | `scripts/content/a1-grammar.mjs` | 35 weekly foci, one lesson per day |
+| Speaking | `scripts/content/a1-speaking.mjs` | round N practises grammar lesson N |
+| Reading, listening | `scripts/content/passages*.mjs` | reordered by `content-align.mjs` so each week follows its words |
+
+`scripts/check-curated.mjs` and `scripts/check-curated.test.mjs` check that the app's vocabulary
+gate shows every one of them. Past day 175 the generated rotation takes over.
+
 See `docs/LLD.md` for module-level detail.
