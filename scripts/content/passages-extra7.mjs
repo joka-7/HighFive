@@ -10,7 +10,7 @@ export const MORE_READINGS7 = {
   A1: [
     R("Feeding the Cat (מאכיל את החתול)",
       "We have a white cat. Every morning I give her food and water. She sits on my leg and says 'meow'. After she eats, she sleeps in the sun by the window.",
-      "יש לנו חתולה לבנה. כל בוקר אני נותן לה אוכל ומים. היא יושבת לי על הרגל ואומרת ״מיאו״. אחרי שהיא אוכלת, היא ישנה בשמש ליד החלון.",
+      "יש לנו חתולה לבנה. כל בוקר אני נותן לה אוכל ומים. היא יושבת לי על הרגל ואומרת \"מיאו\". אחרי שהיא אוכלת, היא ישנה בשמש ליד החלון.",
       [g("meow", "noun", "מיאו", "The cat says meow.", "מיאו"), g("feed", "verb", "להאכיל", "I feed the cat.", "להאכיל"), g("window", "noun", "חלון", "By the window.", "חלון")],
       [q("What color is the cat?", "באיזה צבע החתולה?", ["Black", "White", "Brown", "Orange"], ["שחורה", "לבנה", "חומה", "כתומה"], 1, "'a white cat'."), q("Where does the cat sleep?", "איפה החתולה ישנה?", ["Outside", "In the sun by the window", "On the floor", "On the bed"], ["בחוץ", "בשמש ליד החלון", "על הרצפה", "על המיטה"], 1, "'sleeps in the sun by the window'.")]),
     R("A Day at the Beach (יום בים)",
@@ -31,7 +31,7 @@ export const MORE_READINGS7 = {
     R("Waiting for the Rain to Stop (מחכים שהגשם ייפסק)",
       "We want to play outside, but it starts to rain. So we sit by the window and watch the drops. My brother counts the cars in the street. When the sun comes back, we run out to play.",
       "אנחנו רוצים לשחק בחוץ, אבל מתחיל לרדת גשם. אז אנחנו יושבים ליד החלון ומסתכלים על הטיפות. אחי סופר את המכוניות ברחוב. כשהשמש חוזרת, אנחנו רצים החוצה לשחק.",
-      [g("rain", "noun", "גשם", "It starts to rain.", "גשם"), g("drops", "noun", "טיפות", "Watch the drops.", "טיפות"), g("count", "verb", "לספור", "He counts the cars.", "לספור")],
+      [g("rain", "verb", "לרדת גשם", "It starts to rain.", "לרדת גשם"), g("drops", "noun", "טיפות", "Watch the drops.", "טיפות"), g("count", "verb", "לספור", "He counts the cars.", "לספור")],
       [q("Why do they stay inside?", "למה הם נשארים בפנים?", ["It starts to rain", "It is late", "It is cold", "They are tired"], ["מתחיל לרדת גשם", "מאוחר", "קר", "הם עייפים"], 0, "'it starts to rain'."), q("What does the brother do?", "מה האח עושה?", ["Sings", "Counts the cars", "Reads", "Sleeps"], ["שר", "סופר את המכוניות", "קורא", "ישן"], 1, "'counts the cars'.")]),
   ],
   A2: [
@@ -137,7 +137,7 @@ export const MORE_READINGS7 = {
       "A map is useful precisely because it leaves things out; a chart showing every pebble would be useless. But the omissions are choices, and choices carry interests. To read any account critically is to ask not only what it shows, but what it has quietly declined to mention, and whom that silence serves.",
       "מפה שימושית דווקא משום שהיא משמיטה דברים; מפה שמראה כל חלוק אבן הייתה חסרת תועלת. אבל ההשמטות הן בחירות, ובחירות נושאות עימן אינטרסים. לקרוא כל תיאור בעין ביקורתית פירושו לשאול לא רק מה הוא מראה, אלא גם מה הוא נמנע בשקט מלהזכיר — ואת מי משרתת השתיקה הזאת.",
       [g("omission", "noun", "השמטה, חיסרון", "The omissions matter.", "השמטה"), g("interest", "noun", "אינטרס, עניין", "Choices carry interests.", "אינטרס/עניין"), g("critically", "adverb", "בביקורתיות", "Read critically.", "בביקורתיות")],
-      [q("Why is a map useful, per the text?", "מדוע מפה שימושית, לפי הטקסט?", ["It shows everything", "Precisely because it leaves things out", "It is colourful", "It is small"], ["היא מראה הכול", "דווקא משום שהיא משמיטה דברים", "היא צבעונית", "היא קטנה"], 1, "'useful precisely because it leaves things out'."), q("What should a critical reader also ask?", "מה צריך קורא ביקורתי לשאול בנוסף?", ["Only what it shows", "What it declined to mention, and whom the silence serves", "Who drew it", "How long it took"], ["רק מה היא מראה", "מה היא נמנעה מלהזכיר, ואת מי משרתת השתיקה", "מי שרטט אותה", "כמה זמן זה לקח"], 1, "'what it has quietly declined to mention, and whom that silence serves'.")]),
+      [q("Why is a map useful, per the text?", "מדוע מפה שימושית, לפי הטקסט?", ["It shows everything", "Precisely because it leaves things out", "It is colorful", "It is small"], ["היא מראה הכול", "דווקא משום שהיא משמיטה דברים", "היא צבעונית", "היא קטנה"], 1, "'useful precisely because it leaves things out'."), q("What should a critical reader also ask?", "מה צריך קורא ביקורתי לשאול בנוסף?", ["Only what it shows", "What it declined to mention, and whom the silence serves", "Who drew it", "How long it took"], ["רק מה היא מראה", "מה היא נמנעה מלהזכיר, ואת מי משרתת השתיקה", "מי שרטט אותה", "כמה זמן זה לקח"], 1, "'what it has quietly declined to mention, and whom that silence serves'.")]),
   ],
 };
 

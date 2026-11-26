@@ -207,7 +207,7 @@ export const MORE_READINGS9 = {
     ),
     R(
       "Cities That Slow Cars Down (ערים שמאטות מכוניות)",
-      "Several European cities have lowered urban speed limits to thirty kilometres per hour, and the results have been striking. Serious injuries fell sharply, while average journey times barely changed, because in dense traffic the limiting factor is junctions rather than top speed. Residents who initially objected often became the policy's strongest defenders once the streets grew quieter. The case illustrates how strongly public opinion can shift after a measure is actually experienced.",
+      "Several European cities have lowered urban speed limits to thirty kilometers per hour, and the results have been striking. Serious injuries fell sharply, while average journey times barely changed, because in dense traffic the limiting factor is junctions rather than top speed. Residents who initially objected often became the policy's strongest defenders once the streets grew quieter. The case illustrates how strongly public opinion can shift after a measure is actually experienced.",
       "כמה ערים באירופה הורידו את מגבלת המהירות העירונית לשלושים קילומטרים לשעה, והתוצאות היו מרשימות. פציעות קשות ירדו בחדות, בעוד שזמני הנסיעה הממוצעים כמעט לא השתנו, משום שבתנועה צפופה הגורם המגביל הוא הצמתים ולא המהירות המרבית. תושבים שהתנגדו בתחילה הפכו לא פעם למגיניה החזקים ביותר של המדיניות ברגע שהרחובות נעשו שקטים יותר. המקרה ממחיש עד כמה דעת הקהל יכולה להשתנות אחרי שאמצעי כלשהו נחווה בפועל.",
       [
         g("striking", "adjective", "מרשים ובולט מאוד", "The results were striking.", "מרשים"),

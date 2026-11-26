@@ -8,7 +8,7 @@ const L = (transcript, transcriptHe, questions) => ({ transcript, transcriptHe, 
 
 export const MORE_READINGS8 = {
   A1: [
-    R("My Schoolbag (תיק בית הספר שלי)",
+    R("Packing My Bag (אורז את התיק)",
       "I have a blue school bag. Inside there are books, pens and a small box for lunch. The bag is heavy on Mondays. I carry it on my back every day.",
       "יש לי תיק בית ספר כחול. בפנים יש ספרים, עטים וקופסה קטנה לארוחת הצהריים. התיק כבד בימי שני. אני נושא אותו על הגב כל יום.",
       [g("bag", "noun", "תיק", "A school bag.", "תיק"), g("heavy", "adjective", "כבד", "It is heavy.", "כבד"), g("carry", "verb", "לשאת, לסחוב", "I carry it.", "לשאת/לסחוב")],
@@ -42,7 +42,7 @@ export const MORE_READINGS8 = {
       ]),
     R("My Best Friend (החבר הכי טוב שלי)",
       "My best friend is a boy in my class. We sit together at school and share our snacks. He is funny and makes me laugh. After school we ride our bikes home.",
-      "החבר הכי טוב שלי הוא ילד מהכיתה שלי. אנחנו יושבים יחד בבית הספר ומתחלקים בחטיפים. הוא מצחיק ועושה לי צחוק. אחרי בית הספר אנחנו רוכבים הביתה על האופניים.",
+      "החבר הכי טוב שלי הוא ילד מהכיתה שלי. אנחנו יושבים יחד בבית הספר ומתחלקים בחטיפים. הוא מצחיק וגורם לי לצחוק. אחרי בית הספר אנחנו רוכבים הביתה על האופניים.",
       [g("share", "verb", "לחלוק", "We share snacks.", "לחלוק"), g("funny", "adjective", "מצחיק", "He is funny.", "מצחיק"), g("laugh", "verb", "לצחוק", "He makes me laugh.", "לצחוק")],
       [
         q("Where do the friends sit together?", "איפה החברים יושבים יחד?", ["At school", "At home", "In the park", "On the bus"], ["בבית הספר", "בבית", "בפארק", "באוטובוס"], 0, "'We sit together at school'."),

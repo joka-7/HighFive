@@ -453,7 +453,7 @@ export const MORE_READINGS15 = {
     ),
     R(
       "Sukkot Week (שבוע סוכות)",
-      "Every year before Sukkot my father and I build a sukkah in the yard. We put up wooden walls and cover the top with green leaves. My sister makes colourful decorations from paper. During the holiday we eat all our meals outside, even when it is windy.",
+      "Every year before Sukkot my father and I build a sukkah in the yard. We put up wooden walls and cover the top with green leaves. My sister makes colorful decorations from paper. During the holiday we eat all our meals outside, even when it is windy.",
       "בכל שנה לפני סוכות אבא שלי ואני בונים סוכה בחצר. אנחנו מציבים קירות מעץ ומכסים את הגג בעלים ירוקים. אחותי מכינה קישוטים צבעוניים מנייר. במהלך החג אנחנו אוכלים את כל הארוחות בחוץ, גם כשיש רוח.",
       [
         g("build", "verb", "לבנות", "We build a sukkah.", "לבנות"),
@@ -732,7 +732,7 @@ export const MORE_LISTENINGS15 = {
       ],
     ),
     L(
-      "Good morning, everyone. This is your captain speaking. We are flying at ten thousand metres, and the weather is clear all the way to Paris. The flight will take about four hours. If you need anything, please press the button above your seat. Thank you for flying with us.",
+      "Good morning, everyone. This is your captain speaking. We are flying at ten thousand meters, and the weather is clear all the way to Paris. The flight will take about four hours. If you need anything, please press the button above your seat. Thank you for flying with us.",
       "בוקר טוב לכולם. כאן הקברניט. אנחנו טסים בגובה עשרת אלפים מטר, ומזג האוויר בהיר כל הדרך לפריז. הטיסה תימשך כארבע שעות. אם אתם צריכים משהו, בבקשה לחצו על הכפתור שמעל המושב. תודה שטסתם איתנו.",
       [
         q("How long will the flight take?", "כמה זמן הטיסה תימשך?", ["About four hours", "About two hours", "About ten hours", "About one hour"], ["כארבע שעות", "כשעתיים", "כעשר שעות", "כשעה"], 0, "נאמר 'about four hours'."),
@@ -836,7 +836,7 @@ export const MORE_LISTENINGS15 = {
       ],
     ),
     L(
-      "Welcome to the national park. The path to the river is about two kilometres long and takes forty minutes. Please stay on the path and do not pick the flowers. There is a picnic area near the entrance, and the toilets are next to the car park. Have a lovely day.",
+      "Welcome to the national park. The path to the river is about two kilometers long and takes forty minutes. Please stay on the path and do not pick the flowers. There is a picnic area near the entrance, and the toilets are next to the car park. Have a lovely day.",
       "ברוכים הבאים לפארק הלאומי. השביל לנהר באורך של כשני קילומטרים והוא לוקח ארבעים דקות. בבקשה הישארו על השביל ואל תקטפו פרחים. יש אזור פיקניק ליד הכניסה, והשירותים ליד החניה. שיהיה לכם יום נעים.",
       [
         q("How long does the walk to the river take?", "כמה זמן ההליכה לנהר לוקחת?", ["Forty minutes", "Ten minutes", "Two hours", "Five minutes"], ["ארבעים דקות", "עשר דקות", "שעתיים", "חמש דקות"], 0, "נאמר 'takes forty minutes'."),
